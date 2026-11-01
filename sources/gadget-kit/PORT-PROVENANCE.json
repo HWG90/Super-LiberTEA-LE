@@ -1,0 +1,36 @@
+{
+  "id": "goose_temporary_unlocks",
+  "version": "0.5.8-cffi-26251122",
+  "upstream_first_person": "Native ADS Camera Test 0.1.49-test",
+  "steam_build": 26251122,
+  "ported_from": 26088801,
+  "port_date": "2026-10-29",
+  "evidence": "/home/goose/Projects/Linux HD2 Mods/builds/26251122/maps/gadget-kit",
+  "game_dll": {
+    "stamp": "0x6AE0E5FF",
+    "size_of_image": "0x3382000",
+    "note": "code and data did not move; .rdata above ~0x2056000 shifted (witness bytes rederived)"
+  },
+  "executable": {
+    "stamp": "0x6AE0964A",
+    "size_of_image": "0x29FE000",
+    "note": "41 exe RVAs moved (-0x10..-0xC0); witnesses rederived from the 26251122 capture"
+  },
+  "native_rebinding_pending": false,
+  "live_activation_verified": false,
+  "visual_acceptance_pending": true,
+  "helpers": {
+    "alignment": "e241b30e759a9d2300863e50df2f48e1287501a77d0ed0ea43a55ecf4d91cebf",
+    "editor": "3e5fd1f1a9b1377f7b7774d72b93b9ed6e49ba73b072daf71e04124253f673d5",
+    "fov": "a6b1c2df53378a4063884b7e95a2f0340bb75085b28c487e9a1c4ef9a8a1d793",
+    "camera": "41b0d285dda35767417f300bdf9c68f7030764091a983650f05344c07b619254",
+    "blur": "7373b5c581b8d45b29f76b745b112f2f68ade98f805a1f49d36a84339af20ba6"
+  },
+  "guarded_reads": {
+    "guarded_reads_fb18682bc3515a7a.dll": "fb18682bc3515a7ab3484f5437498fef538086c1f8ccdf74c16f394b442a9e98"
+  },
+  "nativeinfo": {
+    "port51/hd2_nativeinfo_8d03e036881e4ddc.dll": "LLL 26251122 hd2_nativeinfo (same source as the 26088801 f6d34659, new exe SHA and Lua API map)"
+  },
+  "hotkey_input": "engine keyboard and token-owned shared input adapter"
+}

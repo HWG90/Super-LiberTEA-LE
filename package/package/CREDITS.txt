@@ -1,0 +1,27 @@
+Super LiberTEA - LE (Linux Edition): credits
+
+Packaged by Goose (HWG90). Source of every item: https://github.com/HWG90/Super-LiberTEA-LE
+
+BY GOOSE
+  Live Lua Loader R38 and its LuaJIT runtime   https://github.com/HWG90/LLL (release R38-26251122-luajit.2)
+  LLL Compat Test
+  Mod Configuration Menu (DBF-MCM)
+  Diver's Best Friend (ASS) R46
+  Goose Bridge Combat
+  Goose Gadget Kit (LE build)
+  War Journalist (Proton) and its assets       https://github.com/HWG90/DBF_PhotoMode (branch WJ-Proton)
+
+OTHER AUTHORS' MODS, PORTED TO LUAJIT AND GAME BUILD 26251122 BY GOOSE
+  Vanilla Plus Megapack v42        CowboyBingus and the authors of the mods it bundles (Zero-Clause BSD,
+                                   LICENSES\Vanilla-Plus-Megapack-0BSD.txt); see
+                                   Vanilla Plus Megapack\VanillaPlusMegapack-README.txt
+  Smarter Guard Dogs & Sentries    the original 5.2.0 release, Nexus Mods (Helldivers 2) mod 16610
+  DiverKit Alpha 8.14.31           the original release, Nexus Mods (Helldivers 2) mod 16493
+  HD2 Transmog Foundation 0.2.4    its original authors; see Transmog\README.md and
+                                   Transmog\THIRD-PARTY-LICENSES.txt
+These ports keep the original mods' design and only change what the new game build and the LuaJIT VM need.
+All credit for the mods themselves belongs to their authors.
+
+LIBRARIES
+  LuaJIT 2.1 (Mike Pall, MIT), cffi-lua (MIT), libffi (MIT), Lua 5.1.4 (Lua.org, PUC-Rio, MIT), the Bingus Shared
+  Loader helpers: see LICENSES\LLL\. War Journalist carries LICENSE-Link.txt and LICENSE-Bingus.txt in its folder.

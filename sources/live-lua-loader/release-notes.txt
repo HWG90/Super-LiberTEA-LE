@@ -1,0 +1,150 @@
+R35-26088801-linux-cffi.1 - Linux/Proton + CFFI
+NOT FOR THE LIVE GAME UNLESS YOU ARE ON LINUX. IT WILL NOT WORK ON WINDOWS.
+
+Current Steam build 26088801 only. Includes CFFI with corrected pointer
+subtraction, Insert open/close repair, native HUD font helper, native launcher,
+Proton installer drive mapping support, rollback receipts and checksums.
+CFFI, Lua 5.1.4 and libffi source and licenses are in native/cffi.
+Native Windows fails with system error 577. CFFI does not restore LuaJIT.
+Exact release archive has offline validation; no fresh gameplay acceptance.
+
+R34 Steam Lua 5.1 preview.1 (build 25988413)
+
+LLL now captures gameplay keyboard input while its manager is open. The additive
+shared input service supports opt-in keyboard capture and physical key snapshots
+in the same exchange as pointer input. Menu/camera mode changes preserve the
+token and keyboard generation. Existing mouse-only consumers retain their prior
+behavior; other menus/cameras must opt in and consume the helper key bitmap.
+Windows keys, F12 and reserved system combinations remain excluded.
+
+The 119-key mask uses 880 hotkey reservations. Real Windows registration/removal
+passed; native fixtures passed 91,180 offline checks, with 28 Lua 5.1 broker and
+13 composed frontend tests. These do not prove every physical key combination.
+
+Human gameplay acceptance passed for LLL: W worked while closed; Insert opened
+the manager; W/A/S/D, Shift, Ctrl and Space were blocked from the diver while
+menu keyboard/mouse input worked; Insert close restored movement. The matching
+Photo adapter passed freecam W/A/S/D, Shift and Ctrl movement with the diver
+still, menu/camera switches, and restored normal movement after close. A bounded
+Alt-Tab/typing cleanup check was reported working; not every OS chord was tested.
+
+Deployed samples:
+- Quiet: 30.0022 seconds, 3,378 ticks, 270 ms inclusive loader time (9.00 ms/s),
+  worst tick 7 ms, zero keyboard-helper calls.
+- Mixed menu/camera/idle: 90.0048 seconds, 10,282 ticks, 1,274 ms inclusive loader
+  time (14.15 ms/s). One close tick took 13 ms, including 8 ms keyboard release;
+  no other tick reached 10 ms. Acquire API acknowledgement took at most 1 ms.
+- Mixed input: 1,156 menu and 621 camera combined snapshots, 3 acquires and
+  3 releases; no idle keyboard calls across 8,505 idle frames; zero helper errors
+  or restoration conflicts.
+- Whole-helper CPU: no measurable increase in a 30.017-second quiet interval
+  (15.625 ms CPU-counter granularity); 171.875 ms over 90.0238 seconds around the
+  mostly idle mixed interval, averaging 1.91 ms CPU/s.
+
+Inclusive tick timing includes protected observer overhead and other mod child
+callbacks. It is not exclusive LLL CPU or whole-game frame time. The mixed
+sample is not a pure active-capture or LLL-only visible-manager benchmark; the
+observer's ui.menu.visible counter stayed zero. The earlier 4.47 ms/s base-port
+sample is historical and not directly comparable. Observers were removed and
+saved settings were unchanged.
+
+The new helper adds hotkey capture. Its screenshot job and WinRT factory
+components are unchanged from live-tested R33 and their native fixtures pass;
+this is not a new R34 screenshot gameplay acceptance claim. HDR capture, full
+old-mod parity and independent image colorimetry remain unqualified.
+
+Use the portable installer and retain its rollback receipt. Exact game-build
+checks, settings preservation and conflicting-loader refusal remain required;
+a generic mod-manager ZIP import does not install the helper. See the attached
+VALIDATION file and docs/STEAM-INPUT-SERVICE.md for scope and evidence.
+
+Historical preview notes:
+R33 Steam Lua 5.1 preview.1 (build 25988413)
+
+This preview adds the shared asynchronous SDR game-window PNG service for
+cooperating mods and fixes the helper crash on a later capture job by retiring
+WinRT factory caches before worker COM teardown. A dead helper now closes the
+transport once and retires helper-dependent UI/maintenance without repeated
+pipe attempts. Loaded mod callbacks remain available.
+
+Fresh configurations now use Insert to open LLL. Valid saved bindings, including
+F8, are preserved. The native helper matches the repeated-capture-tested build;
+the startup/package is rebuilt to correct the fresh and invalid-setting defaults.
+The capture API retains its tested internal revision so existing Photo consumers
+can recognize it.
+
+Gameplay keyboard suppression remains unfinished: movement keys can still reach
+the diver while a menu or free camera is open. The new RPC metadata exposes no
+authoritative player/input gate, and settings reload is not an input gate. No
+native keyboard-suppression change is included. HDR capture, full old-mod parity
+and independent image colorimetry remain unqualified.
+
+Elevated tests and package validation are recorded in the attached VALIDATION
+file. The portable installer, settings preservation, build checks and rollback
+remain required; a generic mod-manager ZIP import does not install the helper.
+
+Historical preview notes:
+R32 Steam Lua 5.1 preview.1 (build 25988413)
+Prebuilt portable installation includes the current-Steam startup patch and
+content-addressed external helper. The installer checks exact game fingerprints,
+preserves settings/mods, refuses conflicting loader ownership, and creates an
+owned-file rollback receipt. Use the included README; a generic mod-manager ZIP
+import does not install the external service.
+
+This preview includes registered MCM shared-input ownership, manager shortcut
+deferral when MCM uses the same key, streaming import preflight, in-memory catalog
+listing, and cleanup of removed project watches after a completed discovery scan.
+Incomplete scans retain the existing catalog and watches for explicit recovery.
+The default manager key remains F8; existing configured bindings are preserved.
+
+Gameplay keyboard suppression remains unfinished in both menus and freecam:
+movement keys can still reach the native diver. Mouse-look capture and exclusive
+menu/camera leases are implemented. Older LuaJIT/FFI mods need individual ports.
+
+The deployed base runtime has user-confirmed manager/mouse and cooperating-camera
+transitions. The earlier quiet sample was 4.47 ms/s aggregate, 1 ms worst callback;
+these are not a fresh final-preview or whole-game benchmark. Current catalog and
+import changes have offline validation and fresh startup acknowledgement, with
+final live cost pending. Portable installation has isolated fixture validation;
+separate clean-machine gameplay acceptance remains pending.
+
+Historical source-preview notes:
+October 20 Steam Lua 5.1 source preview (build 25988413)
+Current source adds the Steam startup port, automatic external helper, working
+F8 mouse input, streaming native-dependency preflight, idle source caching,
+and an owner-aware shared menu/camera input service with true raw mouse deltas.
+The deployed base port has functional confirmation and a quiet 30-second
+4.47 ms/s loader sample (1 ms worst). Shared-service gameplay integration is
+user-confirmed, with 1,230 observed input samples and clean release. Movement
+keys still reach the player in freecam; gameplay keyboard isolation is unfinished.
+Native/Lua/transport tests pass. Native LuaJIT mods need individual ports.
+See docs/STEAM-LUA51.md and docs/STEAM-INPUT-SERVICE.md. R31 assets are unchanged;
+local Steam build ZIPs embed their game path and are not portable installers.
+
+Historical notes:
+October 19 R31-bsl-v20 candidate: fail-closed SHA256 build gate, shared session hash cache, fingerprinted event-driven LuaJIT churn guard. Existing R31 working changes retained. See BSL-V20-ADAPTATION.txt. Offline validation only; live gameplay/performance pending.
+
+October 11 correction: automatic mod-log ingestion and its verbose toggle have been removed after runtime hitch investigation. Direct diagnostics remain. Historical validation below describes the original R31 release.
+
+Live Lua Loader 0.1.8 / R31 - Helldivers manager
+
+R31 brings the modular loader and redesigned manager into a full release.
+
+- Helldivers charcoal/yellow styling, procedural winged skull, header/footer hazard stripes, inset borders and panel depth.
+- Sliding On/Off switches; bounded label/control distances, consistent resize scaling and a selection details pane on wider layouts.
+- Main HUD font on the supported build, native font atlas/width handling and an explicit compatibility fallback.
+- Tab commits and applies text, numeric and color edits; existing key capture and console completion retain ownership.
+- Source-owned mod error logs, bounded incremental reads, append/rotation handling and a verbose_launch config switch. Dynamic/compiled log paths can be advertised explicitly.
+- Native modular folder projects, private imports, separate defaults/user settings, dependency-aware preflight and reload.
+- Typed console commands, completion, history, held-key repeat and source-attributed error review.
+- Retained input ownership/restoration safeguards, metadata drafts, external-loader provenance and per-mod author groups.
+
+Installation: import the ready-made ZIP with your mod manager, enable LLL and assign winning startup-loader priority. Disable competing shared startup loaders. See the attached README for direct-copy instructions, patch-number handling and removal. Existing configs are preserved. This release does not deploy itself or ship third-party mods.
+
+Verbose launch: add verbose_launch = true to the existing LLL.cfg return table, or enable Manager settings > Verbose launch logging before launching. Default is false. Normal mode forwards newly appended error lines; verbose mode includes additional detail and a bounded existing tail.
+
+Requires Windows x64 and Helldivers 2 Steam build 25480438. The default manager key is F8; Open/Close, Apply and Focus can be rebound. Main-font resources are referenced in place, not distributed. Required stock startup callback preservation is disclosed in CONTENTS-NOTICES.txt.
+
+Validation: full isolated LuaJIT suite passes, including packaged initialization with development source unavailable, native retained-layer/input safeguards, bounded responsive layout, Tab text/color acceptance, exact-build font resolution/atlas/native metrics/fallback, real Windows shared log reads/rotation and source-owned log ingestion. Package CRC, exact runtime payload and all internal SHA256 entries pass.
+
+The R31 UI/main-font appearance and end-to-end log capture have not been verified in-game. Offline previews use an approximate desktop font. No game installation, saved settings or unrelated Future Project research was changed or published.

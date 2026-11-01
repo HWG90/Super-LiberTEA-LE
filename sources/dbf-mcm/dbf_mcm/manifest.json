@@ -1,0 +1,38 @@
+{
+  "id": "dbf_mcm",
+  "name": "Mod Configuration Menu",
+  "version": "0.1.74-luajit.5",
+  "author": "Goose",
+  "lll": {
+    "entry": "main.lua",
+    "defaults": "config/defaults.cfg",
+    "modules": [
+      "src/authoring.lua",
+      "src/bindings.lua",
+      "src/commands.lua",
+      "src/compat.lua",
+      "src/console.lua",
+      "src/core.lua",
+      "src/framework.lua",
+      "src/grouping.lua",
+      "src/integrations/hud_plus.lua",
+      "src/legacy.lua",
+      "src/menu.lua",
+      "src/native_editor.lua",
+      "src/preferences.lua",
+      "src/steam_adapter.lua",
+      "src/steam_input.lua",
+      "src/store.lua",
+      "src/ui/branding.lua",
+      "src/ui/font.lua",
+      "src/ui/input.lua",
+      "src/ui/layout.lua",
+      "src/ui/render.lua",
+      "src/ui/text.lua",
+      "src/ui/theme.lua",
+      "src/view.lua"
+    ],
+    "restart_only": true,
+    "retain_until_exit": true
+  }
+}

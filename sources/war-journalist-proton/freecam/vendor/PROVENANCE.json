@@ -1,0 +1,106 @@
+{
+  "source": "War Journalist retained standalone UI, input, memory and capture services; camera runtime is independently owned",
+  "runtime_sha256": {
+    "PhotoCapture64.dll": "be5cc8c9930fa4de342d3afb3ce8be184c4f1208dcab1f7fcab67991ea1a6bd7",
+    "mcm_input_eed2e92830f3.dll": "d1f84d7a48e49f1927bdad9785d135746f918259e84a38f44aa9f4afae38c6c3",
+    "bingus_memory.lua": "eb3a8c7c5246340e8932d009d208c4e6d43d5429fe8405298ff96bae163d0260",
+    "bingus_runtime.lua": "74b3805771639bbbca448709e188b1b16c487eb420605c91e1056b740273c77b",
+    "camera_input.lua": "c2be26d4ef4f2f28e6bb2c54154deb767d94ccfd7bfd18cfa3e0e53c3253c311",
+    "capture.lua": "70c05a6b724719a4d015ba5147fb0becfb78222751beb773fcae135fee52abea",
+    "core.lua": "c008876010ae194e61aea0fa7441a25af607f4b6a80fcf5aa0941aab091b88a6",
+    "font.lua": "83f7e1fd6076f6f86bc86bdb8ae302bfc2b0e5902ceae1a2041420b3b722dcc0",
+    "store.lua": "3bc9a632382be9591a6119c576d9c0b2f33bd0fef9db8103de00c0cff87f4382",
+    "view.lua": "aa7ac65c1dafff5027fe1055b62f9bfe7d1a9770112603b063c16fa8bd386a40",
+    "PhotoCapture_f37e408d89cd.dll": "f37e408d89cd8c8fd222039ab13e4614e887cdd2c552050c632ccb223bc70b53",
+    "PhotoCapture_455c13a828a8.dll": "455c13a828a8229d9da887d797e394ba3901024a4811c7e50f1f4736a8a6f564",
+    "PhotoCapture_7da458d8a23d.dll": "7da458d8a23d5a94039d33007957c62acce5b45ea4183bdd02e8731d19ff6a62",
+    "mcm_input_fcf5b050abc2.dll": "0751ab7d0e738c3a0449a376ad083f4c7ce83ff0846b1bcb78397645e45432fa",
+    "mcm_input_f501fa41de0c.dll": "081317909068b193f62ac67adc45cce4c86d51a50784d35e092f02d73bd5a1a4",
+    "mcm_input_fed2f0c90b9d.dll": "6a4f6f440c9fca66948f963d394ab3df0b192076e87ae0ce9a4d2bcb6142cac5",
+    "mcm_input_3a6f623eb9da.dll": "aaaacf0e1b5f0397967278c36f6d6cfa237e9bc98684474e88901744f08b1f77"
+  },
+  "native_encoding": "hex; decoded only by package builder",
+  "native_runtime": "Windows built-in APIs; static CRT",
+  "input_credit": "CowboyBingus; included 0BSD license",
+  "local_modifications": {
+    "core.lua": {
+      "baseline_sha256": "d03bd8a72f3ab80372dc57351e1e837b10c53e9ea6835002b25fe4ec4fcc87b1",
+      "sha256": "c008876010ae194e61aea0fa7441a25af607f4b6a80fcf5aa0941aab091b88a6",
+      "change": "Opt-in fine_step normalization and commit_on_blur metadata validation; original controls retain existing precision."
+    },
+    "PhotoCapture_f37e408d89cd.dll": {
+      "baseline_library": "PhotoCapture64.dll",
+      "baseline_sha256": "be5cc8c9930fa4de342d3afb3ce8be184c4f1208dcab1f7fcab67991ea1a6bd7",
+      "sha256": "f37e408d89cd8c8fd222039ab13e4614e887cdd2c552050c632ccb223bc70b53",
+      "change": "Color-aware HDR10 PQ/BT2020 to SDR sRGB PNG conversion selected by verified live back-buffer HDR state; hash filename preserves loaded old DLL."
+    },
+    "PhotoCapture_455c13a828a8.dll": {
+      "baseline_library": "PhotoCapture_f37e408d89cd.dll",
+      "baseline_sha256": "f37e408d89cd8c8fd222039ab13e4614e887cdd2c552050c632ccb223bc70b53",
+      "sha256": "455c13a828a8229d9da887d797e394ba3901024a4811c7e50f1f4736a8a6f564",
+      "change": "Explicit encoding 2 reproduces the native game SDR final-compositor display transfer for HDR10 captures, removing additional Reinhard dimming; fixed native nits normalization ignores white_nits. Legacy encoding 1 and generic SDR encoding 0 preserved; native frame-varying chroma dither omitted for deterministic PNG."
+    },
+    "PhotoCapture_7da458d8a23d.dll": {
+      "baseline_library": "PhotoCapture_455c13a828a8.dll",
+      "baseline_sha256": "455c13a828a8229d9da887d797e394ba3901024a4811c7e50f1f4736a8a6f564",
+      "sha256": "7da458d8a23d5a94039d33007957c62acce5b45ea4183bdd02e8731d19ff6a62",
+      "change": "Keeps encoding 2 native HDR-to-SDR display transfer and adds encoding 3 exclusively for verified SDR engine BGRA payload mislabeled exact DXGI RGBA8 28. Generic encoding 0 and legacy encoding 1 unchanged; white_nits ignored for fixed native profiles."
+    },
+    "mcm_input_fcf5b050abc2.dll": {
+      "baseline_library": "mcm_input_eed2e92830f3.dll",
+      "baseline_sha256": "d1f84d7a48e49f1927bdad9785d135746f918259e84a38f44aa9f4afae38c6c3",
+      "source": "freecam/native/photo_input.cpp",
+      "source_sha256": "fcf5b050abc249c9d6ab0606c23973beb3a71741d1d8ebfdf6d419d01ee15c4b",
+      "baseline_source_sha256": "eed2e92830f38e594f7ce8e4986fa381e09cb9b9f45b6827c1af734e87ee5e3f",
+      "sha256": "0751ab7d0e738c3a0449a376ad083f4c7ce83ff0846b1bcb78397645e45432fa",
+      "change": "Forward physical Escape RAW and legacy down/up only in camera capture mode 3; menu mode 1 and all other keys retain capture/drain behavior.",
+      "capability_export": "int mcm_escape_passthrough(void): 1",
+      "credit": "CowboyBingus; Zero-Clause BSD; LICENSE-Bingus.txt",
+      "imports": [
+        "KERNEL32.dll",
+        "USER32.dll"
+      ],
+      "scope": "Photo-owned standalone input library only; external MCM source and published DLL unchanged",
+      "tests": "Exact shared RAW/legacy keyboard_event_gate offline harness; no attached windows or injected input"
+    },
+    "mcm_input_f501fa41de0c.dll": {
+      "baseline_library": "mcm_input_fcf5b050abc2.dll",
+      "source": "freecam/native/photo_input.cpp",
+      "source_sha256": "f501fa41de0cb7c982e5717e74a65edeccd475a0fb3291a0644669d168160ae1",
+      "sha256": "081317909068b193f62ac67adc45cce4c86d51a50784d35e092f02d73bd5a1a4",
+      "change": "Bundled Helldivers hardware cursor for menu WM_SETCURSOR; all input/capture/release policies unchanged. One cached cursor remains alive for the pinned helper lifetime.",
+      "credit": "CowboyBingus; Zero-Clause BSD; LICENSE-Bingus.txt",
+      "imports": [
+        "KERNEL32.dll",
+        "USER32.dll"
+      ],
+      "cursor_asset": "assets/helldivers_cursor.cur",
+      "cursor_asset_sha256": "27e8e5e748943c23d0f58fe6663158aed31230dfd527125bfa6326cf7e192679",
+      "tests": "Exact-source input and cursor offline native harnesses; no attached windows or injected input."
+    },
+    "camera_input.lua": {
+      "baseline_sha256": "478dc3655b4f9bc995bb2bc77132ed3a63a45c8e4f1e59d48a0849f15ca5d0be",
+      "sha256": "b59086c327227d1606ae7e686816f30cd3de16c9256ea42dd8fb37b06626a36a",
+      "change": "Expose capture ownership/readiness; report sampling and focus loss without premature release; retain and retry incomplete cleanup; restore Photo-owned native-menu Window state before capturing the next baseline. External input owners remain authoritative."
+    },
+    "view.lua": {
+      "sha256": "aa7ac65c1dafff5027fe1055b62f9bfe7d1a9770112603b063c16fa8bd386a40",
+      "change": "Retained immutable geometry and static decorative preview uniforms; preserve per-frame font binding and native lifetime guards; required material failures and child/whole-GUI teardown failures preserve owned state and propagate refusal until explicit successful retirement. Hoist instance GUI routing and vector-field keys; allocate one-shot diagnostic bookkeeping only while reporting."
+    }
+  },
+  "capture_library": "PhotoCapture_7da458d8a23d.dll",
+  "chat_context_credit": {
+    "project": "Link's Link to Memory",
+    "author": "Link",
+    "license": "MIT",
+    "license_file": "LICENSE-Link.txt",
+    "license_sha256": "fab9af433f20baf14c55bd56796b63d8decf084fbbd08a4acd5769ad95ec22f7",
+    "adapted_from": "scripts/hd2_chat.lua is_open and scripts/hd2_addresses.lua CHAT_MANAGER/CHAT_FEED/CHAT_OPEN",
+    "standalone_reader": "freecam/chat_context.lua",
+    "addon_dependency": false,
+    "game_build_stamp": "6AB3B43F",
+    "behavior": "Read-only chat widget open byte; ignores game chat messages and sends no input or chat"
+  },
+  "native_input_source_sha256": "3a6f623eb9daa5c97e9a2949271dc2e3883c5481c4101f0abb9496b227ac97e5",
+  "native_input_change": "Retain cursor/input ownership policies; opt-in raw wheel observation for handycam without consuming gameplay input; drain on transition, release and focus loss."
+}

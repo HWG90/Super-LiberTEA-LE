@@ -1,0 +1,4 @@
+# The release zip is a GitHub release asset, never committed
+/*.zip
+/out/
+__pycache__/

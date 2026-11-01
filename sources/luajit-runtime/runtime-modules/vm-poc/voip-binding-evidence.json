@@ -1,0 +1,175 @@
+{
+  "capture": "/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin",
+  "capture_sha256": "6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c",
+  "newer_capture": "/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin",
+  "newer_capture_sha256": "6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c",
+  "status": "partial views only; SteamVoip boot stage remains incomplete",
+  "registrar": {
+    "entry": "0x7f3ba0",
+    "end": "0x7f444e",
+    "services": [
+      "0x2860600",
+      "0x28605f8"
+    ],
+    "null_behavior": "both stores and module registration are unconditional"
+  },
+  "bindings": [
+    {
+      "name": "room_members",
+      "entry": "0x7f2460",
+      "end": "0x7f2a8e",
+      "sha256": "2f647804d5486ef6dc873a0750b83b8a350ea1486538dd3ade31652b811e6901"
+    },
+    {
+      "name": "broken_members",
+      "entry": "0x7f2d30",
+      "end": "0x7f3306",
+      "sha256": "bef55c3a87e332420a7cbac9039372f381ab5d88bf208a0b294db7236660bf01"
+    },
+    {
+      "name": "room_id",
+      "entry": "0x7f3310",
+      "end": "0x7f3387",
+      "sha256": "6f0fe36c0725a68c2d1c5dab0b2c9dd0af9301fbcef134bdcc022a36a21b3ba0"
+    },
+    {
+      "name": "client_members",
+      "entry": "0x7f3390",
+      "end": "0x7f391e",
+      "sha256": "2af33f30aa2677df275e669695b5e418e25b146a1ee772013968825395a7f76a"
+    },
+    {
+      "name": "select_out",
+      "entry": "0x7f3920",
+      "end": "0x7f3a2f",
+      "sha256": "aed07047d9375b3bf1a21feadfd081d273a9ea5a5fc358f6256b382bd6bbc473"
+    },
+    {
+      "name": "select_in",
+      "entry": "0x7f3a30",
+      "end": "0x7f3b3f",
+      "sha256": "bf11ac992ffe1da0d417359d1fc56ad1c6934acf2683bd781f371fa11c920d60"
+    },
+    {
+      "name": "broken_host",
+      "entry": "0x7f3b40",
+      "end": "0x7f3b9a",
+      "sha256": "49058a51edbdaa6957b835991459ae86a970569762bc18421372773766c84667"
+    }
+  ],
+  "native_selection_helpers": [
+    {
+      "name": "native_select_out_all",
+      "entry": "0x7d1c20",
+      "end": "0x7d1c8c",
+      "sha256": "bfefeed130178aae7ea4770055aee4bbd317a5478ac49eb667cd5c4e4f05eb55"
+    },
+    {
+      "name": "native_select_out_one",
+      "entry": "0x7d1c90",
+      "end": "0x7d1d09",
+      "sha256": "dc10dd7331d10f719b9a148c675c642b85d32ae7b03e787c5d7e268471b52323"
+    },
+    {
+      "name": "native_select_in_all",
+      "entry": "0x7d1d10",
+      "end": "0x7d1d7c",
+      "sha256": "e8e7666d2ed62c1239ccfa650402ca7d543e036e136657d644fc33a6f8099f64"
+    },
+    {
+      "name": "native_select_in_one",
+      "entry": "0x7d1d80",
+      "end": "0x7d1df9",
+      "sha256": "4bbb2002c14e4ea717b052674674afb0c9ff79bc5c86b44e25074dbefdfda6d0"
+    }
+  ],
+  "missing_helpers": [
+    {
+      "name": "create_room",
+      "rva": "0x7d4910",
+      "early_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "newer_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "early_zero": true,
+      "callable_body_verified": false
+    },
+    {
+      "name": "destroy_room",
+      "rva": "0x7d48f0",
+      "early_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "newer_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "early_zero": true,
+      "callable_body_verified": false
+    },
+    {
+      "name": "join_room",
+      "rva": "0x7d4a20",
+      "early_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "newer_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "early_zero": true,
+      "callable_body_verified": false
+    },
+    {
+      "name": "leave_room",
+      "rva": "0x7d4ca0",
+      "early_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "newer_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "early_zero": true,
+      "callable_body_verified": false
+    },
+    {
+      "name": "update",
+      "rva": "0x7d4dd0",
+      "early_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "newer_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "early_zero": true,
+      "callable_body_verified": false
+    },
+    {
+      "name": "add_member",
+      "rva": "0x7c9940",
+      "early_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "newer_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "early_zero": true,
+      "callable_body_verified": false
+    },
+    {
+      "name": "remove_member",
+      "rva": "0x7c9a30",
+      "early_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "newer_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "early_zero": true,
+      "callable_body_verified": false
+    },
+    {
+      "name": "member_hash_lookup",
+      "rva": "0x7d3a70",
+      "early_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "newer_prefix": "0000000000000000000000000000000000000000000000000000000000000000",
+      "early_zero": true,
+      "callable_body_verified": false
+    }
+  ],
+  "update_callback": {
+    "entry": "0x7f2500",
+    "prefix": "",
+    "same_in_newer": true,
+    "status": "ret 0 at saved entry; native update body and callback invocation ABI unresolved; not treated as a no-op"
+  },
+  "layouts": {
+    "manager": "room count uint32 +0x88, pointer array +0x90; first matching room ID +0x10",
+    "room_members": "slot count uint32 +0x18, rows +0x20; stride 0x28, ID +0, live when signed tag +0x20 >=0; broken when byte +0x1c ==0",
+    "client": "borrowed native pointer in first 8 full/light userdata bytes; room ID +0x38; host broken when byte +0x78 ==0",
+    "client_members": "slot count uint32 +0x40, rows +0x48; stride 0x40, ID +0, live when signed tag +0x38 >=0; selection bytes +0x34/+0x35"
+  },
+  "semantics": [
+    "member arrays preserve physical live-slot order",
+    "empty members returns one empty table; empty broken_members returns zero values",
+    "select uses Lua truthiness; a third argument selects the native single-member helper even when nil (nil rejected as invalid ID)",
+    "native single-member helper calls 0x7d3a70; this lookup still has no verified body",
+    "no automatic native release or pointer invalidation is introduced"
+  ],
+  "limits": "at most 1048576 room/member slots; host stabilizes all native lifetimes and data for the full call",
+  "native_service_live_validated": false,
+  "native_windows_tested": false,
+  "in_game_vm_replaced": false
+}

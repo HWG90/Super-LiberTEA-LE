@@ -1,0 +1,37 @@
+{
+ "replaced": [
+  {
+   "path": "/home/goose/.config/hd2arsenal/mods/LiveLuaLoader-R35-26088801-cffi-Arsenal_AR372513/9ba626afa44a3aa3.patch_0",
+   "backup": "0-9ba626afa44a3aa3.patch_0",
+   "before_sha256": "8c63e0c9b8d39711c49d4c1ddd0021a6994a25ed68a458035d05db8877b25423",
+   "after_sha256": "e9512aeecbe7014281fe96cd2bae7888b0b8b928266744d48a7810773088fda3"
+  },
+  {
+   "path": "/mnt/WORMHOLE/SteamLibrary/steamapps/common/Helldivers 2/data/9ba626afa44a3aa3.patch_94",
+   "backup": "1-9ba626afa44a3aa3.patch_94",
+   "before_sha256": "8c63e0c9b8d39711c49d4c1ddd0021a6994a25ed68a458035d05db8877b25423",
+   "after_sha256": "e9512aeecbe7014281fe96cd2bae7888b0b8b928266744d48a7810773088fda3"
+  }
+ ],
+ "added": [
+  "/mnt/WORMHOLE/SteamLibrary/steamapps/compatdata/553850/pfx/drive_c/users/steamuser/AppData/Local/LLL/Helldivers2/Native/hd2_luajit_runtime_a3c5ff409e2550ae.dll"
+ ],
+ "receipt": {
+  "purpose": "LuaJIT boot handoff, staged only",
+  "build": "26088801",
+  "runtime_dll": "hd2_luajit_runtime_a3c5ff409e2550ae.dll",
+  "runtime_sha256": "a3c5ff409e2550ae508838aec48eca08397598a53e5b1092f8f3458fa613b5ec",
+  "runtime_source_candidate": "/home/goose/Documents/ChatGPT/Linux HD2/runtime-modules/live-load/2026-10-24/hd2_lua_environment_boot-r3_a3c5ff409e2550ae.dll",
+  "lll_source_sha256": "dc66664dedc4a5c8f42d8bd13a6d65d758f7a6b0a2dce189538b7aa453747fc7",
+  "lll_chunk_reproduced": true,
+  "prologue_sha256": "3aad53105c0c383524bc898956de5e2eb41213d178388e6f3acf2ef9eecae376",
+  "boot_source_sha256": "2f4a122dedd9f7823adc67acab315752db128de94418cadd171d8f7021e371cc",
+  "boot_chunk_sha256": "21891b4d3a1f5fb05a80ced76d523cce0dea03574038f51f40e9da771e326718",
+  "boot_chunk_bytes": 574337,
+  "archive_before_sha256": "8c63e0c9b8d39711c49d4c1ddd0021a6994a25ed68a458035d05db8877b25423",
+  "archive_after_sha256": "e9512aeecbe7014281fe96cd2bae7888b0b8b928266744d48a7810773088fda3",
+  "archive_bytes": 574544,
+  "gate": "%LOCALAPPDATA%/LLL/Helldivers2/Native/luajit-boot.enable naming the runtime DLL on its first line (absent: LLL runs in PUC exactly as before)"
+ },
+ "utc": "2026-10-25T00:59:34.400541+00:00"
+}

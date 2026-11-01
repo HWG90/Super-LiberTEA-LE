@@ -1,0 +1,220 @@
+local factory=dofile('freecam/steam_scene_overlay.lua')
+local created,destroyed,bindings,triangles,removed=0,0,0,0,0
+local available,registered,depth_available=true,true,true
+local owner,width,token=2,1920,{}
+local vectors,scalars={},{}
+local fail_triangle,fail_destroy=false,false
+local color_available,color_format,color_width,color_backing=true,19,nil,88888
+local color_checks=0
+local function verify_color()
+ color_checks=color_checks+1
+ return color_available,{resource=77777,backing=color_backing,id=33554433,format=color_format,width=color_width or width,height=1080,mips=1,array=1,ui_brightness=336.35858,hdr_enabled=true}
+end
+local depth={binding_identity='a',available=function()return depth_available,'depth unavailable'end,
+ get=function()return token,'depth retired'end,
+ bind=function(h,key,value)assert(h==33 and key=='diffuse_map'and value==token);bindings=bindings+1;return true end}
+local sr={Application={can_get=function(kind,name)assert(kind=='shader_library'and name==factory.shader or kind=='material'and name==factory.material);return available end,
+ main_world=function()return 1 end,worlds=function()return {1,owner}end},
+ World={create_screen_gui=function(w)assert(w==owner);created=created+1;return created end,
+ destroy_gui=function(w)assert(w==owner);if fail_destroy then error('cleanup retry')end;destroyed=destroyed+1 end},
+ Gui={create_material=function()return 33 end,resolution=function()return width,1080 end,material=function(_,name)assert(name==factory.material);return 33 end,
+ triangle=function(_,a,b,c,layer,_,name,ua,ub,uc)
+  assert(a[2]==0 and b[2]==0 and c[2]==0 and layer==88 and name==factory.material and ua and ub and uc)
+  assert(bindings>0 and vectors.scissor_rect and vectors.atlas_scissor and vectors.clip_box and scalars.desaturate and scalars.scissor_mode and scalars.threshold_fade,'Bind all uniforms/depth before draw')
+  if fail_triangle then error('draw refused')end;triangles=triangles+1;return triangles
+ end,destroy_triangle=function()removed=removed+1 end},
+ Material={set_scalar=function(_,key,value)scalars[key]=value end,set_resource=function()error('Use verified binder')end,
+ set_vector4=function(_,key,value)vectors[key]=value end},
+ Vector2=function(...)return {...}end,Vector3=function(...)return {...}end,Vector4=function(...)return {...}end,Color=function(...)return {...}end}
+local registration={present=function()return registered,'not registered'end}
+local neutral={dof=false,dof_mode=1,scene_shader=1,exposure=0,contrast=100,saturation=100}
+local o={dof=true,dof_mode=2,focus_distance=1.4,aperture=2,bokeh_shape=2,dof_quality=2,
+ scene_shader=10,scene_strength=75,scene_depth_range=150,exposure=.5,contrast=120,saturation=65,fog_distance=40,fog_density=80}
+local overlay=factory.new(sr,depth,false,registration,verify_color);assert(not overlay.apply(o,.9)and created==0)
+overlay=factory.new(sr,depth,true,nil,verify_color);assert(not overlay.apply(o,.9)and created==0,'Registration is mandatory')
+overlay=factory.new(sr,depth,true,registration,verify_color)
+assert(overlay.apply(neutral,.9)and created==0 and not overlay.shader_dof_active,'Neutral Native preserves the frame without drawing')
+registered=false;assert(not overlay.apply(o,.9)and created==0 and not overlay.shader_dof_active);registered=true
+available=false;assert(not overlay.apply(o,.9)and created==0);available=true
+depth_available=false;assert(not overlay.apply(o,.9)and created==0);depth_available=true
+color_available=false;assert(not overlay.apply(o,.9)and created==0 and not overlay.shader_dof_active);color_available=true
+color_format=0;assert(not overlay.apply(o,.9)and created==0,'Gbuffer formats cannot masquerade as HDR1 color');color_format=19
+color_width=480;assert(not overlay.apply(o,.9)and created==0,'Quarter-size source must never replace the frame');color_width=nil
+local ok,_,suppress=overlay.apply(o,.9);assert(ok and suppress and overlay.shader_dof_active and overlay.scene_active)
+assert(created==1 and bindings==1 and triangles==2)
+assert(vectors.scissor_rect[1]==1.4 and vectors.scissor_rect[2]==2 and vectors.scissor_rect[3]==.9 and vectors.scissor_rect[4]==96)
+assert(vectors.atlas_scissor[1]==150 and vectors.atlas_scissor[2]==.8 and vectors.atlas_scissor[3]==6 and vectors.atlas_scissor[4]==1)
+assert(vectors.clip_box[1]==.5 and vectors.clip_box[2]==1.2 and vectors.clip_box[3]==.65 and vectors.clip_box[4]==336.35858)
+assert(scalars.scissor_mode==9 and scalars.threshold_fade==.75 and scalars.desaturate==40)
+local checks=color_checks;assert(overlay.apply(o,.9)and triangles==2 and color_checks>checks,'Color target must be freshly verified even on retained draws')
+color_backing=99999;assert(overlay.apply(o,.9)and triangles==4 and overlay.color_binding_identity:find('99999',1,true),'New color backing must invalidate retained carrier')
+o.focus_distance=10;assert(overlay.apply(o,.9)and triangles==6 and removed==4 and created==1)
+o.dof_mode=1;ok,_,suppress=overlay.apply(o,.9)
+assert(ok and not suppress and not overlay.shader_dof_active and vectors.scissor_rect[4]==0 and overlay.scene_active,'Native scene mode disables shader gather without suppressing native DoF')
+o.dof_mode=2;o.dof=false;ok,_,suppress=overlay.apply(o,.9)
+assert(ok and not suppress and vectors.scissor_rect[4]==0,'DoF-off scenes do not gather or suppress native')
+depth.binding_identity='b';assert(overlay.apply(o,.9)and bindings==2,'Backing changes require rebinding')
+width=2560;assert(overlay.apply(o,.9)and created==2 and destroyed==1)
+assert(overlay.apply(neutral,.9)and destroyed==2 and not overlay.scene_active)
+token=nil;assert(not overlay.apply(o,.9)and created==2 and not overlay.shader_dof_active);token={}
+o.dof=true;assert(overlay.apply(o,.9));owner=3
+assert(overlay.release()and destroyed==2,'Retired worlds must never be destroyed')
+overlay=factory.new(sr,depth,true,registration,verify_color);assert(overlay.apply(o,.9));fail_destroy=true
+assert(not overlay.release()and not overlay.shader_dof_active,'Failed cleanup retains ownership but closes native-suppression signal')
+fail_destroy=false;assert(overlay.release()and destroyed==3)
+overlay=factory.new(sr,depth,true,registration,verify_color);fail_triangle=true
+ok,_,suppress=overlay.apply(o,.9);assert(not ok and not suppress and not overlay.shader_dof_active and destroyed==4)
+fail_triangle=false;assert(not overlay.apply(o,.9),'Draw failure disables that instance')
+local u=factory.uniforms({dof=true,dof_mode=2,scene_shader=math.huge,scene_strength=0/0,exposure=0/0,
+ contrast=-1,saturation=1000,focus_distance=math.huge,aperture=-1,fog_distance=-1,fog_density=math.huge},0/0)
+assert(u.scissor[1]==5 and u.scissor[2]==1.2 and u.scissor[3]==.9 and u.clip[1]==0 and u.clip[2]==.5 and u.clip[3]==2 and u.fog_distance==.1 and u.clip[4]==203,'Non-finite inputs must not reach native setters')
+local shader_options={dof=true,dof_mode=2,scene_shader=1,exposure=0,contrast=100,saturation=100}
+for _,sample in ipairs({{value=1,packed=24},{value=4,packed=96},{value=8,packed=192},{value=0,packed=24},{value=100,packed=192},{value=0/0,packed=96},{value=math.huge,packed=96}})do
+ local values={dof=true,dof_mode=2,dof_strength=sample.value}
+ assert(factory.uniforms(values,.9).scissor[4]==sample.packed,'Strength must be finite, bounded and independent from aperture')
+ values.dof_mode=1;assert(factory.uniforms(values,.9).scissor[4]==0,'Native ignores shader strength')
+end
+u=factory.uniforms(shader_options,.9)
+assert(u.active and u.shader_dof_active and not u.scene_active and u.clip[1]==0 and u.clip[2]==1 and u.clip[3]==1 and u.clip[4]==203,'Processed-color source uses neutral grade without a brightness or saturation fudge')
+assert(shader_options.exposure==0 and shader_options.contrast==100 and shader_options.saturation==100,'Uniform packing never mutates user values')
+u=factory.uniforms(neutral,.9)
+assert(not u.active and u.clip[1]==0 and u.clip[2]==1 and u.clip[3]==1,'Native without scene adjustments keeps its original color path')
+-- With a clock, full verification runs once per second or on a resolution
+-- change, not every frame; the frame still draws from the cached result.
+do
+ local t=100;sr.Application.time_since_launch=function()return t end
+ local cached=factory.new(sr,depth,true,registration,verify_color)
+ local checks=color_checks
+ for _=1,60 do assert(cached.apply(o,.9));t=t+1/60 end
+ assert(color_checks-checks<=2,'Verification must not run every frame: '..(color_checks-checks))
+ checks=color_checks;width=1280;assert(cached.apply(o,.9));assert(color_checks==checks+1,'A resolution change verifies at once')
+ width=1920;assert(cached.release());sr.Application.time_since_launch=nil
+end
+print('Combined scene/DoF: exact shared uniforms, Native/Shader/DoF-off composition, registration/resource/depth/full-color guards, fresh fullsize format/backing verification, draw-before-native-suppression signal, retained draw/rebinding/resize, retired world and cleanup failure passed; no game accessed')
+
+-- Actual Windows ABI: the first retained primitive assigns a cold material.
+local assigned=false;local cold_created,cold_removed,cold_bound,live_primitives=0,0,0,0
+local bound_depth;local cold_target={}
+sr.Gui.create_material=nil
+sr.Gui.material=function()assert(assigned and live_primitives>0,'Never query an unassigned material');return 33 end
+sr.Gui.triangle=function()
+ assigned=true;cold_created=cold_created+1;live_primitives=live_primitives+1
+ -- Model a GUI assigning its default local texture during primitive creation.
+ bound_depth=nil
+ return cold_created
+end
+sr.Gui.destroy_triangle=function()
+ cold_removed=cold_removed+1;live_primitives=live_primitives-1
+ assert(live_primitives>0,'Replacement must never retire the last assigned primitive')
+end
+sr.World.destroy_gui=function()live_primitives=0 end
+local cold_depth={binding_identity='cold',available=function()return true end,get=function()return cold_target end,
+ bind=function(_,_,target)assert(live_primitives==2,'Bind after the final quad is assigned');cold_bound=cold_bound+1;bound_depth=target;return true end}
+owner=2;width=1920;color_available=true;color_format=19;color_width=nil
+local cold=factory.new(sr,cold_depth,true,registration,verify_color)
+assert(cold.apply(o,.9));assert(cold_created==3 and cold_removed==1 and cold_bound==1)
+assert(bound_depth==cold_target,'Final primitive initialization must not erase the depth binding')
+for i=1,30 do assert(cold.apply(o,.9))end
+assert(cold_created==3 and cold_bound==1,'Unchanged Windows material stays idle')
+o.focus_distance=2;assert(cold.apply(o,.9));assert(cold_created==5 and cold_removed==3 and cold_bound==2 and bound_depth==cold_target)
+assert(cold.release(),'Cold GUI remains owned and releasable')
+print('Windows scene GUI: final material binding, no empty assignment lifetime, no idle writes, slider replacement and cleanup passed')
+
+local global_depth={global_binding=true,binding_identity='global',available=function()return true end,get=function()return token end}
+local before=cold_created
+assert(not pcall(factory.new,sr,global_depth,true,registration,verify_color),'Withdrawn binding must refuse before creating native GUI state')
+assert(cold_created==before)
+print('Windows global depth: withdrawn candidate refuses before native GUI work')
+
+assert(not pcall(factory.paths,'indexed-global-v2'),'Portable.8 global binding must stay withdrawn')
+
+-- Explicit local diagnostic changes only the GUI's owning world. Each switch
+-- retires the old GUI; unchanged scopes reuse their retained draw and binding.
+do
+ local scope='ui';local main_present=true;local live={};local created_scopes={};local retired={};local next_gui=100
+ local old_worlds=sr.Application.worlds
+ sr.Application.worlds=function()return main_present and {1,2}or{2}end
+ sr.World.create_screen_gui=function(w)
+  assert(w==1 or w==2);next_gui=next_gui+1;live[next_gui]=w;created_scopes[#created_scopes+1]=w;return next_gui
+ end
+ sr.World.destroy_gui=function(w,g)assert(live[g]==w);live[g]=nil;retired[#retired+1]=w;live_primitives=0 end
+ cold_depth.render_world=function()return scope end
+ local scoped=factory.new(sr,cold_depth,true,registration,verify_color)
+ assert(scoped.apply(o,.9));assert(created_scopes[1]==2)
+ scope='main';assert(scoped.apply(o,.9));assert(retired[1]==2 and created_scopes[2]==1)
+ local writes=cold_bound
+ for _=1,100 do assert(scoped.apply(o,.9))end
+ assert(#created_scopes==2 and #retired==1 and cold_bound==writes,'No idle rebuild or rebind in the selected world')
+ scope='ui';assert(scoped.apply(o,.9));assert(retired[2]==1 and created_scopes[3]==2)
+ assert(scoped.release()and retired[3]==2 and next(live)==nil)
+ scope='main';main_present=false
+ assert(not scoped.apply(o,.9)and #created_scopes==3,'Missing main world cannot silently substitute a UI world')
+ sr.Application.worlds=old_worlds;cold_depth.render_world=nil
+end
+print('Local GUI scope: UI/main/UI retires exact owners, stays idle, and refuses missing worlds')
+
+-- Engine userdata may share a display string. Cache ownership must use object
+-- equality, never that display string, including when scope stays unchanged.
+do
+ local function world_object()local x=newproxy(true);getmetatable(x).__tostring=function()return 'World'end;return x end
+ local first,second=world_object(),world_object();local selected=first;local main=world_object();local scope='ui'
+ local live={};local n=1000;local creates,retirements=0,0
+ sr.Application.main_world=function()return main end
+ sr.Application.worlds=function()return {main,selected}end
+ sr.World.create_screen_gui=function(w)n=n+1;live[n]=w;creates=creates+1;return n end
+ sr.World.destroy_gui=function(w,g)assert(live[g]==w);live[g]=nil;retirements=retirements+1;live_primitives=0 end
+ cold_depth.render_world=function()return scope end
+ local seen={};cold_depth.world_applied=function(s,w)seen[#seen+1]={s,w}end
+ local scoped=factory.new(sr,cold_depth,true,registration,verify_color)
+ assert(scoped.apply(o,.9));assert(seen[#seen][2]==first)
+ scope='main';assert(scoped.apply(o,.9));assert(creates==2 and retirements==1 and seen[#seen][2]==main)
+ scope='ui';selected=second;assert(scoped.apply(o,.9));assert(creates==3 and retirements==2 and seen[#seen][2]==second)
+ assert(scoped.release()and retirements==3 and next(live)==nil)
+end
+print('Scene world identity: equal userdata display strings cannot reuse a foreign GUI')
+-- Holes for the menu's blur. gui_blur draws the game's blur_behind_ui image in an earlier UI
+-- pass than this grade, so a full-screen grade hid it (live, 2026-10-29). The grade leaves
+-- out exactly the blurred backdrops; everything else, the panel gap included, stays graded.
+do
+ local W,H=1920,1080
+ local function area(pieces)local a=0;for _,p in ipairs(pieces)do a=a+(p[3]-p[1])*(p[4]-p[2])end;return a end
+ local function inside(x,y,r)return x>r.x and x<r.x+r.w and y>r.y and y<r.y+r.h end
+ local function covers(pieces,x,y)for _,p in ipairs(pieces)do if x>p[1]and x<p[3]and y>p[2]and y<p[4]then return true end end;return false end
+ local none=factory.pieces(W,H,nil);assert(#none==1 and none[1][1]==0 and none[1][2]==0 and none[1][3]==W and none[1][4]==H,'No holes: one full quad')
+ local panel,footer={x=500,y=400,w=760,h=440},{x=500,y=330,w=760,h=54}
+ local pieces=factory.pieces(W,H,{panel,footer})
+ assert(math.abs(area(pieces)-(W*H-panel.w*panel.h-footer.w*footer.h))<1e-6,'Exactly the screen minus both backdrops')
+ for _,pt in ipairs({{600,500},{1200,800},{600,350}})do assert(not covers(pieces,pt[1],pt[2]),'No grade over a blurred backdrop')end
+ for _,pt in ipairs({{600,392},{10,10},{1900,1070},{499,500},{1261,500}})do assert(covers(pieces,pt[1],pt[2]),'The gap and the rest stay graded')end
+ local clipped=factory.pieces(W,H,{{x=-100,y=-100,w=300,h=300},{x=5000,y=5000,w=10,h=10},{x=10,y=10,w=0,h=50}})
+ assert(math.abs(area(clipped)-(W*H-200*200))<1e-6,'Holes clip to the screen; empty or off-screen holes are ignored')
+ -- Through apply: every triangle maps u=x/W, v=y/H and none lands in a hole.
+ local tris={};local made,gone=0,0
+ local s={Application={can_get=function()return true end,main_world=function()return 1 end,worlds=function()return{1,2}end,time_since_launch=function()return 1 end,
+   render_setting=function()return true end},
+  World={create_screen_gui=function()return 7 end,destroy_gui=function()end},
+  Gui={create_material=function()return 33 end,resolution=function()return W,H end,material=function()return 33 end,
+   triangle=function(_,a,b,c,layer,_,_,ua,ub,uc)
+    for _,pair in ipairs({{a,ua},{b,ub},{c,uc}})do
+     local v,uv=pair[1],pair[2];assert(math.abs(uv[1]-v[1]/W)<1e-9 and math.abs(uv[2]-v[3]/H)<1e-9,'UV follows the screen position')
+    end
+    made=made+1;tris[made]={a,b,c};return made
+   end,destroy_triangle=function(_,id)gone=gone+1;tris[id]=nil end},
+  Material={set_scalar=function()end,set_resource=function()end,set_vector4=function()end},
+  Vector2=function(...)return{...}end,Vector3=function(...)return{...}end,Vector4=function(...)return{...}end,Color=function(...)return{...}end}
+ local depth_target={}
+ local d={binding_identity='a',available=function()return true end,get=function()return depth_target end,bind=function()return true end}
+ local graded=factory.new(s,d,true,{present=function()return true end},function()
+  return true,{resource=1,backing=2,id=33554433,format=19,width=W,height=H,mips=1,array=1,ui_brightness=200,hdr_enabled=true}end)
+ local grade={dof=false,dof_mode=1,scene_shader=1,exposure=.1,contrast=100,saturation=100}
+ assert(graded.apply(grade,.9)and made==2,'No holes: the same single quad as before')
+ assert(graded.apply(grade,.9,{panel,footer}))
+ local live=0;for _,t in pairs(tris)do live=live+1
+  local cx,cy=(t[1][1]+t[2][1]+t[3][1])/3,(t[1][3]+t[2][3]+t[3][3])/3
+  assert(not inside(cx,cy,panel)and not inside(cx,cy,footer),'No triangle over a blurred backdrop')
+ end
+ assert(live==2*#pieces and gone==2,'Holes rebuild the carrier once')
+ local before=made;assert(graded.apply(grade,.9,{{x=500,y=400,w=760,h=440},{x=500,y=330,w=760,h=54}})and made==before,'Unchanged holes keep the retained carrier')
+ assert(graded.apply(grade,.9,nil)and live and made==before+2,'Holes removed: the full quad returns')
+ print('Scene grade holes: exact backdrop cut-outs, graded gap, clipping, UV mapping, retention and full-quad fallback passed')
+end

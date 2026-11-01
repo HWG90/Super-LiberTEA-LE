@@ -1,0 +1,4 @@
+Copied unchanged from the LLL repo, branch claude/lll-luajit-inproc, commit 44f5fab
+(~/Worktrees/linux-hd2/lll-luajit-inproc/native/). SHA256SUMS pins them; build_runtime_26251122_inproc.sh checks it.
+steam_pointer.c and steam_keyboard.c are the external service's own files (unchanged since claude/lll-26251122 b80048d).
+To update: copy the three files from a newer LLL commit, rewrite SHA256SUMS, and name the commit here.

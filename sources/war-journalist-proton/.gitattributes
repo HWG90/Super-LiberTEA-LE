@@ -1,0 +1,16 @@
+*.lua text eol=lf
+*.py text eol=lf
+*.cpp text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+VERSION text eol=lf
+
+# Preserve exact verified upstream/vendor bytes across clones.
+freecam/vendor/* -text -whitespace
+freecam/assets/shaders/* -text -whitespace
+freecam/assets/shaders/release-0.9.5/** -text -whitespace
+freecam/assets/shaders/release-0.9.6/** -text -whitespace
+freecam/assets/logos/** -text -whitespace
+
+# Shader resource identities are content-addressed across platforms.
+*.hlsl text eol=lf

@@ -1,0 +1,284 @@
+# Steam shared input service v1
+
+`LiveLuaLoader.input_service` and `CowboyBingusModLoader.input_service` reference the same object. It is published before mod enable/after-startup callbacks. Availability is declared by `loader.capabilities.shared_input`; check the service itself before use. It reuses LLL's one authenticated helper connection. A mod must not create a competing pipe client.
+
+`service.capabilities` is read-only: `menu`, `camera`, `relative_mouse`, and `coordinates='client-top-left'`. The keyboard extension adds `keyboard`, `keyboard_scope`, and the immutable 32-byte `keyboard_mask`; missing or malformed platform masks disable that capability. Camera capability requires the versioned extended helper operation. Older backends may provide only menu mode or no service.
+
+## Lease operations
+
+* `token, reason, cleanup_token = service.acquire(owner, mode, frontend, options)` accepts a printable owner name (1-128 bytes), and `mode='menu'` or `'camera'`. Normal consumers omit `frontend`. Optional `{keyboard=true}` requires the candidate keyboard capability below. It refuses while manager, MCM, another lease or pending restoration owns input. It never implicitly closes another UI. The game must be foreground. Failed activation normally rolls back immediately; if rollback fails, retain the third return value and retry `release(cleanup_token)` explicitly.
+* `sample, reason = service.snapshot(token)` requires the active token and foreground ownership. It performs at most one helper exchange per game frame. The sample table is reused: read it immediately; do not retain or mutate it. Repeated calls in a frame return zero wheel/dx/dy so deltas are delivered once.
+* `service.owns(token)` indicates active read authority. It becomes false immediately on revocation or failed release, even when cleanup remains pending.
+* `ok, reason = service.release(token)` stops the owned reader and restores only the cursor flags changed by that lease. Wrong/stale tokens cannot release another owner. A failed release retains the token for explicit retry. No automatic retry loop runs while restoration is pending.
+* `service.status()` returns `owner`, `mode`, `active`, `pending_restore`, and `reason`, plus `frontend='mcm'` for a lease using the registration below. Loader `input_status()` also exposes the shared cursor owner so MCM can refuse conflicting capture.
+* R34 adds `ok, reason = service.set_mode(token, mode)`. Literal `true` means success. It preserves the token and keyboard generation, verifies cursor ownership before changing visibility, and makes no helper exchange to change mode. Unchanged mode performs no work. Failures close through the existing keyboard-first cleanup. Registered MCM leases remain menu-only. Check for this function before use on older helpers.
+
+Acquire only when opening the consuming UI/camera, sample only while it is active, and release on hide/disable/reload. Prefer `set_mode` for menu/camera transitions when available; older versions require release and reacquisition. Foreground loss or an MCM ownership conflict revokes the lease before mod update callbacks or sample delivery. The service does no helper sampling without an active consumer request.
+
+## MCM frontend registration
+
+The current source adds an optional registration extension to v1. Check for
+`service.register_frontend` before enabling the Steam MCM frontend; older builds
+may predate it. This extension is included in the installed review candidate.
+
+MCM must publish its actual API table as `_G.DBFMCM`, with callable `is_open()`
+and `input_status()` and a direct `shared_input_service` field referencing this
+exact service object. It then calls:
+
+```lua
+api.shared_input_service = service
+-- Publish DBFMCM through the loader's owned-global lifecycle first.
+local registration, reason = service.register_frontend('mcm', api)
+assert(registration, reason)
+-- Only while opening the menu, after the manager releases its input:
+local token, why, cleanup = service.acquire('DBF MCM', 'menu', registration)
+```
+
+Registration does not acquire cursor ownership or start a reader. Its opaque
+token is accepted only for owner `DBF MCM` in `menu` mode. The ordinary input
+token remains the authority for `snapshot`, `owns` and `release`; registration
+never substitutes for that token. Keep both tokens private to MCM's adapter.
+
+For this registered consumer, MCM may truthfully report `is_open() == true` and
+its own `{owner='DBF MCM', active=true}` input status. Other consumers still
+refuse while MCM is open. Legacy MCM, foreign owners, pending restoration,
+unknown active owners and failing/malformed status remain excluded. A caller
+using only the same owner string receives no exemption.
+Registered status requires boolean `active` and `pending_restore` fields;
+`owner` is nil while released and `DBF MCM` while MCM owns its input.
+
+Changing the published provider or its service reference revokes a bound lease
+before further sample delivery. Duplicate registration does not reveal or
+replace an existing token. A new provider may register after the previous bound
+input lease has fully released; old registration tokens then become stale.
+
+On disable/reload, release the input token (or failed-activation cleanup token)
+completely, then call `service.unregister_frontend(registration)` before clearing
+the owned global. Unregister rejects wrong/stale tokens and refuses while its
+input is active or restoration is pending. Retry failed release explicitly at a
+bounded recovery point; the service adds no idle retry loop. Neither registration
+nor unchanged active snapshots reapplies cursor flags.
+
+## Shortcut ownership
+
+When the loader and MCM share a shortcut, the Steam frontend defers that whole
+key press to MCM. It queries the current published
+`DBFMCM.menu_binding_status().global_key` through a protected call on the press
+edge only. Closing MCM and releasing its lease earlier in that frame therefore
+cannot open the loader on the same key press. Held keys add no binding queries.
+Saved shortcuts remain unchanged; `loader.open_manager()` still explicitly opens
+the loader after the other frontend releases its input.
+
+## Sample schema
+
+`valid`, `x`, `y`, `width`, `height`, `buttons`, `wheel`, `dx`, `dy`.
+
+Coordinates are client pixels, origin at top left. Convert to GUI units using the sample's client size and the current GUI resolution. Buttons are a bit mask: 1 left, 2 right, 4 middle, 8 extra1, 16 extra2. Wheel uses signed Windows units (normally 120 per detent).
+
+Camera `dx/dy` are signed raw relative counts, positive right/down. They are accumulated independently of cursor clipping/acceleration and drained atomically with wheel. Absolute-device motion packets contribute no relative movement. Menu samples provide zero dx/dy. Do not derive camera motion from absolute cursor positions.
+
+Menu mode uses `mouse_focus=false`, visible cursor and clipping. Camera mode uses `mouse_focus=false`, hidden cursor and clipping. The previous flags are recorded once and restored on release. Native input filtering and cursor state do not identify which camera drives rendering; camera/render ownership remains the consumer's responsibility.
+
+The R33 helper suppresses gameplay mouse look, but does not isolate gameplay keyboard actions. Its menu/camera transitions and release are user-confirmed. Keyboard capture is a separate opt-in capability in R34, described below; never infer it from `capabilities.camera` or `relative_mouse`.
+
+## Keyboard action isolation investigation
+
+Current retained Lua inventories expose controller reads, thresholds and dead
+zones, without a verified gameplay enable/block API. The presence of
+`Keyboard.set_down_threshold` does not establish that it suppresses native action
+values. A bounded live MCM trial on build 25988413 held the native threshold at
+1.0 over 516 successful snapshots while unchanged native button readers recorded
+W/A/S/D activity. The user still observed native player movement. MCM release
+restored the exact original 0.5 threshold, the observer removed its wrappers,
+and its temporary project was removed. This tested threshold route does not
+provide gameplay suppression and is not included in the release. Replacing Lua
+readers would affect Lua consumers without proving that native gameplay stops
+receiving keys.
+
+The published Autodesk native [InputCApi](https://help.autodesk.com/cloudhelp/ENU/Stingray-SDK-Help/engine_c/c__api__input_8h.html)
+does declare `void (*flush_controllers_state)()`. The engine supplies this
+interface through [ScriptApi.Input](https://help.autodesk.com/cloudhelp/ENU/Stingray-SDK-Help/engine_c/plugin__c__api_8h.html)
+using the [plugin API](https://help.autodesk.com/cloudhelp/ENU/Stingray-SDK-Help/engine_c/plugin__api_8h.html).
+This is a native investigation candidate, not an implemented suppression route:
+the current game's interface layout, reset semantics and callback ordering still
+need verification. A reset is not evidence of a persistent input lease.
+
+Offline searches in the current executable and game DLL did not establish a
+callable action gate. Known live Lua method names are also absent from those
+string inventories, so a negative string search does not prove API absence.
+No threshold/reset experiment is enabled in this candidate.
+
+Further bounded checks on October 20 did not establish another action gate:
+
+- The public HD2Runtime input blocker uses a window-thread message hook and generated executable code. Its pinned build profile targets the older Steam build 25480438 and its adapter requires LuaJIT FFI; it is not a current Lua 5.1 bridge. See the [implementation](https://github.com/SkyeShade/HD2Runtime/blob/219d70864032150f4e4359281add5ead23cb86dc/runtime/mouse_wheel.lua#L222-L238) and [build profile](https://github.com/SkyeShade/HD2Runtime/blob/219d70864032150f4e4359281add5ead23cb86dc/schemas/build_profile.json#L4-L10).
+- The current `PluginManager` reports three existing engine plugins. Separate one-shot absolute-path and documented relative-path loads of a diagnostic DLL returned nil with unchanged plugin names. No native export-query log was observed. Logging can fail, so these results do not prove that native loading is disabled or that the export was never called. Both temporary DLL/project installations were hash-checked and removed.
+- A subsequent name-only DLL used the exact [published SDK header](https://github.com/AutodeskGames/stingray-plugin-api-samples/blob/e9d937a013e4aa1f25b6f7d9bdee0ca985455cfd/stingray_sdk/engine_plugin_api/plugin_api.h), with only `get_name` implemented and every other callback NULL. Its native layout fixture and 11 Lua ownership fixtures passed. The live dynamic load still returned nil and the exact expected name was absent. It was hash-removed without unloading another plugin. No engine-provided pointer or input API was invoked, and current-fork SDK compatibility remains unverified.
+- The selected current `dl_library.dl_typelib` is 1,080,072 bytes, SHA256 `1bf51ab66c34ffab93f31480598e68832045a1641953fe7befb05847555957f6`, with leading bytes `96 7d 00 d7`. The [maintained reader](https://github.com/SkyeShade/HD2Runtime/blob/219d70864032150f4e4359281add5ead23cb86dc/scripts/reference_format.py#L56-L61) requires decoded `LTLD` format and rejects this stored file. An older embedded mirror cannot establish a current input schema. No property or dispatch name was inferred from it.
+
+These checks changed no production input behavior. A callable current-build engine action gate,
+its lifecycle order and exact restoration remain unverified.
+
+War Journalist's later finite metadata check successfully queried
+`Network.message_info` once for each of `rpc_set_player_info`,
+`rpc_sync_player_info`, `rpc_from_host_respawn` and
+`rpc_from_host_peer_added_to_session`. The results describe positional argument
+types, bit widths and ranges; they expose no object-field names or relationship
+to a local player Unit. An earlier read-only query found 292 locally owned
+network objects, but `GameSession.unit_synchronizer(session)` returned nil.
+Those owned IDs therefore cannot be treated as an authoritative player reference.
+
+A separate binding-settings lead found no input binding map in the current
+user-settings files. The documented
+[`Application.apply_user_settings()`](https://help.autodesk.com/cloudhelp/ENU/Stingray-Help/lua_ref/ns_stingray_Application.html)
+reloads the render configuration and reboots the renderer; it is not a documented
+action-binding apply operation. Likewise,
+[`Window.set_keystroke_enabled()`](https://help.autodesk.com/cloudhelp/2019/ENU/Max-Interactive-Help/lua_ref/obj_stingray_Window.html)
+controls the Windows, Alt-Tab, Alt-Enter and Alt-F4 combinations, not arbitrary
+gameplay keys. No guessed setting, event or player write was added from these
+leads. They did not establish an engine action gate; the separate external
+hotkey route below supplies R34's opt-in keyboard capture.
+
+A separate external-helper experiment tested physical W input in its own
+foreground window, with baseline, filtered and released phases. Each phase
+received three matching key-down/up pairs through both legacy messages and raw
+input. The intended filter blocked none. Its accepted low-level callback
+counters stayed zero in all three phases, but those counters followed several
+callback checks, so this does not establish whether delivery or a check failed.
+The test completed without focus loss or cleanup errors.
+
+A follow-up counted callback entries before every check. It observed zero
+callback entries while three physical W pairs still reached legacy messages and
+raw input. Registration succeeded, the installing thread acknowledged its message
+loop and remained alive, and removal and thread cleanup succeeded. The fixture
+stopped after the baseline phase. This isolates the missing observations from
+the fixture's checks; it does not establish why callbacks were not delivered or
+whether a functioning filter would suppress raw input. No keyboard filter was
+added to the production helper or deployed to the game.
+
+An elevated owned-window trial then tested the documented Windows
+[`RegisterHotKey`](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey)
+API with `MOD_NOREPEAT` and unmodified W. Three physical taps were observed in
+each phase:
+
+| Observation | Baseline | W registered | Released |
+| --- | ---: | ---: | ---: |
+| Legacy key-down / key-up | 3 / 3 | 0 / 3 | 3 / 3 |
+| Raw key-make / key-break | 3 / 3 | 0 / 3 | 3 / 3 |
+| Hotkey notifications | 0 | 3 | 0 |
+| Physical async press/release transitions | 3 / 3 | 3 / 3 | 3 / 3 |
+
+The registered phase therefore blocked key-down delivery in that owned window
+while leaving physical key state readable. Key-up delivery continued. The trial
+completed without focus loss, made one successful registration and removal, and
+exited with no registered hotkey. It used no low-level hook or focus takeover.
+
+A subsequent bounded W-only trial on the current game kept the game focused and
+left the Lua keyboard reader unchanged. During registration, six physical W
+presses produced zero native button-down frames across 661 sampled frames. After
+release, five physical presses produced 116 button-down frames across 435 frames.
+The user confirmed that movement stopped during registration and returned on its
+own afterward. Registration and removal each occurred once, with clean shutdown.
+
+The later owned-window modifier trial exercised W alone, W with each left/right
+Shift, Ctrl and Alt key, Space, and the modifier keys themselves. Its registered
+phase delivered zero legacy key-downs and zero raw key-makes for those inputs;
+normal delivery returned after release. All 39 reservations were removed. The
+full multi-modifier matrix was registered, but multi-modifier gestures were not
+physically tested. Integrated LLL and Photo/freecam acceptance and deployed
+measurements are recorded below.
+
+## Opt-in keyboard capture (R34)
+
+The additive v1 extension accepts
+`service.acquire(owner, mode, frontend, {keyboard=true})` when
+`service.capabilities.keyboard == true`. Existing three-argument consumers keep
+their mouse-only behavior. A keyboard lease reserves a fixed gameplay-key list
+and reads physical state for the UI in the same helper exchange as the pointer.
+F12, Windows keys and reserved system combinations are excluded. The candidate
+uses an external helper message thread, with no game hook, injected input or
+focus takeover.
+
+An accepted lease can initially be ARMING. `service.owns(token)` remains true,
+and `snapshot` returns a truthy neutral sample with `valid=false` and
+`keyboard_state=1`. Wait for all captured keys to be released; do not read native
+game key state as a fallback while arming. Qualification lasts at most two
+seconds, and a press during registration causes rollback.
+
+An ACTIVE sample has `keyboard_active=true`, `keyboard_state=2`, a fixed positive
+u32 `keyboard_generation`, and binary strings `keyboard_keys` and
+`keyboard_mask`, each exactly 32 bytes. VK `k` uses byte `floor(k/8)+1`, bit
+`k%8`. Compare against the immutable binary string
+`service.capabilities.keyboard_mask`. The candidate mask includes 119 defined
+VKs (including six side-modifier aliases), with 880 unique hotkey reservations.
+Its little-endian bytes are
+`00331f08ffe1ff03feffff27fffffff7ff0003003f0000fc010000f804000000`.
+The mask identifies captured keys; a captured key must never fall back to
+the engine reader on an invalid, pending, revoked or malformed sample. Neutral
+ARMING samples carry no pointer deltas or key state. Consume at most one combined
+sample per frame; repeated consumers retain key state while relative deltas are
+drained once.
+
+Keyboard cleanup precedes cursor restoration. Lost acknowledgements retain
+private cleanup authority and block replacement leases. Foreground changes use
+an out-of-context Windows event to revoke the lease without rearming it; process
+exit and a two-second heartbeat timeout also stop the worker. These reservations
+are system-wide, and foreground event delivery is asynchronous. Registration
+conflicts fail the whole acquisition and roll back partial reservations. After
+successful release, hidden menus have no keyboard worker, sampling or
+registration loop. Failed cleanup retains ownership for explicit retry.
+
+### Validation recorded October 20, 2026
+
+The R34 native fixture passed 91,180 offline checks. The Lua 5.1 broker suite
+passed 28 tests, and the composed frontend suite passed 13 tests. A separate
+real Windows registration check acquired and removed all 880 reservations for
+the 119-key mask. Registration success establishes OS availability; it does not
+prove physical suppression of every key or modifier combination.
+
+The installed R34 manager then passed a human gameplay check: W worked with
+the manager closed; Insert opened it; W/A/S/D, Shift, Ctrl and Space were blocked
+from native gameplay while manager keyboard navigation and mouse input worked.
+Closing with Insert restored normal movement. This confirms the tested LLL
+manager transitions and inputs in that session, not every consumer or key.
+
+The matching Photo adapter also passed human gameplay checks: W/A/S/D, Shift
+and Ctrl moved the free camera while the diver stayed still; menu/camera mode
+changes worked; closing restored normal movement. A bounded Alt-Tab/typing
+cleanup check was reported working. This does not qualify every OS shortcut or
+every possible key combination.
+
+### Deployed timing samples
+
+| Observation | Quiet sample | Mixed menu/camera/idle sample |
+| --- | ---: | ---: |
+| Elapsed time | 30.0022 s | 90.0048 s |
+| Loader ticks | 3,378 | 10,282 |
+| Inclusive loader tick time | 270 ms total; 9.00 ms/s | 1,274 ms total; 14.15 ms/s |
+| Worst tick | 7 ms | 13 ms, one close transition |
+| Combined keyboard snapshots | 0 | 1,777: 1,156 menu; 621 camera |
+| Keyboard acquires / releases | 0 / 0 | 3 / 3 |
+| Idle frames without keyboard-helper calls | 3,378 | 8,505 |
+
+The 13 ms close tick included 8 ms in `keyboard_release`; no other tick in the
+mixed sample reached 10 ms. The acquire API calls took at most 1 ms, which
+measures request acknowledgement rather than completion of the asynchronous
+arming worker. The samples recorded zero helper errors or restoration conflicts.
+
+Whole-helper CPU showed no measurable increase over a separate 30.017-second
+quiet interval, using a process CPU counter with 15.625 ms granularity. Over
+90.0238 seconds around the mixed sample, it used 171.875 ms CPU, or 1.91 ms CPU/s.
+That interval was mostly idle; it is not a pure active-capture CPU benchmark.
+
+Inclusive Lua tick timing includes the protected observer overhead and child
+callbacks from other mods. It is neither exclusive LLL CPU nor whole-game frame
+time. The observer's `ui.menu.visible` counter stayed zero, so the mixed result
+does not establish an LLL-only visible-manager benchmark. The earlier base-port
+4.47 ms/s result used a different sample and is not directly comparable. Temporary
+observers were removed afterward, and saved settings remained unchanged.
+
+The subsequent user-supplied section dump exposed part of the native plugin
+loader, but did not recover the engine API getter or the Lua load bindings.
+See the [bounded dump investigation](STEAM-NATIVE-BRIDGE-INVESTIGATION.md) for
+the verified layout evidence, missing pages and remaining requirements.
+
+The helper preserves legacy operation10's 36-byte response; operation12 returns 44 bytes with dx/dy appended. Lua clients should use this service instead of those internal wire operations.

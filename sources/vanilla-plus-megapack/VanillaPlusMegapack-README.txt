@@ -1,0 +1,91 @@
+Vanilla Plus Megapack - v42
+
+Supports Steam build 25480438 / EXE 1.8.46015.0.
+Requires the separate Bingus Shared Loader v18 / API 1.
+
+1. Close Helldivers 2 and use either Arsenal or HD2MM.
+2. Disable previous megapacks (including Vanilla Plus Megapack Rows, which
+   ended with v35) and standalone copies of features you want off.
+3. Import Vanilla-Plus-Megapack-v42.zip and Bingus Shared Loader v19 (v18 or newer works).
+4. With Arsenal's default priority, place the loader LAST. If first-mod
+   priority is enabled, place the loader FIRST instead.
+5. Open the pack's Options and select any of the twenty-five independent mods.
+   Review these choices after updates; defaults depend on your manager.
+6. Purge / Deploy, then start the game. Close the game before changing options.
+
+Enable the Mod Bindings Menu option to rebind Ship Station Hotkeys on the MODS
+tab of Mouse & Keyboard or Controller. Without it, the shortcuts use Tab, F1
+and F5-F8 aboard the ship while no menu is open. The option was named Galactic
+Menu Hotkey before v29; confirm it is still checked after updating. Mod
+Bindings Menu replaces no game file: its keyboard defaults are added while the
+game runs.
+
+Updating preserves your existing custom bindings. If mission selection still
+immediately deselects with Ship Station Hotkeys after updating, open the MODS
+tab on the affected device's binding page (Mouse & Keyboard or Controller)
+and choose Revert. This restores clean defaults and also resets custom
+bindings on that tab for that device; set any custom bindings again afterward.
+
+Enable the Mod Options Menu option to set Shallow Water Diving's maximum dive
+depth and Better Lobby Management's options on the MODS tab of the escape menu.
+
+Mod Bindings Menu, Mod Options Menu, Flame Damage Fixed, Better Lobby
+Management, Hellpod Drop Hold, Laser Sentry Cooldown, Match Your Colors, Sticky
+Grenade Handles, Stratagem Hero Expanded, Sound Systems Rebalanced, Foliage
+Pass-Through and Holster Your Shield are also released on their own. Use one
+copy of each: disable the standalone package or the pack option.
+
+Translations: Know Your Constellation, Better Lobby Management, Mod Options
+Menu, Mod Bindings Menu, Ship Station Hotkeys, Shallow Water Diving and Match
+Your Colors follow
+the game's Text Language when a translation pack is installed. Texts without
+a translation show in English. Translators: see TRANSLATING.md in the
+repository.
+
+https://github.com/CowboyBingus/BingusSharedLoader/releases/latest
+
+Included revisions:
+- Better Stratagem Bounce v15.4.1
+- Hellpod Steering Unlocked v7.5.1
+- Reinforcement Beacons Fixed v4.6.1
+- Consistent Vaulting v8.9.1
+- Shallow Water Diving v3.10.1
+- Sentry Aim Retention v1.1.1
+- Enemy Collision Synchronized v2.13.0
+- Controllable Hover Pack v1.8.1
+- Know Your Constellation v4.1.1
+- Armory Preview Cache v23.1
+- Clickable Scrollbars v2.15.1
+- Arc Thrower Revamped v1.7.1
+- Ship Station Hotkeys v1.9.1
+- Flame Damage Fixed v1.2
+- Mod Options Menu v1.2.1
+- Mod Bindings Menu v2.3
+- Better Lobby Management v1.2.1
+- Hellpod Drop Hold v1.2.1
+- Laser Sentry Cooldown v1.1.1
+- Match Your Colors v1.5
+- Sticky Grenade Handles v1.0.1
+- Stratagem Hero Expanded v1.0
+- Sound Systems Rebalanced v1.0
+- Foliage Pass-Through v1.0
+- Holster Your Shield v1.0
+
+An unchecked option cannot disable a separately enabled standalone copy.
+Remove older startup-replacing packages when migrating.
+
+This is the refreshed v42 pre-release. Offline regression, package and
+option-selection checks passed. Live validation of the Mod Bindings Menu
+reset fix and measurement of its added binding-page and periodic checks are
+pending. Its binding polling is unchanged.
+Twenty bundled mods were updated to do less work on idle frames; their
+release builds were checked offline only.
+Mod Options Menu v1.2.1's category layout fix was checked offline only.
+Match Your Colors v1.5 was checked in the game in the Armory, on the ship and
+in one solo mission, and its Recolor Weapons option against the game's own
+weapon paint schemes in the Armory; its per-frame cost in real play is not
+measured yet.
+Previous releases were checked in game:
+a clean run to the ship with every option, and the four new mods in joined
+missions of real play as their standalone releases.
+Logs: %LOCALAPPDATA%/CowboyBingus/Helldivers2/Logs

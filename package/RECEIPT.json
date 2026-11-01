@@ -1,0 +1,112 @@
+{
+ "name": "Super LiberTEA - LE (Linux Edition)",
+ "version": "1.0.0",
+ "game_build": "26251122",
+ "guid": "ead4c7da-b11f-5bd3-ad93-9fadca551cda",
+ "zip": "Super-LiberTEA-LE-1.0.0-26251122.zip",
+ "zip_sha256": "e37c3d712cde482b9a29705ac05c9a87277b27adf08e97fe261572ed86017517",
+ "zip_bytes": 14521438,
+ "patch_sha256": "4d9395fb842e7e9fb49887ef9d9b1117c66f4b00f3f1afeb9b550a2c6071c7fe",
+ "patch_bytes": 12916080,
+ "chunk_bytes": 12915878,
+ "boot": {
+  "lll_release": "R38-26251122-luajit.2",
+  "lll_install_block_sha256": "9837435bae69f237c96b005d62b2f152ab6f332b8fd06408991afc63b6bb78d8",
+  "mods_block_sha256": "ffaecc1f0a7841f221e16fd8e1277997b097cb946fb97880aeccf43a5a0fd940",
+  "prologue_sha256": "3aad53105c0c383524bc898956de5e2eb41213d178388e6f3acf2ef9eecae376",
+  "lll_source_sha256": "57fa4dc3ef1b48df37c86a39b90e1bd3fffd186c34492caa4f395eed86a8837b",
+  "lll_files": {
+   "Native/hd2_cffi_915da533d47a3f9c.dll": "915da533d47a3f9c2b09e3715032ce821d9ebbc69e1c9d8d02b01bc50238315c",
+   "Native/hd2_luajit_runtime_9a596e2f766ff92c.dll": "9a596e2f766ff92ca3a7234f4fc7a9add5e2b0e5d1bb1c02acb65b2b1c68ef64",
+   "Native/hd2_nativeinfo_8d03e036881e4ddc.dll": "8d03e036881e4ddcee663c25b75dcd0caf12789f82a97d7c294fabb88ca62b9b",
+   "Service/lll_steam_launcher_e8a5c0fffbc8d802.exe": "e8a5c0fffbc8d802a3936e9e5ceecfcc8ad9d55f26f863cc9b6739cb8d441ef9",
+   "Service/lll_steam_service_580905da64a3642d.exe": "580905da64a3642d1bdef358c7de38f7e10bc34163594c5d0e5e885f94e1cdb1"
+  },
+  "marker": "hd2_luajit_runtime_9a596e2f766ff92c.dll",
+  "lll_luajit2_patch_sha256": "1dc502e733fc9dc41e0e46fe28dcd49fc94d76e72c64fc42274e1c8a92fdd672"
+ },
+ "options": [
+  "War Journalist assets 1.2.0",
+  "DiverKit 8.14.31 r6",
+  "Guard Dogs · Smarter Guard Dogs and Sentries",
+  "Guard Dogs · Guard Dogs",
+  "Guard Dogs · Sentries",
+  "Guard Dogs · Intelligence",
+  "Guard Dogs · Ping Targeting",
+  "Guard Dogs · Safety",
+  "Guard Dogs · Sentry Safety",
+  "Guard Dogs · SEAF Safety",
+  "Guard Dogs · Targeting Laser",
+  "Guard Dogs · Laser Color",
+  "Guard Dogs · Laser Brightness",
+  "Guard Dogs · Targeting Marker",
+  "Guard Dogs · Marker Opacity",
+  "Guard Dogs · Marker Size",
+  "Megapack · Better Stratagem Bounce",
+  "Megapack · Hellpod Steering Unlocked",
+  "Megapack · Reinforcement Beacons Fixed",
+  "Megapack · Consistent Vaulting",
+  "Megapack · Shallow Water Diving",
+  "Megapack · Sentry Aim Retention",
+  "Megapack · Enemy Collision Synchronized",
+  "Megapack · Controllable Hover Pack",
+  "Megapack · Know Your Constellation",
+  "Megapack · Armory Preview Cache",
+  "Megapack · Clickable Scrollbars",
+  "Megapack · Arc Thrower Revamped",
+  "Megapack · Ship Station Hotkeys",
+  "Megapack · Flame Damage Fixed",
+  "Megapack · Mod Options Menu",
+  "Megapack · Mod Bindings Menu",
+  "Megapack · Better Lobby Management",
+  "Megapack · Hellpod Drop Hold",
+  "Megapack · Laser Sentry Cooldown",
+  "Megapack · Match Your Colors",
+  "Megapack · Sticky Grenade Handles",
+  "Megapack · Stratagem Hero Expanded",
+  "Megapack · Sound Systems Rebalanced",
+  "Megapack · Foliage Pass-Through",
+  "Megapack · Holster Your Shield",
+  "Transmog · HD2 Transmog Foundation",
+  "Transmog · Helmet and cape variants",
+  "Transmog · Armor thumbnail passive icons",
+  "Transmog · Armory interface",
+  "Transmog · Developer tools",
+  "LLL Compat Test",
+  "Live Lua Loader R38 (LuaJIT) + LLL mods"
+ ],
+ "mods": {
+  "dbf_mcm": {
+   "version": "0.1.74-luajit.5",
+   "files": 27,
+   "bytes": 289919,
+   "manifest_sha256": "a1b69d4fa3e9d6597c79dc30a1a9cb30cbee78f8f852e8c575749c9f73b3c880"
+  },
+  "divers_best_friend": {
+   "version": "R46-luajit.2-26251122",
+   "files": 41,
+   "bytes": 385252,
+   "manifest_sha256": "af806f84eed31d56eafe9102855b68d6d6f46524b9b6b7a371c1c56a3e674bb9"
+  },
+  "goose_bridge_combat": {
+   "version": "0.1.17-experimental-26251122.10",
+   "files": 52,
+   "bytes": 1300425,
+   "manifest_sha256": "8b91b818c5d2c6d03333e620f650a96277c418323a4b8f1b096f619b8972950c"
+  },
+  "dbf_freecam": {
+   "version": "1.3.3-proton",
+   "files": 83,
+   "bytes": 3054514,
+   "manifest_sha256": "087da016b9c7a3e93d74ade9b7553d7f08d6195155bdfedaf13de74b8bd98f94"
+  },
+  "goose_temporary_unlocks": {
+   "version": "0.5.10-cffi-26251122-le.1",
+   "files": 52,
+   "bytes": 2998193,
+   "manifest_sha256": "04673dedc2eac01d25613d4998e0ea1ea7511aa650db10af3b9a99508d16b4c5"
+  }
+ },
+ "zip_contents": 388,
+ "live_acceptance": "pending"
+}

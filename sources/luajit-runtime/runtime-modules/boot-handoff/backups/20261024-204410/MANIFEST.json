@@ -1,0 +1,37 @@
+{
+ "replaced": [
+  {
+   "path": "/home/goose/.config/hd2arsenal/mods/LiveLuaLoader-R35-26088801-cffi-Arsenal_AR372513/9ba626afa44a3aa3.patch_0",
+   "backup": "0-9ba626afa44a3aa3.patch_0",
+   "before_sha256": "8c63e0c9b8d39711c49d4c1ddd0021a6994a25ed68a458035d05db8877b25423",
+   "after_sha256": "f4026012e076ff2ac2c184c29db2b6a6aed7cc215a095355c451755568b24ece"
+  },
+  {
+   "path": "/mnt/WORMHOLE/SteamLibrary/steamapps/common/Helldivers 2/data/9ba626afa44a3aa3.patch_94",
+   "backup": "1-9ba626afa44a3aa3.patch_94",
+   "before_sha256": "8c63e0c9b8d39711c49d4c1ddd0021a6994a25ed68a458035d05db8877b25423",
+   "after_sha256": "f4026012e076ff2ac2c184c29db2b6a6aed7cc215a095355c451755568b24ece"
+  }
+ ],
+ "added": [
+  "/mnt/WORMHOLE/SteamLibrary/steamapps/compatdata/553850/pfx/drive_c/users/steamuser/AppData/Local/LLL/Helldivers2/Native/hd2_luajit_runtime_a65c33b15d6d4b16.dll"
+ ],
+ "receipt": {
+  "purpose": "LuaJIT boot handoff, staged only",
+  "build": "26088801",
+  "runtime_dll": "hd2_luajit_runtime_a65c33b15d6d4b16.dll",
+  "runtime_sha256": "a65c33b15d6d4b16293b649f4ea77bd95d6fe839aae4e1a59374637036106b44",
+  "runtime_source_candidate": "/home/goose/Documents/ChatGPT/Linux HD2/runtime-modules/live-load/2026-10-24/hd2_lua_environment_boot-r1_a65c33b15d6d4b16.dll",
+  "lll_source_sha256": "dc66664dedc4a5c8f42d8bd13a6d65d758f7a6b0a2dce189538b7aa453747fc7",
+  "lll_chunk_reproduced": true,
+  "prologue_sha256": "e50a60261b2bd9c1d6354f7cf6598785f85a2d20a9b6bd97341009b11026adfb",
+  "boot_source_sha256": "e3de7c4f6f1697ad3dbe64bea29fde81a9e573c9de8f55e2fe4f7e9ecb7ffd8d",
+  "boot_chunk_sha256": "e53e47820d1dbd290b2166feeb6480327b76163ae1477dac34804b0529ffe514",
+  "boot_chunk_bytes": 574089,
+  "archive_before_sha256": "8c63e0c9b8d39711c49d4c1ddd0021a6994a25ed68a458035d05db8877b25423",
+  "archive_after_sha256": "f4026012e076ff2ac2c184c29db2b6a6aed7cc215a095355c451755568b24ece",
+  "archive_bytes": 574304,
+  "gate": "%LOCALAPPDATA%/LLL/Helldivers2/Native/luajit-boot.enable (absent: LLL runs in PUC exactly as before)"
+ },
+ "utc": "2026-10-25T00:44:10.530280+00:00"
+}

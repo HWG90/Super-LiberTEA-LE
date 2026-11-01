@@ -1,0 +1,640 @@
+-- Both frontends bind this authoritative loader state; neither owns selection settings.
+return function(loader, live, report)
+    local self = { bindings = {}, groups = {}, group_count = 0, expanded = {} }
+    local preferences=LLL_UI_PREFERENCES or dofile("src/ui/preferences.lua")
+    local syncing = false
+    local function status_label(value)
+        local text = tostring(value or "unknown"):gsub("[%c]", " ")
+        if #text > 512 then text = text:sub(1, 509) .. "..." end
+        return text
+    end
+    local function readable(value)
+        return string.gsub(string.gsub(string.gsub(value, "[_-]+", " "), "(%l)(%u)", "%1 %2"), "(%a)([%w]*)", function(a, b)
+            return string.upper(a) .. b
+        end)
+    end
+    local function folder(name)
+        local entry = live.catalog[name]
+        local metadata = entry and entry.metadata
+        local declared = loader.records and loader.records[name]
+        if LLL_METADATA then
+            local fields = LLL_METADATA.fields(declared)
+            if not (metadata and metadata.author) and fields.author then
+                metadata = fields
+            end
+        end
+        if metadata and metadata.author then
+            return "declared/" .. metadata.author,
+                metadata.author,
+                metadata.name or string.match(name, "([^/]+)$")
+        end
+        local author, child = string.match(name, "^mods/([^/]+)/(.+)$")
+        if author then
+            return "mods/" .. author, author, metadata and metadata.name or child
+        end
+        local entry = live.catalog[name]
+        if entry then
+            local root = string.gsub(string.gsub((entry.source_root or entry.dir), "\\", "/"), "/+$", "")
+            return root, string.match(root, "([^/]+)$") or root, metadata and metadata.name or entry.id
+        end
+        local parent, leaf = string.match(name, "^(.*)/([^/]+)$")
+        if parent then
+            return parent, string.match(parent, "([^/]+)$"), leaf
+        end
+        return nil, nil, name
+    end
+    local function definition()
+        local categories = {}
+        local seen = {}
+        local pages = {
+            {
+                id = "overview",
+                name = "Overview",
+                dynamic = true,
+                controls = {
+                    { type = "section", label = "LIVE LUA LOADER R31" },
+                    {
+                        type = "button",
+                        id = "open_manager",
+                        label = "Loader window",
+                        button_label = "Open manager",
+                        on_activate = function()
+                            assert(loader.open_manager, "Manager unavailable")
+                            loader.open_manager()
+                        end,
+                    },
+                    {
+                        type = "button",
+                        id = "refresh",
+                        label = "Refresh discovery",
+                        button_label = "Refresh",
+                        on_activate = function()
+                            loader.refresh()
+                            self.refresh()
+                            return "Discovery refreshed"
+                        end,
+                    },
+                    {
+                        type = "button", id = "clear_removed",
+                        label = "Clear removed entries", button_label = "Clear",
+                        disabled = not loader.clear_removed_entries,
+                        description = "Forget missing scripts only after lifecycle ownership is released. Active and pending cleanup records remain. Saved settings and logs are retained.",
+                        on_activate = function()
+                            local removed, retained = loader.clear_removed_entries()
+                            self.refresh()
+                            return string.format("Cleared %d entries; retained %d owned entries", removed, retained)
+                        end,
+                    },
+                    {
+                        type = "toggle",
+                        id = "auto_reload",
+                        label = "Auto-reload Lua changes",
+                        default = loader.auto_reload and loader.auto_reload() or false,
+                        disabled = not loader.set_auto_reload,
+                        description = "Reload enabled lifecycle scripts after an edit stays unchanged across two scans. Compile before cleanup; invalid edits preserve the working instance. Saved in LLL.cfg. Manual reload remains available.",
+                        on_change = function(value)
+                            local ok, why = loader.set_auto_reload(value)
+                            assert(ok, why)
+                            self.refresh()
+                        end,
+                    },
+                    {
+                        type = "text",
+                        label = "Live scripts support enable, disable and reload. Archive addons without cleanup require a restart.",
+                    },
+                },
+            },
+        }
+        for index, name in ipairs(loader.order) do
+            local path, parent, child = folder(name)
+            local category
+            if path then
+                if not self.groups[path] then
+                    self.group_count = self.group_count + 1
+                    self.groups[path] = "author_" .. self.group_count
+                end
+                category = self.groups[path]
+                if not seen[category] then
+                    seen[category] = true
+                    categories[#categories + 1] = { id = category, name = parent }
+                end
+            end
+            local target = name
+            local id = "entry_" .. index
+            local managed = live.catalog[name] ~= nil and not (live.restart_only and live.restart_only(name))
+            local controls =
+                { { type = "text", label = status_label(loader.modules[name]), description = name } }
+            controls[#controls + 1] = {
+                type = "toggle",
+                id = id .. "_enabled",
+                label = "Enabled",
+                default = loader.modules[name] == "loaded",
+                disabled = not managed,
+                description = managed
+                        and "Changes apply immediately and save to LLL.cfg. Disable runs cleanup."
+                    or "Archive addon without a supported live lifecycle. Use your mod manager and restart.",
+                on_change = function(value)
+                    if syncing then
+                        return
+                    end
+                    local ok, why = loader.set_enabled(target, value)
+                    self.refresh()
+                    if not ok then
+                        report(target, "Selection refused: " .. tostring(why))
+                        error(why)
+                    end
+                end,
+            }
+            controls[#controls + 1] = {
+                type = "button",
+                id = id .. "_reload",
+                label = "Reload script",
+                button_label = "Reload",
+                disabled = not managed or loader.modules[name] ~= "loaded",
+                description = "Compile first, clean up, then load the edited source. Unresolved cleanup requires restart.",
+                on_activate = function()
+                    local ok, why = loader.reload(target)
+                    self.refresh()
+                    assert(ok, why)
+                    return "Reloaded " .. target
+                end,
+            }
+            pages[#pages + 1] = {
+                id = id,
+                name = readable(child),
+                category = category,
+                dynamic = true,
+                controls = controls,
+            }
+        end
+        pages[#pages+1]=preferences.page(loader)
+        return {
+            id = "lll_management",
+            name = "Live Lua Loader",
+            description = "R30 mod manager. The configured shortcut opens the independent window (Insert by default). All changes use shared loader state.",
+            categories = categories,
+            pages = pages,
+        }
+    end
+    local function author_pages(spec)
+        local pages = { spec.pages[1] }
+        local assigned = {}
+        for _, category in ipairs(spec.categories) do
+            local rows = {}
+            for index = 2, #spec.pages do
+                local page = spec.pages[index]
+                if page.category == category.id then
+                    assigned[index] = true
+                    rows[#rows + 1] = { type = "section", label = page.name }
+                    for _, control in ipairs(page.controls) do
+                        rows[#rows + 1] = control
+                    end
+                end
+            end
+            pages[#pages + 1] = {
+                id = category.id,
+                name = category.name,
+                style = "author",
+                dynamic = true,
+                controls = rows,
+            }
+        end
+        local other = {}
+        for index = 2, #spec.pages do
+            if spec.pages[index].id=="manager_settings" then pages[#pages+1]=spec.pages[index]
+            elseif not assigned[index] then
+                local page = spec.pages[index]
+                other[#other + 1] = { type = "section", label = page.name }
+                for _, control in ipairs(page.controls) do
+                    other[#other + 1] = control
+                end
+            end
+        end
+        if #other > 0 then
+            pages[#pages + 1] =
+                { id = "other_mods", name = "Other mods", dynamic = true, controls = other }
+        end
+        return { id = spec.id, name = spec.name, description = spec.description, pages = pages }
+    end
+    local function origin_pages(spec, keep_opener)
+        local snapshot = (LLL_PROVENANCE or dofile("src/provenance.lua"))(loader, live)
+        local overview = {}
+        for key, value in pairs(spec.pages[1]) do overview[key] = value end
+        overview.controls = {}
+        for _, control in ipairs(spec.pages[1].controls) do
+            if keep_opener or control.id ~= "open_manager" then
+                overview.controls[#overview.controls + 1] = control
+            end
+        end
+        local pages, categories, by_name = { overview }, {}, {}
+        for index = 2, #spec.pages do
+            if spec.pages[index].id=="manager_settings" then pages[#pages+1]=spec.pages[index]
+            else by_name[spec.pages[index].controls[1].description] = spec.pages[index] end
+        end
+        local groups = {
+            { "lll_live", "LLL live scripts" },
+            { "lll_archive", "Archive addons via LLL" },
+            { "mdl", "MDL registry" },
+            { "bingus", "Bingus registry" },
+            { "unknown", "Unknown / conflicting owner" },
+        }
+        for _, group in ipairs(groups) do
+            local count, loaded = 0, 0
+            for _, row in ipairs(snapshot) do
+                if row.owner == group[1] then
+                    count = count + 1
+                    if row.loaded then
+                        loaded = loaded + 1
+                    end
+                end
+            end
+            if count > 0 then
+                categories[#categories + 1] = {
+                    id = "source_" .. group[1],
+                    name = group[2] .. " (" .. loaded .. " loaded / " .. count .. ")",
+                }
+            end
+        end
+        self.author_categories = self.author_categories or {}
+        local authors = {}
+        for _, row in ipairs(snapshot) do
+            local key = row.owner .. "/" .. row.author
+            if not authors[key] then
+                if not self.author_categories[key] then
+                    self.author_category_count = (self.author_category_count or 0) + 1
+                    self.author_categories[key] = "source_author_" .. self.author_category_count
+                end
+                authors[key] = self.author_categories[key]
+                categories[#categories + 1] = {
+                    id = authors[key], parent = "source_" .. row.owner, name = row.author,
+                }
+            end
+        end
+        for index, row in ipairs(snapshot) do
+            local old = by_name[row.name]
+            self.external_ids = self.external_ids or {}
+            if not old and not self.external_ids[row.name] then
+                self.external_count = (self.external_count or 0) + 1
+                self.external_ids[row.name] = "external_" .. self.external_count
+            end
+            local details = "Author: " .. row.author .. "\nRuntime owner: "
+                .. row.owner
+                .. "\nSource: "
+                .. row.source
+                .. "\nDescription: " .. (row.description or "") .. "\nResource: "
+                .. row.name
+            local controls = {
+                { type = "text", label = status_label("Status: " .. row.state),
+                    description = details .. "\nStatus: " .. tostring(row.state):sub(1, 32000) },
+                {
+                    type = "text",
+                    label = "Source: " .. row.source,
+                    description = "Discovery location is not evidence of which loader ran the mod.",
+                },
+            }
+            local managed = old and live.catalog[row.name] and (row.owner == "lll_live") and not (live.restart_only and live.restart_only(row.name))
+            if old then
+                for position = 2, #old.controls do
+                    local copy = {}
+                    for key, value in pairs(old.controls[position]) do
+                        copy[key] = value
+                    end
+                    if copy.type == "toggle" then
+                        copy.default = row.loaded
+                    end
+                    if not managed then
+                        copy.disabled = true
+                    end
+                    controls[#controls + 1] = copy
+                end
+            end
+            local short = row.loaded and "Loaded"
+                or row.state == "loading" and "Loading"
+                or row.state == "disabled" and "Disabled"
+                or row.state == "not installed" and "Not installed"
+                or row.state == "discovered" and "Discovered"
+                or "Needs attention"
+            pages[#pages + 1] = {
+                id = old and old.id or self.external_ids[row.name],
+                resource_id = row.name,
+                name = "[" .. short .. "] " .. (row.display_name or (old and old.name) or readable(
+                    string.match(row.name, "([^/]+)$") or row.name
+                )),
+                category = authors[row.owner .. "/" .. row.author],
+                dynamic = true,
+                controls = controls,
+            }
+        end
+        return {
+            id = spec.id,
+            name = spec.name,
+            description = spec.description,
+            categories = categories,
+            pages = pages,
+        }
+    end
+    function self.provenance_snapshot()
+        return (LLL_PROVENANCE or dofile("src/provenance.lua"))(loader, live)
+    end
+    -- Both frontends consume fresh rows from the same ownership/status model.
+    loader.provenance_snapshot = self.provenance_snapshot
+    function self.provenance_summary()
+        local rows = (LLL_PROVENANCE or dofile("src/provenance.lua"))(loader, live)
+        local count = 0
+        for _, row in ipairs(rows) do
+            if row.loaded then
+                count = count + 1
+            end
+        end
+        return "Loaded: " .. count .. "   Listed: " .. #rows
+    end
+    function self.summary()
+        local loaded, failed = 0, 0
+        for _, name in ipairs(loader.order) do
+            local state = loader.modules[name]
+            if state == "loaded" then
+                loaded = loaded + 1
+            elseif state ~= "disabled" and state ~= "not installed" then
+                failed = failed + 1
+            end
+        end
+        return "Loaded: "
+            .. loaded
+            .. "   Failed / pending: "
+            .. failed
+            .. "   Total: "
+            .. #loader.order
+    end
+    local function enclosed(spec)
+        local rows = {
+            spec.pages[1].controls[1],
+            spec.pages[1].controls[2],
+            spec.pages[1].controls[3],
+            spec.pages[1].controls[4],
+        }
+        local function child(page)
+            local target = page.id
+            rows[#rows + 1] = {
+                type = "button",
+                id = "select_" .. target,
+                label = "    " .. page.name,
+                button_label = "Select",
+                description = (page.controls[1].description or "") .. "\n" .. page.controls[1].label,
+                on_activate = function()
+                    self.selected = target
+                    self.refresh()
+                end,
+            }
+            if self.selected == target then
+                for _, control in ipairs(page.controls) do
+                    rows[#rows + 1] = control
+                end
+            end
+        end
+        for _, category in ipairs(spec.categories) do
+            local target = category.id
+            rows[#rows + 1] = {
+                type = "button",
+                id = "expand_" .. target,
+                label = category.name,
+                button_label = self.expanded[target] and "[-]" or "[+]",
+                on_activate = function()
+                    self.expanded[target] = not self.expanded[target]
+                    self.refresh()
+                end,
+            }
+            if self.expanded[target] then
+                for index = 2, #spec.pages do
+                    local page = spec.pages[index]
+                    if page.category == target then
+                        child(page)
+                    end
+                end
+            end
+        end
+        for index = 2, #spec.pages do
+            if not spec.pages[index].category then
+                child(spec.pages[index])
+            end
+        end
+        local loaded, failed, disabled, missing = 0, 0, 0, 0
+        for _, name in ipairs(loader.order) do
+            local state = loader.modules[name]
+            if state == "loaded" then
+                loaded = loaded + 1
+            elseif state == "disabled" then
+                disabled = disabled + 1
+            elseif state == "not installed" then
+                missing = missing + 1
+            else
+                failed = failed + 1
+            end
+        end
+        rows[#rows + 1] = { type = "section", label = "Loader status" }
+        rows[#rows + 1] = {
+            type = "text",
+            label = "Loaded: " .. loaded .. "   Failed / pending: " .. failed,
+            description = "Counts reflect loader lifecycle state. Successful initialization does not prove gameplay behavior. Select a mod above for its current status and source path.",
+        }
+        rows[#rows + 1] = {
+            type = "text",
+            label = "Disabled: "
+                .. disabled
+                .. "   Not installed: "
+                .. missing
+                .. "   Total: "
+                .. #loader.order,
+        }
+        rows[#rows + 1] = {
+            type = "text",
+            label = "Discovery diagnostics",
+            description = loader.discovery_diagnostics
+                or "Archive and live-script discovery; Refresh checks for new scripts.",
+        }
+        return {
+            id = spec.id,
+            name = spec.name,
+            description = spec.description,
+            pages = { { id = "mods", name = "Mods", dynamic = true, controls = rows } },
+        }
+    end
+    function self.bind(api, inside)
+        if not api or type(api.register) ~= "function" then
+            return
+        end
+        for _, binding in ipairs(self.bindings) do
+            if binding.api == api then
+                if inside then
+                    binding.inside = inside
+                    binding.signature = nil
+                end
+                return binding
+            end
+        end
+        local binding = { api = api, inside = inside }
+        self.bindings[#self.bindings + 1] = binding
+        return binding
+    end
+    function self.follow(api)
+        if self.provider == api then
+            return
+        end
+        if self.provider then
+            for index = #self.bindings, 1, -1 do
+                local binding = self.bindings[index]
+                if binding.api == self.provider then
+                    if binding.handle then
+                        pcall(binding.handle.unregister)
+                    end
+                    table.remove(self.bindings, index)
+                end
+            end
+        end
+        self.provider = api
+        self.bind(api, "origins_mcm")
+    end
+    local last_refresh_mark
+    local function refresh_mark()
+        local parts={tostring(self.selected),tostring(loader.discovery_diagnostics)}
+        for key,value in pairs(self.expanded)do parts[#parts+1]="expanded:"..key.."="..tostring(value)end
+        for _,row in ipairs(self.provenance_snapshot() or {})do
+            for _,key in ipairs({"name","state","owner","source","author","display_name","description"})do
+                local value=tostring(row[key]);parts[#parts+1]=#value..":"..value
+            end
+        end
+        for key,value in pairs(preferences.get(loader))do parts[#parts+1]=key.."="..tostring(value)end
+        parts[#parts+1]="auto="..tostring(loader.auto_reload and loader.auto_reload())
+        for _,binding in ipairs(self.bindings)do
+            parts[#parts+1]=tostring(binding.api)..tostring(binding.handle)..tostring(binding.inside)
+            local mod=binding.api.mods and binding.api.mods.lll_management
+            parts[#parts+1]=tostring(mod)
+            for key,value in pairs(mod and mod.values or {})do parts[#parts+1]=key.."="..tostring(value)end
+        end
+        table.sort(parts);return table.concat(parts,"|")
+    end
+    function self.refresh()
+        if last_refresh_mark==refresh_mark() then return end
+        local spec = definition()
+        local signature = ""
+        for _, group in ipairs(spec.categories) do
+            signature = signature .. group.id .. group.name
+        end
+        for _, page in ipairs(spec.pages) do
+            signature = signature .. page.id .. page.name .. (page.category or "")
+        end
+        for _, binding in ipairs(self.bindings) do
+            local api = binding.api
+            local bound_spec = spec
+            local bound_signature = signature
+            if binding.inside then
+                bound_spec = (binding.inside == "origins" or binding.inside == "origins_mcm") and origin_pages(spec, binding.inside == "origins_mcm")
+                    or binding.inside == "authors" and author_pages(spec)
+                    or enclosed(spec)
+                bound_signature = ""
+                for _, category in ipairs(bound_spec.categories or {}) do
+                    bound_signature = bound_signature .. category.id .. category.name
+                end
+                for _, page in ipairs(bound_spec.pages) do
+                    bound_signature = bound_signature
+                        .. page.id
+                        .. page.name
+                        .. (page.category or "")
+                    for _, control in ipairs(page.controls) do
+                        bound_signature = bound_signature
+                            .. (control.id or "")
+                            .. control.label
+                            .. (control.button_label or "")
+                            .. tostring(control.disabled)
+                            .. tostring(control.default)
+                    end
+                end
+            end
+            if
+                binding.signature ~= bound_signature
+                or not binding.handle
+                or not (api.mods and api.mods.lll_management)
+            then
+                if binding.handle then
+                    pcall(binding.handle.unregister)
+                end
+                local ok, handle = pcall(api.register, bound_spec)
+                if ok then
+                    binding.handle = handle
+                    binding.signature = bound_signature
+                else
+                    report("LLL manager", tostring(handle))
+                end
+            end
+            local mod = api.mods and api.mods.lll_management
+            local dirty = false
+            local function assign(target,key,value)
+                if target[key] ~= value then target[key]=value;dirty=true end
+            end
+            if mod and binding.handle then
+                local values=preferences.get(loader)
+                for key,value in pairs(values) do
+                    local control=mod.controls["manager_"..key]
+                    if control then assign(mod.values,control.id,value) end
+                end
+            end
+            if mod and binding.handle and not binding.inside then
+                syncing = true
+                if mod.controls.auto_reload then
+                    assign(mod.values,"auto_reload",loader.auto_reload and loader.auto_reload() or false)
+                end
+                for index, name in ipairs(loader.order) do
+                    local page = mod.pages[index + 1]
+                    local toggle = mod.controls["entry_" .. index .. "_enabled"]
+                    local reload = mod.controls["entry_" .. index .. "_reload"]
+                    assign(page.controls[1],"label",status_label(loader.modules[name]))
+                    assign(toggle,"disabled",live.catalog[name] == nil or (live.restart_only and live.restart_only(name)))
+                    assign(reload,"disabled",live.catalog[name] == nil or loader.modules[name] ~= "loaded" or (live.restart_only and live.restart_only(name)))
+                    -- Native core rejects writes to disabled controls; update read-only display directly.
+                    assign(mod.values,toggle.id,loader.modules[name] == "loaded")
+                end
+                syncing = false
+                if dirty then api.revision = api.revision + 1 end
+            end
+        end
+        last_refresh_mark=refresh_mark()
+    end
+    function self.primary()
+        local api = self.provider
+        local mod = api and api.mods and api.mods.lll_management
+        if not mod then
+            return
+        end
+        if type(api.surface) ~= "function" then
+            return mod
+        end
+        local surface = api.surface(mod.handle)
+        local copy = {}
+        for key, value in pairs(mod) do
+            copy[key] = value
+        end
+        copy.handle = {
+            get = surface.get,
+            preview = surface.preview,
+            set = surface.set,
+            edit = surface.set,
+            queue = surface.activate,
+            activate = surface.activate,
+            confirm = surface.confirm,
+            discard = surface.discard,
+            reset = function(key)
+                return surface.set(key, mod.controls[key].default)
+            end,
+        }
+        return copy
+    end
+    function self.close()
+        for _, b in ipairs(self.bindings) do
+            if b.handle then
+                pcall(b.handle.unregister)
+            end
+        end
+        self.bindings = {}
+    end
+    loader.changed = self.refresh
+    return self
+end

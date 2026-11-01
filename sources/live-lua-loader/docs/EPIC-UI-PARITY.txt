@@ -1,0 +1,32 @@
+Helldivers manager UI candidate - October 11, 2026
+
+Corrected scope: On/Off controls are sliding switches, with short transitions.
+Checkboxes are reserved for selection semantics rather than enable/disable.
+
+Layout: bounded automatic sidebar width; 800-unit maximum setting row; fixed
+value groups near labels; adjacent two-column stride; stable logical font/control
+sizes on window resize. Surplus single-column width shows a selection detail
+panel. Existing resize/drag, wheel ownership and popup layers remain intact.
+
+Theme: charcoal planes, Helldivers yellow accents, winged skull geometry at
+upper left, diagonal header hazard band and complementary footer strip,
+squared inset workspace borders, edge-only field borders and a shell shadow.
+The skull is a procedural emblem inspired by Helldivers, not a shipped game asset.
+Desktop references: Mod Organizer 2's source/list/detail organization and
+Vortex's quick actions and status-oriented management interface:
+https://github.com/ModOrganizer2/modorganizer
+https://www.nexusmods.com/site/about/vortex
+
+Font: loaded main HUD font is the default on the verified game build. Resolver
+ported from canonical Epic-LUT/src/platform/ui_font.lua retains PE/resource
+availability checks and frame-local IdString reconstruction. GUI material atlas
+binding and actual native text widths drive rendering. Compatibility fallback
+is explicit in the LLL log when main resources are unavailable. Offline previews
+use Bahnschrift as an approximation and are not in-game font evidence.
+
+Tab: default Confirm/Apply commits active text and numeric drafts and applies
+the page. It also commits an active RGB/HEX draft, saves the color and applies.
+Invalid drafts stay open. Key capture and console completion retain ownership.
+
+Automatic mod-log ingestion has been removed. The console accepts direct diagnostics and command results only.
+No source-tree log discovery, external-log polling, log registration API or verbose file-ingestion toggle remains.

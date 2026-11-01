@@ -1,0 +1,107 @@
+{
+  "capture": "/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin",
+  "capture_sha256": "6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c",
+  "regions": {
+    "vector_pool_witness": {
+      "entry": "0x9f900",
+      "end": "0x9fa65",
+      "sha256": "7e96cde6253d7eac7eb5c5d5c636e510673f0176893ae4ed4476d6c6e2a07375",
+      "same_in_both_captures": true
+    },
+    "vector_format_witness": {
+      "entry": "0x704e0",
+      "end": "0x7053d",
+      "sha256": "2beaf032acf85c0874d670259dd83c6857a18670b246fa14a4b9a9c4c01e623e",
+      "same_in_both_captures": true
+    },
+    "vector2_witness": {
+      "entry": "0x419fb0",
+      "end": "0x41e504",
+      "sha256": "aec6c0c5d08f626a6807c923522f2e516c04c62757e0985dc644a32c1982eaea",
+      "same_in_both_captures": true
+    },
+    "temp_count_witness": {
+      "entry": "0x48f290",
+      "end": "0x48f2e5",
+      "sha256": "aa6f9cbe6d29120c82350cc121cf4c746448f1a07e47750b367bbdff65a9c40b"
+    },
+    "temp_set_witness": {
+      "entry": "0x48f3a0",
+      "end": "0x48f431",
+      "sha256": "96c38d4632772291f58e9bd255f495e3d04d1bbe7d28909103c952b3a3288eb4"
+    },
+    "temp_cleanup_witness": {
+      "entry": "0x4f03a0",
+      "end": "0x4f04c6",
+      "sha256": "d8192347a1108f9ad277c043161d3dca039386e580542161748a237761d1931c"
+    },
+    "temp_overflow_clear_witness": {
+      "entry": "0x4f06d0",
+      "end": "0x4f073e",
+      "sha256": "b76146db36b47f17d4adfa5dfc94c3f809441cfaa3c8a2730d088227ec3c9236"
+    },
+    "temp_allocator_witness": {
+      "entry": "0x602110",
+      "end": "0x6021ce",
+      "sha256": "f2caf1d762155fbeaf480fac7418716fbea2b0c78a3d84af4a1aa37d00f915a8"
+    },
+    "temp_deallocator_witness": {
+      "entry": "0x6021d0",
+      "end": "0x60222b",
+      "sha256": "cbf6c2f9d94e5dd2ab5a1580172fb13dcb84a04fdb2c4c9e3c2bae206329f2dd"
+    },
+    "temp_size_witness": {
+      "entry": "0x4f9d40",
+      "end": "0x4f9d4b",
+      "sha256": "bf51ce75e00dd531d0416ef221d18c65d6a6cbb4b651ce1624897eaf246a4156"
+    },
+    "temp_array_resize_witness": {
+      "entry": "0x287830",
+      "end": "0x2878b8",
+      "sha256": "29c0bfa42b5c7bd6dca54eebb80416174f407edf014b6ba1ab9e375bb4de37c3"
+    }
+  },
+  "layout": {
+    "size": 12,
+    "tag": "0x7796c581",
+    "x_offset": 4,
+    "y_offset": 8
+  },
+  "native_temporary_allocator_rva": "0x9f900",
+  "float_formatter_rva": "0x704e0",
+  "normalization_threshold": 0.0001,
+  "registration_scope": "26 exposed Vector2 functions, module and registry metadata, basic lightuserdata operators and first-character member lookup; other native vector types and boxes remain unported",
+  "live_validation": "../live-load/2026-10-24/LIVE-VECTOR2-VALIDATION.json",
+  "live_index_helpers": {
+    "file": "../live-load/2026-10-24/vector2-index-live.bin",
+    "entry": "0x419c30",
+    "end": "0x419fb0",
+    "sha256": "7dde742c3e3d463fe1c4fa16b89e9db06e2e3a746905ce31f11d1659a7f91d10",
+    "capture_batch": 794,
+    "reason": "These bytes were absent in the earlier capture; read from the real game after exercising the indexed member paths."
+  },
+  "intentional_input_boundary": "Named element/set_element reject indexes outside 1 and 2 rather than reproduce original unchecked out-of-bounds memory access.",
+  "temporary_pool": {
+    "count_callback_rva": "0x48f290",
+    "set_callback_rva": "0x48f3a0",
+    "frame_cleanup_prefix": [
+      "0x4f03a0",
+      "0x4f04c6"
+    ],
+    "ring_size": 1048576,
+    "overflow": "Guarded original pure-native page cleanup at 0x4f0780; owning allocator vtable and methods checked, pages preflighted before releasing.",
+    "invalid_checkpoints": "Only aligned values no greater than the current native byte count are accepted; original unchecked out-of-range cursor writes are not reproduced.",
+    "allocator": {
+      "vtable_rva": "0x172b360",
+      "allocate_rva": "0x602110",
+      "release_rva": "0x6021d0",
+      "size_rva": "0x4f9d40",
+      "array_resize_rva": "0x287830",
+      "inline_owner_offset": 8,
+      "count_offset": "0x100128",
+      "array_offset": "0x100130",
+      "overflow_cursor_offset": "0x100140"
+    }
+  },
+  "regions_note": "26251122: entry/end moved by the verified per-function deltas (rewrite_literals.ranges); sha256 from the 26251122 capture"
+}

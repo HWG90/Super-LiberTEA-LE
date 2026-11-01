@@ -1,0 +1,26 @@
+{
+ "runtime": "hd2_luajit_runtime_8a19f22d787b667c.dll",
+ "sha256": "8a19f22d787b667caa72829d628e227498e344d3a748ac1aaff52103a1684a32",
+ "bytes": 2975265,
+ "marker_before": "hd2_luajit_runtime_fcd57d52a0068175.dll",
+ "source": "port/vm-poc (from the byte-identical reconstruction of 4eb60fd4, reconstruct/), regenerated for 26251122",
+ "embedded_lll": "port/lll-26251122-luajit-ffi.lua sha256 ba2148a7fa1ee39ecb30e5cbef815dc2f5ce565559706cbc654c322997955178 (release R38-26251122-luajit.1; HD2 runtime-modules/boot-26251122/make_embedded_lll.py)",
+ "offline_checks": "probe_harness.exe under Wine: 10/10 pass on the 26251122 capture (as fcd57d52); controls: old runtime 4eb60fd4 0/10 on the new capture, new runtime 0/10 on the 26088801 capture",
+ "not_checked_offline": "PUC API witnesses, native bridge, resources, Vector3/Vector4/Vector3Box probes (refusal falls back to LLL in PUC)",
+ "optional_ports": "Quaternion, Matrix4x4, boxes keep 26088801 witnesses and are expected to be deferred with originals bridged",
+ "rollback": "write hd2_luajit_runtime_fcd57d52a0068175.dll into luajit-boot.enable (enable_boot.py out/hd2_lua_environment.fcd57d52.dll), or enable_boot.py --disable (LLL then runs in PUC)",
+ "history": [
+  {
+   "runtime": "hd2_luajit_runtime_1945ad4e5f7c6484.dll",
+   "live": "12:00 handoff refused: engine resource reader refused (hand-made resource_witness.h still held 26088801 bytes)"
+  },
+  {
+   "runtime": "hd2_luajit_runtime_fcd57d52a0068175.dll",
+   "embedded_lll": "port/lll-26251122-luajit-ffi.lua sha256 3952146e1cfc4ac99a8cc998a64fc177e3e2fc76e7f4053149681ea4a7e72c6a",
+   "fix": "prepare_resources.py regenerates the resolver witness at 0x6321a0 (masked-identical 631 bytes)",
+   "live": "2026-10-29 15:21:45 handoff complete: 120 modules mirrored, 5 ports kept, 1799 natives, 4 forwarders, timed GC on (Vector2/3/3Box/4 ported; Quaternion deferred, originals bridged)"
+  }
+ ],
+ "change": "LLL release label R35-26088801-cffi-insert-fix.2 -> R38-26251122-luajit.1 in the embedded LLL source; nothing else (toolchain check: the same build reproduces fcd57d52 byte for byte with the 3952146e source)",
+ "live": "working: 5 starts 2026-10-30 21:27 to 2026-10-31 00:32, each LuaJITBoot.log 'LuaJIT ready ... running LLL boot source ba2148a7...' and 'handoff complete: 120 modules mirrored, 5 ports kept, 1799 natives, 4 forwarders, timed GC on'; LiveLuaLoader.log 'Live Lua Loader 0.1.8 (R38-26251122-luajit.1)', 19 live mods loaded, no errors; War Journalist Proton 15c649b: PNG screenshot capture (2 saved), subjects and keyboard confirmed by the user 2026-10-31. Exits: 21:37, 21:57 and 03:07 logged a clean LuaJIT shutdown; the 21:58 session ended in crash ccfe5f26 at 23:11 (Sentry Aim Retention port bug, fixed separately)"
+}

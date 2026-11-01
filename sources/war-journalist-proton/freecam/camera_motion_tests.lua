@@ -1,0 +1,200 @@
+local root=DBF_PHOTO_TEST_ROOT or'freecam/'
+local Motion=dofile(root..'camera_motion.lua');local Look=dofile(root..'look.lua')
+local function copy(p)return{p[1],p[2],p[3]}end
+local function close(a,b)return math.abs(a-b)<1e-6 end
+local function fixture()
+ local s={writes=0,updates=0,effects=0,valid=true,current={10,0,2},order={}}
+ local frame={world={},unit={},cam={},player={},player_identity='p:1',epoch=1,
+  position={10,0,2},player_position={10,0,2},forward={1,0,0},right={0,-1,0},up={0,0,1}}
+ local photo={active=true,options={fov=45,roll=0},input={sequence=1,dt=.1,forward=true,mouse_x=0,mouse_y=0}}
+ local scene={}
+ function scene.valid(f)if s.valid==true then return f.epoch==frame.epoch end;return s.valid,'scene unavailable'end
+ function scene.owned(f)if s.cleanup_valid~=nil then return s.cleanup_valid,'cleanup lifetime unavailable'end;return scene.valid(f)end
+ function scene.clear_written()s.cleared=(s.cleared or 0)+1;return true end
+ function scene.mark_written(f,p)s.marked=copy(p);return true end
+ frame.scene=scene
+ local sr={Camera={},World={}}
+ sr.Vector3=setmetatable({x=function(v)return v[1]end,y=function(v)return v[2]end,z=function(v)return v[3]end},
+  {__call=function(_,...)return{...}end})
+ function sr.Camera.local_position(cam,unit)assert(cam==frame.cam and unit==frame.unit);return s.current end
+ function sr.Camera.set_local_position(cam,unit,p)
+  assert(cam==frame.cam and unit==frame.unit);s.order[#s.order+1]='position';s.writes=s.writes+1;s.current=copy(p)
+  if s.setter_fail then error('position setter failed after write')end
+ end
+ function sr.World.update_unit(world,unit)
+  assert(world==frame.world and unit==frame.unit);s.updates=s.updates+1
+  if s.update_fail then error('update refused')end
+ end
+ local runtime={apply=function(cam,unit,world,f,r,o,dt)
+  assert(world==frame.world,'photo_runtime requires the engine world as its third argument, never a discovery snapshot')
+  s.effects=s.effects+1;s.fov=o.fov;s.forward=copy(f);s.effect_dt=dt
+  if s.effect_fail then error('lens failed')end
+  return false -- No active shader is a successful camera render.
+ end}
+ local freeze={hold=function()s.order[#s.order+1]='freeze';return not s.freeze_fail,'freeze refused'end}
+ local cinema={state='place',hold=function()
+  s.order[#s.order+1]='cinema'
+  if s.cinema_fail then return false,'cinema refused'end
+  if s.cinema_position then photo.pos=copy(s.cinema_position);photo.view={yaw=0,pitch=0,sequence=photo.input.sequence}end
+  return true
+ end}
+ local config={PHOTO_SPEED=10,PHOTO_MAX_RANGE=500};local motion=Motion.new(sr,photo,Look,runtime,freeze,cinema,config,function()end)
+ s.sr=sr
+ s.frame,s.photo,s.scene,s.motion,s.cinema,s.config=frame,photo,scene,motion,cinema,config;return s
+end
+do
+ local s=fixture();assert(s.motion.apply(s.frame));assert(close(s.current[1],11),'input dt moves with zero simulation dt')
+ assert(table.concat(s.order,',')=='cinema,freeze,position','holds must precede camera writes')
+ s.photo.options.fov=70;assert(s.motion.apply(s.frame));assert(close(s.current[1],11)and s.effects==2 and s.fov==70,'redraw lens each render, movement once per sample')
+ s.photo.input={sequence=2,dt=.1,forward=true,right=true,up=true}
+ local before=copy(s.current);assert(s.motion.apply(s.frame))
+ local x,y,z=s.current[1]-before[1],s.current[2]-before[2],s.current[3]-before[3]
+ assert(close(math.sqrt(x*x+y*y+z*z),1),'diagonal movement is normalized')
+ s.photo.input={sequence=3,dt=100,forward=true};before=copy(s.current);assert(s.motion.apply(s.frame))
+ assert(close(s.current[1]-before[1],1),'paused or delayed input dt is clamped')
+ s.photo.view={yaw=0,pitch=math.rad(60)};s.photo.input={sequence=4,dt=.1,forward=true,up=true}
+ before=copy(s.current);assert(s.motion.apply(s.frame))
+ x,y,z=s.current[1]-before[1],s.current[2]-before[2],s.current[3]-before[3]
+ assert(close(math.sqrt(x*x+y*y+z*z),1),'pitched forward plus vertical movement is normalized in world space')
+ s.photo.input={sequence=0/0,dt=.1,forward=true};before=copy(s.current)
+ assert(s.motion.apply(s.frame)and s.current[1]==before[1]and s.current[3]==before[3],'invalid sequence cannot replay movement')
+end
+do
+ local s=fixture();s.photo.input.mouse_x=20;assert(s.motion.apply(s.frame));local yaw=s.photo.view.yaw
+ assert(s.motion.apply(s.frame));assert(s.photo.view.yaw==yaw,'mouse delta must not repeat on high-FPS redraws')
+ s.photo.locked=true;s.photo.input={sequence=2,dt=.1,forward=true,mouse_x=40};local p=copy(s.current)
+ assert(s.motion.apply(s.frame));assert(close(s.current[1],p[1])and s.photo.view.yaw==yaw and s.effects==3)
+ s.photo.locked=false;s.photo.input={sequence=3,dt=.1,forward=true,mouse_x=100};assert(s.motion.apply(s.frame,true))
+ assert(s.photo.view.yaw==yaw and close(s.current[1],p[1]),'native menu preserves view but still renders')
+ assert(s.motion.apply(s.frame,false));assert(s.photo.view.yaw==yaw,'suspended mouse sample cannot replay when menu closes')
+ s.photo.input={sequence=4,dt=.1,forward=true};assert(s.motion.apply(s.frame));assert(not close(s.current[1],p[1]))
+end
+do
+ local s=fixture();s.config.PHOTO_MAX_RANGE=2;s.photo.input.dt=10;s.config.PHOTO_SPEED=1000
+ assert(s.motion.apply(s.frame));assert(close(s.current[1],12),'range capped relative to current local player')
+ s.cinema.state='perform';s.cinema_position={999,5,6};s.photo.input.sequence=2
+ assert(s.motion.apply(s.frame));assert(s.current[1]==999 and s.current[2]==5,'cinema holds its view without input or freecam range clamp')
+ assert(s.motion.release());assert(s.current[1]==10 and s.current[2]==0,'exit restores original owned camera position')
+end
+do
+ local s=fixture();s.freeze_fail=true;assert(s.motion.apply(s.frame)==false and s.writes==0)
+ s.freeze_fail=false;s.cinema_fail=true;assert(s.motion.apply(s.frame)==false and s.writes==0)
+ s.cinema_fail=false;s.valid=nil;assert(s.motion.apply(s.frame)==false and s.writes==0)
+ s.valid=true;assert(s.motion.apply(s.frame));s.valid=nil
+ assert(s.motion.release()==false and s.motion.pending and s.writes==1,'unknown scene retains cleanup without writes')
+ s.valid=true;assert(s.motion.release()and s.writes==2)
+end
+do
+ local s=fixture();assert(s.motion.apply(s.frame));s.current={777,0,2}
+ assert(s.motion.release()and s.writes==1 and s.current[1]==777,'foreign position owner is preserved')
+ s=fixture();assert(s.motion.apply(s.frame));s.valid=false
+ assert(s.motion.release()and s.writes==1,'retired scene never dereferenced for restoration')
+ s=fixture();s.setter_fail=true;local ok,why=s.motion.apply(s.frame)
+ assert(ok==false and why:find('setter failed',1,true)and s.motion.pending)
+ s.setter_fail=false;assert(s.motion.release()and s.current[1]==10,'partial write remains available for compare-owned restoration')
+ s=fixture();s.effect_fail=true;assert(s.motion.apply(s.frame)==false and s.motion.pending)
+ s.effect_fail=false;assert(s.motion.release()and s.current[1]==10)
+ s=fixture();assert(s.motion.apply(s.frame));s.update_fail=true
+ assert(s.motion.release()==false and s.motion.pending and s.current[1]==10)
+ local writes=s.writes;s.update_fail=false
+ assert(s.motion.release()and s.writes==writes,'partial restore retries its world update without a second setter')
+ s=fixture();assert(s.motion.apply(s.frame));local writes=s.writes
+ assert(s.motion.release(function()return false end)and s.writes==writes,'explicit confirmed retirement does not dereference the old camera')
+ s=fixture();assert(s.motion.apply(s.frame));s.valid=nil;s.cleanup_valid=true
+ assert(s.motion.release()and s.current[1]==10 and s.cleared==1,
+  'cleanup uses fresh camera lifetime plus position CAS despite transient rendered-pose refusal')
+end
+do
+ local s=fixture();assert(s.motion.apply(s.frame));local swapped={}
+ for k,v in pairs(s.frame)do swapped[k]=v end
+ swapped.world={};swapped.unit={};swapped.cam={};swapped.epoch=2
+ assert(s.motion.apply(swapped)==false and s.writes==1,'world/camera swap cannot reuse a position lease')
+end
+print('camera_motion_tests: zero-time movement, render/input cadence, holds and owned cleanup passed')
+
+-- Optional smoothing owns only numeric targets; menu handoff cancels inertia.
+do
+ local s=fixture();s.photo.options.camera_smoothing=true;s.photo.input.mouse_x=100
+ assert(s.motion.apply(s.frame));assert(s.current[1]>10 and s.current[1]<11,'Smooth translation must ease toward its target')
+ local yaw=s.photo.view.yaw;local target=s.photo.view.target_yaw
+ assert(yaw~=target,'Smooth rotation must ease toward its target')
+ local x=s.current[1];assert(s.motion.apply(s.frame)and s.current[1]==x and s.photo.view.yaw==yaw,'Render repeats must not advance smoothing')
+ s.photo.input={sequence=2,dt=.1,mouse_x=0,mouse_y=0};assert(s.motion.apply(s.frame,true))
+ assert(s.current[1]==x and s.photo.view.yaw==yaw,'Suspension must cancel smoothing without camera drift')
+ s.photo.input.sequence=3;assert(s.motion.apply(s.frame))
+ assert(s.current[1]==x and s.photo.view.yaw==yaw,'Closing a menu must not replay old smoothing targets')
+ s.photo.options.camera_smoothing=false;s.photo.input={sequence=4,dt=.1,forward=true}
+ local before=copy(s.current);assert(s.motion.apply(s.frame))
+ local dx,dy,dz=s.current[1]-before[1],s.current[2]-before[2],s.current[3]-before[3]
+ assert(close(math.sqrt(dx*dx+dy*dy+dz*dz),1),'Disabled smoothing must retain immediate movement')
+ assert(s.motion.release())
+end
+print('Optional smoothing: eased motion, sample deduplication, handoff cancellation and immediate opt-out passed')
+
+do
+ local weak,strong=fixture(),fixture()
+ for _,s in ipairs({weak,strong})do s.photo.options.camera_smoothing=true end
+ weak.photo.options.smoothing_strength=10;strong.photo.options.smoothing_strength=100
+ assert(weak.motion.apply(weak.frame)and strong.motion.apply(strong.frame))
+ assert(weak.current[1]>strong.current[1],'Strength slider must change damping')
+end
+do
+ local s=fixture();s.cinema.state='perform';s.photo.handycam=true
+ local head={12,4,3};local ready=true;local time=10
+ s.cinema.wall_time=function()return time end
+ s.cinema.gameplay_input_ready=function()return ready end
+ s.sr.Unit={has_node=function(p,name)return p==s.frame.player and name=='head'end,
+  node=function()return 66 end,num_scene_graph_items=function()return 107 end,
+  world_position=function(p,node)assert(p==s.frame.player and node==66);return copy(head)end}
+ assert(s.motion.apply(s.frame,true));assert(s.current[1]==12 and s.current[2]==4 and s.current[3]==3,'Handycam must use the live head attachment')
+ head={13,5,3};time=10.1;assert(s.motion.apply(s.frame,true));assert(s.current[1]==13,'Handycam must track movement while gameplay owns input')
+ ready=false;head={40,40,40};time=11;assert(s.motion.apply(s.frame,true));assert(s.current[1]==13,'Native menus must hold the last handycam frame')
+ ready=true;s.photo.options.camera_smoothing=true;s.photo.options.smoothing_strength=100
+ head={14,5,3};time=11.1;assert(s.motion.apply(s.frame,true));assert(s.current[1]>13 and s.current[1]<14,'Handycam must obey smoothing strength')
+ s.valid=false;local writes=s.writes;assert(not s.motion.apply(s.frame,true)and s.writes==writes,'Retired owners cannot update the head camera')
+ assert(s.motion.release())
+end
+
+do
+ local s=fixture();s.cinema.state='perform';s.photo.handycam=true
+ local t=1;s.cinema.wall_time=function()return t end;s.cinema.gameplay_input_ready=function()return true end
+ s.sr.Unit={has_node=function()return true end,node=function()return 1 end,num_scene_graph_items=function()return 1 end,world_position=function()return {12,4,3}end}
+ s.photo.options.handycam_intensity=100;assert(s.motion.apply(s.frame));t=1.05;assert(s.motion.apply(s.frame))
+ assert(math.abs(s.photo.view.yaw)>0,'Handycam must add handheld sway')
+ local yaw=s.photo.view.yaw;assert(s.motion.apply(s.frame));assert(s.photo.view.yaw==yaw,'Repeated renders cannot advance shake')
+ assert(s.photo.options.roll==0,'Shake must not mutate the saved roll')
+ s.photo.options.handycam_intensity=0;t=1.1;assert(s.motion.apply(s.frame));assert(s.photo.view.yaw==0,'Zero intensity must disable synthetic shake')
+end
+
+-- Head animation ticks and renders need not have the same cadence.
+do
+ local s=fixture();s.cinema.state='perform';s.photo.handycam=true
+ local t,x=1,12;s.cinema.wall_time=function()return t end;s.cinema.gameplay_input_ready=function()return true end
+ s.sr.Unit={has_node=function()return true end,node=function()return 1 end,num_scene_graph_items=function()return 1 end,world_position=function()return{x,4,3}end}
+ s.photo.options.handycam_intensity=100;assert(s.motion.apply(s.frame))
+ local yaw=0
+ for i=1,120 do
+  t=1+i/120;if i%2==0 then x=x+4/60 end
+  assert(s.motion.apply(s.frame))
+  local angle=s.photo.view.yaw
+  assert(math.abs(angle-yaw)<math.rad(.3),'Alternating animation ticks must not step shake intensity')
+  yaw=angle;assert(s.motion.apply(s.frame));assert(s.photo.view.yaw==yaw,'Duplicate render time must hold shake')
+ end
+end
+
+-- Reading back our own rendered orientation must not re-ingest synthetic sway.
+do
+ local s=fixture();s.cinema.state='perform';s.photo.handycam=true
+ local t=1;s.cinema.wall_time=function()return t end;s.cinema.gameplay_input_ready=function()return true end
+ s.sr.Unit={has_node=function()return true end,node=function()return 1 end,num_scene_graph_items=function()return 1 end,world_position=function()return{12,4,3}end}
+ s.photo.options.handycam_intensity=100
+ local clean={math.cos(.5),math.sin(.5),0}
+ for i=1,120 do
+  t=1+i/120
+  if i%2==1 then s.frame.forward=copy(clean)else s.frame.forward=copy(s.forward)end
+  assert(s.motion.apply(s.frame))
+  assert(math.abs(s.photo.view.yaw-.5)<math.rad(.5),'Owned render echo must not accumulate sway or alternate aiming direction')
+ end
+ s.frame.forward={math.cos(1),math.sin(1),0};t=t+.01;assert(s.motion.apply(s.frame))
+ assert(math.abs(s.photo.view.yaw-1)<math.rad(.5),'Fresh gameplay rotation must remain responsive')
+end

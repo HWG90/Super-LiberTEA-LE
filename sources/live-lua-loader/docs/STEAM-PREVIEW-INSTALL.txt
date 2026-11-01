@@ -1,0 +1,54 @@
+Live Lua Loader R35 - Linux/Proton + CFFI - Steam build 26088801
+
+NOT FOR THE LIVE GAME UNLESS YOU ARE ON LINUX. IT WILL NOT WORK ON WINDOWS.
+
+Requires Linux, Steam Proton, Python 3, and the exact supported game build.
+Native Windows loading fails with system error 577. The DLLs are Windows-format
+modules because Proton runs the Windows game; that does not imply native
+Windows support. No compiler, MCM, MDL or Bingus loader is required.
+Older LuaJIT/FFI mods need individual ports. This release provides require('cffi').
+
+INSTALL
+1. Close Helldivers 2 and the LLL service/launcher. Disable and undeploy competing
+   startup loaders in your mod manager before using the portable installer.
+2. Extract this complete ZIP into a normal folder. Do not import the portable
+   ZIP into Arsenal: the helper and native DLLs must be installed outside data/.
+3. Find the Steam library containing appmanifest_553850.acf. Use the game folder
+   and the existing Proton prefix for that installation, not another game's prefix.
+4. From the extracted directory, substitute your actual paths and run:
+
+   python3 install_proton.py --package . --game "/path/to/SteamLibrary/steamapps/common/Helldivers 2" --prefix "/path/to/SteamLibrary/steamapps/compatdata/553850/pfx"
+
+The installer verifies the executable, game.dll, payload checksums, startup
+ownership and all competing startup slots. Unknown/conflicting bytes are refused.
+It does not stop processes or start the game. Do not rename another mod's patch
+to force priority. If the prefix is already bound to another game, restore that
+installation first. Existing valid Proton drive mappings are used for the helper.
+
+The startup patch triplet goes into game/data. The service, launcher and binding
+are installed beneath drive_c/users/steamuser/AppData/Local/LLL/Helldivers2/Service.
+CFFI and the font helper go into the sibling Native directory. LLL.cfg, Settings
+and Mods are preserved. Insert is the default open/close key; saved keys remain.
+Start the game and verify opening, mouse input and closing. Installation checks
+alone do not establish gameplay acceptance for this exact release archive.
+
+ROLLBACK
+Close the game/helper and pass the receipt path printed by installation:
+
+   python3 install_proton.py --rollback "/path/to/receipt.json"
+
+Rollback verifies current hashes, restores prior bytes or removes newly installed
+files, and preserves settings/mods. It refuses files changed after installation.
+Roll back updates in reverse order. If another mod manager has changed startup
+files, restore that manager's installation first.
+
+SUPPORT AND VALIDATION
+Inspect Logs/LiveLuaLoader.log and Logs/SteamStartupError.log under the LLL home.
+CFFI should report ready. Keep the installation receipt. Fingerprint checks are
+specific to build 26088801; updates require a newly verified release.
+Prior Proton sessions validated the CFFI bridge, corrected pointer subtraction,
+and Insert opening/closing. This newly assembled release has offline tests and
+package validation; its exact archive has not been launched during publication.
+Native Windows is unsupported and does not work. Wine harness tests are not
+native Windows game validation. See the release validation report for details.
+Source and credits: https://github.com/HWG90/LLL

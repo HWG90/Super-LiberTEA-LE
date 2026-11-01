@@ -1,0 +1,300 @@
+{
+  "capture": "/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin",
+  "capture_sha256": "6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c",
+  "registrar": {
+    "entry": "0x7f0e10",
+    "end": "0x7f20f3"
+  },
+  "context_slot": "0x28605f0",
+  "interface_getter_iat": "0x148e7b8",
+  "interface_context": "0x19b65a0",
+  "bindings": [
+    {
+      "name": "Friends.num_friends",
+      "entry": "0x7ef620",
+      "end": "0x7ef6e4",
+      "sha256": "1ff2c393b7fc5a3278090308f2fab7f9d6959268d2cf0e1597b971512f424164"
+    },
+    {
+      "name": "Friends.id",
+      "entry": "0x7ef6f0",
+      "end": "0x7ef7d1",
+      "sha256": "9d12a0b1e50c2e00122625a81f7f9dbacb1f9dfa21660b80405212c320c2b63f"
+    },
+    {
+      "name": "Friends.name",
+      "entry": "0x7ef7e0",
+      "end": "0x7ef894",
+      "sha256": "fbe3cb554ad3724e55deb6ff0e7285dcc4012fa055f88e109205352c6f716faf"
+    },
+    {
+      "name": "Friends.relationship",
+      "entry": "0x7ef8a0",
+      "end": "0x7ef956",
+      "sha256": "a91aaa8ca82818f996c8704dcb5143c5b25c60e2f97d408a74571d8c6e669cfc"
+    },
+    {
+      "name": "Friends.status",
+      "entry": "0x7ef960",
+      "end": "0x7efa16",
+      "sha256": "4f4d91bdfadfcef2295c037c81c7ff0b2fb0c4a9f06fa9ac83a08d05d05e3cc5"
+    },
+    {
+      "name": "Friends.in_category",
+      "entry": "0x7efa20",
+      "end": "0x7efb41",
+      "sha256": "7f05285b5bae3b517671273a4f68bea5627f6517b3f1483fc5d33c0df86695eb"
+    },
+    {
+      "name": "Friends.playing_game",
+      "entry": "0x7efb50",
+      "end": "0x7eff35",
+      "sha256": "2ca16e54c6e70afaa065166440f1fe8fc13ab81d6eff7e92d0fb3de692c89570"
+    },
+    {
+      "name": "Friends.invite",
+      "entry": "0x7eff40",
+      "end": "0x7f0466",
+      "sha256": "b9b02a99707689006ef1da1236dabdaf24fdcb7a20b66967b8fe4a966605cc24"
+    },
+    {
+      "name": "Friends.next_invite",
+      "entry": "0x7f0470",
+      "end": "0x7f05e6",
+      "sha256": "ebc3fec7753e9acbcdb4dfcdc04de0884ef19522faa290c025add5cec2ea3ac2"
+    },
+    {
+      "name": "Friends.boot_invite",
+      "entry": "0x7f05f0",
+      "end": "0x7f06eb",
+      "sha256": "0ce02bd7521f432e98d8c0185c52dc8e5d5445b095befd4441e0920cbe5c61c6"
+    },
+    {
+      "name": "Presence.advertise_playing",
+      "entry": "0x7f06f0",
+      "end": "0x7f0bb4",
+      "sha256": "6d4385fee1832d8e027456d98b34e8752a13f6fd89756edc545263f88c703cac"
+    },
+    {
+      "name": "Presence.stop_advertise_playing",
+      "entry": "0x7f0bc0",
+      "end": "0x7f0bee",
+      "sha256": "4c9e7cfbf9b3a862e688481eb1f2991b77cd2050dcc9c238232e2aacbe6cc16a"
+    },
+    {
+      "name": "Presence.set_presence",
+      "entry": "0x7f0bf0",
+      "end": "0x7f0cce",
+      "sha256": "2d08d14ae59b4966be16ec9cca692ffd7844fcff8666f5418f180db0149fc608"
+    },
+    {
+      "name": "Presence.presence",
+      "entry": "0x7f0cd0",
+      "end": "0x7f0e02",
+      "sha256": "53ad195a2b56c3f3404384ca2d23df13998fa84f1ae4b6dc637acd52f3589752"
+    }
+  ],
+  "native_helpers": [
+    {
+      "name": "native_name",
+      "entry": "0x7cb9b0",
+      "end": "0x7cba23",
+      "sha256": "7b600320269a5f87ea8096590cd4bf86cb73c004db623f248455098cc8ba03f5"
+    },
+    {
+      "name": "native_playing",
+      "entry": "0x7cbe70",
+      "end": "0x7cbfbb",
+      "sha256": "f05c43e984cfc1013f03b909c51d8a8a8ae9058b9d36989ee6207d57e786ca01"
+    },
+    {
+      "name": "native_invite_lobby",
+      "entry": "0x7cc020",
+      "end": "0x7cc323",
+      "sha256": "63efd0c0f553b7ba82afb138236ad229898ba23d42f13fb9953d0486f458aed9"
+    },
+    {
+      "name": "native_invite_server",
+      "entry": "0x7cc330",
+      "end": "0x7cc633",
+      "sha256": "c70aae54df93518f87b9b60b9c54308c88b90541f95a38b2009e462f917384e8"
+    },
+    {
+      "name": "native_next_invite",
+      "entry": "0x7cc690",
+      "end": "0x7cc73a",
+      "sha256": "cd81cf204a37c67ef822ac0c42e6ac86850fbf35734535fb713fd7f585c65f38"
+    },
+    {
+      "name": "native_advertise_lobby",
+      "entry": "0x7ce390",
+      "end": "0x7ce683",
+      "sha256": "9410a4d1eed3cea9a79d51c9f74cfa9ba00ba06309cee4b493b5d9b2e4fe8c01"
+    },
+    {
+      "name": "native_advertise_server",
+      "entry": "0x7ce690",
+      "end": "0x7ce983",
+      "sha256": "2b7a78950cdf6780efb5ddbd1ffb30fec2dafb727a966b12d7c49601f44b4b7c"
+    }
+  ],
+  "constants": [
+    {
+      "name": "NO_INVITE",
+      "value": 0,
+      "store": "0x7f1706"
+    },
+    {
+      "name": "INVITE_SERVER",
+      "value": 2,
+      "store": "0x7f176a"
+    },
+    {
+      "name": "INVITE_LOBBY",
+      "value": 1,
+      "store": "0x7f17ca"
+    },
+    {
+      "name": "NONE",
+      "value": 0,
+      "store": "0x7f181b"
+    },
+    {
+      "name": "BLOCKED",
+      "value": 1,
+      "store": "0x7f187a"
+    },
+    {
+      "name": "REQUEST_RECIPIENT",
+      "value": 2,
+      "store": "0x7f18d0"
+    },
+    {
+      "name": "FRIEND",
+      "value": 3,
+      "store": "0x7f1930"
+    },
+    {
+      "name": "REQUEST_INITIATOR",
+      "value": 4,
+      "store": "0x7f1990"
+    },
+    {
+      "name": "IGNORED",
+      "value": 5,
+      "store": "0x7f19f0"
+    },
+    {
+      "name": "IGNORED_FRIEND",
+      "value": 6,
+      "store": "0x7f1a50"
+    },
+    {
+      "name": "SUGGESTED",
+      "value": 7,
+      "store": "0x7f1aab"
+    },
+    {
+      "name": "OFFLINE",
+      "value": 0,
+      "store": "0x7f1b06"
+    },
+    {
+      "name": "ONLINE",
+      "value": 1,
+      "store": "0x7f1b60"
+    },
+    {
+      "name": "BUSY",
+      "value": 2,
+      "store": "0x7f1bb6"
+    },
+    {
+      "name": "AWAY",
+      "value": 3,
+      "store": "0x7f1c0c"
+    },
+    {
+      "name": "SNOOZE",
+      "value": 4,
+      "store": "0x7f1c62"
+    },
+    {
+      "name": "TRADING",
+      "value": 5,
+      "store": "0x7f1cb8"
+    },
+    {
+      "name": "LOOKING_TO_PLAY",
+      "value": 6,
+      "store": "0x7f1d0e"
+    },
+    {
+      "name": "BLOCKED_FLAG",
+      "value": 1,
+      "store": "0x7f1d64"
+    },
+    {
+      "name": "FRIENDSHIP_REQUESTED_FLAG",
+      "value": 2,
+      "store": "0x7f1dba"
+    },
+    {
+      "name": "FRIEND_FLAG",
+      "value": 4,
+      "store": "0x7f1e10"
+    },
+    {
+      "name": "CLAN_MEMBER_FLAG",
+      "value": 8,
+      "store": "0x7f1e6b"
+    },
+    {
+      "name": "ON_GAME_SERVER_FLAG",
+      "value": 16,
+      "store": "0x7f1ecb"
+    },
+    {
+      "name": "REQUESTING_FRIENDSHIP_FLAG",
+      "value": 128,
+      "store": "0x7f1f2b"
+    },
+    {
+      "name": "REQUESTING_INFO_FLAG",
+      "value": 256,
+      "store": "0x7f1f8b"
+    },
+    {
+      "name": "IGNORED_FLAG",
+      "value": 512,
+      "store": "0x7f1feb"
+    },
+    {
+      "name": "IGNORED_FRIEND_FLAG",
+      "value": 1024,
+      "store": "0x7f2050"
+    },
+    {
+      "name": "SUGGESTED_FLAG",
+      "value": 2048,
+      "store": "0x7f20b0"
+    }
+  ],
+  "null_service": "store null, leave Lua modules untouched",
+  "modules": "registry Friends and Presence tables, __index=self and _name, attached to stingray on first creation",
+  "native_layouts": {
+    "selected_category": "service+0xc0 int32; num_friends sets it, id reads it",
+    "playing_game": "36 bytes: mod flag+0, signed app ID+4, native mod ID+8, lobby flag+12 and ID+16, server flag+24, IPv4+28, uint16 ports+32/+34",
+    "next_invite": "16-byte-aligned 96-byte native result; kind+0, lobby+8, IPv4+16, signed port+20, sender+24, text+64 (32 bytes)",
+    "boot_invite": "32 bytes at service+0xe8; same kind/lobby/address fields, no pop",
+    "SteamLobby": "metatable identity plus native pointer in first 8 userdata bytes; native object lobby ID+0x178"
+  },
+  "parity_details": [
+    "playing_game false and absent/empty Presence.presence return zero values",
+    "playing_game mod_id repeats app_id in captured Lua callback, despite separate native mod field",
+    "all-hex destination means lobby; other strings use partial base-0 IPv4:port scan with zero defaults",
+    "optional invite/presence strings default to empty for values other than string/number"
+  ],
+  "native_service_live_validated": false,
+  "native_windows_tested": false
+}

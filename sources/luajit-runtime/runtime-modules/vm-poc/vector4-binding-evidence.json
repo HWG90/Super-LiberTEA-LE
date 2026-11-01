@@ -1,0 +1,61 @@
+{
+  "capture": "/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin",
+  "capture_sha256": "6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c",
+  "regions": {
+    "vector4_a_witness": {
+      "entry": "0x4270a0",
+      "end": "0x429f40",
+      "sha256": "55d130d0f0c6f08e8be43a859285badca5d0b9eeafa98fc5164717df9444c461"
+    },
+    "vector4_b_witness": {
+      "entry": "0x429f40",
+      "end": "0x42c740",
+      "sha256": "9cd9570eb2909c98125f041f27dbce3e0bdc0cdd6287f94eac822c7e811762b8"
+    }
+  },
+  "callbacks": {
+    "add": "0x4288a0",
+    "distance": "0x42b9c0",
+    "distance_squared": "0x42bb90",
+    "divide": "0x4290d0",
+    "divide_elements": "0x429610",
+    "dot": "0x42b800",
+    "element": "0x429be0",
+    "equal": "0x427bc0",
+    "is_valid": "0x42c6b0",
+    "length": "0x42b3a0",
+    "lerp": "0x42c0d0",
+    "max": "0x42c4c0",
+    "min": "0x42c230",
+    "multiply": "0x428df0",
+    "multiply_elements": "0x429380",
+    "normalize": "0x42b5d0",
+    "set_element": "0x42a650",
+    "set_w": "0x42aca0",
+    "set_x": "0x42a820",
+    "set_xyzw": "0x42afa0",
+    "set_y": "0x42a9a0",
+    "set_z": "0x42ab20",
+    "subtract": "0x428b30",
+    "to_elements": "0x42a0b0",
+    "to_string": "0x428290",
+    "w": "0x429f80",
+    "x": "0x429d10",
+    "y": "0x429de0",
+    "z": "0x429eb0",
+    "zero": "0x428320",
+    "__call": "0x427ae0"
+  },
+  "layout": {
+    "tag": "0x58235806",
+    "size": 20,
+    "x": 4,
+    "y": 8,
+    "z": 12,
+    "w": 16
+  },
+  "shared_with": "Quaternion uses the same payload tag and LightUserData metatable; its identity formats as Vector4(0, 0, 0, 1) in game",
+  "normalization_threshold": 0.0001,
+  "registration": "Vector2 host/pool and Vector3 must be registered first",
+  "regions_note": "26251122: entry/end moved by the verified per-function deltas (rewrite_literals.ranges); sha256 from the 26251122 capture"
+}
