@@ -23,7 +23,7 @@ import build_lll_boot as B  # noqa: E402
 import build_lll_dropin as D  # noqa: E402
 
 NAME = "Super LiberTEA - LE (Linux Edition)"
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 GAME_BUILD = "26251122"
 LLL_RELEASE = "R38-26251122-luajit.2"
 REPO = "https://github.com/HWG90/Super-LiberTEA-LE"
@@ -77,6 +77,14 @@ LE_DROPPED = ["src/memory.lua", "src/core.lua", "src/backend.lua", "src/controll
               "src/equipment.lua", "src/equipment_backend.lua", "src/extraction.lua", "src/objectives.lua",
               "native/guarded_reads_fb18682bc3515a7a.dll", "native/native_ads_near_26251122_aee46b657684.dll"]
 REQUIRE = re.compile(r"mod\.require\(\s*['\"]([^'\"]+)['\"]")
+# The Megapack's bundle file 79e4f54aa542ec98 (in 24 options, as a Lua copy and inside the patch) carries the CFFI
+# port's private adapter, whose helper-DLL folder was written in as the development package's Arsenal folder on the
+# porting machine. The bundle code only calls PORT51.kind, so the DLL is never loaded: 1.0.1 drops the folder and
+# pads the line to its old length, so every resource in the patch keeps its offset and size.
+MEGAPACK_DIR = b'local mod={dir="/home/goose/.config/hd2arsenal/mods/Vanilla-Plus-Megapack-v42-CFFI-Development"}'
+MEGAPACK_NO_DIR = b"local mod={} -- no helper DLL folder: this bundle file never loads it"
+# What may not ship in a runtime file: a path into someone's Arsenal folder or a mod loaded from a drive path.
+MACHINE_PATHS = (b"hd2arsenal", b"/.config/", b"io.open('Z:", b'io.open("Z:')
 
 
 def sha(b):
@@ -193,6 +201,28 @@ def gadget_le(files):
     return out
 
 
+def megapack_portable(files):
+    """The Megapack options without the porting machine's folder in the bundle file (MEGAPACK_DIR)."""
+    out, changed = dict(files), []
+    new = MEGAPACK_NO_DIR.ljust(len(MEGAPACK_DIR))
+    assert len(MEGAPACK_NO_DIR) <= len(MEGAPACK_DIR)
+    for name, data in files.items():
+        if MEGAPACK_DIR in data:
+            assert name.startswith("options/") and name.endswith(("/79e4f54aa542ec98.lua", ".patch_0")) and data.count(MEGAPACK_DIR) == 1, name
+            out[name] = data.replace(MEGAPACK_DIR, new)
+            changed.append(name)
+    folders = sorted({n.rsplit("/", 1)[0] for n in changed})
+    assert len(folders) == 24 and len(changed) == 48, (len(folders), len(changed))
+    for folder in folders:
+        # The Lua copy Arsenal scans is the patch's resource, byte for byte, before and after.
+        lua, patch = folder + "/79e4f54aa542ec98.lua", folder + "/" + ARCHIVE
+        assert files[lua] in files[patch] and out[lua] in out[patch] and len(out[patch]) == len(files[patch]), folder
+    stage = OUT / "stage" / "megapack-bundle"
+    write_tree(stage, {n: out[n] for n in changed if n.endswith(".lua")})
+    lua_check(stage, [n for n in changed if n.endswith(".lua")], ("lua5.1", "luajit"))
+    return out, changed
+
+
 def literal(data):
     return D.literal(data)
 
@@ -262,11 +292,13 @@ def option_prefix(part, manifest):
 
 def build(args):
     record = json.loads((HERE / "INPUTS.json").read_text())
-    package, options = {}, []
+    package, options, megapack = {}, [], []
     for part in PARTS:
         files = tree(INPUTS / part["key"])
         manifest = json.loads(files.pop("manifest.json"))
         assert {n: sha(d) for n, d in files.items() if re.search(r"\.patch_\d+$", n)} == record["parts"][part["key"]]["patches"]
+        if part["key"] == "megapack":
+            files, megapack = megapack_portable(files)
         options += option_prefix(part, manifest)
         for name, data in files.items():
             package[part["folder"] + "/" + name] = data
@@ -318,6 +350,10 @@ def build(args):
                 assert any(n.startswith(folder + "/") for n in package), folder
             assert not entry.get("Image") or entry["Image"] in package, entry["Image"]
     assert "icon.png" in package and "README.txt" in package
+    for name, data in package.items():
+        # PORT-VALIDATION.json files are the ports' records of where they were validated, not code.
+        found = [p.decode() for p in MACHINE_PATHS if p in data]
+        assert not found or name.endswith("/PORT-VALIDATION.json"), (name, found)
     package["FILES-SHA256.txt"] = "".join("%s  %s\n" % (sha(v), k) for k, v in sorted(package.items())).encode()
     write_tree(OUT / "package", package)
     zip_name = "Super-LiberTEA-LE-%s-%s.zip" % (VERSION, GAME_BUILD)
@@ -333,6 +369,7 @@ def build(args):
     result = {"name": NAME, "version": VERSION, "game_build": GAME_BUILD, "guid": GUID, "zip": zip_name, "zip_sha256": digest,
               "zip_bytes": (OUT / zip_name).stat().st_size, "patch_sha256": sha(patch), "patch_bytes": len(patch), "chunk_bytes": len(chunk),
               "boot": boot, "options": [o["Name"] for o in options],
+              "megapack_bundle_folder_removed": {"from": MEGAPACK_DIR.decode(), "to": MEGAPACK_NO_DIR.decode(), "files": megapack},
               "mods": {i: {"version": json.loads(f["manifest.json"])["version"], "files": len(f), "bytes": sum(map(len, f.values())),
                            "manifest_sha256": sha(f["manifest.json"])} for i, f in mods.items()},
               "zip_contents": len(package), "live_acceptance": "pending"}

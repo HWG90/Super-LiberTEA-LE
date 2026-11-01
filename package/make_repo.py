@@ -6,11 +6,16 @@ Nothing here is captured game code: the runtime's evidence and the Gadget Kit's 
 are only the ones that ship. The release zip is uploaded as a release asset, never committed.
   /usr/bin/python3 -I make_repo.py --repo ~/Projects/Super-LiberTEA-LE
 """
-import argparse, io, json, re, shutil, struct, subprocess, tarfile
+import argparse, io, json, re, shutil, struct, subprocess, sys, tarfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+from build_package import PARTS  # noqa: E402
+
 INPUTS = HERE / "out" / "inputs"
+SHIPPED = HERE / "out" / "package"
+FOLDERS = {part["key"]: part["folder"] for part in PARTS}
 LUA_TYPE = 0xA14E8DFA2CD117E2
 BINARY = re.compile(r"\.(dll|exe|lib|pdb|obj|o|a|so|bin|dmp|zip)$", re.I)
 
@@ -57,11 +62,11 @@ def lua_resources(patch):
 
 
 def extract_part(part, dest):
-    """Every Lua resource of every patch of an Arsenal package, by option folder."""
-    count = 0
-    for patch in sorted((INPUTS / part).rglob("*.patch_*")):
+    """Every Lua resource of every patch the package ships for an Arsenal part, by option folder."""
+    count, root = 0, SHIPPED / FOLDERS[part]
+    for patch in sorted(root.rglob("*.patch_*")):
         if re.search(r"\.patch_\d+$", patch.name):
-            folder = patch.parent.relative_to(INPUTS / part).as_posix()
+            folder = patch.parent.relative_to(root).as_posix()
             for key, text in lua_resources(patch).items():
                 target = dest / folder / (key + ".lua")
                 target.parent.mkdir(parents=True, exist_ok=True)

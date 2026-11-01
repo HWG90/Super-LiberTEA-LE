@@ -1,6 +1,6 @@
 -- HD2-Addon: mods/cowboybingus/vanilla_plus_megapack
 local PORT51=(function()
-local mod={dir="/home/goose/.config/hd2arsenal/mods/Vanilla-Plus-Megapack-v42-CFFI-Development"}
+local mod={} -- no helper DLL folder: this bundle file never loads it                           
 -- Private Lua 5.1/cffi adapter. No process-wide ffi, bit, type or tonumber aliases.
 local ffi=require('cffi')
 local pointer_probe=ffi.cast('uint32_t *',1048576)

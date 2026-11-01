@@ -1,4 +1,4 @@
-Super LiberTEA - LE (Linux Edition) 1.0.0                     Helldivers 2 Steam build 26251122
+Super LiberTEA - LE (Linux Edition) 1.0.1                     Helldivers 2 Steam build 26251122
 
 LINUX / PROTON ONLY. IT WILL NOT WORK ON NATIVE WINDOWS (system error 577 for the LuaJIT runtime and cffi DLLs).
 One HD2 Arsenal mod. Import it, deploy it, play.
@@ -32,9 +32,11 @@ Everything goes to %LOCALAPPDATA%\LLL\Helldivers2 inside the game's Proton prefi
 - The LLL mods, into Mods\dbf_mcm, Mods\divers_best_friend, Mods\goose_bridge_combat, Mods\dbf_freecam and
   Mods\goose_temporary_unlocks. A mod folder is installed when it has no manifest.json, and kept up to date
   while it holds what this package wrote. If you installed another build of one of these mods yourself, that
-  folder is left alone, and so is any file you changed. SuperLiberTEA\<mod>.txt records what was written.
-  Logs\SuperLiberTEA-files.log: "Super LiberTEA - LE 1.0.0 mods: 0 written, 255 in place" on later starts,
-  followed by "left alone: ..." when it skipped something.
+  folder is left alone, and so is any file you changed. A folder that holds only a development shim (a main.lua
+  that loads the mod from a file elsewhere by drive path) is moved to Backups\<mod>-shim-<time> as it is, and the
+  mod installed. SuperLiberTEA\<mod>.txt records what was written.
+  Logs\SuperLiberTEA-files.log: "Super LiberTEA - LE 1.0.1 mods: 0 written, 255 in place" on later starts,
+  followed by "set aside: ..." or "left alone: ..." when it moved or skipped something.
 Settings live in LLL\Helldivers2\Settings and are never touched.
 
 TURNING THINGS OFF
@@ -54,6 +56,12 @@ KNOWN LIMITS
   game.dll and refuse to run until they are updated.
 - Bridge Combat is experimental. Gadget Kit's Spawner works as local host in a solo mission.
 - War Journalist captures screenshots with its Linux host worker; Wine's capture API is a stub.
+
+CHANGES
+1.0.1  The Megapack no longer names a folder on the packaging machine (a helper DLL path its code never used).
+       A Mods folder that holds only a development shim is moved to Backups and the mod installed: on the
+       packaging machine, Diver's Best Friend failed to load from such a shim.
+1.0.0  First release.
 
 CREDITS AND SOURCE
 CREDITS.txt names every author. LICENSES\ holds the licence notices. FILES-SHA256.txt lists this archive.

@@ -24,13 +24,13 @@ One HD2 Arsenal mod that brings Live Lua Loader with LuaJIT and a full set of mo
 
 ## Install
 
-1. Download `Super-LiberTEA-LE-1.0.0-26251122.zip` from [Releases](../../releases).
+1. Download `Super-LiberTEA-LE-1.0.1-26251122.zip` from [Releases](../../releases).
 2. Close the game. In HD2 Arsenal, disable any other Live Lua Loader, Bingus Shared Loader, Boot Mod Loader or Chef Shared Loader, and any separate copy of the mods above.
 3. Import the zip. Every option is on; pick the sub-options you want (Transmog, Guard Dogs).
 4. Keep it **last** in the load order (with first-mod priority on, keep it first), then Purge / Deploy.
 5. Start the game. The Mod Configuration Menu holds every mod's settings.
 
-The first start writes LLL's files and the LLL mods into `%LOCALAPPDATA%\LLL\Helldivers2` inside the game's Proton prefix (`steamapps/compatdata/553850/pfx/drive_c/users/steamuser/AppData/Local/LLL/Helldivers2`). If you already installed your own build of one of those mods, it is left alone. `README.txt` in the zip explains what is written, how to turn a single mod off and how to remove everything.
+The first start writes LLL's files and the LLL mods into `%LOCALAPPDATA%\LLL\Helldivers2` inside the game's Proton prefix (`steamapps/compatdata/553850/pfx/drive_c/users/steamuser/AppData/Local/LLL/Helldivers2`). If you already installed your own build of one of those mods, it is left alone; a folder that only holds a development shim (a `main.lua` that loads the mod from a file elsewhere) is moved to `LLL/Helldivers2/Backups` and the mod installed. `README.txt` in the zip explains what is written, how to turn a single mod off and how to remove everything.
 
 ## Source
 
@@ -51,6 +51,11 @@ Everything that goes into the zip is here, item by item. Each folder's `SOURCE.m
 | `package/` | how the zip is built: `build_package.py`, the boot install block `mods_install.lua`, its Wine test, and `lll-dropin/` (LLL's drop-in boot patch builder) |
 
 `package/RECEIPT.json` records every input and output hash of the release build; `SHA256SUMS.txt` has the zip's hash.
+
+## Changes
+
+- **1.0.1**: the Megapack no longer names a folder on my machine (a helper DLL path its code never used), and a mod folder that only holds a development shim is moved to `Backups` and replaced with the real mod. On my machine, Diver's Best Friend failed to load from such a shim.
+- **1.0.0**: first release.
 
 ## Credits
 

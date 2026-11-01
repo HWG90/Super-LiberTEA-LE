@@ -4,7 +4,8 @@ under Wine with LLL's Windows Lua 5.1.4 (../lll/work/wine-lua/lua51.exe), as the
 The blocks write into the scratch prefix's own LOCALAPPDATA, from a fake game folder with a space in its path (the
 real layout by name, as ../lll/test_dropin_install.py builds it). Cases: fresh install, repeat start, a missing mod
 file, a file you changed, another build of a mod installed over this one, receipts lost (folders adopted), a
-foreign mod folder on a fresh install, and the first start after an earlier release of this package.
+foreign mod folder on a fresh install, the first start after an earlier release of this package, and a development
+shim in place of a mod (set aside to Backups, the mod installed).
   /usr/bin/python3 -I test_install.py --prefix <scratch WINEPREFIX> --scratch <scratch dir>
 """
 import argparse, json, os, shutil, subprocess, zlib
@@ -20,6 +21,7 @@ def main():
     parser.add_argument("--scratch", required=True, type=Path)
     args = parser.parse_args()
     receipt = json.loads((HERE / "RECEIPT.json").read_text())
+    version = receipt["version"]
     stage = HERE / "out" / "stage"
     mods = {m: {p.relative_to(stage / m).as_posix(): p.read_bytes() for p in sorted((stage / m).rglob("*")) if p.is_file()}
             for m in receipt["mods"]}
@@ -64,12 +66,12 @@ def main():
     shutil.rmtree(home.parent, ignore_errors=True)
     lll, line = start()
     check("fresh install: LLL's files", lll, "R38-26251122-luajit.2 files: 7 written, 0 in place")
-    check("fresh install: the mods", line, "Super LiberTEA - LE 1.0.0 mods: %d written, 0 in place" % total)
+    check("fresh install: the mods", line, "Super LiberTEA - LE %s mods: %d written, 0 in place" % (version, total))
     assert "left alone" not in line and "problems" not in line
     same()
     for mod, files in mods.items():
         text = (home / "SuperLiberTEA" / (mod + ".txt")).read_text()
-        assert text.startswith("release\t1.0.0\n") and text.count("\n") == len(files) + 1, mod
+        assert text.startswith("release\t%s\n" % version) and text.count("\n") == len(files) + 1, mod
     print("%40s every mod file byte-identical; %d receipts" % ("", len(mods)))
     lll, line = start()
     check("repeat start", line, "mods: 0 written, %d in place" % total)
@@ -127,7 +129,7 @@ def main():
     _, line = start()
     check("first start after an earlier release", line, "mods: 2 written, %d in place" % (total - 2))
     same()
-    assert (home / "SuperLiberTEA/goose_temporary_unlocks.txt").read_text().startswith("release\t1.0.0\n")
+    assert (home / "SuperLiberTEA/goose_temporary_unlocks.txt").read_text().startswith("release\t%s\n" % version)
 
     shutil.rmtree(home.parent, ignore_errors=True)
     (home / "Mods/dbf_freecam").mkdir(parents=True)
@@ -135,6 +137,28 @@ def main():
     _, line = start()
     check("fresh install beside your own WJ", line, "mods: %d written, 0 in place; left alone: dbf_freecam (another build is installed)"
           % (total - len(mods["dbf_freecam"])))
+
+    # A development shim in place of ASS, as on the porting machine: R46's manifest beside a main.lua that loads the
+    # mod from an Arsenal folder by drive path. It is not a build: its folder goes to Backups as it is.
+    shutil.rmtree(home.parent, ignore_errors=True)
+    dbf = home / "Mods/divers_best_friend"
+    (dbf / "config").mkdir(parents=True)
+    (dbf / "manifest.json").write_bytes(b'{"id":"divers_best_friend","version":"R46"}\n')
+    shim = (b"-- Exact archive-code acceptance through LLL's supported lifecycle.\n"
+            b"local f=assert(io.open('Z:/home/goose/.config/hd2arsenal/mods/DBF-ASS-R46-LuaJIT-26251122/Addon/63ab3b8f046c401d.lua','rb'));"
+            b"local data=f:read('*a');f:close()\n"
+            b"return assert(loadstring(data,'@DBF-ASS-current-archive'))()\n")
+    (dbf / "main.lua").write_bytes(shim)
+    _, line = start()
+    check("a development shim in place of ASS", line, "mods: %d written, 0 in place; set aside: divers_best_friend "
+          "(development shim, now Backups/divers_best_friend-shim-" % total)
+    assert "left alone" not in line and "problems" not in line
+    same()
+    backups = list((home / "Backups").glob("divers_best_friend-shim-*"))
+    assert len(backups) == 1 and (backups[0] / "main.lua").read_bytes() == shim and (backups[0] / "config").is_dir(), backups
+    _, line = start()
+    check("... next start", line, "mods: 0 written, %d in place" % total)
+    assert "set aside" not in line
     print("all cases pass")
 
 
