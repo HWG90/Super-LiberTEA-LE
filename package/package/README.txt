@@ -1,16 +1,15 @@
-Super LiberTEA - LE (Linux Edition) 1.0.1                     Helldivers 2 Steam build 26251122
+Super LiberTEA - LE (Linux Edition) 1.0.2                     Helldivers 2 Steam build 26251122
 
 LINUX / PROTON ONLY. IT WILL NOT WORK ON NATIVE WINDOWS (system error 577 for the LuaJIT runtime and cffi DLLs).
 One HD2 Arsenal mod. Import it, deploy it, play.
 
 WHAT IS INSIDE
   Live Lua Loader R38 (LuaJIT)       R38-26251122-luajit.2: hands the game's Lua over to LuaJIT and runs the mods below
-  LLL Compat Test                    test mods for LLL's Chef Shared Loader and Boot Mod Loader compatibility
   Mod Configuration Menu (DBF-MCM)   0.1.74-luajit.5: the in-game settings menu the other mods use
-  Diver's Best Friend (ASS) R46      stratagem wheel and list selection, cooldown dock, hotkeys
+  Diver's Best Friend (ASS) R46      stratagem wheel and list selection, cooldown dock, hotkeys (no DBF-HUD weapon readout)
   Vanilla Plus Megapack v42          all 25 of its mods, LuaJIT 26251122 port (includes Mod Options Menu and Mod Bindings Menu)
-  Goose Bridge Combat                0.1.17-experimental-26251122.10 (experimental)
-  War Journalist (Proton) 1.3.3      Photo Mode from the WJ-Proton branch (9613fcf), with its 1.2.0 assets
+  Goose Bridge Combat                0.1.17-experimental-26251122.12 (experimental)
+  War Journalist (Proton) 1.3.4      Photo Mode with bone posing (build 09a0940), with the 1.2.0 assets
   Goose Gadget Kit LE                0.5.10 with only the Spawner and First Person pages
   DiverKit 8.14.31 r6                loadout presets, randomizer, Transmog support
   HD2 Transmog Foundation 0.2.4      armor, helmet and cape looks with independent stats
@@ -34,13 +33,14 @@ Everything goes to %LOCALAPPDATA%\LLL\Helldivers2 inside the game's Proton prefi
   while it holds what this package wrote. If you installed another build of one of these mods yourself, that
   folder is left alone, and so is any file you changed. A folder that holds only a development shim (a main.lua
   that loads the mod from a file elsewhere by drive path) is moved to Backups\<mod>-shim-<time> as it is, and the
-  mod installed. SuperLiberTEA\<mod>.txt records what was written.
-  Logs\SuperLiberTEA-files.log: "Super LiberTEA - LE 1.0.1 mods: 0 written, 255 in place" on later starts,
+  mod installed. SuperLiberTEA\<mod>.txt records what was written; a file an earlier release wrote and this one
+  no longer ships is removed, unless you changed it.
+  Logs\SuperLiberTEA-files.log: "Super LiberTEA - LE 1.0.2 mods: 0 written, 254 in place" on later starts,
   followed by "set aside: ..." or "left alone: ..." when it moved or skipped something.
 Settings live in LLL\Helldivers2\Settings and are never touched.
 
 TURNING THINGS OFF
-- Arsenal options (Megapack mods, Guard Dogs parts, Transmog parts, DiverKit, the WJ assets, the Compat Test):
+- Arsenal options (Megapack mods, Guard Dogs parts, Transmog parts, DiverKit, the WJ assets):
   untick them in Arsenal, then Purge / Deploy. Keep "Live Lua Loader R38 (LuaJIT) + LLL mods" on.
 - One LLL mod: set it to false in LLL\Helldivers2\LLL.cfg, for example ["goose_bridge_combat"] = false,
   inside the "enabled" table. LLL then skips that folder.
@@ -58,10 +58,21 @@ KNOWN LIMITS
 - War Journalist captures screenshots with its Linux host worker; Wine's capture API is a stub.
 
 CHANGES
+1.0.2  War Journalist 1.3.4 (Proton) with bone posing: pose a diver bone by bone in the Subject tab and keep up to
+       99 poses. Bridge Combat .12: Armory weapon swaps no longer crash, and combat starts in multiplayer sessions.
+       Diver's Best Friend no longer starts DBF-HUD's weapon readout (published R46 never had it); the first start
+       removes its six files from your Mods folder. Gadget Kit LE's First Person starts again (four of its modules
+       were left out of the LE manifest since 1.0.0). LLL Compat Test (loader test mods) is gone. Each item is also
+       a separate download on the release page.
 1.0.1  The Megapack no longer names a folder on the packaging machine (a helper DLL path its code never used).
        A Mods folder that holds only a development shim is moved to Backups and the mod installed: on the
        packaging machine, Diver's Best Friend failed to load from such a shim.
 1.0.0  First release.
+
+SEPARATE DOWNLOADS
+The release page also has each item on its own: Live Lua Loader and the Arsenal mods as Arsenal zips, the LLL mods
+(DBF-MCM, Diver's Best Friend, Bridge Combat, War Journalist, Gadget Kit LE) as folders for LLL\Helldivers2\Mods.
+Use either this package or the separate downloads, not both.
 
 CREDITS AND SOURCE
 CREDITS.txt names every author. LICENSES\ holds the licence notices. FILES-SHA256.txt lists this archive.

@@ -3,13 +3,14 @@
 Two steps, each a subcommand:
   collect  copies every input into out/inputs/ and records it in INPUTS.json: the Arsenal packages as they deploy
            today (their patch files must be the ones in the game's data/ folder), the LLL folder mods (DBF-MCM,
-           ASS, Bridge Combat .10, the War Journalist Proton candidate built from WJ-Proton, Gadget Kit 0.5.10).
+           ASS, Bridge Combat .12, the War Journalist Proton bone-posing candidate, Gadget Kit 0.5.10).
   build    reads only out/inputs/ and the LLL drop-in inputs (../lll), and writes out/package/ (the Arsenal mod),
-           out/Super-LiberTEA-LE-<version>.zip, out/SHA256SUMS.txt and RECEIPT.json.
+           out/Super-LiberTEA-LE-<version>-<build>.zip, the separate downloads beside it (SEPARATE_ZIP: LLL alone, each
+           Arsenal part, each LLL folder mod), out/SHA256SUMS.txt over all of them, and RECEIPT.json.
 The boot patch is LLL R38-26251122-luajit.2's drop-in boot patch (../lll/build_lll_dropin.py, same install block,
 prologue and LLL source) with mods_install.lua rendered after LLL's own install block: at boot it writes the LLL
 folder mods into LOCALAPPDATA/LLL/Helldivers2/Mods. Gadget Kit LE = Gadget Kit 0.5.10 with gadget-kit-le/ over it
-(Spawner and First Person pages only). Zip bytes depend on zlib: use /usr/bin/python3 (3.14, zlib-ng), as LLL R38.
+(Spawner and First Person pages only); ASS LE = the R46 port without DBF-HUD's weapon readout. Zip bytes depend on zlib: use /usr/bin/python3 (3.14, zlib-ng), as LLL R38.
   /usr/bin/python3 -I build_package.py collect [--wj-candidate <dir>]
   /usr/bin/python3 -I build_package.py build
 """
@@ -23,12 +24,17 @@ import build_lll_boot as B  # noqa: E402
 import build_lll_dropin as D  # noqa: E402
 
 NAME = "Super LiberTEA - LE (Linux Edition)"
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 GAME_BUILD = "26251122"
 LLL_RELEASE = "R38-26251122-luajit.2"
 REPO = "https://github.com/HWG90/Super-LiberTEA-LE"
 GUID = str(uuid.uuid5(uuid.NAMESPACE_URL, REPO))
-STAMP = (2026, 11, 1, 0, 0, 0)
+# Shown in every Arsenal manifest this build writes (STAMP_LINE): the repo branch it is released from, the game build,
+# the patch number of VERSION and when this release was made. CREATED is set per release, so builds stay reproducible.
+BRANCH = "main"
+CREATED = "2026-11-02 18:20"
+STAMP = tuple(int(n) for n in re.split(r"[- :]", CREATED)) + (0,)
+STAMP_LINE = "Super LiberTEA - LE %s · branch %s · build %s · patch %s · created %s" % (VERSION, BRANCH, GAME_BUILD, VERSION.rsplit(".", 1)[1], CREATED)
 ARCHIVE = "9ba626afa44a3aa3.patch_0"
 OUT = HERE / "out"
 INPUTS = OUT / "inputs"
@@ -39,22 +45,24 @@ WORKSPACE = Path("/home/goose/Projects/Linux HD2 Mods/builds/26251122")
 LLL_PACKAGE = ARSENAL / "LLL-R38-26251122-luajit.2_AR622507"
 # The Megapack's 25 mods carry one licence (Zero-Clause BSD, CowboyBingus); LLL's conversions keep a copy per mod.
 MEGAPACK_LICENSE = Path("/home/goose/Worktrees/linux-hd2/lll-r38-luajit2/bingus-conversions/BetterStratagemBounce/LICENSE")
-WJ_DEFAULT = Path("/tmp/claude-1000/-home-goose-Projects-Linux-HD2-Mods--claude-worktrees-democracy-overlord-arsenal-0a3429"
-                  "/b9e63c6b-7bcd-4753-ab3f-ca83c3042c8c/scratchpad/src/wj-proton/dist/review/proton/le-9613fcf")
+WJ_DEFAULT = Path("/home/goose/Documents/ChatGPT/Linux HD2/.claude/worktrees/wj-proton-bone-posing-668ec2/prior-war-journalist"
+                  "/dist/review/proton/bone-posing-dev.6")
 
 # Arsenal packages, in the LuaJIT Proton profile's order. Their options go into the one manifest under a prefix.
 PARTS = [
     dict(key="wj-assets", source="War-Journalist-1.2.0-Assets_AR297988", folder="War Journalist Assets",
-         title="War Journalist assets 1.2.0", docs=["ASSET-MANIFEST.json", "INSTALL.txt"]),
+         title="War Journalist assets 1.2.0", docs=["ASSET-MANIFEST.json", "INSTALL.txt"],
+         zip="War-Journalist-Assets", needs="Nothing; War Journalist (Proton) uses them (the War-Journalist-Proton download)."),
     dict(key="diverkit", source="DiverKit-8.14.31-LuaJIT-26251122", folder="DiverKit",
-         title="DiverKit 8.14.31 r6", docs=["README-UPDATE.txt", "CHANGELOG-8.14.31.txt", "PORT-VALIDATION.json"]),
+         title="DiverKit 8.14.31 r6", docs=["README-UPDATE.txt", "CHANGELOG-8.14.31.txt", "PORT-VALIDATION.json"], zip="DiverKit", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package."),
     dict(key="sgd", source="Smarter-Guard-Dogs-5.2.0-LuaJIT-26251122", folder="Smarter Guard Dogs",
-         title="Guard Dogs", docs=["PORT-VALIDATION.json", "thumbnail.png"]),
+         title="Guard Dogs", docs=["PORT-VALIDATION.json", "thumbnail.png"], zip="Smarter-Guard-Dogs", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package."),
     dict(key="megapack", source="Vanilla-Plus-Megapack-v42-CFFI-Development", folder="Vanilla Plus Megapack",
-         title="Megapack", docs=["VanillaPlusMegapack-README.txt", "VanillaPlusMegapack-manifest.json", "thumbnail.png"]),
+         title="Megapack", docs=["VanillaPlusMegapack-README.txt", "VanillaPlusMegapack-manifest.json", "thumbnail.png"],
+         zip="Vanilla-Plus-Megapack", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package."),
     dict(key="transmog", source="HD2-Transmog-Foundation-LuaJIT-26251122", folder="Transmog",
-         title="Transmog", docs=["README.md", "README.ru.md", "README.txt", "THIRD-PARTY-LICENSES.txt", "PORT-VALIDATION.json", "mod-icon.png"]),
-    dict(key="compat", source="LLL-Compat-Test", folder="LLL Compat Test", title="LLL Compat Test", docs=[]),
+         title="Transmog", docs=["README.md", "README.ru.md", "README.txt", "THIRD-PARTY-LICENSES.txt", "PORT-VALIDATION.json", "mod-icon.png"],
+         zip="Transmog", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package."),
 ]
 # Patch files and the Lua copies Arsenal scans; backups such as *.before-dbf-save stay out.
 GAME_FILE = re.compile(r"^[0-9a-f]{16}\.(patch_\d+(\.gpu_resources|\.stream)?|lua)$")
@@ -63,20 +71,47 @@ GAME_FILE = re.compile(r"^[0-9a-f]{16}\.(patch_\d+(\.gpu_resources|\.stream)?|lu
 FOLDER_MODS = [
     dict(id="dbf_mcm", title="Mod Configuration Menu (DBF-MCM)", version="0.1.74-luajit.5",
          source=Path("/home/goose/Worktrees/linux-hd2/dbf-mcm-inproc-font/luajit-ports/dbf_mcm"),
-         git=("/home/goose/Worktrees/linux-hd2/dbf-mcm-inproc-font", "0c98387")),
-    dict(id="divers_best_friend", title="Diver's Best Friend (ASS) R46", version="R46-luajit.2-26251122",
-         source=ARSENAL / "DBF-ASS-R46-LuaJIT-26251122/Payload", luajit_only=True),
-    dict(id="goose_bridge_combat", title="Goose Bridge Combat", version="0.1.17-experimental-26251122.10",
-         source=WORKSPACE / "mods/bridge-combat/stage-original/goose_bridge_combat"),
-    dict(id="dbf_freecam", title="War Journalist (Proton)", version="1.3.3-proton", source=None),
+         git=("/home/goose/Worktrees/linux-hd2/dbf-mcm-inproc-font", "0c98387"), zip="DBF-MCM", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package."),
+    dict(id="divers_best_friend", title="Diver's Best Friend (ASS) R46", version="R46-luajit.2-26251122-le.1",
+         source=ARSENAL / "DBF-ASS-R46-LuaJIT-26251122/Payload", base_version="R46-luajit.2-26251122", luajit_only=True,
+         zip="Divers-Best-Friend", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package; Mod Bindings Menu for its hotkeys (in the Vanilla-Plus-Megapack download)."),
+    dict(id="goose_bridge_combat", title="Goose Bridge Combat", version="0.1.17-experimental-26251122.12",
+         source=WORKSPACE / "mods/bridge-combat/stage-original/goose_bridge_combat",
+         zip="Bridge-Combat", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package. DBF-MCM is optional (its settings page)."),
+    dict(id="dbf_freecam", title="War Journalist (Proton)", version="1.3.4-proton", source=None,
+         branch="claude/wj-proton-bone-posing (HWG90/DBF_PhotoMode, from WJ-Proton)",
+         zip="War-Journalist-Proton", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package; the War-Journalist-Assets download."),
     dict(id="goose_temporary_unlocks", title="Goose Gadget Kit LE", version="0.5.10-cffi-26251122-le.1",
-         source=PREFIX / "Mods/goose_temporary_unlocks", base_version="0.5.10-cffi-26251122"),
+         source=PREFIX / "Mods/goose_temporary_unlocks", base_version="0.5.10-cffi-26251122",
+         zip="Gadget-Kit-LE", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package; DBF-MCM (its pages are in the Mod Configuration Menu)."),
 ]
+# Separate downloads beside the full package: each Arsenal part as its own Arsenal mod, LLL alone (luajit.2's files),
+# and each LLL folder mod as a folder to extract into LLL's Mods folder. One boot patch is live at a time, so the
+# folder mods cannot be Arsenal mods of their own.
+SEPARATE_ZIP = "Super-LiberTEA-LE-%s-%s-%s.zip"
+SEPARATE_NOTE = "SUPER-LIBERTEA-LE.txt"
+ARSENAL_STEPS = ("1. Close the game. Import this zip in HD2 Arsenal.\n"
+                 "2. Keep Live Lua Loader last in the load order (with first-mod priority on, first), then Purge / Deploy.")
+FOLDER_STEPS = ("1. Close the game. Extract the {id} folder of this zip into %LOCALAPPDATA%\\LLL\\Helldivers2\\Mods inside the\n"
+                "   game's Proton prefix (steamapps/compatdata/553850/pfx/drive_c/users/steamuser/AppData/Local/LLL/Helldivers2/Mods),\n"
+                "   so that Mods\\{id}\\manifest.json exists. Start the game once with LLL first if that folder does not exist yet.\n"
+                "2. Start the game. To turn it off, set [\"{id}\"] = false inside the \"enabled\" table of LLL\\Helldivers2\\LLL.cfg.")
 # Gadget Kit LE: what the Spawner and First Person pages never load.
 LE_DROPPED = ["src/memory.lua", "src/core.lua", "src/backend.lua", "src/controller.lua", "src/freezes.lua", "src/passive_ai.lua",
               "src/equipment.lua", "src/equipment_backend.lua", "src/extraction.lua", "src/objectives.lua",
               "native/guarded_reads_fb18682bc3515a7a.dll", "native/native_ads_near_26251122_aee46b657684.dll"]
-REQUIRE = re.compile(r"mod\.require\(\s*['\"]([^'\"]+)['\"]")
+# ASS LE: the R46 port also starts DBF-HUD's weapon readout (a status strip beside the weapon row, read from game
+# memory, logging to DBF-HUD.log). Published R46 has none of it; LE leaves its six modules and its four lines in
+# main.lua out, as (port's line, LE's line).
+ASS_DROPPED = ["src/weapon_status.lua", "src/weapon_status_memory.lua", "src/weapon_status_layouts.lua", "src/weapon_status_ammo.lua",
+               "src/weapon_status_reader.lua", "src/weapon_status_strip.lua"]
+ASS_MAIN = [(b"local weapon_status,terminal\n", b"local terminal\n"),
+            (b"  weapon_status=mod.require('src/weapon_status.lua').new(mod.scope)\n", b""),
+            (b"local result=callback(dt);weapon_status.update(dt);terminal.update(dt)", b"local result=callback(dt);terminal.update(dt)"),
+            (b"  if weapon_status then local ok,why=weapon_status.close();if not ok then return false,why end end\n", b"")]
+# A module path in a mod's Lua. Mods load modules through mod.require, Host.require or helpers of their own (Gadget
+# Kit's first-person runtime has a local module()), so every quoted path counts; LLL refuses one the manifest omits.
+MODULE_PATH = re.compile(r"['\"]((?:src|config)/[^'\"]+\.lua)['\"]")
 # The Megapack's bundle file 79e4f54aa542ec98 (in 24 options, as a Lua copy and inside the patch) carries the CFFI
 # port's private adapter, whose helper-DLL folder was written in as the development package's Arsenal folder on the
 # porting machine. The bundle code only calls PORT51.kind, so the DLL is never loaded: 1.0.1 drops the folder and
@@ -147,7 +182,7 @@ def collect(args):
             receipt = json.loads((args.wj_candidate / "BUILD-RECEIPT.json").read_text())
             provenance = json.loads(files["PROVENANCE.json"])
             assert all(sha(files[n]) == h for n, h in provenance["source_sha256"].items()) and receipt["module_audit"]["passed"]
-            entry.update(build=provenance["build"], package_sha256=receipt["sha256"], branch="WJ-Proton (HWG90/DBF_PhotoMode)")
+            entry.update(build=provenance["build"], package_sha256=receipt["sha256"], branch=mod["branch"])
         if (PREFIX / "Mods" / mod["id"]).is_dir():
             installed = tree(PREFIX / "Mods" / mod["id"])
             entry["same_as_installed"] = installed == files
@@ -175,12 +210,12 @@ def gadget_le(files):
     for name in ("main.lua", "src/mcm.lua"):
         out[name] = (HERE / "gadget-kit-le" / name).read_bytes()
     manifest = json.loads(files["manifest.json"])
-    seen, queue = set(), REQUIRE.findall(out["main.lua"].decode())
+    seen, queue = set(), MODULE_PATH.findall(out["main.lua"].decode())
     while queue:
         name = queue.pop()
-        if name not in seen:
+        if name not in seen and (name in out or name in LE_DROPPED):
             seen.add(name)
-            queue += REQUIRE.findall(out[name].decode())
+            queue += MODULE_PATH.findall(out[name].decode()) if name in out else []
     modules = [m for m in manifest["lll"]["modules"] if m in seen]
     assert set(modules) == seen and not seen & set(LE_DROPPED), sorted(seen ^ set(modules))
     text = b"\n".join(d for n, d in out.items() if n.endswith(".lua"))
@@ -198,6 +233,27 @@ def gadget_le(files):
     note = ("> **Gadget Kit LE** (Super LiberTEA - LE): this build has only the **Spawner** and **First Person** pages. "
             "The Unlocks and Gameplay sections below describe the full kit and are not in this build.\n\n")
     out["README.md"] = note.encode() + files["README.md"]
+    return out
+
+
+def ass_le(files):
+    """ASS R46's LuaJIT port without DBF-HUD's weapon readout (ASS_DROPPED, ASS_MAIN)."""
+    out = {n: d for n, d in files.items() if n not in ASS_DROPPED}
+    assert len(out) == len(files) - len(ASS_DROPPED), "an ASS_DROPPED file is missing"
+    main = files["main.lua"]
+    for old, new in ASS_MAIN:
+        assert main.count(old) == 1, old
+        main = main.replace(old, new)
+    out["main.lua"] = main
+    manifest = json.loads(files["manifest.json"])
+    modules = manifest["lll"]["modules"]
+    assert set(ASS_DROPPED) <= set(modules)
+    manifest["lll"]["modules"] = [m for m in modules if m not in ASS_DROPPED]
+    manifest.update(version="R46-luajit.2-26251122-le.1",
+                    description=manifest["description"] + " The Super LiberTEA - LE build: without DBF-HUD's weapon readout.")
+    out["manifest.json"] = (json.dumps(manifest, indent=2) + "\n").encode()
+    text = b"\n".join(d for n, d in out.items() if n.endswith(".lua"))
+    assert b"weapon_status" not in text and b"DBF-HUD" not in text, "the weapon readout is still referenced"
     return out
 
 
@@ -290,16 +346,79 @@ def option_prefix(part, manifest):
     return options
 
 
+def write_zip(path, files):
+    """A reproducible zip of {name: bytes}, read back whole. Returns its sha256."""
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for name, data in sorted(files.items()):
+            info = zipfile.ZipInfo(name, STAMP)
+            info.compress_type, info.external_attr = zipfile.ZIP_DEFLATED, 0o644 << 16
+            z.writestr(info, data)
+    with zipfile.ZipFile(path) as z:
+        assert z.testzip() is None and {i.filename: z.read(i) for i in z.infolist()} == files
+    return sha(path.read_bytes())
+
+
+def check_options(options, files):
+    """Every option's folders and images are in the archive."""
+    for option in options:
+        for entry in [option] + (option.get("SubOptions") or []):
+            for folder in entry.get("Include") or []:
+                assert any(n.startswith(folder + "/") for n in files), folder
+            assert not entry.get("Image") or entry["Image"] in files, entry["Image"]
+
+
+def separate_zips(parts, mods):
+    """The separate downloads, {zip name: files}: LLL alone (luajit.2's Arsenal package), each Arsenal part with its own
+    manifest, each LLL folder mod as its folder. Each carries SEPARATE_NOTE: how to install it and what it needs."""
+    def note(title, steps, needs):
+        return ("%s\nfrom %s %s, Helldivers 2 Steam build %s. Linux/Proton only.\n\nINSTALL\n%s\n\nNEEDS\n%s\n\n"
+                "The full package, the other separate downloads, credits and every item's source: %s\n"
+                % (title, NAME, VERSION, GAME_BUILD, steps, needs, REPO)).encode()
+    def stamped(raw):
+        manifest = json.loads(raw)
+        manifest["Description"] = "From %s. %s" % (STAMP_LINE, manifest.get("Description", ""))
+        return (json.dumps(manifest, indent=2, ensure_ascii=False) + "\n").encode()
+    out = {}
+    lll = tree(LLL_PACKAGE)
+    lll["manifest.json"] = stamped(lll["manifest.json"])
+    dropin = json.loads(D.paths(LLL_RELEASE)["receipt"].read_text())
+    assert sha(lll["LLL-R38/" + ARCHIVE]) == dropin["patch_sha256"], "the LLL package is not luajit.2's"
+    check_options(json.loads(lll["manifest.json"])["Options"], lll)
+    lll[SEPARATE_NOTE] = note("Live Lua Loader R38 (LuaJIT) %s" % LLL_RELEASE, ARSENAL_STEPS + "\n   Turn off any other Live Lua Loader, "
+                              "Bingus Shared Loader, Boot Mod Loader or Chef Shared Loader, and the full package.", "Nothing else.")
+    out[SEPARATE_ZIP % (VERSION, GAME_BUILD, "Live-Lua-Loader-R38-LuaJIT")] = lll
+    for part in PARTS:
+        manifest, files = parts[part["key"]]
+        files = dict(files)
+        files["manifest.json"] = stamped(files["manifest.json"])
+        check_options(manifest["Options"], files)
+        if part["key"] == "megapack":
+            files["LICENSE"] = MEGAPACK_LICENSE.read_bytes()
+        files[SEPARATE_NOTE] = note(manifest["Name"], ARSENAL_STEPS, part["needs"])
+        out[SEPARATE_ZIP % (VERSION, GAME_BUILD, part["zip"])] = files
+    for mod in FOLDER_MODS:
+        files = {mod["id"] + "/" + n: d for n, d in mods[mod["id"]].items()}
+        files[SEPARATE_NOTE] = note("%s (version %s)" % (mod["title"], mod["version"]), FOLDER_STEPS.format(id=mod["id"]), mod["needs"])
+        out[SEPARATE_ZIP % (VERSION, GAME_BUILD, mod["zip"])] = files
+    for name, files in out.items():
+        for f, data in files.items():
+            found = [p.decode() for p in MACHINE_PATHS if p in data]
+            assert not found or f.rsplit("/", 1)[-1] == "PORT-VALIDATION.json", (name, f, found)
+    return out
+
+
 def build(args):
     record = json.loads((HERE / "INPUTS.json").read_text())
-    package, options, megapack = {}, [], []
+    package, options, megapack, parts = {}, [], [], {}
     for part in PARTS:
         files = tree(INPUTS / part["key"])
-        manifest = json.loads(files.pop("manifest.json"))
+        raw = files.pop("manifest.json")
+        manifest = json.loads(raw)
         assert {n: sha(d) for n, d in files.items() if re.search(r"\.patch_\d+$", n)} == record["parts"][part["key"]]["patches"]
         if part["key"] == "megapack":
             files, megapack = megapack_portable(files)
         options += option_prefix(part, manifest)
+        parts[part["key"]] = (manifest, dict(files, **{"manifest.json": raw}))
         for name, data in files.items():
             package[part["folder"] + "/" + name] = data
     mods = {}
@@ -308,11 +427,17 @@ def build(args):
         assert {n: sha(d) for n, d in files.items()} == record["mods"][mod["id"]]["files"], mod["id"] + ": inputs changed since collect"
         if mod["id"] == "goose_temporary_unlocks":
             files = gadget_le(files)
+        if mod["id"] == "divers_best_friend":
+            files = ass_le(files)
         manifest = json.loads(files["manifest.json"])
         assert manifest["id"] == mod["id"] and manifest["version"] == mod["version"]
         spec = manifest["lll"]
-        for name in [spec["entry"]] + spec["modules"] + ([spec["defaults"]] if spec.get("defaults") else []):
+        declared = [spec["entry"]] + spec["modules"] + ([spec["defaults"]] if spec.get("defaults") else [])
+        for name in declared:
             assert name in files, "%s: %s missing" % (mod["id"], name)
+        undeclared = sorted({n for f, d in files.items() if f.endswith(".lua") for n in MODULE_PATH.findall(d.decode(errors="replace"))
+                             if n in files and n not in declared})
+        assert not undeclared, "%s: shipped and loaded but not declared, LLL would refuse: %s" % (mod["id"], undeclared)
         stage = OUT / "stage" / mod["id"]
         write_tree(stage, files)
         lua_check(stage, [n for n in files if n.endswith(".lua")], ("luajit",) if mod.get("luajit_only") else ("lua5.1", "luajit"))
@@ -337,18 +462,14 @@ def build(args):
     for name in (HERE / "package").rglob("*"):
         if name.is_file():
             package[name.relative_to(HERE / "package").as_posix()] = name.read_bytes()
-    manifest = {"Version": 1, "Guid": GUID, "Name": NAME,
-                "Description": "Steam build %s, Linux/Proton only. Live Lua Loader with LuaJIT and its mods in one archive: "
+    manifest = {"Version": 1, "Guid": GUID, "Name": "%s %s" % (NAME, VERSION),
+                "Description": STAMP_LINE + ". Steam build %s, Linux/Proton only. Live Lua Loader with LuaJIT and its mods in one archive: "
                                "DBF-MCM, ASS, Bridge Combat, War Journalist (Proton) with assets, Goose Gadget Kit LE, DiverKit, "
-                               "Transmog, Smarter Guard Dogs & Sentries, the Vanilla Plus Megapack and LLL Compat Test. "
+                               "Transmog, Smarter Guard Dogs & Sentries and the Vanilla Plus Megapack. "
                                "Keep it last in the load order. See README.txt." % GAME_BUILD,
                 "IconPath": "icon.png", "Options": options}
     package["manifest.json"] = (json.dumps(manifest, indent=2, ensure_ascii=False) + "\n").encode()
-    for option in options:
-        for entry in [option] + (option.get("SubOptions") or []):
-            for folder in entry.get("Include") or []:
-                assert any(n.startswith(folder + "/") for n in package), folder
-            assert not entry.get("Image") or entry["Image"] in package, entry["Image"]
+    check_options(options, package)
     assert "icon.png" in package and "README.txt" in package
     for name, data in package.items():
         # PORT-VALIDATION.json files are the ports' records of where they were validated, not code.
@@ -357,24 +478,22 @@ def build(args):
     package["FILES-SHA256.txt"] = "".join("%s  %s\n" % (sha(v), k) for k, v in sorted(package.items())).encode()
     write_tree(OUT / "package", package)
     zip_name = "Super-LiberTEA-LE-%s-%s.zip" % (VERSION, GAME_BUILD)
-    with zipfile.ZipFile(OUT / zip_name, "w", zipfile.ZIP_DEFLATED) as z:
-        for name, data in sorted(package.items()):
-            info = zipfile.ZipInfo(name, STAMP)
-            info.compress_type, info.external_attr = zipfile.ZIP_DEFLATED, 0o644 << 16
-            z.writestr(info, data)
-    with zipfile.ZipFile(OUT / zip_name) as z:
-        assert z.testzip() is None and {i.filename: z.read(i) for i in z.infolist()} == package
-    digest = sha((OUT / zip_name).read_bytes())
-    (OUT / "SHA256SUMS.txt").write_text("%s  %s\n" % (digest, zip_name))
-    result = {"name": NAME, "version": VERSION, "game_build": GAME_BUILD, "guid": GUID, "zip": zip_name, "zip_sha256": digest,
+    digest = write_zip(OUT / zip_name, package)
+    sums, separate = ["%s  %s\n" % (digest, zip_name)], {}
+    for name, files in separate_zips(parts, mods).items():
+        separate[name] = {"sha256": write_zip(OUT / name, files), "bytes": (OUT / name).stat().st_size, "files": len(files)}
+        sums.append("%s  %s\n" % (separate[name]["sha256"], name))
+    (OUT / "SHA256SUMS.txt").write_text("".join(sums))
+    result = {"name": NAME, "version": VERSION, "game_build": GAME_BUILD, "guid": GUID, "branch": BRANCH, "created": CREATED, "zip": zip_name, "zip_sha256": digest,
               "zip_bytes": (OUT / zip_name).stat().st_size, "patch_sha256": sha(patch), "patch_bytes": len(patch), "chunk_bytes": len(chunk),
               "boot": boot, "options": [o["Name"] for o in options],
               "megapack_bundle_folder_removed": {"from": MEGAPACK_DIR.decode(), "to": MEGAPACK_NO_DIR.decode(), "files": megapack},
+              "ass_weapon_readout_removed": ASS_DROPPED,
               "mods": {i: {"version": json.loads(f["manifest.json"])["version"], "files": len(f), "bytes": sum(map(len, f.values())),
                            "manifest_sha256": sha(f["manifest.json"])} for i, f in mods.items()},
-              "zip_contents": len(package), "live_acceptance": "pending"}
+              "zip_contents": len(package), "separate": separate, "live_acceptance": "pending"}
     (HERE / "RECEIPT.json").write_text(json.dumps(result, indent=1, ensure_ascii=False) + "\n")
-    print(json.dumps({k: result[k] for k in ("zip", "zip_sha256", "zip_bytes", "patch_bytes", "mods")}, indent=1))
+    print(json.dumps({k: result[k] for k in ("zip", "zip_sha256", "zip_bytes", "patch_bytes", "mods", "separate")}, indent=1))
 
 
 def main():

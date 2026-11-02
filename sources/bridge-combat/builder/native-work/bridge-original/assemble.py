@@ -10,7 +10,7 @@ Usage: python3 -I assemble.py ORIGINAL_ROOT UNPORT_OUT PORT_SRC WEAPON_MENU_DLL 
 import hashlib, json, re, sys
 from pathlib import Path
 
-VERSION = '0.1.17-experimental-26251122.10'
+VERSION = '0.1.17-experimental-26251122.12'
 LOCAL_FILES = ('main.lua', 'manifest.json', 'config/defaults.cfg', 'LICENSE', 'README.md', 'TERMINAL-ICONS.md')
 # (file, line, old literal, new literal, why): lines unport.py could not match because the port rewrote them.
 HAND = [
@@ -83,8 +83,13 @@ def main():
          'Supported game/executable builds: `6AE0E5FF` / `6AE0964A` (Steam build 26251122; package ' + VERSION + '). '
          'The 7.2.0 game update keeps code pages encrypted until first executed, so this build warms every page it '
          'needs one per frame once the ship is observed, before the hotkey is accepted; no game memory is written. '
-         'This package (.8 onwards; .10 pauses on the first lost step again) pauses the bridge animation and releases its clip leases while the native weapon menu is lost '
-         'outside a ship menu (the Armory), so a weapon swap can unload equipment packages.')
+         'From .11 combat controls arm only once every loaded loadout and weapon attachment package carries a Bridge '
+         'reference, and a reference is returned only once the game has let the package go and no live unit (a dropped '
+         'magazine, a casing) still holds one of its units, so an Armory weapon swap cannot unload a resource such a unit '
+         'holds. While the native weapon menu is lost outside a ship menu (the Armory), the bridge animation pauses and '
+         're-initializes for the new loadout afterwards (.8, first lost step since .10). From .12 the bridge animation also '
+         'initializes with other wielders present (a multiplayer session): the Wielder manager field the 0.1.17 lease read as a '
+         'row capacity is not one, and the local row is bounded by the manager\'s count.')
     edit(out / 'README.md', '## Build\n\n', '## Build\n\nThis package was assembled from the 0.1.17 source by `terminal-26251122/tools` '
          '(GooseGadgets); the original build steps below are the 0.1.17 ones.\n\n')
     report = json.loads((unported / 'unport-report.json').read_text())
@@ -149,18 +154,20 @@ def main():
          "            end\n")
     # Current War Journalist publishes DBF_PHOTO_MODE_OWNER; the original only knew the upvalue discovery.
     edit(out / 'src/runtime.lua', 'local function photo_state(globals)\n', PHOTO_OWNER)
-    # .8 (2026-10-31/11-01, three crashes): swapping weapons at the Armory unloads equipment packages that the clip
-    # leases ran through, and the engine refuses the unload (its fatal check inside the clip release function, on the
-    # engine's own stack). The one-shot latch never updated the animation once combat was ready, so the pose and its
-    # leases outlived the Armory visit. Now: the native weapon menu is lost whenever the game replaces the HUD; with no
-    # ship menu open that is the Armory (or another terminal). The runtime then marks hud_pause, the animation observer
-    # reports not ready (pose restored, clips and assets released through the existing cleanup), and once the menu is
-    # owned again the runtime un-latches so the ordinary path re-initializes the animation and latches again.
+    # .8 (2026-10-31/11-01): the one-shot latch never updated the animation once combat was ready, so the pose and its
+    # leases outlived an Armory visit and its weapon swap. Now: the native weapon menu is lost whenever the game replaces
+    # the HUD; with no ship menu open that is the Armory (or another terminal). The runtime then marks hud_pause, the
+    # animation observer reports not ready (pose restored, clips and assets released through the existing cleanup), and
+    # once the menu is owned again the runtime un-latches so the ordinary path re-initializes the animation for the new
+    # loadout and latches again. .8 was built on a wrong cause: the four Armory crashes (10-31 23:51, 23:54, 11-01 00:08
+    # on .6; 14:53 on .9) are the engine's fatal check in the resource release (exe+0x635b43, reached from the swap's own
+    # package unload) on a magazine attachment unit that a live unit still held, not on a clip. The pause timing does
+    # not decide whether a swap is safe; .11's equipment holds (below) do.
     runtime = out / 'src/runtime.lua'
     edit(runtime, "    local weapon_ui_paused,weapon_resume_delay=false,0\n",
          "    local weapon_ui_paused,weapon_resume_delay=false,0\n"
          "    -- .8: the native weapon menu is lost whenever the game replaces the HUD; with no ship menu open\n"
-         "    -- that is the Armory (or another terminal). hud_pause releases the pose and its clip leases there.\n"
+         "    -- that is the Armory (or another terminal). hud_pause restores the pose there and re-initializes it after.\n"
          "    local hud_pause,hud_owned=false,false\n")
     edit(runtime, "        return {token=observation.token,ready=observation.ready==true and owned,\n"
                   "            hold=observation.hold==true and owned,\n"
@@ -169,18 +176,17 @@ def main():
          "            hold=observation.hold==true and owned and not hud_pause,\n"
          "            reason=not owned and 'Waiting for acknowledged bridge controls' or hud_pause and 'Native weapon menu unavailable (Armory or HUD change)' or observation.reason}\n")
     edit(runtime, "    -- Publish lifecycle changes through the retained station UI, not a timer.\n    local function publish_progress()\n",
-         "    -- .8 (2026-10-31 Armory crash): a weapon swap unloads equipment packages that the clip leases ran\n"
-         "    -- through, and the engine refuses the unload. While the native menu is lost outside a ship menu, the\n"
-         "    -- animation observer reports not ready, so the pose is restored and the leases released; once the menu\n"
-         "    -- is owned again the ordinary path re-initializes the animation and latches.\n"
+         "    -- .8: while the native menu is lost outside a ship menu (the Armory), the animation observer reports\n"
+         "    -- not ready, so the pose is restored and its leases released; once the menu is owned again the ordinary\n"
+         "    -- path re-initializes the animation for the current loadout and latches. Whether a weapon swap may\n"
+         "    -- unload a package is decided by the equipment holds (.11), not by this timing.\n"
          "    local function track_hud(acquired)\n"
          "        if acquired then\n"
          "            hud_owned=true\n"
          "            if hud_pause then hud_pause=false;log('Native weapon menu owned again; the bridge animation resumes')end\n"
          "        elseif hud_owned and weapon_menu:is_clean()and not hud_pause then\n"
-         "            -- .10: pause on the first evaluation that finds the menu retired, as .8 did live. The .9\n"
-         "            -- half-second debounce let the Armory re-acquire its rebuilt menu on the next 4 Hz step before\n"
-         "            -- the pause fired, and a swap crashed again (2026-11-01 19:53Z). A loss on an unreadable\n"
+         "            -- .10: pause on the first evaluation that finds the menu retired, as .8 did live (.9 debounced\n"
+         "            -- half a second, and the Armory re-acquired its rebuilt menu first). A loss on an unreadable\n"
          "            -- observation is eligible (.9). Photo Mode retires the menu too; its camera hold keeps the pose\n"
          "            -- and stays authoritative; a ship menu (ESC) keeps the one-shot pose.\n"
          "            if self.enabled and(not observation or observation.menu_closed==true and observation.hold~=true and observation.photo~=true)then\n"
@@ -193,7 +199,7 @@ def main():
          "        if not value then self.latched=false;weapon_ui_paused=false;weapon_resume_delay=0;hud_pause=false;hud_owned=false end\n")
     edit(runtime, "                if weapon_resume_delay>0 then return true end\n                weapon_resume_delay=.25\n",
          "                if weapon_resume_delay>0 then\n"
-         "                    if hud_pause then animation:update(dt)end -- .8: release the pose and leases every frame\n"
+         "                    if hud_pause then animation:update(dt)end -- .8: restore the pose while paused\n"
          "                    return true\n"
          "                end\n"
          "                weapon_resume_delay=.25\n")
@@ -213,6 +219,73 @@ def main():
          "            local menu_done,menu_why=weapon_menu_step(dt)\n"
          "            track_hud(menu_done==true and not weapon_menu:is_clean())\n"
          "            if menu_done~=true then return false,menu_why end\n")
+    # .11: the four Armory crashes are the engine's resource release refusing to unload a magazine attachment unit
+    # that a live unit still held (exe+0x635b43; MurmurHash64A names from the dumps). Firing and reloading on the ship
+    # leave units of the equipped weapon's packages in the world; stock HD2 never reloads there, so the Armory's swap
+    # never meets them. A magazine attachment ships in a one-unit package of its own (game data, pkgscan listing), which
+    # the animation's loadout-package lease never held. src/equipment_hold.lua keeps one counted reference (the game's
+    # own wrapper, as the support and animation package journals do) on every loaded loadout/attachment package of
+    # src/equipment_packages.lua while combat is on, taken before combat controls arm, and returns a reference only
+    # when the game has let the package go and the engine's live-unit hold map holds none of its unit resources.
+    (out / 'src/equipment_hold.lua').write_bytes((Path(__file__).resolve().parent / 'equipment_hold.lua').read_bytes())
+    (out / 'src/equipment_packages.lua').write_bytes((Path(__file__).resolve().parent / 'equipment_packages.lua').read_bytes())
+    edit(runtime, "    local observation,observation_reason\n",
+         "    local observation,observation_reason\n"
+         "    -- .11 (Armory swap fatal, four crashes 10-31/11-01): ship combat leaves units of the equipped weapon's\n"
+         "    -- packages in the world (a reload drops a magazine attachment unit), and the Armory's swap must not unload\n"
+         "    -- a package such a unit still holds. Combat controls arm only once every loaded loadout and attachment\n"
+         "    -- package carries a Bridge hold; holds refresh while combat is on and drain in every state.\n"
+         "    local equipment=options.equipment or load('src/equipment_hold.lua').new(io,{globals=options.globals,log=log,\n"
+         "        catalogue=load('src/equipment_packages.lua')})\n"
+         "    local equipment_ready,equipment_reason,equipment_wait,equipment_drain_wait=false,nil,0,0\n"
+         "    local function equipment_hold()\n"
+         "        local held,why=equipment:hold()\n"
+         "        equipment_wait=held==true and 1 or .25 -- a new weapon needs its hold before a later swap, seconds away\n"
+         "        local reason=held~=true and tostring(why or 'Equipment holds pending')or nil\n"
+         "        if reason and reason~=equipment_reason then log('Equipment hold: '..reason)end\n"
+         "        equipment_ready,equipment_reason=held==true,reason\n"
+         "        return equipment_ready\n"
+         "    end\n"
+         "    local function equipment_step(dt)\n"
+         "        dt=type(dt)=='number'and math.max(0,math.min(dt,1))or .016\n"
+         "        equipment_wait,equipment_drain_wait=math.max(0,equipment_wait-dt),math.max(0,equipment_drain_wait-dt)\n"
+         "        if not self.enabled then equipment_ready=false\n"
+         "        elseif observation and equipment_wait<=0 then equipment_hold()end\n"
+         "        if equipment_drain_wait<=0 then\n"
+         "            equipment_drain_wait=2\n"
+         "            local drained,why=equipment:drain()\n"
+         "            if drained~=true and tostring(why)~=equipment_reason then equipment_reason=tostring(why);log('Equipment hold: '..equipment_reason)end\n"
+         "        end\n"
+         "    end\n")
+    edit(runtime, "            or not ui_assets_ready or not fx_assets_ready then return end\n",
+         "            or not ui_assets_ready or not fx_assets_ready then return end\n"
+         "        -- .11: no shot before every loaded loadout/attachment package carries a Bridge hold.\n"
+         "        if not base.active and not equipment_ready and(equipment_wait>0 or not equipment_hold())then return end\n")
+    edit(runtime, "        if self.reinitialize then return true end\n",
+         "        if self.reinitialize then return true end\n"
+         "        equipment_step(dt)\n")
+    edit(runtime, "        if self.enabled and weapon_menu_reason then return animation:status()..' / Native weapon menu unavailable'end\n",
+         "        if self.enabled and weapon_menu_reason then return animation:status()..' / Native weapon menu unavailable'end\n"
+         "        if self.enabled and not equipment_ready and equipment_reason then return animation:status()..' / Equipment holds pending: '..equipment_reason end\n")
+    # .12 (2026-11-01 23:35Z, "combat not loading" in a 4-player session the user had joined as a client): the Wielder
+    # manager (game+0x2ce1fd0) held 105-148 rows, and the field the 0.1.17 live lease read as the row capacity (+0x20)
+    # read 1 in every live sample, so `count <= capacity` only ever passed while the local avatar was the only wielder
+    # (a solo ship). The engine's own hand-row accessors (game+0x790a50 and +0x791290 in the capture) touch the map
+    # (+0x30..+0x40), the descriptors (+0x48) and the rows (+0x60), never +0x1C/+0x20 as bounds. The user wants combat
+    # to load in a multiplayer session: the row is bounded by the count, and the descriptor ownership check that
+    # follows each site validates the row. Tests: wielder_bound_tests.lua (package lease), roster_observer_fixture.lua.
+    edit(out / 'src/animation_packages.lua',
+         "            local wc,wcap=number32(take(wm+0x1C,4)),number32(take(wm+0x20,4))\n"
+         "            assert(wc<=wcap and wcap<=4096 and wi<wc,'Wielder live row refused')\n",
+         "            -- .12: +0x20 is not the row capacity (it reads 1 with 105-148 live rows); the count bounds the row.\n"
+         "            local wc=number32(take(wm+0x1C,4))\n"
+         "            assert(wc<=4096 and wi<wc,'Wielder live row refused')\n")
+    edit(runtime, "        assert(wi<u32(manager+0x1C) and u32(manager+0x1C)<=u32(manager+0x20)\n"
+                  "            and u32(manager+0x20)<=65536,'Cleanup Wielder row changed')\n",
+         "        assert(wi<u32(manager+0x1C) and u32(manager+0x1C)<=65536,'Cleanup Wielder row changed') -- .12: +0x20 is not a capacity\n")
+    edit(out / 'src/support_weapons.lua',
+         "        local ww=p(c.game+0x2ce1fd0);local n=u(ww+0x1C);assert(n<=256 and n<=u(ww+0x20),'Floor cleanup Wielder bound differs')\n",
+         "        local ww=p(c.game+0x2ce1fd0);local n=u(ww+0x1C);assert(n<=4096,'Floor cleanup Wielder bound differs') -- .12: other wielders present; +0x20 is not a capacity\n")
     # The one addition for the packer: warm every page before the first native check.
     here = Path(__file__).resolve().parent
     (out / 'src/code_warmup.lua').write_bytes((here / 'code_warmup.lua').read_bytes())

@@ -271,7 +271,7 @@ local function factory(sr,policy,preview)
  local function apply_cape(r)
   if r.cape.selected then
    local writes=selected_cape.apply(r.cape.selected,r.cape.frame)
-   if type(policy.log)=='function'then pcall(policy.log,'Authored pose cape placement: writes='..writes)end
+   if writes>0 and type(policy.log)=='function'then pcall(policy.log,'Authored pose cape placement: writes='..writes)end
   else cape.apply(r.cape)end
  end
  function self.maintain(target,rig)
@@ -378,6 +378,26 @@ local function factory(sr,policy,preview)
    local r=record(target,rig);lifetime(r)
    local getter=rawget(U,'world_position');check(type(getter)=='function','Unit.world_position unavailable')
    return xyz(one(pack(getter(r.unit,1)),'userdata','Unit.world_position'))
+  end)
+ end
+ -- World translation of one scene node, for the pose editor's marker.
+ function self.node_position(target,rig,index)
+  return result(function()
+   local r=record(target,rig);lifetime(r)
+   check(type(index)=='number'and index%1==0 and index>=1 and index<=107,'Node index outside the rig')
+   local matrix=one(pack(U.world_pose(r.unit,index)),'userdata','Unit.world_pose')
+   return xyz(one(pack(B.translation(matrix)),'userdata','Matrix4x4.translation'))
+  end)
+ end
+ -- World translation and rotation of one scene node, for marker placement and
+ -- converting a screen-space move into the parent's frame.
+ function self.node_frame(target,rig,index)
+  return result(function()
+   local r=record(target,rig);lifetime(r)
+   check(type(index)=='number'and index%1==0 and index>=1 and index<=107,'Node index outside the rig')
+   local matrix=one(pack(U.world_pose(r.unit,index)),'userdata','Unit.world_pose')
+   return{position=xyz(one(pack(B.translation(matrix)),'userdata','Matrix4x4.translation')),
+    rotation=quaternion(one(pack(B.rotation(matrix)),'userdata','Matrix4x4.rotation'))}
   end)
  end
  -- A selected photographic subject is not an authoritative local-player ID.
@@ -577,6 +597,25 @@ local function factory(sr,policy,preview)
    return true
   end)
   if ok~=true then return false,why end;return true,why
+ end
+ -- The controller found its pose taken over: the game put a moving body's own mode back and
+ -- its animation repainted the body, so restoring wrote nothing and committed nothing. Forget
+ -- what the body no longer shows and release the cape once nothing is owned. Reads only: a
+ -- body that is no longer ours is never written or refreshed.
+ function self.reconcile(target,rig)
+  local ok,why=result(function()
+   local r=record(target,rig)
+   if r.mode and not r.mode.attempt then local actual=current(r);if actual==r.mode.base or actual~=r.mode.value then r.mode=nil end end
+   for index,entry in pairs(r.nodes)do if not entry.attempt then
+    topology(r,index);local actual=read_node(r.unit,index)
+    if equal(actual,entry.base)or not equal(actual,entry.value)then r.nodes[index]=nil end
+   end end
+   check(not next(r.nodes)and not r.mode,'Subject still shows owned writes after a takeover')
+   r.refresh_expected=nil;r.refresh_nodes={};r.scene_dirty=false;restore_cape(r)
+   if type(policy.log)=='function'then pcall(policy.log,'Subject pose taken over by the game; its write ledger and cape released without writes')end
+   return true
+  end)
+  if ok~=true then return false,why end;return true
  end
  function self.status()return status end
  return self

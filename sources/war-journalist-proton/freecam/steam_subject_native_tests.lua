@@ -71,6 +71,7 @@ local function fixture()
   if fail and fail.refuse then return false,fail.object or'Mode setter refused',nil end
  end
  setmetatable(V,{__call=function(_,x,y,z)call('vector');f.math_calls=f.math_calls+1;return opaque('vector',{float(x),float(y),float(z)},true)end})
+ U.world_pose=function(value,index)call('world_pose',true);unit(value);check(index>=1 and index<=107 and index%1==0,'world_pose index');return matrix(f.nodes[index].pose)end
  U.world_position=function(value,index)call('world_position',true);unit(value);check(index==1);return V(f.positions and f.positions[value]or 0,0,0)end
  for i,name in ipairs({'x','y','z'})do local index=i;V[name]=function(value)call('vector_'..name);return data(value,'vector')[index]end end
  Q.from_elements=function(x,y,z,w)call('quaternion');f.math_calls=f.math_calls+1;return opaque('quaternion',{float(x),float(y),float(z),float(w)},true)end
@@ -359,7 +360,43 @@ do
  f.failure={};f:step();check(c.abandon()and f.mode=='position_and_rotation'and not c.status().pending)
  check(tostring(c.status().detail):find('Fixture cape release refused',1,true),'A cape release failure is kept as the detail')
 end
-print('steam_subject_native_tests: '..assertions..' assertions passed (actual Lua5.1; strict matrix12; source only)')
+do -- node_position: the world pose translation of one node, bounded to the rig
+ local f=fixture();f:ready();f:step()
+ local p,why=f.adapter.node_position(f.target,f.rig,70);check(p,why)
+ check(p[1]==float(7)and p[2]==float(.2)and p[3]==float(.3),'Node position is the world pose translation')
+ f:step();check(not f.adapter.node_position(f.target,f.rig,200),'Index outside the rig refused')
+ check(f.writes==0,'A position read never writes')
+end
+do -- node_frame: world translation plus rotation quaternion, bounded to the rig
+ local f=fixture();f:ready();f:step()
+ local fr,why=f.adapter.node_frame(f.target,f.rig,70);check(fr,why)
+ check(fr.position[1]==float(7)and fr.position[2]==float(.2)and fr.position[3]==float(.3),'Frame position is the world pose translation')
+ check(#fr.rotation==4,'Frame rotation is a quaternion');for i=1,4 do check(type(fr.rotation[i])=='number'and fr.rotation[i]==fr.rotation[i])end
+ f:step();check(not f.adapter.node_frame(f.target,f.rig,0),'Index outside the rig refused');check(f.writes==0,'A frame read never writes')
+end
+-- A body frozen while moving gets its own bone mode back from the game, and its animation
+-- repaints the original pose under a held pose (live 2026-11-02: a kept bone edit applied on
+-- open). The close then has nothing of its own to write, but the adapter must still let go of
+-- its ledger and the selected cape: otherwise every later discovery refused with 'Retire owned
+-- subjects before refreshing' until the game restarted.
+do
+ local lease={meshes={1,2,3}};local releases=0
+ local f=fixture()
+ f.policy.selected_cape={capture=function()return lease end,apply=function()return 3 end,
+  release=function(record)check(record==lease);releases=releases+1;return true end}
+ f:arm();local bank={version=1,rig=f.rig,catalog={{id='full',label='Full'}},decode=function()
+  local result={full_body=true,nodes={}};for i=8,92 do result.nodes[i]={p={10+i/10,.2,.3},q={0,.6,0,.8},s={1,1,1}}end;return result
+ end}
+ local controller=Subject.new(f.adapter,bank,function()return true end)
+ check(controller.refresh());check(controller.select(controller.choices()[1].id))
+ f:step();check(controller.apply('full'))
+ f.mode='position_and_rotation';f.nodes=clone(f.original) -- the game takes the body back
+ f:step();local writes=f.writes;local closed,why=controller.close()
+ check(closed and why=='Foreign subject state preserved'and f.writes==writes,'A taken-back body is left as the game drew it')
+ check(releases==1,'The selected cape is released')
+ f:step();local found,reason=f.adapter.discover(f.resource,4,f.rig);check(found,reason)
+end
+print('steam_subject_native_tests:'..assertions..' assertions passed (actual Lua5.1; strict matrix12; source only)')
 
 do
  local f=fixture();local a=f:arm();check(a.session_current()==true)

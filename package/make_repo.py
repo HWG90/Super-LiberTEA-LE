@@ -15,6 +15,7 @@ from build_package import PARTS  # noqa: E402
 
 INPUTS = HERE / "out" / "inputs"
 SHIPPED = HERE / "out" / "package"
+STAGE = HERE / "out" / "stage"  # the LLL folder mods as shipped (ASS and Gadget Kit LE after their LE changes)
 FOLDERS = {part["key"]: part["folder"] for part in PARTS}
 LUA_TYPE = 0xA14E8DFA2CD117E2
 BINARY = re.compile(r"\.(dll|exe|lib|pdb|obj|o|a|so|bin|dmp|zip)$", re.I)
@@ -121,10 +122,12 @@ def main():
     report["luajit-runtime"] = commit
 
     dest = src / "war-journalist-proton"
-    commit = git_export(Path("/home/goose/Worktrees/linux-hd2/wj-proton-slick"), "9613fcf", dest)
+    commit = git_export(Path("/home/goose/Documents/ChatGPT/Linux HD2/.claude/worktrees/wj-proton-bone-posing-668ec2/prior-war-journalist"),
+                        "09a0940", dest)
     wj = inputs["mods"]["dbf_freecam"]
-    source_md(dest, "War Journalist (Proton) 1.3.3", [
-        "HWG90/DBF_PhotoMode, branch `WJ-Proton`, commit `%s`. The LLL folder mod `dbf_freecam` is built by" % commit,
+    source_md(dest, "War Journalist (Proton) 1.3.4, bone posing", [
+        "HWG90/DBF_PhotoMode, branch `claude/wj-proton-bone-posing` (the bone-posing line on top of `WJ-Proton` 9613fcf),",
+        "commit `%s`. The LLL folder mod `dbf_freecam` is built by" % commit,
         "`python3 tools/build_proton_candidate.py` (build %s). Its two native bridges" % wj["build"],
         "(`hd2_nativeinfo_c1578203689e39b9.dll`, `hd2_nativeinfo_8db3d96f8c3cbb24.dll`) come from `tools/build_steam_native_bridge.py`",
         "and `tools/build_steam_scene_bridge.py`. The 1.2.0 assets (compiled game resources) ship as they are; their shader",
@@ -135,19 +138,21 @@ def main():
         ("dbf_mcm", "dbf-mcm", "Mod Configuration Menu (DBF-MCM) 0.1.74-luajit.5",
          ["The LLL folder mod as shipped: `luajit-ports/dbf_mcm` of the Linux HD2 workspace, branch",
           "`claude/dbf-mcm-inproc-font`, commit `%s`." % inputs["mods"]["dbf_mcm"]["git"]["commit"]]),
-        ("divers_best_friend", "ass", "Diver's Best Friend (ASS) R46, LuaJIT 26251122",
+        ("divers_best_friend", "ass", "Diver's Best Friend (ASS) R46, LuaJIT 26251122 (LE build)",
          ["The LLL folder mod as shipped (plain LuaJIT; no native files). Built from",
-          "`native-work/dbf-ass-luajit/divers_best_friend` of the Linux HD2 workspace, commit `%s`." % inputs["mods"]["divers_best_friend"]["source_commit"]]),
+          "`native-work/dbf-ass-luajit/divers_best_friend` of the Linux HD2 workspace, commit `%s`." % inputs["mods"]["divers_best_friend"]["source_commit"],
+          "The LE build leaves out DBF-HUD's weapon readout that the port also started (six `src/weapon_status*.lua`",
+          "modules and their lines in main.lua; `package/build_package.py`, ASS_DROPPED and ASS_MAIN)."]),
     ]:
         dest = src / folder
-        copy_tree(INPUTS / mod, dest / mod)
+        copy_tree(STAGE / mod, dest / mod)
         source_md(dest, title, notes)
 
     dest = src / "bridge-combat"
-    copy_tree(INPUTS / "goose_bridge_combat", dest / "goose_bridge_combat")
-    commit = git_export(Path("/home/goose/Worktrees/linux-hd2/bridge-combat-26251122"), "b0ab9da", dest / "builder",
+    copy_tree(STAGE / "goose_bridge_combat", dest / "goose_bridge_combat")
+    commit = git_export(Path("/home/goose/Worktrees/linux-hd2/bridge-combat-26251122"), "39efa48", dest / "builder",
                         ["native-work/bridge-original"], keep=lambda n: "/out/" not in n and not BINARY.search(n))
-    source_md(dest, "Goose Bridge Combat 0.1.17-experimental-26251122.10", [
+    source_md(dest, "Goose Bridge Combat 0.1.17-experimental-26251122.12", [
         "`goose_bridge_combat/` is the LLL folder mod as shipped. `builder/native-work/bridge-original` (Linux HD2 workspace,",
         "branch `claude/bridge-combat-26251122`, commit `%s`) assembles it and builds the weapon menu DLL" % commit,
         "`native/BridgeCombatWeaponMenu-bcb24cbfd1cd.dll` from `dll/native/weapon_menu.cpp` (`build_dll.py`, Zig 0.14.1)."])
@@ -165,7 +170,6 @@ def main():
         "`native/near_clip/` (`build*.py`); the binaries ship in the release."])
 
     for part, folder, title, notes in [
-        ("compat", "lll-compat-test", "LLL Compat Test", ["Test mods for LLL's Chef Shared Loader and Boot Mod Loader layers, extracted from the patch."]),
         ("diverkit", "diverkit", "DiverKit Alpha 8.14.31, LuaJIT 26251122 r6",
          ["Original: Nexus Mods (Helldivers 2) mod 16493. LuaJIT port for build 26251122 by Goose. Extracted from the shipped",
           "patch, by option folder; each file is one Lua resource named by its resource key."]),

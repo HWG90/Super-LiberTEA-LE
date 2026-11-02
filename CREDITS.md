@@ -5,12 +5,11 @@ Packaged by Goose ([HWG90](https://github.com/HWG90)).
 ## By Goose
 
 - Live Lua Loader R38 and its LuaJIT runtime: [HWG90/LLL](https://github.com/HWG90/LLL)
-- LLL Compat Test
 - Mod Configuration Menu (DBF-MCM)
 - Diver's Best Friend (ASS) R46
 - Goose Bridge Combat (MIT)
 - Goose Gadget Kit (MIT), LE build
-- War Journalist (Proton) and its assets: [HWG90/DBF_PhotoMode](https://github.com/HWG90/DBF_PhotoMode), branch `WJ-Proton`
+- War Journalist (Proton) and its assets: [HWG90/DBF_PhotoMode](https://github.com/HWG90/DBF_PhotoMode), the `WJ-Proton` line with bone posing
 
 ## Other authors' mods, ported to LuaJIT and game build 26251122 by Goose
 

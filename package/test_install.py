@@ -4,8 +4,9 @@ under Wine with LLL's Windows Lua 5.1.4 (../lll/work/wine-lua/lua51.exe), as the
 The blocks write into the scratch prefix's own LOCALAPPDATA, from a fake game folder with a space in its path (the
 real layout by name, as ../lll/test_dropin_install.py builds it). Cases: fresh install, repeat start, a missing mod
 file, a file you changed, another build of a mod installed over this one, receipts lost (folders adopted), a
-foreign mod folder on a fresh install, the first start after an earlier release of this package, and a development
-shim in place of a mod (set aside to Backups, the mod installed).
+foreign mod folder on a fresh install, the first start after an earlier release of this package, files an earlier
+release wrote and this one no longer ships (removed unless you changed them), and a development shim in place of a
+mod (set aside to Backups, the mod installed).
   /usr/bin/python3 -I test_install.py --prefix <scratch WINEPREFIX> --scratch <scratch dir>
 """
 import argparse, json, os, shutil, subprocess, zlib
@@ -130,6 +131,24 @@ def main():
     check("first start after an earlier release", line, "mods: 2 written, %d in place" % (total - 2))
     same()
     assert (home / "SuperLiberTEA/goose_temporary_unlocks.txt").read_text().startswith("release\t%s\n" % version)
+
+    # An earlier release shipped two files this one does not (1.0.1's ASS carried DBF-HUD's weapon readout): the one
+    # still as it wrote it is removed, the one you changed stays.
+    dbf = home / "Mods/divers_best_friend"
+    gone, kept = b"-- weapon readout as 1.0.1 wrote it\n", b"-- weapon strip as 1.0.1 wrote it\n"
+    (dbf / "src/weapon_status.lua").write_bytes(gone)
+    (dbf / "src/weapon_status_strip.lua").write_bytes(b"-- your edit\n")
+    with (home / "SuperLiberTEA/divers_best_friend.txt").open("a") as f:
+        for name, data in (("src/weapon_status.lua", gone), ("src/weapon_status_strip.lua", kept)):
+            f.write("%d\t%d\t%s\n" % (len(data), zlib.adler32(data), name))
+    _, line = start()
+    check("files an earlier release no longer ships", line, "mods: 0 written, %d in place, 1 removed; left alone: "
+          "divers_best_friend/src/weapon_status_strip.lua (changed since an earlier release wrote it; no longer part of this mod)" % total)
+    assert not (dbf / "src/weapon_status.lua").exists() and (dbf / "src/weapon_status_strip.lua").read_bytes() == b"-- your edit\n"
+    _, line = start()
+    check("... next start", line, "mods: 0 written, %d in place" % total)
+    assert "removed" not in line and "left alone" not in line
+    same()
 
     shutil.rmtree(home.parent, ignore_errors=True)
     (home / "Mods/dbf_freecam").mkdir(parents=True)

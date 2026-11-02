@@ -5,12 +5,13 @@ do -- Super LiberTEA - LE @VERSION@: LLL's folder mods travel in this boot patch
  -- main.lua that only loads the mod from a file by drive path) is not a build: its folder is moved to
  -- Backups/<id>-shim-<time> as it is, and the mod installed. A file is written through a .tmp file and read
  -- back; manifest.json is written last. SuperLiberTEA/<id>.txt records what this package wrote (size and
- -- Adler-32 per file), so a later release can tell its own files from yours.
+ -- Adler-32 per file), so a later release can tell its own files from yours: a file an earlier release wrote
+ -- and this one no longer ships is removed while it is unchanged.
  -- Outcome: LLL/Helldivers2/Logs/SuperLiberTEA-files.log. A failure is reported and never stops the boot.
  if rawget(_G,'jit')==nil then
   local home=os.getenv('LOCALAPPDATA')
   local base=home and home..'/LLL/Helldivers2/'
-  local written,kept,left,aside,problems=0,0,{},{},{}
+  local written,kept,removed,left,aside,problems=0,0,0,{},{},{}
   local function slurp(path)
    local f=io.open(path,'rb');if not f then return end
    local value=f:read('*a');f:close();return value
@@ -83,6 +84,16 @@ do -- Super LiberTEA - LE @VERSION@: LLL's folder mods travel in this boot patch
      if put(dir..name,bytes) then written=written+1 record[#record+1]=#bytes..'\t'..sum..'\t'..name end
     else left[#left+1]=id..'/'..name..' (changed since this package wrote it)' end
    end
+   local shipped_names,retired={},{}
+   for _,file in ipairs(files) do shipped_names[file[1]]=true end
+   for name in pairs(prior) do if not shipped_names[name] then retired[#retired+1]=name end end
+   table.sort(retired)
+   for _,name in ipairs(retired) do
+    local current=slurp(base..dir..name)
+    if current~=nil and ours(name,current) then
+     if os.remove(base..dir..name) then removed=removed+1 else problems[#problems+1]=dir..name..': cannot remove' end
+    elseif current~=nil then left[#left+1]=id..'/'..name..' (changed since an earlier release wrote it; no longer part of this mod)' end
+   end
    local text='release\t@VERSION@\n'..table.concat(record,'\n')..'\n'
    if slurp(base..receipt)~=text then put(receipt,text) end
   end
@@ -92,6 +103,7 @@ do -- Super LiberTEA - LE @VERSION@: LLL's folder mods travel in this boot patch
    end)
    if not ok then problems[#problems+1]=tostring(why) end
    local line=os.date('%Y-%m-%d %H:%M:%S ')..'Super LiberTEA - LE @VERSION@ mods: '..written..' written, '..kept..' in place'
+    ..(removed>0 and ', '..removed..' removed' or '')
     ..(#aside>0 and '; set aside: '..table.concat(aside,', ') or '')
     ..(#left>0 and '; left alone: '..table.concat(left,', ') or '')..(#problems>0 and '; problems: '..table.concat(problems,'; ') or '')
    local log=io.open(base..'Logs/SuperLiberTEA-files.log','wb')
