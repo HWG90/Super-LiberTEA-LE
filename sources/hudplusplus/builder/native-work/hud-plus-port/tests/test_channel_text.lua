@@ -8,6 +8,7 @@
 -- describes a buffer of ordinary memory, so a read the guard should have refused still returns bytes instead of
 -- crashing the test.
 local real = require("ffi")
+local real_bit = require("bit")
 local f = assert(io.open(assert(arg[1], "bundle path"), "rb"))
 local bundle = f:read("*a")
 f:close()
@@ -57,6 +58,7 @@ local modules = assert(loadstring("local modules = {}\n" .. module_source("nativ
 local loaded = {}
 local function require(name)
     if name == "ffi" then return ffi end
+    if name == "bit" then return real_bit end
     if loaded[name] == nil then loaded[name] = assert(modules[name], "no module " .. name)(require) end
     return loaded[name]
 end

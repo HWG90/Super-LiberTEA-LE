@@ -1,0 +1,522 @@
+{
+  "resource": "mods/hd2_hud/hd2_hud_plus",
+  "sha256": "537e430a2974f6315d93950b34857f84f9ee7b22514972704fee6e37e56cb770",
+  "modules": [
+    {
+      "module": "core.addons",
+      "source": "src/core/addons.lua",
+      "first_line": 6,
+      "last_line": 247
+    },
+    {
+      "module": "core.archive",
+      "source": "src/core/archive.lua",
+      "first_line": 250,
+      "last_line": 442
+    },
+    {
+      "module": "core.dependencies",
+      "source": "src/core/dependencies.lua",
+      "first_line": 445,
+      "last_line": 485
+    },
+    {
+      "module": "core.runtime",
+      "source": "src/core/runtime.lua",
+      "first_line": 488,
+      "last_line": 608
+    },
+    {
+      "module": "core.settings",
+      "source": "src/core/settings.lua",
+      "first_line": 611,
+      "last_line": 789
+    },
+    {
+      "module": "core.settings_file",
+      "source": "src/core/settings_file.lua",
+      "first_line": 792,
+      "last_line": 815
+    },
+    {
+      "module": "data.asset_numbers",
+      "source": "src/data/asset_numbers.lua",
+      "first_line": 818,
+      "last_line": 818
+    },
+    {
+      "module": "data.calls",
+      "source": "src/data/calls.lua",
+      "first_line": 821,
+      "last_line": 2477
+    },
+    {
+      "module": "data.identities",
+      "source": "src/data/identities.lua",
+      "first_line": 2480,
+      "last_line": 2480
+    },
+    {
+      "module": "data.numbers",
+      "source": "src/data/numbers.lua",
+      "first_line": 2483,
+      "last_line": 3737
+    },
+    {
+      "module": "data.patterns",
+      "source": "src/data/patterns.lua",
+      "first_line": 3740,
+      "last_line": 9657
+    },
+    {
+      "module": "data.pin",
+      "source": "src/data/pin.lua",
+      "first_line": 9660,
+      "last_line": 9663
+    },
+    {
+      "module": "data.requires",
+      "source": "src/data/requires.lua",
+      "first_line": 9666,
+      "last_line": 9748
+    },
+    {
+      "module": "data.unresolved",
+      "source": "src/data/unresolved.lua",
+      "first_line": 9751,
+      "last_line": 9751
+    },
+    {
+      "module": "data.uses",
+      "source": "src/data/uses.lua",
+      "first_line": 9754,
+      "last_line": 11391
+    },
+    {
+      "module": "entry",
+      "source": "src/entry.lua",
+      "first_line": 11394,
+      "last_line": 11488
+    },
+    {
+      "module": "features.attack",
+      "source": "src/features/attack.lua",
+      "first_line": 11491,
+      "last_line": 11624
+    },
+    {
+      "module": "features.body",
+      "source": "src/features/body.lua",
+      "first_line": 11627,
+      "last_line": 11716
+    },
+    {
+      "module": "features.call_colour",
+      "source": "src/features/call_colour.lua",
+      "first_line": 11719,
+      "last_line": 11852
+    },
+    {
+      "module": "features.corpse",
+      "source": "src/features/corpse.lua",
+      "first_line": 11855,
+      "last_line": 11971
+    },
+    {
+      "module": "features.kill_pulse",
+      "source": "src/features/kill_pulse.lua",
+      "first_line": 11974,
+      "last_line": 12008
+    },
+    {
+      "module": "features.menu",
+      "source": "src/features/menu.lua",
+      "first_line": 12011,
+      "last_line": 12213
+    },
+    {
+      "module": "features.pack",
+      "source": "src/features/pack.lua",
+      "first_line": 12216,
+      "last_line": 12287
+    },
+    {
+      "module": "features.reinforce",
+      "source": "src/features/reinforce.lua",
+      "first_line": 12290,
+      "last_line": 12340
+    },
+    {
+      "module": "features.reticle",
+      "source": "src/features/reticle.lua",
+      "first_line": 12343,
+      "last_line": 12525
+    },
+    {
+      "module": "features.squad",
+      "source": "src/features/squad.lua",
+      "first_line": 12528,
+      "last_line": 12796
+    },
+    {
+      "module": "features.stratagem",
+      "source": "src/features/stratagem.lua",
+      "first_line": 12799,
+      "last_line": 12929
+    },
+    {
+      "module": "features.stratagem_cooldown",
+      "source": "src/features/stratagem_cooldown.lua",
+      "first_line": 12932,
+      "last_line": 13170
+    },
+    {
+      "module": "features.throw_distance",
+      "source": "src/features/throw_distance.lua",
+      "first_line": 13173,
+      "last_line": 13234
+    },
+    {
+      "module": "features.trajectory",
+      "source": "src/features/trajectory.lua",
+      "first_line": 13237,
+      "last_line": 13525
+    },
+    {
+      "module": "features.weapon_3d",
+      "source": "src/features/weapon_3d.lua",
+      "first_line": 13528,
+      "last_line": 13732
+    },
+    {
+      "module": "features.weapon_hud",
+      "source": "src/features/weapon_hud.lua",
+      "first_line": 13735,
+      "last_line": 13831
+    },
+    {
+      "module": "features.world_hud",
+      "source": "src/features/world_hud.lua",
+      "first_line": 13834,
+      "last_line": 14108
+    },
+    {
+      "module": "game.ability_script",
+      "source": "src/game/ability_script.lua",
+      "first_line": 14111,
+      "last_line": 15307
+    },
+    {
+      "module": "game.attackers",
+      "source": "src/game/attackers.lua",
+      "first_line": 15310,
+      "last_line": 15406
+    },
+    {
+      "module": "game.charge",
+      "source": "src/game/charge.lua",
+      "first_line": 15409,
+      "last_line": 15516
+    },
+    {
+      "module": "game.comms_inputs",
+      "source": "src/game/comms_inputs.lua",
+      "first_line": 15519,
+      "last_line": 15606
+    },
+    {
+      "module": "game.comms_marks",
+      "source": "src/game/comms_marks.lua",
+      "first_line": 15609,
+      "last_line": 15721
+    },
+    {
+      "module": "game.comms_row",
+      "source": "src/game/comms_row.lua",
+      "first_line": 15724,
+      "last_line": 15885
+    },
+    {
+      "module": "game.data",
+      "source": "src/game/data.lua",
+      "first_line": 15888,
+      "last_line": 15901
+    },
+    {
+      "module": "game.decal",
+      "source": "src/game/decal.lua",
+      "first_line": 15904,
+      "last_line": 16631
+    },
+    {
+      "module": "game.delivery",
+      "source": "src/game/delivery.lua",
+      "first_line": 16634,
+      "last_line": 16764
+    },
+    {
+      "module": "game.eagle_heading",
+      "source": "src/game/eagle_heading.lua",
+      "first_line": 16767,
+      "last_line": 16914
+    },
+    {
+      "module": "game.eagles",
+      "source": "src/game/eagles.lua",
+      "first_line": 16917,
+      "last_line": 17045
+    },
+    {
+      "module": "game.equipment",
+      "source": "src/game/equipment.lua",
+      "first_line": 17048,
+      "last_line": 17090
+    },
+    {
+      "module": "game.flight",
+      "source": "src/game/flight.lua",
+      "first_line": 17093,
+      "last_line": 18281
+    },
+    {
+      "module": "game.gauge",
+      "source": "src/game/gauge.lua",
+      "first_line": 18284,
+      "last_line": 18442
+    },
+    {
+      "module": "game.layout",
+      "source": "src/game/layout.lua",
+      "first_line": 18445,
+      "last_line": 18499
+    },
+    {
+      "module": "game.menu_data",
+      "source": "src/game/menu_data.lua",
+      "first_line": 18502,
+      "last_line": 18507
+    },
+    {
+      "module": "game.menu_rows",
+      "source": "src/game/menu_rows.lua",
+      "first_line": 18510,
+      "last_line": 18938
+    },
+    {
+      "module": "game.option_cell",
+      "source": "src/game/option_cell.lua",
+      "first_line": 18941,
+      "last_line": 19031
+    },
+    {
+      "module": "game.options",
+      "source": "src/game/options.lua",
+      "first_line": 19034,
+      "last_line": 19402
+    },
+    {
+      "module": "game.pack",
+      "source": "src/game/pack.lua",
+      "first_line": 19405,
+      "last_line": 19647
+    },
+    {
+      "module": "game.panel",
+      "source": "src/game/panel.lua",
+      "first_line": 19650,
+      "last_line": 19905
+    },
+    {
+      "module": "game.projectile",
+      "source": "src/game/projectile.lua",
+      "first_line": 19908,
+      "last_line": 20097
+    },
+    {
+      "module": "game.ratio",
+      "source": "src/game/ratio.lua",
+      "first_line": 20100,
+      "last_line": 20111
+    },
+    {
+      "module": "game.reinforcement",
+      "source": "src/game/reinforcement.lua",
+      "first_line": 20114,
+      "last_line": 20304
+    },
+    {
+      "module": "game.reload",
+      "source": "src/game/reload.lua",
+      "first_line": 20307,
+      "last_line": 20448
+    },
+    {
+      "module": "game.resource_inputs",
+      "source": "src/game/resource_inputs.lua",
+      "first_line": 20451,
+      "last_line": 20724
+    },
+    {
+      "module": "game.resources",
+      "source": "src/game/resources.lua",
+      "first_line": 20727,
+      "last_line": 20774
+    },
+    {
+      "module": "game.screen_point",
+      "source": "src/game/screen_point.lua",
+      "first_line": 20777,
+      "last_line": 20815
+    },
+    {
+      "module": "game.shells",
+      "source": "src/game/shells.lua",
+      "first_line": 20818,
+      "last_line": 21000
+    },
+    {
+      "module": "game.squad_inputs",
+      "source": "src/game/squad_inputs.lua",
+      "first_line": 21003,
+      "last_line": 21251
+    },
+    {
+      "module": "game.stratagem_card",
+      "source": "src/game/stratagem_card.lua",
+      "first_line": 21254,
+      "last_line": 21374
+    },
+    {
+      "module": "game.stratagem_inputs",
+      "source": "src/game/stratagem_inputs.lua",
+      "first_line": 21377,
+      "last_line": 21502
+    },
+    {
+      "module": "game.stratagem_list",
+      "source": "src/game/stratagem_list.lua",
+      "first_line": 21505,
+      "last_line": 21644
+    },
+    {
+      "module": "game.stratagem_pick",
+      "source": "src/game/stratagem_pick.lua",
+      "first_line": 21647,
+      "last_line": 21917
+    },
+    {
+      "module": "game.throw_launch",
+      "source": "src/game/throw_launch.lua",
+      "first_line": 21920,
+      "last_line": 22166
+    },
+    {
+      "module": "game.throwable",
+      "source": "src/game/throwable.lua",
+      "first_line": 22169,
+      "last_line": 22275
+    },
+    {
+      "module": "game.ui",
+      "source": "src/game/ui.lua",
+      "first_line": 22278,
+      "last_line": 22720
+    },
+    {
+      "module": "game.wake",
+      "source": "src/game/wake.lua",
+      "first_line": 22723,
+      "last_line": 22761
+    },
+    {
+      "module": "game.weapon",
+      "source": "src/game/weapon.lua",
+      "first_line": 22764,
+      "last_line": 23047
+    },
+    {
+      "module": "game.weapon_cycle",
+      "source": "src/game/weapon_cycle.lua",
+      "first_line": 23050,
+      "last_line": 23132
+    },
+    {
+      "module": "game.weapon_line",
+      "source": "src/game/weapon_line.lua",
+      "first_line": 23135,
+      "last_line": 23306
+    },
+    {
+      "module": "game.weapon_options",
+      "source": "src/game/weapon_options.lua",
+      "first_line": 23309,
+      "last_line": 23444
+    },
+    {
+      "module": "game.weapon_panel",
+      "source": "src/game/weapon_panel.lua",
+      "first_line": 23447,
+      "last_line": 23750
+    },
+    {
+      "module": "game.world_inputs",
+      "source": "src/game/world_inputs.lua",
+      "first_line": 23753,
+      "last_line": 23960
+    },
+    {
+      "module": "game.world_pose",
+      "source": "src/game/world_pose.lua",
+      "first_line": 23963,
+      "last_line": 24257
+    },
+    {
+      "module": "game.world_stage",
+      "source": "src/game/world_stage.lua",
+      "first_line": 24260,
+      "last_line": 24415
+    },
+    {
+      "module": "game.x64",
+      "source": "src/game/x64.lua",
+      "first_line": 24418,
+      "last_line": 24883
+    },
+    {
+      "module": "native.access",
+      "source": "src/native/access.lua",
+      "first_line": 24886,
+      "last_line": 25317
+    },
+    {
+      "module": "native.bytes",
+      "source": "src/native/bytes.lua",
+      "first_line": 25320,
+      "last_line": 25485
+    },
+    {
+      "module": "native.channel",
+      "source": "src/native/channel.lua",
+      "first_line": 25488,
+      "last_line": 26026
+    },
+    {
+      "module": "native.memory",
+      "source": "src/native/memory.lua",
+      "first_line": 26029,
+      "last_line": 26229
+    },
+    {
+      "module": "native.signatures",
+      "source": "src/native/signatures.lua",
+      "first_line": 26232,
+      "last_line": 26782
+    },
+    {
+      "module": "product",
+      "source": "src/product.lua",
+      "first_line": 26785,
+      "last_line": 27238
+    }
+  ]
+}

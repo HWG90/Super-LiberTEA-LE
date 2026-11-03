@@ -6,3 +6,8 @@ and renamed. `builder/native-work/hud-plus-port` (Linux HD2 workspace, branch `i
 `manual-26251122.json` giving the evidence for every value found by hand), `tools/` and `tests/`. Its README.md
 describes the method; LIVE-CHECK.md lists the first-launch checks. `lua/` holds the Lua the shipped patch
 carries, named by resource key (1 file).
+
+The modular refactor in this checkout uses `src/` as its editable source and `tools/build.py` to
+generate that same resource-keyed bundle. `tools/package.py` builds a candidate from existing assets;
+the original `builder/` pipeline remains research/reference and does not consume the modular source.
+See `README.md`, `EDITING.md` and `UPSTREAM.json` for the workflow and exact upstream provenance.
