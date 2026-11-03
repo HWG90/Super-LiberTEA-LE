@@ -1,0 +1,175 @@
+[
+ {
+  "name": "Camera.set_vertical_fov",
+  "kind": "code",
+  "old": "0x401c60",
+  "new": "0x401ba0",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "Camera.vertical_fov",
+  "kind": "code",
+  "old": "0x401ac0",
+  "new": "0x401a00",
+  "mode": "instruction window",
+  "window": 128,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "Camera.world_pose",
+  "kind": "code",
+  "old": "0x405ca0",
+  "new": "0x405be0",
+  "mode": "instruction window",
+  "window": 64,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "Gui.resolution",
+  "kind": "code",
+  "old": "0x3bbd20",
+  "new": "0x3bbc60",
+  "votes": 1,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0x3bb26b",
+    "new_site": "0x3bb1ab",
+    "ins": "lea ecx, [rip + 0xaaf]",
+    "delta": 0,
+    "implies": "0x3bbc60"
+   }
+  ],
+  "confidence": "medium",
+  "mode": "address references"
+ },
+ {
+  "name": "LineObject.add_line",
+  "kind": "code",
+  "old": "0x411aa0",
+  "new": "0x4119e0",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "LineObject.dispatch",
+  "kind": "code",
+  "old": "0x4112f0",
+  "new": "0x411230",
+  "mode": "instruction window",
+  "window": 128,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "LineObject.reset",
+  "kind": "code",
+  "old": "0x411410",
+  "new": "0x411350",
+  "mode": "instruction window",
+  "window": 48,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "Mesh.material",
+  "kind": "code",
+  "old": "0x485620",
+  "new": "0x485560",
+  "votes": 1,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0x484def",
+    "new_site": "0x484d2f",
+    "ins": "lea ecx, [rip + 0x82b]",
+    "delta": 0,
+    "implies": "0x485560"
+   }
+  ],
+  "confidence": "medium",
+  "mode": "address references"
+ },
+ {
+  "name": "Mesh.num_materials",
+  "kind": "code",
+  "old": "0x484fd0",
+  "new": "0x484f10",
+  "mode": "instruction window",
+  "window": 64,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "Unit.mesh",
+  "kind": "code",
+  "old": "0x3e8020",
+  "status": "unresolved"
+ },
+ {
+  "name": "Unit.num_meshes",
+  "kind": "code",
+  "old": "0x3e79e0",
+  "new": "0x3e7920",
+  "mode": "instruction window",
+  "window": 96,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "Unit.world_pose",
+  "kind": "code",
+  "old": "0x3e5ad0",
+  "new": "0x3e5a10",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "Unit.world_position",
+  "kind": "code",
+  "old": "0x3e5590",
+  "new": "0x3e54d0",
+  "votes": 1,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0x3e52f7",
+    "new_site": "0x3e5237",
+    "ins": "lea ecx, [rip + 0x293]",
+    "delta": 0,
+    "implies": "0x3e54d0"
+   }
+  ],
+  "confidence": "medium",
+  "mode": "address references"
+ },
+ {
+  "name": "World.create_line_object",
+  "kind": "code",
+  "old": "0x3c38f0",
+  "new": "0x3c3830",
+  "mode": "instruction window",
+  "window": 128,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "World.destroy_line_object",
+  "kind": "code",
+  "old": "0x3c3a50",
+  "new": "0x3c3990",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ }
+]

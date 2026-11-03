@@ -1,4 +1,4 @@
-Super LiberTEA - LE (Linux Edition) 1.0.2                     Helldivers 2 Steam build 26251122
+Super LiberTEA - LE (Linux Edition) 1.0.3                     Helldivers 2 Steam build 26251122
 
 LINUX / PROTON ONLY. IT WILL NOT WORK ON NATIVE WINDOWS (system error 577 for the LuaJIT runtime and cffi DLLs).
 One HD2 Arsenal mod. Import it, deploy it, play.
@@ -35,7 +35,7 @@ Everything goes to %LOCALAPPDATA%\LLL\Helldivers2 inside the game's Proton prefi
   that loads the mod from a file elsewhere by drive path) is moved to Backups\<mod>-shim-<time> as it is, and the
   mod installed. SuperLiberTEA\<mod>.txt records what was written; a file an earlier release wrote and this one
   no longer ships is removed, unless you changed it.
-  Logs\SuperLiberTEA-files.log: "Super LiberTEA - LE 1.0.2 mods: 0 written, 254 in place" on later starts,
+  Logs\SuperLiberTEA-files.log: "Super LiberTEA - LE 1.0.3 mods: 0 written, 254 in place" on later starts,
   followed by "set aside: ..." or "left alone: ..." when it moved or skipped something.
 Settings live in LLL\Helldivers2\Settings and are never touched.
 
@@ -58,6 +58,9 @@ KNOWN LIMITS
 - War Journalist captures screenshots with its Linux host worker; Wine's capture API is a stub.
 
 CHANGES
+1.0.3  HudPlusPlus, HD2 HUD Plus 0.2.9 rebuilt for build 26251122, as a separate download. Gadget Kit LE's spawner:
+       a support weapon that cannot be delivered ends its request instead of holding every later one, and a refused
+       request shows its reason instead of "Action completed".
 1.0.2  War Journalist 1.3.4 (Proton) with bone posing: pose a diver bone by bone in the Subject tab and keep up to
        99 poses. Bridge Combat .12: Armory weapon swaps no longer crash, and combat starts in multiplayer sessions.
        Diver's Best Friend no longer starts DBF-HUD's weapon readout (published R46 never had it); the first start
@@ -72,6 +75,8 @@ CHANGES
 SEPARATE DOWNLOADS
 The release page also has each item on its own: Live Lua Loader and the Arsenal mods as Arsenal zips, the LLL mods
 (DBF-MCM, Diver's Best Friend, Bridge Combat, War Journalist, Gadget Kit LE) as folders for LLL\Helldivers2\Mods.
+HudPlusPlus (HD2 HUD Plus 0.2.9 rebuilt for build 26251122) is only a separate download: an Arsenal mod that needs
+Live Lua Loader, with its row before the loader's.
 Use either this package or the separate downloads, not both.
 
 CREDITS AND SOURCE

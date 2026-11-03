@@ -62,9 +62,10 @@ def lua_resources(patch):
     return out
 
 
-def extract_part(part, dest):
-    """Every Lua resource of every patch the package ships for an Arsenal part, by option folder."""
-    count, root = 0, SHIPPED / FOLDERS[part]
+def extract_part(part, dest, root=None):
+    """Every Lua resource of every patch the package ships for an Arsenal part, by option folder (root: a part that
+    ships only as a separate download, read from its inputs)."""
+    count, root = 0, root or SHIPPED / FOLDERS[part]
     for patch in sorted(root.rglob("*.patch_*")):
         if re.search(r"\.patch_\d+$", patch.name):
             folder = patch.parent.relative_to(root).as_posix()
@@ -188,6 +189,18 @@ def main():
         count = extract_part(part, dest)
         source_md(dest, title, notes + ["", "%d Lua resources." % count])
         report[folder] = count
+    dest = src / "hudplusplus"
+    commit = git_export(Path("/home/goose/Worktrees/linux-hd2/bridge-combat-26251122"), "56de681", dest / "builder",
+                        ["native-work/hud-plus-port"], keep=lambda n: not BINARY.search(n))
+    count = extract_part("hud-plus", dest / "lua", INPUTS / "hud-plus")
+    source_md(dest, "HudPlusPlus r9, LuaJIT 26251122", [
+        "HudPlusPlus is HD2 HUD Plus 0.2.9 by DDRK1ng (Nexus Mods, helldivers2/mods/15298) rebuilt for game build 26251122",
+        "and renamed. `builder/native-work/hud-plus-port` (Linux HD2 workspace, branch `indev/hud-plus-search-815c13`, commit",
+        "`%s`) builds the Arsenal mod from HUD+ 0.2.9: `build_port.py`, the data it reads (`data/`, with" % commit,
+        "`manual-26251122.json` giving the evidence for every value found by hand), `tools/` and `tests/`. Its README.md",
+        "describes the method; LIVE-CHECK.md lists the first-launch checks. `lua/` holds the Lua the shipped patch",
+        "carries, named by resource key (%d file%s)." % (count, "" if count == 1 else "s")])
+    report["hudplusplus"] = commit
     for name in ("README.md", "README.ru.md", "THIRD-PARTY-LICENSES.txt"):
         shutil.copyfile(INPUTS / "transmog" / name, src / "transmog" / name)
     shutil.copyfile(INPUTS / "megapack" / "VanillaPlusMegapack-README.txt", src / "vanilla-plus-megapack" / "VanillaPlusMegapack-README.txt")

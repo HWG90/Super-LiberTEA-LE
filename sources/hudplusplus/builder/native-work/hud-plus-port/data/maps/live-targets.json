@@ -1,0 +1,19 @@
+{
+ "arc_weapon_fire_row": "0x818e4a",
+ "arc_weapon_tail": "0x8190a6",
+ "component_card_ready_site": "0x16b17eb",
+ "component_card_size_site": "0x16b1bf0",
+ "eagle_pattern_count": "0x8b53a0",
+ "eagle_strafing_mode_site": "0xdcd16c",
+ "encounter_owners_site": "0x8cadb2",
+ "explosive_row_site": "0xa55b2c",
+ "hud_squad_death_site": "0x16b1479",
+ "menu_page_build_site": "0x1687f5c",
+ "menu_toggle_labels_site": "0x8bbad9",
+ "roots_avatar_manager_controller_base_site": "0x781049",
+ "shield_wait_tick": "0x65a8f0",
+ "squad_row_slot_widgets": "0x16b1c59",
+ "stratagem_avatar_site": "0xaaa1e0",
+ "stratagem_record_find": "0x16b197a",
+ "stratagem_row_mission_site": "0x16b19b9"
+}

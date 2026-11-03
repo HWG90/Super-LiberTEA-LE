@@ -1,0 +1,14 @@
+{
+ "build": "26251122",
+ "guid": "6f9f2890-1c7f-57ed-a4a5-44608744e9b1",
+ "pin": {
+  "exe": "257fd7de21a04e8668e02e5c820edf3435176fbde3569765255cc52a5ea20f9d",
+  "game": "61dcfcd201dacbf3545c97beb8a5a6186e9850d2670bf60b0e058320b477f6df"
+ },
+ "source": "/home/goose/.config/hd2arsenal/mods/HD2 HUD Plus 0.2.9 15298 0.2.9 2026-10-19T15-18Z x2kcgwCqg_AR637103",
+ "bundle_sha256": "36a837dcdaed00e944961982fff380876c83ca383f2919fd69f6b6dbc04cbf49",
+ "archive_sha256": "f43504c963123d15b91836dd9e17e69554b429d8889b7220bd5696af6544cd36",
+ "resolved": 1253,
+ "unresolved": 0,
+ "core_gaps": []
+}

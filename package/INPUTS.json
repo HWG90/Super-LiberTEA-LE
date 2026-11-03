@@ -1,5 +1,5 @@
 {
- "purpose": "Inputs of Super LiberTEA - LE (Linux Edition) 1.0.2, as collected; build reads only these copies",
+ "purpose": "Inputs of Super LiberTEA - LE (Linux Edition) 1.0.3, as collected; build reads only these copies",
  "parts": {
   "wj-assets": {
    "source": "/home/goose/.config/hd2arsenal/mods/War-Journalist-1.2.0-Assets_AR297988",
@@ -136,6 +136,16 @@
     "LookStats/9ba626afa44a3aa3.patch_0",
     "PassiveIconsOff/9ba626afa44a3aa3.patch_0"
    ]
+  },
+  "hud-plus": {
+   "source": "/home/goose/.config/hd2arsenal/mods/HudPlusPlus-LuaJIT-26251122",
+   "name": "HudPlusPlus",
+   "guid": "6f9f2890-1c7f-57ed-a4a5-44608744e9b1",
+   "files": 6,
+   "patches": {
+    "9ba626afa44a3aa3.patch_0": "f43504c963123d15b91836dd9e17e69554b429d8889b7220bd5696af6544cd36"
+   },
+   "patches_not_deployed_now": []
   }
  },
  "mods": {
@@ -173,7 +183,7 @@
    },
    "git": {
     "repo": "/home/goose/Worktrees/linux-hd2/dbf-mcm-inproc-font",
-    "commit": "0c98387a99fcfbd4f177efb21848357f42d54368"
+    "commit": "ebe2c5bac66582ee253fc4b21c63452a09446158"
    },
    "same_as_installed": true
   },
@@ -224,7 +234,7 @@
     "src/weapon_status_strip.lua": "f19522df6ec0c0b2653cad7d13f29ee7557f1cd4d66431eae74b76133b8eb534"
    },
    "source_commit": "ee120fba73893be85dadf71f665fc1f8b97252d4",
-   "same_as_installed": true
+   "same_as_installed": false
   },
   "goose_bridge_combat": {
    "source": "/home/goose/Projects/Linux HD2 Mods/builds/26251122/mods/bridge-combat/stage-original/goose_bridge_combat",
@@ -439,7 +449,7 @@
     "src/first_person/support_hand.lua": "b7530e6f562e1e5044eada32a7fdd8adcedf3ff43e01380e991b511b0d3a56d6",
     "src/first_person.lua": "d8c95e06842c42809cb9f7406ddcdc1e0b6ecb2fcb2dcc5cf0aee255f8aaff05",
     "src/freezes.lua": "ac03b2fff63a71bbd65d7269049cc0b3b6404fbb58522808a8a07d52cb8d040f",
-    "src/mcm.lua": "a5caccafd1e90c4d80bb94e578959330c7671b9a8ecd3bc389bee7b1297978d4",
+    "src/mcm.lua": "01991ca35503ef4d486b3f69f430c39a34a14d174d93df3a9baab626a58f91bd",
     "src/memory.lua": "4c93446d8b0590e64105d6e088a1964d331d446b1ebe364b68cba4c721314ebe",
     "src/objectives.lua": "ff2a9114e059bdac806e3766489c1c54cc19c37ef01a762dbe8a41b08112f188",
     "src/passive_ai.lua": "e588f08d58d324e2d672b8cb12146df3098bd0ee609d0ed07d12710bb9a90887",
@@ -449,7 +459,7 @@
     "src/spawner/observer.lua": "c3042db55ce6d88002f77637534dcd29f607bca5882bcc6f6fbbe4fb313feb83",
     "src/spawner/stratagem_slot.lua": "d247aed2a07772ace46529622a4f7d6810337cb92d758a20b096010c57f946a8",
     "src/spawner/stratagems.lua": "70916036805f0e8d710a6bfa7cda027d6d2c42b2cc2edcec120feef8d436277e",
-    "src/spawner/support_weapons.lua": "ef62789771073903c33ed1807a8f7374bab68a8b0248fc6e87567326562eefcc",
+    "src/spawner/support_weapons.lua": "685dfbcd03bfeef6411b90d47698b411bdfb0e510816b9e3567e95bff7f86e6b",
     "src/spawner.lua": "2cada018c28e72dd5f5ec59883b0aba67c3de10bcbd6619a856699795a0348dc"
    },
    "same_as_installed": true

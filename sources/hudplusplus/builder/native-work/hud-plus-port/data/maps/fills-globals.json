@@ -1,0 +1,62 @@
+{
+ "avatar_absent": {
+  "value": 48492812,
+  "old": 55065692,
+  "evidence": "known-global",
+  "sources": [
+   "megapack-port/HolsterYourShield/MAP.json"
+  ]
+ },
+ "booster_table": {
+  "value": 46883392,
+  "old": 53467792,
+  "evidence": "known-global",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "inventory_manager": {
+  "value": 47061224,
+  "old": 53634872,
+  "evidence": "known-global",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "bridge-global-consensus.json",
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "megapack-port/ControllableHoverPack/MAP.json",
+   "megapack-port/HolsterYourShield/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "weapon_magazine_manager": {
+  "value": 47060984,
+  "old": 53634632,
+  "evidence": "known-global",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json"
+  ]
+ },
+ "weapon_manager": {
+  "value": 47061008,
+  "old": 53634656,
+  "evidence": "known-global",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "megapack-port/ArcThrowerRevamped/MAP.json",
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "weapon_wielder_manager": {
+  "value": 47062992,
+  "old": 53634080,
+  "evidence": "known-global",
+  "sources": [
+   "bridge-global-consensus.json",
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json"
+  ]
+ }
+}

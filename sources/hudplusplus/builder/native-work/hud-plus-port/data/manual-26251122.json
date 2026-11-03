@@ -1,0 +1,472 @@
+{
+ "_": "Values found by hand on 26251122 (game.dll capture game-6ae0e5ff.merged.bin unless noted). Numbers are hex strings; each names the new site it was read at.",
+ "customization_rows": {
+  "value": "0x2a8",
+  "evidence": "0x75b8ac mov rbp,[rdi+0x2a8] in the customization-row realloc (old 0x750155); unchanged"
+ },
+ "customization_row_stride": {
+  "value": "0x10",
+  "evidence": "0x75b8b7 shl rbx,4 in the same realloc; unchanged"
+ },
+ "roots_avatar_manager_controller_base": {
+  "value": "0x53d900",
+  "evidence": "0x92d173 lea rcx,[r10+0x53d900] after imul rax,rcx,0x1240; unchanged"
+ },
+ "throw_holding_word": {
+  "value": "0x53e890",
+  "evidence": "0xab3175 mov rax,[rax+r10+0x53e890]; shr rax,0x2d; and al,1 (old 0xa97691 at 0x53e888); the controller record grew 8 bytes before this field (avatar_action_words 0xf80->0xf88)"
+ },
+ "throw_holding_bit": {
+  "value": "0x2d",
+  "evidence": "0xab317d shr rax,0x2d; unchanged"
+ },
+ "weapon_charge_rows_stride": {
+  "value": "0x28",
+  "evidence": "0x74c105 lea rdx,[rcx+rcx*4]; mov byte [rax+rdx*8+0xc],1 (sibling of old 0x73e1ae, whose own page is not captured); unchanged"
+ },
+ "weapon_data_r1_stride": {
+  "value": "0x3f0",
+  "evidence": "imul ...,0x3f0; add rax,[r10+0x58] in 15+ accessors of the weapon data manager (global 0x2ce1ea0), e.g. 0x76022a; unchanged"
+ },
+ "weapon_data_at": {
+  "value": "0x60",
+  "evidence": "0x761eba mov rax,[r10+0x60]; lea rdx,[rcx+rcx*2]; unchanged"
+ },
+ "weapon_data_stride": {
+  "value": "0xc",
+  "evidence": "0x761ebe lea rdx,[rcx+rcx*2] then [rax+rdx*4]; unchanged"
+ },
+ "dead_of": {
+  "value": "0x937e90",
+  "evidence": "migrate_rvas high: old callee 0x927050 -> 0x937e90"
+ },
+ "texture_type": {
+  "value": "cd4238c6a0c69e32",
+  "string": true,
+  "evidence": "Stingray texture resource type; constant, also the texture type in HUD Plus's own patch_0"
+ },
+ "weapon_data_registry_last": {
+  "value": "0x2e9",
+  "override": true,
+  "evidence": "weapon data accessor 0x511b30 (registry table 0xf146a0, component map): cmp eax,0x2e9 / cmp r9d,0x2ea; was 729/730, 16 more entries"
+ },
+ "weapon_data_registry_head": {
+  "value": "0x2ea0",
+  "override": true,
+  "evidence": "0x511bb2 add rax,0x2ea0 in the accessor tail (old 0x2da0)"
+ },
+ "weapon_data_registry_size": {
+  "value": "0x4d8",
+  "override": true,
+  "evidence": "0x511bab imul rax,rcx,0x4d8 in the accessor tail (old 0x4d0): the weapon data record grew 8 bytes"
+ },
+ "explosive_rows_at": {
+  "value": "0x60",
+  "evidence": "0x8da512 mov rsi,[r15+0x60]; live capture 2026-11-02 (mods/hud-plus/live): explosive row setup 0x8da512..0x8da6ac (old 0x8ca47c, restructured)"
+ },
+ "explosive_row_stride": {
+  "value": "0x40",
+  "evidence": "0x8da458 shl rbp,6; live capture 2026-11-02 (mods/hud-plus/live): explosive row setup 0x8da512..0x8da6ac (old 0x8ca47c, restructured)"
+ },
+ "explosive_blast_delay_at": {
+  "value": "0xc",
+  "evidence": "0x8da51e movss xmm0,[rcx+0xc]; live capture 2026-11-02 (mods/hud-plus/live): explosive row setup 0x8da512..0x8da6ac (old 0x8ca47c, restructured)"
+ },
+ "explosive_arm_delay_at": {
+  "value": "0x8",
+  "evidence": "0x8da523 addss xmm0,[rcx+8]; live capture 2026-11-02 (mods/hud-plus/live): explosive row setup 0x8da512..0x8da6ac (old 0x8ca47c, restructured)"
+ },
+ "explosive_remaining_at": {
+  "value": "0x8",
+  "evidence": "0x8da528 movss [rsi+rbp+8],xmm0; live capture 2026-11-02 (mods/hud-plus/live): explosive row setup 0x8da512..0x8da6ac (old 0x8ca47c, restructured)"
+ },
+ "explosive_mode_at": {
+  "value": "0x38",
+  "evidence": "0x8da530 mov [rsi+rbp+0x38],eax; live capture 2026-11-02 (mods/hud-plus/live): explosive row setup 0x8da512..0x8da6ac (old 0x8ca47c, restructured)"
+ },
+ "explosive_armed_at": {
+  "value": "0x2",
+  "evidence": "0x8da6ac mov byte [rsi+rbp+2],1; live capture 2026-11-02 (mods/hud-plus/live): explosive row setup 0x8da512..0x8da6ac (old 0x8ca47c, restructured)"
+ },
+ "component_card_ready": {
+  "value": "0x1",
+  "evidence": "confirmed 2026-11-03: HUD+'s own pattern on page 0x16b1000 (first captured 07:37 in a squad mission) gives the same value; this row is kept as the record. Before: INFERRED, verify in game: the card state enum's other values (calling 3, cooling 4, unavailable 5) are unchanged and the card-state field (+0x14cc) is used the same way in both builds; HUD+'s own site (old 0x18308ff mov r12d,1) is on a page no capture has. Read-only: compared with a card's state."
+ },
+ "stratagem_row_mission": {
+  "value": "0x191",
+  "evidence": "confirmed 2026-11-03: HUD+'s own pattern on page 0x16b1000 (first captured 07:37 in a squad mission) gives the same value; this row is kept as the record. Before: INFERRED, verify in game: byte at stratagem row record (0x188, unchanged) + 9, row stride 0x30 unchanged; HUD+'s own site (old 0x1830ac9) is on a page no capture has. Read-only."
+ },
+ "encounter_owners": {
+  "value": "0x960",
+  "override": true,
+  "evidence": "HUD+ pattern matches twice (0x8008f2 -> 0x2448, 0x8cadb2 -> 0x960); migrate_rvas high (instruction window 160) maps the old site 0x8bae62 to 0x8cadb2"
+ },
+ "encounter_owner_entity": {
+  "value": "0x8",
+  "override": true,
+  "evidence": "HUD+ pattern matches twice (0x8008f2 -> 0x2448, 0x8cadb2 -> 0x960); migrate_rvas high (instruction window 160) maps the old site 0x8bae62 to 0x8cadb2"
+ },
+ "encounter_owner_stride": {
+  "value": "0x8",
+  "override": true,
+  "evidence": "HUD+ pattern matches twice (0x8008f2 -> 0x2448, 0x8cadb2 -> 0x960); migrate_rvas high (instruction window 160) maps the old site 0x8bae62 to 0x8cadb2"
+ },
+ "roots_hud_manager_rva": {
+  "value": "0x2e28788",
+  "override": true,
+  "evidence": "the HUD manager global, voted by the rip loads whose register then takes +0x24e334 (hud_built) / +0x24e340 (mission HUD): 16 sites (0xaf690d, 0xaf693a, ...) load 0x2e28788; the same vote on 0.2.9's game.dll gives its own 0x346d538 (16 sites). Live 2026-11-02 in a mission: [game+0x2e28788]+0x24e334 = 1, panel first field set, gate 0x21f130 = 1. The rederived 0x2ce1508 (old-function, 1/3 aligned) is hud_scene_manager's global"
+ },
+ "booster_table": {
+  "value": "0x2cb6240",
+  "evidence": "the booster lookup loops (lea table; cmp [row],id; add row,0x38; cmp i,0x15; jb) are byte-identical at dozens of sites in both builds and all move from 0.2.9's 0x32fda90 to 0x2cb6240 (e.g. old 0x11f82a0 -> new 0x1089ac0, imul rax,rax,0x38; mov rax,[rax+r9+0x20]); HUD+'s own site (old 0x179aa53) was recompiled with other registers"
+ },
+ "booster_slots": {
+  "value": "0x15",
+  "evidence": "count in the same loops: cmp edx,0x15 at every site in both builds; unchanged"
+ },
+ "booster_stride": {
+  "value": "0x38",
+  "evidence": "row stride in the same loops: add r,0x38 / imul r,r,0x38; unchanged"
+ },
+ "booster": {
+  "value": "0x20",
+  "evidence": "mov rax,[rax+r9+0x20] after imul ...,0x38 in the same loops (new 0x1089ac0); unchanged"
+ },
+ "flat_picture_material": {
+  "value": "57fcf14ad069020b",
+  "string": true,
+  "evidence": "new 0x161d0e1: mov rax,0x9448536c2d6ae780; mov rdi,rcx; mov rdx,0x57fcf14ad069020b; cmovne rdx,rax, the same pair as HUD+'s site (old 0x179a309, which has no mov rdi between); material names do not change between builds"
+ },
+ "flat_ammo_icon_material": {
+  "value": "358512d85e35b47d",
+  "string": true,
+  "override": true,
+  "evidence": "0.2.9's value. HUD+'s site (old 0x1a0d363, expected near new 0x188e5xx) is on pages 0x188d000-0x188f000 no capture has; the material is still used at 11 of its 16 old sites with identical surrounding bytes (e.g. old 0x1823b71 -> new 0x16a4a61). The rederived 0x9448536c2d6ae780 came from a different function (0x16f2da4) and is the alternative picture in the flat-picture cmovne"
+ },
+ "explosive_kind_at": {
+  "value": "0x24",
+  "evidence": "HUD+'s site old 0x8cb06c = new 0x8db27a: the call to explosive_data_of (0x514ad0) is followed by the same reads off r15 in the same order (+0xc8, +0x24, +0x24, +0x30); all 14 callers read identical record fields in both builds"
+ },
+ "guide_length": {
+  "value": "0x7c",
+  "evidence": "HUD+'s site old 0xa16b79 movss xmm14,[r14+0x6c] = new 0xa29ae4 movss xmm14,[r15+0x7c] (function anchored at +0x12f70 by 412 unique windows): same call 0x12b19c0/0x11438a0 + addss before it, same comiss against 0 and jbe after; the eagle record grew"
+ },
+ "shield_waits_at": {
+  "value": "0x50",
+  "evidence": "HUD+'s site old 0x651120 = new 0x65a8f0 (function anchored at +0x9810 by 185 unique windows; the pattern is too long for the rebuild): 0x65a8f0 mov r12,[rsi+0x50]; unchanged"
+ },
+ "shield_wait_stride": {
+  "value": "0x88",
+  "evidence": "HUD+'s site old 0x651120 = new 0x65a8f0 (function anchored at +0x9810 by 185 unique windows; the pattern is too long for the rebuild): 0x65a903 imul r15,rdi,0x88; unchanged"
+ },
+ "shield_wait_left": {
+  "value": "0x4c",
+  "evidence": "HUD+'s site old 0x651120 = new 0x65a8f0 (function anchored at +0x9810 by 185 unique windows; the pattern is too long for the rebuild): 0x65ae0e movss xmm1,[r15+r12+0x4c], then subss dt and stored back; unchanged"
+ },
+ "reinforce_stratagem": {
+  "value": "0x7f",
+  "override": true,
+  "evidence": "the reinforce stratagem id in HUD+'s own site: 0.2.9 0x1830ca0 `cmp dword [rbx+rcx*8+0x188], 0x7c; jne +0x26` is new 0x16b1b90 (delta -0x17f110, the squad/stratagem-card HUD update, 1580 of 1583 instructions identical) with the same offset and branch and id 0x7f (new stratagems shift the ids, as SOS 0x91 -> 0x95). Page 0x16b1000 was first captured 2026-11-03 07:37 in a squad mission. The pattern masks the offset, so it also matches 0x6b86a2 (+0x1c90, 0x66, jne +0x2b, unrelated code), which is where r4 got 0x66."
+ },
+ "unit_alive": {
+  "value": "0x1f4cb0",
+  "override": true,
+  "evidence": "exe. HUD+'s head (sub rsp,28; call; test rax,rax; setne al; add rsp,28; ret) fits 6 wrappers in the new exe; the one calling the unit lookup 0xa06a0, which unit_world_pose (0x1f3020) also calls, as in 0.2.9 (both call 0x9d8c0), is 0x1f4cb0 = old 0x1feeb0 - 0xa200, the shift of every Unit function around it. r6 had 0x984cc0 (calls 0x983da0): the world HUD faulted inside it on unit 0x1001031 (2026-11-03 12:58, LLtM recorder). Live 13:04-13:07 through exe+0x1f4cb0: 20208 calls, no fault."
+ },
+ "menu_descriptor_widget_type": {
+  "value": "0x8",
+  "evidence": "menu group 2026-11-03: Was 'dependency' because its pattern is checked at menu_row_init+10 and menu_row_init was unresolved. At new 0x167fb7a (= 0x167fb70+10) the 34-byte pattern matches fully: `mov rdi,[rsp+0xb0]; mov ecx,[rdi+8]; test; je; sub ecx,1; je ...` (switch on descriptor +8). The game's own descriptor table (walked from menu_descriptor 0x107e580) has the same kind mix at +8 as 0.2.9 (11x0, 26x1, 102x2, 6x3, 1x4, 5x5)."
+ },
+ "menu_finish_simple": {
+  "value": "0x1688300",
+  "evidence": "menu group 2026-11-03: 0.2.9 0x1807060 -> new 0x1688300 (shift -0x17ed60, the same as menu_build_native_rows/menu_release_rows/menu_row_grey). Structural pick among the 3 head matches: it is the tail-jump target of menu_build_native_rows (new 0x16880bc jmp 0x1688300, 0.2.9 0x1806e1c jmp 0x1807060, take +353 of menu_page_build_site) and of the sibling builder (0x16882f4, 0.2.9 0x1807054); its body reads count +0xb10, sets +0xb0e and calls widget_opacity_set 0x12e07e0 and the three scroll functions exactly as 0.2.9. 0x1689a70 is the large-panel copy (count +0x81e8, flag +0x81e6 = 0.2.9 0x1808820). 0x1692650 is a code-identical copy tail-called by a different page builder (0x1692acc/0x1692c93; that panel was 0x5750-based in 0.2.9 = 0x1800fe0 and now uses the 0xb10 layout). Full 227-byte head matches. Checked again: body shapes identical to 0.2.9, shift as neighbours."
+ },
+ "menu_panel_container": {
+  "value": "0x220",
+  "evidence": "menu group 2026-11-03: HUD+'s menu_page_build_site (0.2.9 0x1806cbc inside menu_build_native_rows 0x1806c00) is new 0x1687f5c inside r7's menu_build_native_rows 0x1687ea0 (shift -0x17ed60); the whole 357-byte pattern matches there except one unmasked byte, the native-settings loop bound `cmp ebx,0xb` -> `cmp ebx,0xa` at 0x1688091 (one native setting fewer). +199: `lea rcx,[rsi+0x220]` before widget_attach (new 0x1688020)."
+ },
+ "menu_panel_count": {
+  "value": "0xb10",
+  "evidence": "menu group 2026-11-03: HUD+'s menu_page_build_site (0.2.9 0x1806cbc inside menu_build_native_rows 0x1806c00) is new 0x1687f5c inside r7's menu_build_native_rows 0x1687ea0 (shift -0x17ed60); the whole 357-byte pattern matches there except one unmasked byte, the native-settings loop bound `cmp ebx,0xb` -> `cmp ebx,0xa` at 0x1688091 (one native setting fewer). +23: `movsxd rax,[rsi+0xb10]` (new 0x1687f70); finish_simple also reads +0xb10."
+ },
+ "menu_panel_gap": {
+  "value": "0xb18",
+  "evidence": "menu group 2026-11-03: HUD+'s menu_page_build_site (0.2.9 0x1806cbc inside menu_build_native_rows 0x1806c00) is new 0x1687f5c inside r7's menu_build_native_rows 0x1687ea0 (shift -0x17ed60); the whole 357-byte pattern matches there except one unmasked byte, the native-settings loop bound `cmp ebx,0xb` -> `cmp ebx,0xa` at 0x1688091 (one native setting fewer). +4: `movss xmm0,[rsi+0xb18]` / store back (new 0x1687f5c)."
+ },
+ "menu_panel_rows": {
+  "value": "0xb00",
+  "evidence": "menu group 2026-11-03: HUD+'s menu_page_build_site (0.2.9 0x1806cbc inside menu_build_native_rows 0x1806c00) is new 0x1687f5c inside r7's menu_build_native_rows 0x1687ea0 (shift -0x17ed60); the whole 357-byte pattern matches there except one unmasked byte, the native-settings loop bound `cmp ebx,0xb` -> `cmp ebx,0xa` at 0x1688091 (one native setting fewer). +51: `add rcx,[rsi+0xb00]` (new 0x1687f8c), row base for row_init and widget_attach."
+ },
+ "menu_panel_scroll": {
+  "value": "0x330",
+  "evidence": "menu group 2026-11-03: menu_finish_simple_head (0.2.9 0x1807060) taken at new 0x1688300; all 227 pattern bytes match and the function body is instruction-for-instruction identical to 0.2.9 (only rel32/rip displacements differ). +19: `lea rbx,[rcx+0x330]` (new 0x1688310). The large-panel copy 0x1689a70 (count +0x81e8 = menu_large_count) also uses +0x330, so HUD+'s large-panel use holds."
+ },
+ "menu_panel_settings": {
+  "value": "0xb28",
+  "evidence": "menu group 2026-11-03: HUD+'s menu_page_build_site (0.2.9 0x1806cbc inside menu_build_native_rows 0x1806c00) is new 0x1687f5c inside r7's menu_build_native_rows 0x1687ea0 (shift -0x17ed60); the whole 357-byte pattern matches there except one unmasked byte, the native-settings loop bound `cmp ebx,0xb` -> `cmp ebx,0xa` at 0x1688091 (one native setting fewer). +44: `mov rax,[rsi+0xb28]` passed as row_init arg 6 (new 0x1687f85)."
+ },
+ "menu_pivot_x": {
+  "value": "0x3f000000",
+  "evidence": "menu group 2026-11-03: HUD+'s menu_page_build_site (0.2.9 0x1806cbc inside menu_build_native_rows 0x1806c00) is new 0x1687f5c inside r7's menu_build_native_rows 0x1687ea0 (shift -0x17ed60); the whole 357-byte pattern matches there except one unmasked byte, the native-settings loop bound `cmp ebx,0xb` -> `cmp ebx,0xa` at 0x1688091 (one native setting fewer). +79: `mov dword [rsp+0x90],0x3f000000` (0.5f) at new 0x1687fa4, packed into r8/r9 for row_init."
+ },
+ "menu_pivot_y": {
+  "value": "0x3f800000",
+  "evidence": "menu group 2026-11-03: HUD+'s menu_page_build_site (0.2.9 0x1806cbc inside menu_build_native_rows 0x1806c00) is new 0x1687f5c inside r7's menu_build_native_rows 0x1687ea0 (shift -0x17ed60); the whole 357-byte pattern matches there except one unmasked byte, the native-settings loop bound `cmp ebx,0xb` -> `cmp ebx,0xa` at 0x1688091 (one native setting fewer). +95: `mov dword [rsp+0x94],0x3f800000` (1.0f) at new 0x1687fb4."
+ },
+ "menu_row_init": {
+  "value": "0x167fb70",
+  "evidence": "menu group 2026-11-03: HUD+'s menu_page_build_site (0.2.9 0x1806cbc inside menu_build_native_rows 0x1806c00) is new 0x1687f5c inside r7's menu_build_native_rows 0x1687ea0 (shift -0x17ed60); the whole 357-byte pattern matches there except one unmasked byte, the native-settings loop bound `cmp ebx,0xb` -> `cmp ebx,0xa` at 0x1688091 (one native setting fewer). The call at +185 (new 0x1688014 call 0x167fb70; 0.2.9 0x1806d74 call 0x17fe8d0) gives it. Shift -0x17ed60 like its neighbours; the 0x1e0-byte body is identical to 0.2.9 0x17fe8d0 apart from branch/call targets, every callee moving by the same -0x17ed60; recorded head (at +10) matches; 17 callers in the menu module. Checked again: body shapes identical to 0.2.9, shift as neighbours."
+ },
+ "menu_row_init_flag": {
+  "value": "0x1",
+  "evidence": "menu group 2026-11-03: HUD+'s menu_page_build_site (0.2.9 0x1806cbc inside menu_build_native_rows 0x1806c00) is new 0x1687f5c inside r7's menu_build_native_rows 0x1687ea0 (shift -0x17ed60); the whole 357-byte pattern matches there except one unmasked byte, the native-settings loop bound `cmp ebx,0xb` -> `cmp ebx,0xa` at 0x1688091 (one native setting fewer). +59: `mov byte [rsp+0x38],1` (row_init arg 8) at new 0x1687f93."
+ },
+ "menu_row_stride": {
+  "value": "0x7ae8",
+  "evidence": "menu group 2026-11-03: HUD+'s menu_page_build_site (0.2.9 0x1806cbc inside menu_build_native_rows 0x1806c00) is new 0x1687f5c inside r7's menu_build_native_rows 0x1687ea0 (shift -0x17ed60); the whole 357-byte pattern matches there except one unmasked byte, the native-settings loop bound `cmp ebx,0xb` -> `cmp ebx,0xa` at 0x1688091 (one native setting fewer). +30: `imul rcx,rax,0x7ae8` at new 0x1687f77 (and again before widget_attach at 0x1688027)."
+ },
+ "menu_scroll_extent": {
+  "value": "0x1615890",
+  "evidence": "menu group 2026-11-03: menu_finish_simple_head (0.2.9 0x1807060) taken at new 0x1688300; all 227 pattern bytes match and the function body is instruction-for-instruction identical to 0.2.9 (only rel32/rip displacements differ). +134: call 0x1615890 (0.2.9 call 0x1794600). Shift -0x17ed70; leaf body (+0x7b0/+0x7b8 clamp) identical to 0.2.9 and tail-jumps to 0x1615800 like 0.2.9 jumps to 0x1794570; own head pattern matches. Checked again: body shapes identical to 0.2.9, shift as neighbours."
+ },
+ "menu_scroll_position": {
+  "value": "0x7b8",
+  "evidence": "menu group 2026-11-03: menu_finish_simple_head (0.2.9 0x1807060) taken at new 0x1688300; all 227 pattern bytes match and the function body is instruction-for-instruction identical to 0.2.9 (only rel32/rip displacements differ). +214: `mov dword [rbx+0x7b8],0` (new 0x16883d4); menu_scroll_extent/reset also use +0x7b8."
+ },
+ "menu_scroll_reset": {
+  "value": "0x1615800",
+  "evidence": "menu group 2026-11-03: menu_finish_simple_head (0.2.9 0x1807060) taken at new 0x1688300; all 227 pattern bytes match and the function body is instruction-for-instruction identical to 0.2.9 (only rel32/rip displacements differ). +223: call 0x1615800 (0.2.9 call 0x1794570). Shift -0x17ed70; body identical, tail-jumps to widget_position_set (new 0x12df3b0, 0.2.9 0x14476a0); jump target of thumb and extent in both builds; own head pattern matches. Checked again: body shapes identical to 0.2.9, shift as neighbours."
+ },
+ "menu_scroll_row": {
+  "value": "0x2246fc8",
+  "evidence": "menu group 2026-11-03: menu_finish_simple_head (0.2.9 0x1807060) taken at new 0x1688300; all 227 pattern bytes match and the function body is instruction-for-instruction identical to 0.2.9 (only rel32/rip displacements differ). +91: `mulss xmm7,[rip]` at new 0x1688357 -> 0x2246fc8; float 64.0, as 0.2.9's 0x23c7758 (rdata shift -0x180790, same as menu_group_gap/menu_description_*)."
+ },
+ "menu_scroll_thumb": {
+  "value": "0x16151f0",
+  "evidence": "menu group 2026-11-03: menu_finish_simple_head (0.2.9 0x1807060) taken at new 0x1688300; all 227 pattern bytes match and the function body is instruction-for-instruction identical to 0.2.9 (only rel32/rip displacements differ). +115: call 0x16151f0 (0.2.9 call 0x1793f60). Shift -0x17ed70 like menu_hint_set/menu_tab_select/menu_tabs_set; body identical to 0.2.9, calls widget_size_set 0x12dee70 four times and tail-jumps to menu_scroll_reset 0x1615800 in both builds; own head pattern matches. Checked again: body shapes identical to 0.2.9, shift as neighbours."
+ },
+ "menu_scroll_view": {
+  "value": "0x224753c",
+  "evidence": "menu group 2026-11-03: menu_finish_simple_head (0.2.9 0x1807060) taken at new 0x1688300; all 227 pattern bytes match and the function body is instruction-for-instruction identical to 0.2.9 (only rel32/rip displacements differ). +63: `movss xmm0,[rip]` at new 0x168833b -> 0x224753c (also read at 0x168837d/0x168838a); the float there is 806.0, as 0.2.9's 0x23c7cc8."
+ },
+ "menu_slider_kind": {
+  "value": "0x1",
+  "evidence": "menu group 2026-11-03: Same site, new 0x167fb7a +24: first `sub ecx,1; je` case of the widget-type switch in menu_row_init. In the new descriptor table every kind-1 descriptor carries slider min/max/step floats at +0x24/+0x28/+0x2c (e.g. id 0x3d: 0.75/1.25/0.05)."
+ },
+ "menu_text_template": {
+  "value": "0xc67c7faf",
+  "evidence": "menu group 2026-11-03: 0.2.9 site 0xb03182 `cmp ecx,0xc67c7faf` is a case of a hash->pointer switch (0.2.9 0xb00630, new 0xb1c5d0, all pages captured). New 0xb1f23c has the same `cmp ecx,0xc67c7faf; je` returning a .data pointer; all 804 keys of the 0.2.9 switch are still in the new one (820 now). The pattern failed only because its unmasked neighbour `cmp ecx,0xc5b4c865` moved when the tree was rebalanced. The immediate occurs nowhere else in either image."
+ },
+ "menu_toggle_off": {
+  "value": "0xa090be2e",
+  "evidence": "menu group 2026-11-03: The game's own settings descriptor table in the new image (menu_descriptor 0x107e580 -> pointer table 0x1feba70, counts 0x2ca50b4, 0xd8 per descriptor) has 24 selector (kind 2) descriptors whose choices at +0x44 are exactly (0xa090be2e, 0x13dc1da2), as 0.2.9's table; 0xa090be2e is also the first choice of several multi-choice selectors (same sets as 0.2.9), and new menu code writes it as a choice label (0x168ac8e `mov dword [rdi+0x11fb8],0xa090be2e`, = 0.2.9 0x1809a5e). The 0.2.9 site 0x14f00e9 is in a function whose new copy lies in uncaptured pages (~0x1387000)."
+ },
+ "menu_toggle_on": {
+  "value": "0x13dc1da2",
+  "evidence": "menu group 2026-11-03: Second choice of the same 24 (off, on) selector descriptors in the new game's descriptor table (e.g. descriptor id 1 at 0x2c68b18: +0x44/+0x48 = 0x2c68b5c/0x2c68b60), and the adjacent off/on pair in .rdata at 0x20ac214/0x20ac218 (0.2.9 0x2222a94/0x2222a98). No code immediate in the captured new code: 0.2.9's two code uses (0x14f0184, 0x14f13e0) sit in the toggle-label function whose new copy is on uncaptured pages (~0x1387000)."
+ },
+ "action_script_all_full_rva": {
+  "value": "0x1057190",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: HUD+'s calling scripts (ids 2765-2767 -> new 2778-2780) are on uncaptured pages, so found by neighbour shift: 0.2.9 0x11c5d60 sits between mag_full (0x11c5b20) and can_reload (0x11c5e60), both shift -0x16ebd0; new 0x1057190 has the same body (34 vs 35 instructions, the same one-register change as mag_full), its masked prefix is unique in both images, and the two 0.2.9 tail-jump wrappers 0x11c5de0/0x11c5df0 (`jmp all_full`) appear at new 0x1057210/0x1057220 jumping to 0x1057190. Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "action_script_can_reload_rva": {
+  "value": "0x1057290",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: Script-table route: 0.2.9 dispatcher 0x11509e0 (jump table 0x115c784, 0xb33 ids) and new 0xfe38d0 (table 0xfef7a4, 0xb45 ids) are the same RVA-relative 4-byte table of stubs `mov edx,r8d; call <script>`; ids aligned by reload_script_length's frame table (difflib, 18 inserted ids), each 0.2.9 script that calls the handler aligned instruction-by-instruction with its new script: 1 of 1 aligned call site gives 0x1057290 (the other 27 callers sit on uncaptured script pages). Body 56/56 instructions identical to 0.2.9 0x11c5e60, shift -0x16ebd0 matching its neighbours all_full and empty. Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "action_script_chamber_rva": {
+  "value": "0x1056660",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: Script-table route: 0.2.9 dispatcher 0x11509e0 (jump table 0x115c784, 0xb33 ids) and new 0xfe38d0 (table 0xfef7a4, 0xb45 ids) are the same RVA-relative 4-byte table of stubs `mov edx,r8d; call <script>`; ids aligned by reload_script_length's frame table (difflib, 18 inserted ids), each 0.2.9 script that calls the handler aligned instruction-by-instruction with its new script: 228 of 228 aligned call sites give 0x1056660, including HUD+'s own site (0.2.9 0x11247f0 in script id 2620 -> new 0xfb5070 in script 0xfb4f20, id 2626, 306/306 instructions). Body 142/142 identical to 0.2.9 0x11c5230 (shift -0x16ebd0); it reads the magazine row (+0x20 map, +0x48 rows, stride 0x10, +8) and rounds row (+0x28 map, +0x50 rows, stride 0x18, +0x10) exactly as HUD+ does. Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "action_script_cock_rva": {
+  "value": "0x1052c20",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: Script-table route: 0.2.9 dispatcher 0x11509e0 (jump table 0x115c784, 0xb33 ids) and new 0xfe38d0 (table 0xfef7a4, 0xb45 ids) are the same RVA-relative 4-byte table of stubs `mov edx,r8d; call <script>`; ids aligned by reload_script_length's frame table (difflib, 18 inserted ids), each 0.2.9 script that calls the handler aligned instruction-by-instruction with its new script: 21 of 21 aligned call sites give 0x1052c20. Body 96/96 instructions identical to 0.2.9 0x11c1830 (shift -0x16ec10); masked body unique in both images. Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "action_script_count_rva": {
+  "value": "0x1056190",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: Script-table route: 0.2.9 dispatcher 0x11509e0 (jump table 0x115c784, 0xb33 ids) and new 0xfe38d0 (table 0xfef7a4, 0xb45 ids) are the same RVA-relative 4-byte table of stubs `mov edx,r8d; call <script>`; ids aligned by reload_script_length's frame table (difflib, 18 inserted ids), each 0.2.9 script that calls the handler aligned instruction-by-instruction with its new script: 6 of 6 aligned call sites give 0x1056190. Body 180/180 instructions identical to 0.2.9 0x11c4d60 (shift -0x16ebd0 like chamber/mag_full/all_full/can_reload/empty). Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "action_script_empty_rva": {
+  "value": "0x10577f0",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: Script-table route: 0.2.9 dispatcher 0x11509e0 (jump table 0x115c784, 0xb33 ids) and new 0xfe38d0 (table 0xfef7a4, 0xb45 ids) are the same RVA-relative 4-byte table of stubs `mov edx,r8d; call <script>`; ids aligned by reload_script_length's frame table (difflib, 18 inserted ids), each 0.2.9 script that calls the handler aligned instruction-by-instruction with its new script: 6 of 6 aligned call sites give 0x10577f0, including HUD+'s own site (0.2.9 0x11284e0 -> new 0xfb8ff0, script id 2659 -> 2667, 166/166 instructions). Body 122/122 identical to 0.2.9 0x11c63c0 (shift -0x16ebd0). Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "action_script_insert_rva": {
+  "value": "0x1052b40",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: Script-table route: 0.2.9 dispatcher 0x11509e0 (jump table 0x115c784, 0xb33 ids) and new 0xfe38d0 (table 0xfef7a4, 0xb45 ids) are the same RVA-relative 4-byte table of stubs `mov edx,r8d; call <script>`; ids aligned by reload_script_length's frame table (difflib, 18 inserted ids), each 0.2.9 script that calls the handler aligned instruction-by-instruction with its new script: 59 of 59 aligned call sites in captured new scripts give 0x1052b40 (no other target). Body 60/60 instructions identical to 0.2.9 0x11c1750, shift -0x16ec10 like cock/switch_kind; masked body unique in both images. Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "action_script_mag_full_rva": {
+  "value": "0x1056f50",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: Script-table route: 0.2.9 dispatcher 0x11509e0 (jump table 0x115c784, 0xb33 ids) and new 0xfe38d0 (table 0xfef7a4, 0xb45 ids) are the same RVA-relative 4-byte table of stubs `mov edx,r8d; call <script>`; ids aligned by reload_script_length's frame table (difflib, 18 inserted ids), each 0.2.9 script that calls the handler aligned instruction-by-instruction with its new script: 11 of 11 aligned call sites give 0x1056f50. Body 69 vs 71 instructions: identical except the compiler now loads the rounds-manager global into rsi once and passes it to the next two callees (0.2.9 0x7455e0/0x742900 -> 0x750c70/0x74de60); same `rounds >= capacity - chambered` setge tail. Shift -0x16ebd0. Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "action_script_reloadable_rva": {
+  "value": "0x780c90",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: 0.2.9 0x775580 -> new 0x780c90 (shift +0xb710, same as the `reloading` routine 0x776010 -> 0x781720): 701/701 instructions identical. Its callers line up one-to-one: HUD+'s own site 0.2.9 0x616a6c -> new 0x61fd1c (the pattern's new site 0x61fd17), 0x618610->0x6218b0, 0x774d3a->0x78044a, 0x828975->0x835965, 0xa7c24f/348/48e->0xa97caf/da8/eee, and the handler wrapper 0x11c5e4d/f2b/f7d -> 0x105727d/35b/3ad (shift -0x16ebd0). Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "action_script_room_rva": {
+  "value": "0x786a10",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: Script-table route: 0.2.9 dispatcher 0x11509e0 (jump table 0x115c784, 0xb33 ids) and new 0xfe38d0 (table 0xfef7a4, 0xb45 ids) are the same RVA-relative 4-byte table of stubs `mov edx,r8d; call <script>`; ids aligned by reload_script_length's frame table (difflib, 18 inserted ids), each 0.2.9 script that calls the handler aligned instruction-by-instruction with its new script: HUD+'s own site 0.2.9 0x1147d87 (script id 2812) -> new 0xfd9eb7 (script 0xfd9ca0, id 2826, 385/385 instructions) calls 0x786a10. Body 134/134 identical to 0.2.9 0x77b2a0 (shift +0xb770); its three callers map 0x745f9a->0x75162a, 0x1147d87->0xfd9eb7, 0x11c5d4c->0x105717c. Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "action_script_set_stage_bit_rva": {
+  "value": "0x1055880",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: Script-table route: 0.2.9 dispatcher 0x11509e0 (jump table 0x115c784, 0xb33 ids) and new 0xfe38d0 (table 0xfef7a4, 0xb45 ids) are the same RVA-relative 4-byte table of stubs `mov edx,r8d; call <script>`; ids aligned by reload_script_length's frame table (difflib, 18 inserted ids), each 0.2.9 script that calls the handler aligned instruction-by-instruction with its new script: 4 of 4 aligned call sites give 0x1055880. Body 65/65 instructions identical to 0.2.9 0x11c44d0 (shift -0x16ec50, same as stage_bit). Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "action_script_stage_bit_rva": {
+  "value": "0x1055970",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: 0.2.9 0x11c45c0 directly follows set_stage_bit 0x11c44d0 (new 0x1055880, shift -0x16ec50); new 0x1055970 = 0x11c45c0 - 0x16ec50 has a body 61/61 instructions identical, and its whole 207-byte masked body matches exactly once in each image. Script check: 0.2.9 script id 2825 (0x114a780) -> new id 2840 (0xfdcda0, captured up to 0xfdcfff) has the same call sequence at a constant +0x16d9e0 offset, and its 5 stage_bit calls (0.2.9 0x114a8a3..0x114a9b3) are new 0xfdcec3..0xfdcfd3 -> 0x1055970, interleaved with count -> 0x1056190. Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "action_script_switch_kind_rva": {
+  "value": "0x1053330",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: HUD+'s calling scripts (ids 2765-2767) are on uncaptured new pages, so found by neighbour shift: 0.2.9 0x11c1f40 follows cock (0x11c1830, shift -0x16ec10); new 0x1053330 = 0x11c1f40 - 0x16ec10 has a body 57/57 instructions identical, and its whole 207-byte body (only rel32/rip disps masked) matches exactly once in each image (0.2.9 0x11c1f40, new 0x1053330). Callees map consistently (0x786920->0x791fa0, 0xfd9d40->0xe69ce0 as in the other handlers, 0x779df0->0x785560). Checked again: body identical to 0.2.9 up to its first ret; HUD+ only compares it with call targets."
+ },
+ "weapon_magazine_map": {
+  "value": "0x20",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: 0.2.9 site 0x585090 maps to new page 0x58d000 (sibling accessor for reload_manager 0x5897a0 -> 0x592510, +0x8d70), which is uncaptured (also encrypted in 26088801). The same magazine manager (new global 0x2ce17f8) is read with the hash map at +0x20 (data), +0x28 (capacity), +0x2c (empty key), +0x30 (multiplier) by new 0x4b5980 (0x4b59cf mov rdi,[r10+0x20]; identical to 0.2.9 0x4af0c0) and by the new chamber handler (0x10566c8 mov rsi,[r11+0x20]), same layout as 0.2.9's 0x585090."
+ },
+ "weapon_magazine_r1_at": {
+  "value": "0x48",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: 0.2.9 site 0x4af0c0 (magazine row accessor: mov r10,[magazine manager]; shl rax,4; add rax,[r10+0x48]) -> new 0x4b5980, byte-identical over all 45 instructions apart from rip disps (loads 0x2ce17f8 = weapon_magazine_manager); the 323-byte pattern failed only on refilled padding at +0xaf (int3 -> c3). `add rax,[r10+0x48]` at 0x4b599c/0x4b5a1c; the new chamber handler also reads [r11+0x48] at 0x10567bd."
+ },
+ "weapon_magazine_r1_stride": {
+  "value": "0x10",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: Same new accessor 0x4b5980: `shl rax,4` at 0x4b5998/0x4b5a18 (stride 0x10, as 0.2.9 0x4af0d8); the new chamber handler indexes the same rows with `add rcx,rcx; cmp [rax+rcx*8+8],0` (0x10567c1), stride 0x10 with chamber round at +8."
+ },
+ "weapon_rounds_r1_at": {
+  "value": "0x50",
+  "override": true,
+  "evidence": "weapon_3d group 2026-11-03: New chamber handler 0x1056660 (identical to 0.2.9 0x11c5230) loads the rounds manager (new 0x2ce1eb0 = weapon_rounds_manager), looks up its map at +0x28 and reads `mov rax,[r11+0x50]; lea rdx,[rcx+rcx*2]; cmp [rax+rdx*8+0x10],0` at 0x105682d (rows +0x50, stride 0x18, chamber +0x10; 0.2.9 0x11c53fd identical). HUD+'s 0.2.9 site 0x77c6e0 (rounds array grow) was recompiled: new 0x787eaf/0x787ed3 still grows [rdi+0x50] by 0x18 then [rdi+0x58] by 0x14 (= weapon_rounds_at/stride)."
+ },
+ "line_object_add_circle": {
+  "value": "0x4f1200",
+  "evidence": "small group 2026-11-03: Exe page 0x4f1000 is zero in every capture, so the body is unread. (1) .rdata unwind data (chained records at 0x17fb0a0/0x17fb0b0 -> parent 0x17fb054) puts a function at exactly 0x4f1200-0x4f148a. Its prologue is HUD+'s 22-byte 0.2.9 head: mov rax,rsp; push rbp,rdi,r12,r14,r15; sub rsp,0xf0; movaps [rax-0x38],xmm6, then saves xmm7-15. The same decoding was checked against captured functions 0x4f0d20, 0x4f4550 and 0x4f4b50. (2) 0x4f1200-0x4f0a50 = 0x7b0 = 0.2.9's 0x4e1fd0-0x4e1820, the same +0xf230 shift as add_line. (3) Its only captured caller, 0x4f4282 in the cone-like helper 0x4f3e10, passes add_circle's exact shape: rcx line object, edx colour, r8 &centre, xmm3 radius (from sin/cos), [rsp+20] &normal, [rsp+28] int segments. The binding LineObject.add_circle is 0x412290 (registration 0x41151e, name 0x1720bc8); its page is not captured either."
+ },
+ "mesh_material_count": {
+  "value": "0x18",
+  "evidence": "small group 2026-11-03: Exe Mesh bindings registered at 0x484b8d+: \"material\" -> thunk 0x485560 -> worker 0x485240 does `mov ebp,[mesh+0x18]` as the slot-loop bound (0.2.9 pattern `mov edi,[rax+0x18]`). \"num_materials\" 0x484f10 returns u32 [mesh+0x18]. The control flow was recompiled, so HUD+'s pattern no longer matches."
+ },
+ "mesh_material_slots": {
+  "value": "0x60",
+  "evidence": "small group 2026-11-03: Mesh.material worker 0x485240: `mov r14,[mesh+0x60]` then linear search `cmp [r14+rax*4],r8d` for the slot id (0.2.9: `mov rsi,[rax+0x60]` ... `cmp [rsi+rcx*4],r8d`). has_material 0x484f80 and material_slot_id 0x485670 also use [mesh+0x60] as the 4-byte slot array."
+ },
+ "mesh_materials": {
+  "value": "0x20",
+  "evidence": "small group 2026-11-03: Mesh.material worker 0x485240 (via thunk 0x485560, registered as \"material\" on Mesh): after the slot search, `mov rax,[mesh+0x20]; mov rdx,[rax+rcx*8]`, pushed as light userdata (nil when 0). This matches the 0.2.9 pattern's last instruction `mov rcx,[rbp+0x20]` (take offset 255)."
+ },
+ "reward_kind_medal": {
+  "value": "0x2",
+  "evidence": "small group 2026-11-03: Code: new 0x59c2fe/0x59c9aa (= 0.2.9 0x5937ae/0x593e5a, same instructions) call reward_record_find 0x500440, take kind=[rec+0x14] (reward_record_kind) and index reward_kind_names 0x1fc6808 (`mov r9,[rax+rcx*8]`, format \"mission_activity_%s\"). That table in the new image (load base 0x6ffff0880000) is [None, exploration_requisition_slips, exploration_medals, exploration_credit_card, Count], the same order as 0.2.9; HUD+'s own row search (text \"exploration_medals\") gives slot 2, offset 0."
+ },
+ "reward_kind_super_credit": {
+  "value": "0x3",
+  "evidence": "small group 2026-11-03: Same code and table as reward_kind_medal: reward_kind_names[3] (0x1fc6820) points to \"exploration_credit_card\" (0x20d0770); HUD+'s row search gives slot 3, offset 0; 0.2.9 table has the same order."
+ },
+ "sample_grade_common": {
+  "value": "0x0",
+  "evidence": "small group 2026-11-03: Code: new 0x12685ed (= 0.2.9 0x13d15ad, same instructions) reads grade=[type*0x18+0x2caeb90] and uses it as a row index `shl rcx,6; mov rax,[rcx+base+0x2c96e20]` into sample_grade_pictures. Row 0 of that table has its name pointer (+0x18) on \"SampleCommon\" (HUD+ row search: slot 0, offset 0x18); rows' hashes/colours and the type->grade table (types 1..7 -> 0,1,2,0,0,1,1) are byte-identical to 0.2.9."
+ },
+ "sample_grade_rare": {
+  "value": "0x1",
+  "evidence": "small group 2026-11-03: Same chain as sample_grade_common: sample_grade_pictures row 1 (+0x18) points to \"SampleRare\" (HUD+ row search slot 1, offset 0x18, consistent field offset); identical to 0.2.9."
+ },
+ "sample_grade_super": {
+  "value": "0x2",
+  "evidence": "small group 2026-11-03: Same chain as sample_grade_common: sample_grade_pictures row 2 (+0x18) points to \"SampleSuper\" (HUD+ row search slot 2, offset 0x18); identical to 0.2.9."
+ },
+ "stratagem_input_avatar": {
+  "value": "0x28",
+  "evidence": "small group 2026-11-03: 0.2.9 site 0xa8e780 = new 0xaaa1e0 (shift +0x1ba60): the whole 0x6e-byte function is instruction-for-instruction the same, `mov eax,[rcx+0x28]; cmp eax,[rip->0x2e3f10c avatar_absent]`, then the avatar-manager lookup (0x2ce1ee0, map +0xf8, stride 0x1238->0x1240, flag field +0x53e888->+0x53e890 bit 9). With only the int3 padding and the two stride/field immediates masked, HUD+'s pattern hits exactly one site in new, old and 26088801 images; avatar_absent read from the same site equals r7's 0x2e3f10c."
+ },
+ "bombardment_manager": {
+  "value": "0x2ce1ea8",
+  "evidence": "attack group 2026-11-03 (high): 0.2.9's 0x3326ce8 sits between weapon_data_manager 0x3326ce0 and weapon_rounds_manager 0x3326cf0, whose new values are 0x2ce1ea0 and 0x2ce1eb0 (shift -0x644e40), and 0x2ce1ea8 is no other value. 28 rip loads of 0x2ce1ea8 pair one-to-one with 28 of 0.2.9's 31 loads, at constant shifts per region and with the same fields used. For example, 0x5373e0 = 0x540200 (+0x8e20) matches instruction for instruction: +0x1c/+0x38/+0x10/+0x20/+0x24/+0x50/+0x58 with runtime stride 0x70, as in HUD+'s companion function 0x4a5910. Also 0xb4ea46/0xb4ea51 = 0xb6b206/0xb6b211: eagle manager then this global, same 0xb spacing. The 3 unpaired 0.2.9 loads (HUD+'s own site 0x4a588c, 0x4a591b and 0x4e4781) map to new pages 0x4ac000 and 0x4eb000, which are zero in the capture. Checked again: 27 new references use the same field-offset pairs in the same proportions as 0.2.9's 30."
+ },
+ "eagle_capacity": {
+  "value": "0x10",
+  "evidence": "attack group 2026-11-03 (high): 0.2.9 0x8a9a40 (eagle add) = new 0x8b9660, instruction for instruction except the runtime stride 0xfc -> 0x138. The pattern hard-codes 0xfc, which is why it failed. `mov rdi,[0x2ce1800]` (eagle_manager); `cmp eax,[rdi+0x10]` at 0x8b9694 before the grow call 0x8b92c0, which writes the new capacity to +0x10 and reallocates records +0x48 at 8 bytes per slot."
+ },
+ "eagle_degrees": {
+  "value": [
+   0.01745329238474369
+  ],
+  "evidence": "attack group 2026-11-03 (high): A const read as f32 from eagle_degrees_at, which was unresolved; that is what reason 'const' means. 0.2.9's heading code (0x89f1a6 movss xmm8,[settings copy+0x1c]; 0x89f1b5 mulss xmm8,[0x23c6660]) = new 0x8acfe5 movss xmm9,[rbp+0x138]; 0x8acff6 mulss xmm9,xmm1, with xmm1 loaded at 0x8acf68 from 0x2245e78. Bytes there are 35fa8e3c, the same f32 as 0.2.9's (pi/180). Same value as 0.2.9."
+ },
+ "eagle_degrees_at": {
+  "value": "0x2245e78",
+  "evidence": "attack group 2026-11-03 (high): Where eagle_degrees is read from (eagle_preview_heading consts.from); see eagle_degrees. 0.2.9 0x23c6660, same f32 bytes 35fa8e3c. Not used by any module except as the const source. Checked again: f32 pi/180, as 0.2.9's 0x23c6660."
+ },
+ "eagle_heading_block": {
+  "value": "0x0",
+  "evidence": "attack group 2026-11-03 (medium): game.delivery reads settings+block+read-copy (Flight.heading); 0.2.9: 0x10 + (-0x54) - (-0x60) = settings+0x1c. The new eagle preview 0x8acd90 (= 0.2.9 0x89ef70; the same helper 0x8acc60 = 0x89ee70 copies eagle_default_of(hash) into a local, now 0x150 bytes, 0x98 before) copies the whole struct from [rax+0] to [rbp+0x110] (loop at 0x8ace30). It reads the heading at [rbp+0x138] (0x8acfe5), multiplies by pi/180 and takes cos/sin, as 0.2.9 did with [rbp-0x54]. So the heading moved settings+0x1c -> +0x28, consistent with other settings fields shifting +0xc (0x30->0x3c, 0x34->0x40, 0x3c->0x48 in this function). Only the sum block+read-copy = 0x28 matters to HUD+. Checked again: new 0x8ace22 lea rcx,[rbp+0x110] (copy), 0x8acfe5 movss xmm9,[rbp+0x138] (read), pi/180 from 0x2245e78; HUD+ reads only the float at block+read-copy (0x28, was 0x1c)."
+ },
+ "eagle_heading_copy": {
+  "value": "0x110",
+  "evidence": "attack group 2026-11-03 (medium): See eagle_heading_block: the struct copy destination [rbp+0x110] at 0x8ace22. Sum block+read-copy = 0x28. 0.2.9's take kind is a signed byte; if the builder needs that range, any split with sum 0x28 (e.g. block 0x28, read 0, copy 0) is equivalent for HUD+. Checked again with eagle_heading_block."
+ },
+ "eagle_heading_read": {
+  "value": "0x138",
+  "evidence": "attack group 2026-11-03 (medium): See eagle_heading_block: 0x8acfe5 movss xmm9,[rbp+0x138]; 0x8acff6 mulss xmm9,xmm1 (pi/180), then cos/sin (0x1f8f390/0x1f939c0) rotate the approach direction, as 0.2.9's 0x89f1a6/0x89f1b5. Effective field settings+0x28 (0.2.9 +0x1c). Checked again with eagle_heading_block."
+ },
+ "eagle_pattern_at": {
+  "value": "0x14",
+  "evidence": "attack group 2026-11-03 (high): 0.2.9 0x8a53fb movsxd rax,[r14+0x14] = new 0x8b4ff6 movsxd rax,[r14+0x14] in the per-eagle update 0x8b3500 (0.2.9 0x8a4410; same eagle_settings_of call at 0x8b3570, r14 written only there), followed by imul 0x64 and add of the pattern table as in 0.2.9."
+ },
+ "eagle_pattern_count": {
+  "value": "0x0",
+  "evidence": "attack group 2026-11-03 (high): 0.2.9 0x8a5844 add eax,[rsi] = new 0x8b53ec add eax,[rdi], after the same explosion_modifier_of call (0xa1a560 on [0x2ce1c80]). rdi = pattern table + index*0x64, set at 0x8b5017/0x8b5022 and not written again. Points are read at [rdi+rcx*8+4] (0x8b513e), so the count is at +0."
+ },
+ "eagle_pattern_origin": {
+  "value": "0x0",
+  "evidence": "attack group 2026-11-03 (high): 0.2.9 0xa16bc5 subss xmm10,[rsi] = new 0xa29b2d subss xmm10,[r14], with [r14+4] next, in 0xa299c0 (= 0.2.9 0xa16a70, anchored at +0x12f50). r14 = replica row = index*0x1c + [eagle_manager+0x60]."
+ },
+ "eagle_pattern_stride": {
+  "value": "0x64",
+  "evidence": "attack group 2026-11-03 (high): 0.2.9 0x8a541c imul rsi,rax,0x64 = new 0x8b5017 imul rdi,rax,0x64, then add rdi,r13 (pattern table). The live table rows are 0x64 apart with the same contents as 0.2.9's."
+ },
+ "eagle_pattern_table": {
+  "value": "0x2c47640",
+  "evidence": "attack group 2026-11-03 (high): 0.2.9 0x8a5377 lea r12,[0x328cf20] = new 0x8b4f57 lea r13,[0x2c47640], the same loop head (0x8b53fe jumps back to 0x8b4f60, as 0x8a5856 -> 0x8a5380). It is the only reference in either image. The live data at 0x2c47640 matches 0.2.9's 0x328cf20 for all 8 patterns (counts 6,6,8,8,4,5,1,3 and identical points). The 26088801 file image has it zero, so it is filled at run time. No other value is at 0x2c47640. Checked again: 8 x 0x64 bytes identical to 0.2.9's table."
+ },
+ "eagle_plan_target": {
+  "value": "0xc",
+  "evidence": "attack group 2026-11-03 (high): 0.2.9 0xa16b7f lea rdx,[rsi+0xc], then [rdx],[rdx+4],[rdx+8] = new 0xa29b1a/0xa29b32/0xa29b4b movss [r14+0xc]/[r14+0x10]/[r14+0x14], minus the origin [r14],[r14+4] as in 0.2.9. 0xa29a93 also copies the 12 bytes at r14+0xc."
+ },
+ "eagle_progressing": {
+  "value": "0x70",
+  "evidence": "attack group 2026-11-03 (high): 0.2.9 0x8a44bc movzx ecx,byte [rdi+0x70] = new 0x8b359a movzx ecx,byte [rsi+0x70], with rsi = index*0x138 + [manager+0x58] (0x8b3575/0x8b3584). Then test cl; jne, as in 0.2.9. The mode 1-4 case sets it the same way (0x8b3691 mov byte [rsi+0x70],1 = 0x8a4580)."
+ },
+ "eagle_projectile": {
+  "value": "0x18",
+  "evidence": "attack group 2026-11-03 (high): At 0.2.9's site case (mode 5, 0x8a4591 mov eax,[r14+0x18]) the new code calls 0x8aca60 -> 0x8ac9e0. That helper does eagle_default_of(hash) (0x51cd40), then 0x8ac9fb mov eax,[rax+0x18] and returns it when nonzero; the result indexes projectile_info_table 0x3182e70. Also 0xa29a47 mov ecx,[rax+0x18] after eagle_settings_of = 0.2.9 0xa16af3, same projectile_info_table and explosion_kind_count 0x1a9 use. NEW: when +0x18 is 0, the game falls back to projectile_weapon_default_of (0x51d370) and a 5-entry list (0x5187f0), which HUD+ does not know. HUD+ then draws no radius for such an eagle; it does not fault."
+ },
+ "eagle_replica_rows": {
+  "value": "0x60",
+  "evidence": "attack group 2026-11-03 (high): 0.2.9 0xa16ad5 add rsi,[rax+0x60] = new 0xa29a29 add r14,[rax+0x60], with rax = [0x2ce1800] (eagle_manager) and records [rax+0x48] next, as in 0.2.9. The update function shows it too (0x8b3592 add rdi,[r13+0x60])."
+ },
+ "eagle_replica_stride": {
+  "value": "0x1c",
+  "evidence": "attack group 2026-11-03 (high): 0.2.9 0xa16abf imul rsi,rcx,0x1c = new 0xa29a13 imul r14,rcx,0x1c. The update function shows it too: 0x8b357c imul rdi,r12,0x1c, next to imul rsi,r12,0x138 (the known runtime stride)."
+ },
+ "eagle_started": {
+  "value": "0x71",
+  "evidence": "attack group 2026-11-03 (high): 0.2.9 0x8a4526 cmp byte [rdi+0x71],cl; jne = new 0x8b3614 cmp byte [rsi+0x71],cl; jne, right after the progressing test, as in 0.2.9. The pattern failed only because the new code adds a movss xmm15 load and an xmm14 spill in between."
+ },
+ "menu_inert_setting": {
+  "value": "0x8b",
+  "override": true,
+  "evidence": "the settings descriptor table menu_descriptor (new 0x107e580, 0.2.9 0x11ecd60) walks: 12 groups of 0xd8-byte descriptors (pointers at new 0x1feba70, counts at 0x2ca50b4 stride 0x30). Setting 0x8b is group 10 slot 0 in both builds, widget type 2, value type 0, description 0: the inert template HUD+'s Rows:prepare asserts; the new build has the same inert ids 0x8b-0x91 as 0.2.9. The re-derived 0x64 is group 8 slot 1 with a description, and HUD+ stopped with 'menu-bound-setting' on it (r8, 2026-11-03 13:56)."
+ }
+}

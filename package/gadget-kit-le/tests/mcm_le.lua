@@ -32,7 +32,13 @@ assert(s.enabled==false,'spawner starts off')
 values.spawner_enabled=true;assert(menu:update(0.3));assert(s.enabled==true)
 local equip;for _,c in ipairs(spec.pages[1].controls)do if c.id=='spawner_equip'then equip=c end end
 values.spawner_weapon=2;assert(equip.on_activate());assert(s.queued==2 and closed)
+-- a refusal reaches the menu: MCM shows a string result as the notice and drops a second value
+local add;for _,c in ipairs(spec.pages[1].controls)do if c.id=='spawner_add_stratagem'then add=c end end
+closed=nil;function s:queue()return false,'A support request is already pending'end
+assert(equip.on_activate()=='A support request is already pending' and not closed)
+function s:queue_stratagem()return false,'A stratagem request is already pending'end
+assert(add.on_activate()=='A stratagem request is already pending' and not closed)
 menu:refresh_status();local status;for _,c in ipairs(spec.pages[1].controls)do if c.id=='spawner_status'then status=c.label end end
 assert(status=='Status: Spawn fixture')
 assert(menu:shutdown() and removed and s.enabled==false)
-print('Gadget Kit LE MCM: Spawner and First Person pages only, spawner routing and cleanup passed')
+print('Gadget Kit LE MCM: Spawner and First Person pages only, spawner routing, visible refusals and cleanup passed')

@@ -1,0 +1,1513 @@
+[
+ {
+  "name": "ability_script_owner_entity",
+  "kind": "code",
+  "old": "0x10c70e2",
+  "new": "0xf58982",
+  "mode": "instruction window",
+  "window": 64,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "action_script_can_reload_rva_site",
+  "kind": "code",
+  "old": "0x113a481",
+  "status": "unresolved"
+ },
+ {
+  "name": "action_script_cock_rva_site",
+  "kind": "code",
+  "old": "0x10a4d03",
+  "status": "unresolved"
+ },
+ {
+  "name": "action_script_count_rva_site",
+  "kind": "code",
+  "old": "0x109cec9",
+  "new": "0xfb6a49",
+  "mode": "containing function",
+  "window": 32,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "action_script_insert_rva_site",
+  "kind": "code",
+  "old": "0x10a4a67",
+  "status": "unresolved"
+ },
+ {
+  "name": "action_script_mag_full_rva_site",
+  "kind": "code",
+  "old": "0x1131d90",
+  "status": "unresolved"
+ },
+ {
+  "name": "action_script_room_rva_site",
+  "kind": "code",
+  "old": "0x1147d7b",
+  "status": "unresolved"
+ },
+ {
+  "name": "action_script_seek_rva_site",
+  "kind": "code",
+  "old": "0x109eb3d",
+  "new": "0xf60e6d",
+  "mode": "containing function",
+  "window": 48,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "action_script_set_stage_bit_rva_site",
+  "kind": "code",
+  "old": "0x113b115",
+  "status": "unresolved"
+ },
+ {
+  "name": "action_script_stage_bit_rva_site",
+  "kind": "code",
+  "old": "0x113af2a",
+  "status": "unresolved"
+ },
+ {
+  "name": "action_script_switch_kind_rva_site",
+  "kind": "code",
+  "old": "0x113a0da",
+  "status": "unresolved"
+ },
+ {
+  "name": "arc_weapon_fire_row",
+  "kind": "code",
+  "old": "0x80c2ca",
+  "new": "0x818e4a",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "attack_owner_site",
+  "kind": "code",
+  "old": "0x9ef150",
+  "new": "0xa017e0",
+  "votes": 4,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0x5f317c",
+    "new_site": "0x5fbdfc",
+    "ins": "call 0xa017e0",
+    "delta": 0,
+    "implies": "0xa017e0"
+   },
+   {
+    "old_site": "0x852931",
+    "new_site": "0x85f9b1",
+    "ins": "call 0xa017e0",
+    "delta": 0,
+    "implies": "0xa017e0"
+   },
+   {
+    "old_site": "0x852cd6",
+    "new_site": "0x85fd56",
+    "ins": "call 0xa017e0",
+    "delta": 0,
+    "implies": "0xa017e0"
+   },
+   {
+    "old_site": "0x12a1240",
+    "new_site": "0x1133120",
+    "ins": "call 0xa017e0",
+    "delta": 0,
+    "implies": "0xa017e0"
+   }
+  ],
+  "confidence": "high",
+  "mode": "call sites"
+ },
+ {
+  "name": "attack_preview_children",
+  "kind": "code",
+  "old": "0x13c1c09",
+  "new": "0x1258c49",
+  "mode": "containing function",
+  "window": 96,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "attack_preview_drift",
+  "kind": "code",
+  "old": "0x851ac4",
+  "new": "0x85eb44",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "avatar_action_words",
+  "kind": "code",
+  "old": "0x4dd023",
+  "status": "unresolved"
+ },
+ {
+  "name": "avatar_controller_dive_identity_offset_site",
+  "kind": "code",
+  "old": "0xa3f9cd",
+  "new": "0xa5a0f9",
+  "mode": "instruction window",
+  "window": 32,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "avatar_switch_action_bit",
+  "kind": "code",
+  "old": "0xa93851",
+  "status": "unresolved"
+ },
+ {
+  "name": "avatar_wanted_slot_site",
+  "kind": "code",
+  "old": "0x83113e",
+  "new": "0x83dffe",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "bombardment_default_head",
+  "kind": "code",
+  "old": "0x503dc0",
+  "new": "0x50c3a0",
+  "votes": 9,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0x503e5b",
+    "new_site": "0x50c44b",
+    "ins": "call 0x50c3a0",
+    "delta": 0,
+    "implies": "0x50c3a0"
+   },
+   {
+    "old_site": "0x503f95",
+    "new_site": "0x50c585",
+    "ins": "call 0x50c3a0",
+    "delta": 0,
+    "implies": "0x50c3a0"
+   },
+   {
+    "old_site": "0x5041e1",
+    "new_site": "0x50c7d1",
+    "ins": "call 0x50c3a0",
+    "delta": 0,
+    "implies": "0x50c3a0"
+   },
+   {
+    "old_site": "0x50447d",
+    "new_site": "0x50ca6d",
+    "ins": "jmp 0x50c3a0",
+    "delta": 0,
+    "implies": "0x50c3a0"
+   },
+   {
+    "old_site": "0x7b843f",
+    "new_site": "0x7c3f6f",
+    "ins": "call 0x50c3a0",
+    "delta": 0,
+    "implies": "0x50c3a0"
+   },
+   {
+    "old_site": "0x8566f5",
+    "new_site": "0x8637e5",
+    "ins": "call 0x50c3a0",
+    "delta": 0,
+    "implies": "0x50c3a0"
+   },
+   {
+    "old_site": "0xa168a4",
+    "new_site": "0xa297f4",
+    "ins": "call 0x50c3a0",
+    "delta": 0,
+    "implies": "0x50c3a0"
+   },
+   {
+    "old_site": "0xb55743",
+    "new_site": "0xb71ed3",
+    "ins": "call 0x50c3a0",
+    "delta": 0,
+    "implies": "0x50c3a0"
+   }
+  ],
+  "confidence": "high",
+  "mode": "call sites"
+ },
+ {
+  "name": "bombardment_guide_heading",
+  "kind": "code",
+  "old": "0x851827",
+  "new": "0x85e8a7",
+  "mode": "instruction window",
+  "window": 96,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "bombardment_guide_sweep",
+  "kind": "code",
+  "old": "0x8516d7",
+  "new": "0x85e757",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "bombardment_manager_site",
+  "kind": "code",
+  "old": "0x4a5870",
+  "status": "unresolved"
+ },
+ {
+  "name": "booster_table",
+  "kind": "code",
+  "old": "0x179aa53",
+  "status": "unresolved"
+ },
+ {
+  "name": "call_head_minigame_settings",
+  "kind": "code",
+  "old": "0x4fbcf0",
+  "new": "0x504090",
+  "mode": "instruction window",
+  "window": 128,
+  "relaxed": true,
+  "confidence": "medium"
+ },
+ {
+  "name": "call_head_shield_open",
+  "kind": "code",
+  "old": "0x4fb390",
+  "new": "0x503710",
+  "votes": 41,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0x4bb61f",
+    "new_site": "0x4c1def",
+    "ins": "call 0x503710",
+    "delta": 0,
+    "implies": "0x503710"
+   },
+   {
+    "old_site": "0x4bbbfe",
+    "new_site": "0x4c23ce",
+    "ins": "call 0x503710",
+    "delta": 0,
+    "implies": "0x503710"
+   },
+   {
+    "old_site": "0x524d49",
+    "new_site": "0x52d389",
+    "ins": "call 0x503710",
+    "delta": 0,
+    "implies": "0x503710"
+   },
+   {
+    "old_site": "0x65091d",
+    "new_site": "0x65a1ad",
+    "ins": "call 0x503710",
+    "delta": 0,
+    "implies": "0x503710"
+   },
+   {
+    "old_site": "0x650b29",
+    "new_site": "0x65a3b9",
+    "ins": "call 0x503710",
+    "delta": 0,
+    "implies": "0x503710"
+   },
+   {
+    "old_site": "0x650bcd",
+    "new_site": "0x65a464",
+    "ins": "call 0x503710",
+    "delta": 0,
+    "implies": "0x503710"
+   },
+   {
+    "old_site": "0x65114a",
+    "new_site": "0x65a91a",
+    "ins": "call 0x503710",
+    "delta": 0,
+    "implies": "0x503710"
+   },
+   {
+    "old_site": "0x6512cc",
+    "new_site": "0x65aae2",
+    "ins": "call 0x503710",
+    "delta": 0,
+    "implies": "0x503710"
+   }
+  ],
+  "confidence": "high",
+  "mode": "call sites"
+ },
+ {
+  "name": "can_fire_head",
+  "kind": "code",
+  "old": "0x744ad0",
+  "new": "0x750030",
+  "votes": 10,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0x616ce6",
+    "new_site": "0x61ff96",
+    "ins": "call 0x750030",
+    "delta": 0,
+    "implies": "0x750030"
+   },
+   {
+    "old_site": "0x740855",
+    "new_site": "0x74bed5",
+    "ins": "call 0x750030",
+    "delta": 0,
+    "implies": "0x750030"
+   },
+   {
+    "old_site": "0x7445cd",
+    "new_site": "0x74fb2d",
+    "ins": "call 0x750030",
+    "delta": 0,
+    "implies": "0x750030"
+   },
+   {
+    "old_site": "0x74467d",
+    "new_site": "0x74fbdd",
+    "ins": "call 0x750030",
+    "delta": 0,
+    "implies": "0x750030"
+   },
+   {
+    "old_site": "0x7450f2",
+    "new_site": "0x750782",
+    "ins": "call 0x750030",
+    "delta": 0,
+    "implies": "0x750030"
+   },
+   {
+    "old_site": "0x764b04",
+    "new_site": "0x76ff94",
+    "ins": "call 0x750030",
+    "delta": 0,
+    "implies": "0x750030"
+   },
+   {
+    "old_site": "0x775568",
+    "new_site": "0x780c78",
+    "ins": "call 0x750030",
+    "delta": 0,
+    "implies": "0x750030"
+   },
+   {
+    "old_site": "0x7d6507",
+    "new_site": "0x7e2557",
+    "ins": "call 0x750030",
+    "delta": 0,
+    "implies": "0x750030"
+   }
+  ],
+  "confidence": "high",
+  "mode": "call sites"
+ },
+ {
+  "name": "charge_stage_pick",
+  "kind": "code",
+  "old": "0x73db24",
+  "status": "unresolved"
+ },
+ {
+  "name": "comms_global_site",
+  "kind": "code",
+  "old": "0x52a51e",
+  "status": "unresolved"
+ },
+ {
+  "name": "comms_insert_site",
+  "kind": "code",
+  "old": "0xbbcef7",
+  "status": "unresolved"
+ },
+ {
+  "name": "component_card_ready_site",
+  "kind": "code",
+  "old": "0x18308fb",
+  "new": "0x16b17eb",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "component_card_size_site",
+  "kind": "code",
+  "old": "0x1830d00",
+  "new": "0x16b1bf0",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "component_card_tick_site",
+  "kind": "code",
+  "old": "0x1830d15",
+  "new": "0x16b1c05",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "deposit_accessor",
+  "kind": "code",
+  "old": "0x5027aa",
+  "new": "0x50ac6a",
+  "mode": "instruction window",
+  "window": 32,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "deposit_rows",
+  "kind": "code",
+  "old": "0x533f50",
+  "new": "0x558390",
+  "votes": 1,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0x55a69b",
+    "new_site": "0x566c6d",
+    "ins": "lea eax, [rip - 0xe8e3]",
+    "delta": 0,
+    "implies": "0x558390"
+   }
+  ],
+  "confidence": "medium",
+  "mode": "address references"
+ },
+ {
+  "name": "eagle_capacity_site",
+  "kind": "code",
+  "old": "0x8a9a40",
+  "status": "unresolved"
+ },
+ {
+  "name": "eagle_default_site",
+  "kind": "code",
+  "old": "0x514640",
+  "new": "0x50a6e0",
+  "votes": 4,
+  "dissent": 3,
+  "evidence": [
+   {
+    "old_site": "0x5146dc",
+    "new_site": "0x50a76c",
+    "ins": "call 0x50a6e0",
+    "delta": 0,
+    "implies": "0x50a6e0"
+   },
+   {
+    "old_site": "0x514784",
+    "new_site": "0x50a814",
+    "ins": "call 0x50a6e0",
+    "delta": 0,
+    "implies": "0x50a6e0"
+   },
+   {
+    "old_site": "0x5149a8",
+    "new_site": "0x50aa38",
+    "ins": "call 0x50a6e0",
+    "delta": 0,
+    "implies": "0x50a6e0"
+   },
+   {
+    "old_site": "0x576a1e",
+    "new_site": "0x57f9fe",
+    "ins": "call 0x51cd40",
+    "delta": 0,
+    "implies": "0x51cd40"
+   },
+   {
+    "old_site": "0x7b849b",
+    "new_site": "0x7c3fcb",
+    "ins": "call 0x51cd40",
+    "delta": 0,
+    "implies": "0x51cd40"
+   },
+   {
+    "old_site": "0x8aad80",
+    "new_site": "0x890460",
+    "ins": "call 0x50a6e0",
+    "delta": 0,
+    "implies": "0x50a6e0"
+   },
+   {
+    "old_site": "0xb557ab",
+    "new_site": "0xb71f3b",
+    "ins": "call 0x51cd40",
+    "delta": 0,
+    "implies": "0x51cd40"
+   }
+  ],
+  "confidence": "medium",
+  "mode": "call sites"
+ },
+ {
+  "name": "eagle_mode_site",
+  "kind": "code",
+  "old": "0x8a343d",
+  "status": "unresolved"
+ },
+ {
+  "name": "eagle_pattern_count",
+  "kind": "code",
+  "old": "0x8a57f8",
+  "new": "0x8b53a0",
+  "mode": "instruction window",
+  "window": 32,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "eagle_pattern_layout",
+  "kind": "code",
+  "old": "0x8a5377",
+  "status": "unresolved"
+ },
+ {
+  "name": "eagle_pattern_origin",
+  "kind": "code",
+  "old": "0xa16abf",
+  "status": "unresolved"
+ },
+ {
+  "name": "eagle_pattern_points",
+  "kind": "code",
+  "old": "0x8a5530",
+  "status": "unresolved"
+ },
+ {
+  "name": "eagle_preview_heading",
+  "kind": "code",
+  "old": "0x89f00e",
+  "status": "unresolved"
+ },
+ {
+  "name": "eagle_progress_site",
+  "kind": "code",
+  "old": "0x8a44bc",
+  "status": "unresolved"
+ },
+ {
+  "name": "eagle_projectile_site",
+  "kind": "code",
+  "old": "0x8a4589",
+  "status": "unresolved"
+ },
+ {
+  "name": "eagle_rearm_stratagem_site",
+  "kind": "code",
+  "old": "0x66ca22",
+  "status": "unresolved"
+ },
+ {
+  "name": "eagle_strafing_mode_site",
+  "kind": "code",
+  "old": "0x8a1eec",
+  "new": "0xdcd16c",
+  "mode": "containing function",
+  "window": 48,
+  "relaxed": true,
+  "confidence": "medium"
+ },
+ {
+  "name": "encounter_owners_site",
+  "kind": "code",
+  "old": "0x8bae62",
+  "new": "0x8cadb2",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "explosive_key_lookup_site",
+  "kind": "code",
+  "old": "0x50c5a9",
+  "new": "0x514b89",
+  "mode": "containing function",
+  "window": 32,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "explosive_kind_site",
+  "kind": "code",
+  "old": "0x8cb06c",
+  "status": "unresolved"
+ },
+ {
+  "name": "explosive_manager_site",
+  "kind": "code",
+  "old": "0x8ca27f",
+  "status": "unresolved"
+ },
+ {
+  "name": "explosive_row_site",
+  "kind": "code",
+  "old": "0x8ca47c",
+  "status": "unresolved"
+ },
+ {
+  "name": "flat_picture_site",
+  "kind": "code",
+  "old": "0x179a309",
+  "status": "unresolved"
+ },
+ {
+  "name": "health_dead_of",
+  "kind": "code",
+  "old": "0x42b1ea",
+  "status": "unresolved"
+ },
+ {
+  "name": "health_rows",
+  "kind": "code",
+  "old": "0x126d740",
+  "new": "0x10ff450",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "heat_accessor",
+  "kind": "code",
+  "old": "0x50e292",
+  "new": "0x516862",
+  "mode": "containing function",
+  "window": 32,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "heat_charge_tick",
+  "kind": "code",
+  "old": "0x762f87",
+  "new": "0x76e417",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "heat_shot_charge_reset",
+  "kind": "code",
+  "old": "0x762f19",
+  "new": "0x76e3a9",
+  "mode": "instruction window",
+  "window": 64,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "hud_squad_death_site",
+  "kind": "code",
+  "old": "0x1830589",
+  "new": "0x16b1479",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "hud_weapon_last_slot",
+  "kind": "code",
+  "old": "0x181a5e4",
+  "new": "0x169b834",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "input_system_site",
+  "kind": "code",
+  "old": "0xab461a",
+  "status": "unresolved"
+ },
+ {
+  "name": "inventory_rows",
+  "kind": "code",
+  "old": "0x4dcd0b",
+  "status": "unresolved"
+ },
+ {
+  "name": "inventory_slot_item",
+  "kind": "code",
+  "old": "0x1830924",
+  "new": "0x16b1814",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "linked_ammo_target_site",
+  "kind": "code",
+  "old": "0x77f353",
+  "new": "0x78ab73",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "loot_rows",
+  "kind": "code",
+  "old": "0x54b8f0",
+  "new": "0x554760",
+  "mode": "instruction window",
+  "window": 96,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "magazine_accessor",
+  "kind": "code",
+  "old": "0x4f37e6",
+  "new": "0x4fbb46",
+  "mode": "containing function",
+  "window": 32,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "map_missing_value",
+  "kind": "code",
+  "old": "0x53660e",
+  "status": "unresolved"
+ },
+ {
+  "name": "material_pair_set_head",
+  "kind": "code",
+  "old": "0x144feb0",
+  "new": "0x12e7bc0",
+  "mode": "instruction window",
+  "window": 128,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "material_var_set_site",
+  "kind": "code",
+  "old": "0x14498c0",
+  "new": "0x12e15d0",
+  "mode": "instruction window",
+  "window": 128,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "melee_unlock_call_site",
+  "kind": "code",
+  "old": "0x10a1eb0",
+  "new": "0xf32a70",
+  "mode": "instruction window",
+  "window": 64,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "menu_flat_ammo_icon_site",
+  "kind": "code",
+  "old": "0x1a0d34d",
+  "status": "unresolved"
+ },
+ {
+  "name": "menu_inert_setting_site",
+  "kind": "code",
+  "old": "0x1812b11",
+  "new": "0x1693d61",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "menu_large_selected_site",
+  "kind": "code",
+  "old": "0x180b66e",
+  "new": "0x168c8ce",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "menu_page_build_site",
+  "kind": "code",
+  "old": "0x1806cbc",
+  "new": "0x1687f5c",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "menu_row_grey_site",
+  "kind": "code",
+  "old": "0x180bc14",
+  "new": "0x168ce74",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "menu_selected_row_site",
+  "kind": "code",
+  "old": "0x13fdbe0",
+  "new": "0x1295290",
+  "votes": 1,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0x1998684",
+    "new_site": "0x1819904",
+    "ins": "call 0x1295290",
+    "delta": 0,
+    "implies": "0x1295290"
+   }
+  ],
+  "confidence": "medium",
+  "mode": "call sites"
+ },
+ {
+  "name": "menu_text_template_site",
+  "kind": "code",
+  "old": "0xb03182",
+  "status": "unresolved"
+ },
+ {
+  "name": "menu_toggle_labels_site",
+  "kind": "code",
+  "old": "0x14f00e9",
+  "new": "0x8bbad9",
+  "mode": "containing function",
+  "window": 48,
+  "relaxed": true,
+  "confidence": "medium"
+ },
+ {
+  "name": "minigame_book_open",
+  "kind": "code",
+  "old": "0x4fc110",
+  "new": "0x5044b0",
+  "votes": 40,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0x4beeaa",
+    "new_site": "0x4c567a",
+    "ins": "call 0x5044b0",
+    "delta": 0,
+    "implies": "0x5044b0"
+   },
+   {
+    "old_site": "0x4bf4bf",
+    "new_site": "0x4c5c8f",
+    "ins": "call 0x5044b0",
+    "delta": 0,
+    "implies": "0x5044b0"
+   },
+   {
+    "old_site": "0x59490b",
+    "new_site": "0x59d45b",
+    "ins": "call 0x5044b0",
+    "delta": 0,
+    "implies": "0x5044b0"
+   },
+   {
+    "old_site": "0x595d16",
+    "new_site": "0x59e876",
+    "ins": "call 0x5044b0",
+    "delta": 0,
+    "implies": "0x5044b0"
+   },
+   {
+    "old_site": "0x5980b1",
+    "new_site": "0x5a0c71",
+    "ins": "call 0x5044b0",
+    "delta": 0,
+    "implies": "0x5044b0"
+   },
+   {
+    "old_site": "0x98484d",
+    "new_site": "0x9964cd",
+    "ins": "call 0x5044b0",
+    "delta": 0,
+    "implies": "0x5044b0"
+   },
+   {
+    "old_site": "0x984e25",
+    "new_site": "0x996aa5",
+    "ins": "call 0x5044b0",
+    "delta": 0,
+    "implies": "0x5044b0"
+   },
+   {
+    "old_site": "0x9867d2",
+    "new_site": "0x998472",
+    "ins": "call 0x5044b0",
+    "delta": 0,
+    "implies": "0x5044b0"
+   }
+  ],
+  "confidence": "high",
+  "mode": "call sites"
+ },
+ {
+  "name": "number_arg_set_head",
+  "kind": "code",
+  "old": "0x143c9d0",
+  "new": "0x12d46e0",
+  "votes": 42,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0xad8377",
+    "new_site": "0xaf4457",
+    "ins": "call 0x12d46e0",
+    "delta": 0,
+    "implies": "0x12d46e0"
+   },
+   {
+    "old_site": "0x1268547",
+    "new_site": "0x10fa177",
+    "ins": "jmp 0x12d46e0",
+    "delta": 0,
+    "implies": "0x12d46e0"
+   },
+   {
+    "old_site": "0x1481361",
+    "new_site": "0x13191f4",
+    "ins": "call 0x12d46e0",
+    "delta": 0,
+    "implies": "0x12d46e0"
+   },
+   {
+    "old_site": "0x1483b36",
+    "new_site": "0x131b9f6",
+    "ins": "call 0x12d46e0",
+    "delta": 0,
+    "implies": "0x12d46e0"
+   },
+   {
+    "old_site": "0x178d8d0",
+    "new_site": "0x160eb40",
+    "ins": "call 0x12d46e0",
+    "delta": 0,
+    "implies": "0x12d46e0"
+   },
+   {
+    "old_site": "0x17a520d",
+    "new_site": "0x162649d",
+    "ins": "call 0x12d46e0",
+    "delta": 0,
+    "implies": "0x12d46e0"
+   },
+   {
+    "old_site": "0x17ba1a9",
+    "new_site": "0x163b439",
+    "ins": "call 0x12d46e0",
+    "delta": 0,
+    "implies": "0x12d46e0"
+   },
+   {
+    "old_site": "0x17bab16",
+    "new_site": "0x163bda6",
+    "ins": "call 0x12d46e0",
+    "delta": 0,
+    "implies": "0x12d46e0"
+   }
+  ],
+  "confidence": "high",
+  "mode": "call sites"
+ },
+ {
+  "name": "projectile_path_ray",
+  "kind": "code",
+  "old": "0x13abd95",
+  "status": "unresolved"
+ },
+ {
+  "name": "projectile_pool_tick_site",
+  "kind": "code",
+  "old": "0x13ab247",
+  "status": "unresolved"
+ },
+ {
+  "name": "projectile_pool_type_site",
+  "kind": "code",
+  "old": "0x13abca9",
+  "status": "unresolved"
+ },
+ {
+  "name": "projectile_update_ends",
+  "kind": "code",
+  "old": "0x13ab169",
+  "status": "unresolved"
+ },
+ {
+  "name": "projectile_weapon_registry_find",
+  "kind": "code",
+  "old": "0x514c1f",
+  "status": "unresolved"
+ },
+ {
+  "name": "reinforce_call_alt_site",
+  "kind": "code",
+  "old": "0x10d4e6d",
+  "status": "unresolved"
+ },
+ {
+  "name": "reload_accessor",
+  "kind": "code",
+  "old": "0x4fd2ba",
+  "new": "0x50562a",
+  "mode": "instruction window",
+  "window": 32,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "reward_add",
+  "kind": "code",
+  "old": "0x5203c6",
+  "new": "0x5287f6",
+  "mode": "instruction window",
+  "window": 64,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "roots_avatar_manager_controller_base_site",
+  "kind": "code",
+  "old": "0x9b37d9",
+  "new": "0x781049",
+  "mode": "containing function",
+  "window": 48,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "roots_avatar_manager_rva_site",
+  "kind": "code",
+  "old": "0x289f2c",
+  "status": "unresolved"
+ },
+ {
+  "name": "roots_hud_manager_rva_site",
+  "kind": "code",
+  "old": "0x3a288c",
+  "status": "unresolved"
+ },
+ {
+  "name": "rounds_accessor_call",
+  "kind": "code",
+  "old": "0x528f8b",
+  "new": "0x531b1b",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "shield_wait_tick",
+  "kind": "code",
+  "old": "0x651120",
+  "new": "0x65a8f0",
+  "mode": "instruction window",
+  "window": 48,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "shoulder_node_site",
+  "kind": "code",
+  "old": "0x109e839",
+  "status": "unresolved"
+ },
+ {
+  "name": "squad_row_dead_label",
+  "kind": "code",
+  "old": "0x183046a",
+  "new": "0x16b135a",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "squad_row_slot_widgets",
+  "kind": "code",
+  "old": "0x1830d69",
+  "new": "0x16b1c59",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "squad_stim_cell_site",
+  "kind": "code",
+  "old": "0x18308c3",
+  "new": "0x16b17b3",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "static_position_row_address",
+  "kind": "code",
+  "old": "0x587740",
+  "status": "unresolved"
+ },
+ {
+  "name": "stratagem_avatar_site",
+  "kind": "code",
+  "old": "0xa8e780",
+  "new": "0xaaa1e0",
+  "votes": 10,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0x7bf6ca",
+    "new_site": "0x7cb47a",
+    "ins": "call 0xaaa1e0",
+    "delta": 0,
+    "implies": "0xaaa1e0"
+   },
+   {
+    "old_site": "0xa3f8bd",
+    "new_site": "0xa59fec",
+    "ins": "call 0xaaa1e0",
+    "delta": 0,
+    "implies": "0xaaa1e0"
+   },
+   {
+    "old_site": "0xa7e03b",
+    "new_site": "0xa99a9b",
+    "ins": "call 0xaaa1e0",
+    "delta": 0,
+    "implies": "0xaaa1e0"
+   },
+   {
+    "old_site": "0xa7e41b",
+    "new_site": "0xa99e7b",
+    "ins": "call 0xaaa1e0",
+    "delta": 0,
+    "implies": "0xaaa1e0"
+   },
+   {
+    "old_site": "0xa8ed41",
+    "new_site": "0xaaa7a1",
+    "ins": "call 0xaaa1e0",
+    "delta": 0,
+    "implies": "0xaaa1e0"
+   },
+   {
+    "old_site": "0xa980ae",
+    "new_site": "0xab3b8e",
+    "ins": "call 0xaaa1e0",
+    "delta": 0,
+    "implies": "0xaaa1e0"
+   },
+   {
+    "old_site": "0xa9812d",
+    "new_site": "0xab3c0d",
+    "ins": "call 0xaaa1e0",
+    "delta": 0,
+    "implies": "0xaaa1e0"
+   },
+   {
+    "old_site": "0x12f74e5",
+    "new_site": "0x118a485",
+    "ins": "call 0xaaa1e0",
+    "delta": 0,
+    "implies": "0xaaa1e0"
+   }
+  ],
+  "confidence": "high",
+  "mode": "call sites"
+ },
+ {
+  "name": "stratagem_delivery",
+  "kind": "code",
+  "old": "0x6adfdc",
+  "new": "0x6b84ec",
+  "mode": "containing function",
+  "window": 48,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "stratagem_info_table",
+  "kind": "code",
+  "old": "0x6adf1d",
+  "new": "0x6b842d",
+  "mode": "containing function",
+  "window": 48,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "stratagem_input_site",
+  "kind": "code",
+  "old": "0x1837b0d",
+  "new": "0x16b89fd",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "stratagem_kind_end",
+  "kind": "code",
+  "old": "0x11f2313",
+  "new": "0x1083b33",
+  "mode": "containing function",
+  "window": 32,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "stratagem_record_find",
+  "kind": "code",
+  "old": "0x1830a8a",
+  "new": "0x16b197a",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "stratagem_record_name_site",
+  "kind": "code",
+  "old": "0x192435f",
+  "new": "0x17a552f",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "stratagem_record_rows_site",
+  "kind": "code",
+  "old": "0x11e846f",
+  "new": "0x1079caf",
+  "mode": "instruction window",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "stratagem_row_mission_site",
+  "kind": "code",
+  "old": "0x1830ac9",
+  "new": "0x16b19b9",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "stratagem_slots_clock_global_site",
+  "kind": "code",
+  "old": "0xb9d20",
+  "status": "unresolved"
+ },
+ {
+  "name": "text_size_set_head",
+  "kind": "code",
+  "old": "0x143df60",
+  "new": "0x12d5c70",
+  "mode": "instruction window",
+  "window": 96,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "throw_holding_site",
+  "kind": "code",
+  "old": "0xa97688",
+  "status": "unresolved"
+ },
+ {
+  "name": "turret_capacity_site",
+  "kind": "code",
+  "old": "0x6e1120",
+  "new": "0x6ebad0",
+  "votes": 4,
+  "dissent": 0,
+  "evidence": [
+   {
+    "old_site": "0x542af3",
+    "new_site": "0x54b923",
+    "ins": "call 0x6ebad0",
+    "delta": 0,
+    "implies": "0x6ebad0"
+   },
+   {
+    "old_site": "0x542ba7",
+    "new_site": "0x54b9d7",
+    "ins": "call 0x6ebad0",
+    "delta": 0,
+    "implies": "0x6ebad0"
+   },
+   {
+    "old_site": "0x6e1477",
+    "new_site": "0x6ebeb7",
+    "ins": "call 0x6ebad0",
+    "delta": 0,
+    "implies": "0x6ebad0"
+   },
+   {
+    "old_site": "0x6e1563",
+    "new_site": "0x6ebfa3",
+    "ins": "call 0x6ebad0",
+    "delta": 0,
+    "implies": "0x6ebad0"
+   }
+  ],
+  "confidence": "high",
+  "mode": "call sites"
+ },
+ {
+  "name": "turret_rows_site",
+  "kind": "code",
+  "old": "0x6e14b8",
+  "new": "0x6ebef8",
+  "mode": "containing function",
+  "window": 160,
+  "relaxed": false,
+  "confidence": "high"
+ },
+ {
+  "name": "ui_context_pop_head",
+  "kind": "code",
+  "old": "0x12ef4d0",
+  "status": "unresolved"
+ },
+ {
+  "name": "ui_context_push_head",
+  "kind": "code",
+  "old": "0x12ef4b0",
+  "status": "unresolved"
+ },
+ {
+  "name": "ui_world_context_empty",
+  "kind": "code",
+  "old": "0x12eec27",
+  "new": "0x1181a87",
+  "mode": "instruction window",
+  "window": 48,
+  "relaxed": false,
+  "confidence": "medium"
+ },
+ {
+  "name": "weapon_charge_charging_set",
+  "kind": "code",
+  "old": "0x73e1aa",
+  "status": "unresolved"
+ },
+ {
+  "name": "weapon_customization_rows_site",
+  "kind": "code",
+  "old": "0x750141",
+  "status": "unresolved"
+ },
+ {
+  "name": "weapon_data_r1_stride_site",
+  "kind": "code",
+  "old": "0x588281",
+  "status": "unresolved"
+ },
+ {
+  "name": "weapon_data_registry_call",
+  "kind": "code",
+  "old": "0x509621",
+  "status": "unresolved"
+ },
+ {
+  "name": "weapon_magazine_r1_at_site",
+  "kind": "code",
+  "old": "0x4af0c0",
+  "status": "unresolved"
+ },
+ {
+  "name": "weapon_magazine_rows",
+  "kind": "code",
+  "old": "0x585090",
+  "status": "unresolved"
+ },
+ {
+  "name": "weapon_reload_rows",
+  "kind": "code",
+  "old": "0x5897ce",
+  "status": "unresolved"
+ },
+ {
+  "name": "weapon_rounds_r1_at_site",
+  "kind": "code",
+  "old": "0x77c6c7",
+  "status": "unresolved"
+ },
+ {
+  "name": "weapon_rounds_rows",
+  "kind": "code",
+  "old": "0x589c50",
+  "status": "unresolved"
+ },
+ {
+  "name": "weapon_rows",
+  "kind": "code",
+  "old": "0x591ea0",
+  "status": "unresolved"
+ },
+ {
+  "name": "weapon_wielder_rows",
+  "kind": "code",
+  "old": "0x11690e0",
+  "status": "unresolved"
+ },
+ {
+  "name": "widget_shown_set_head",
+  "kind": "code",
+  "old": "0x14508e0",
+  "new": "0x12e85f0",
+  "mode": "instruction window",
+  "window": 96,
+  "relaxed": false,
+  "confidence": "high"
+ }
+]

@@ -113,24 +113,26 @@ function M.new(controller, log, spawner, mission)
                 {id='gameplay', name='Gameplay', require_confirmation=false, controls=gameplay_controls}}
             if spawner then
                 -- Buttons only queue intent; on_update performs the guarded native steps once
-                -- MCM is closed, so the button closes MCM after a request is accepted.
+                -- MCM is closed, so the button closes MCM after a request is accepted. MCM shows a
+                -- button's string result as its notice and drops a second value, so a refusal
+                -- returns its reason alone (a false, reason pair read "Action completed").
                 local function equip()
-                    if self.stopping or self.provider ~= rawget(_G, 'DBFMCM') then return false, 'Spawner settings are not ready' end
+                    if self.stopping or self.provider ~= rawget(_G, 'DBFMCM') then return 'Spawner settings are not ready' end
                     local accepted, why = spawner:queue(self.handle.get('spawner_weapon'))
-                    if accepted ~= true then return false, why end
+                    if accepted ~= true then return why end
                     if type(self.provider.close) == 'function' then
                         local closed, reason = self.provider.close()
-                        if closed == false then return false, reason or 'Close MCM to deliver the queued weapon' end
+                        if closed == false then return reason or 'Close MCM to deliver the queued weapon' end
                     end
                     return true
                 end
                 local function add_stratagem()
-                    if self.stopping or self.provider ~= rawget(_G, 'DBFMCM') then return false, 'Spawner settings are not ready' end
+                    if self.stopping or self.provider ~= rawget(_G, 'DBFMCM') then return 'Spawner settings are not ready' end
                     local accepted, why = spawner:queue_stratagem(self.handle.get('spawner_stratagem'))
-                    if accepted ~= true then return false, why end
+                    if accepted ~= true then return why end
                     if type(self.provider.close) == 'function' then
                         local closed, reason = self.provider.close()
-                        if closed == false then return false, reason or 'Close MCM to add the queued stratagem' end
+                        if closed == false then return reason or 'Close MCM to add the queued stratagem' end
                     end
                     return true
                 end

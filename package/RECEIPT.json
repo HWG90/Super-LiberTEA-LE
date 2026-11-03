@@ -1,20 +1,20 @@
 {
  "name": "Super LiberTEA - LE (Linux Edition)",
- "version": "1.0.2",
+ "version": "1.0.3",
  "game_build": "26251122",
  "guid": "ead4c7da-b11f-5bd3-ad93-9fadca551cda",
  "branch": "main",
- "created": "2026-11-02 18:20",
- "zip": "Super-LiberTEA-LE-1.0.2-26251122.zip",
- "zip_sha256": "7eb2b256ec48c01d399fb4757c1b9418b9281c1164980b118cf0cab7c9c2be1d",
- "zip_bytes": 14525710,
- "patch_sha256": "ba5ec6c16775a07bb846ab2b7fe3a9d46c89a3d8ae110abbd653007765511c08",
- "patch_bytes": 12941440,
- "chunk_bytes": 12941235,
+ "created": "2026-11-03 15:00",
+ "zip": "Super-LiberTEA-LE-1.0.3-26251122.zip",
+ "zip_sha256": "68a8bf5870362c694afa3def15e251d2ddf6defc57187c3313910a52c0f74e4f",
+ "zip_bytes": 14526274,
+ "patch_sha256": "af7c564520def0f76a5d27f5777a9b8f99ab64dd49b50a689559f077a06783ce",
+ "patch_bytes": 12942416,
+ "chunk_bytes": 12942210,
  "boot": {
   "lll_release": "R38-26251122-luajit.2",
   "lll_install_block_sha256": "9837435bae69f237c96b005d62b2f152ab6f332b8fd06408991afc63b6bb78d8",
-  "mods_block_sha256": "82e9022eda9ec32ab9383061241bf715e9325715343181ba2ab6794d02ef51fb",
+  "mods_block_sha256": "2a2d307e5beae7f416e8613c443526d003b420f207ae0bf9b401a759b30ff419",
   "prologue_sha256": "3aad53105c0c383524bc898956de5e2eb41213d178388e6f3acf2ef9eecae376",
   "lll_source_sha256": "57fa4dc3ef1b48df37c86a39b90e1bd3fffd186c34492caa4f395eed86a8837b",
   "lll_files": {
@@ -166,79 +166,82 @@
   "goose_temporary_unlocks": {
    "version": "0.5.10-cffi-26251122-le.1",
    "files": 52,
-   "bytes": 2998348,
+   "bytes": 2999323,
    "manifest_sha256": "d79972accae77911933e023770e812ed146cc3c4003f634b59320424de56e813"
   }
  },
  "zip_contents": 381,
  "separate": {
-  "Super-LiberTEA-LE-1.0.2-26251122-Live-Lua-Loader-R38-LuaJIT.zip": {
-   "sha256": "e162e83f50355e0de758ae24bac995044f611d9ead444ea9507cb29efb5e93f0",
+  "Super-LiberTEA-LE-1.0.3-26251122-Live-Lua-Loader-R38-LuaJIT.zip": {
+   "sha256": "7b4a2588ae9036d702e00a213cff5e336dd083fd0eeda3b66557741d08616c55",
    "bytes": 3463353,
    "files": 18
   },
-  "Super-LiberTEA-LE-1.0.2-26251122-War-Journalist-Assets.zip": {
-   "sha256": "666698c72bb6eced6e1ff9f9c9a13faa258eb137e3ffe9640045efe3aedba399",
-   "bytes": 349305,
+  "Super-LiberTEA-LE-1.0.3-26251122-War-Journalist-Assets.zip": {
+   "sha256": "7f55741011a93446273f78322a04c55e7bc8e087198bf24edf3b225976a8378c",
+   "bytes": 349307,
    "files": 10
   },
-  "Super-LiberTEA-LE-1.0.2-26251122-DiverKit.zip": {
-   "sha256": "ef5a61f20b5f639e2afe59ae8a1b58fa7ad2da20e2780462ffb9c48914aa8f51",
-   "bytes": 511214,
+  "Super-LiberTEA-LE-1.0.3-26251122-DiverKit.zip": {
+   "sha256": "0c2f67cc20177a67f37239fd16c559a9f05af0097a249b74fc650f83e6ebb961",
+   "bytes": 511215,
    "files": 9
   },
-  "Super-LiberTEA-LE-1.0.2-26251122-Smarter-Guard-Dogs.zip": {
-   "sha256": "7c5046580f6add1dd274318751468b6087af5656a70b4776a2be86edfd0adadc",
-   "bytes": 1490684,
+  "Super-LiberTEA-LE-1.0.3-26251122-Smarter-Guard-Dogs.zip": {
+   "sha256": "74bfd5a86b9db9ddba3f4956ac58c71fa193e4bf2a6c580709dda77ae1530344",
+   "bytes": 1490683,
    "files": 143
   },
-  "Super-LiberTEA-LE-1.0.2-26251122-Vanilla-Plus-Megapack.zip": {
-   "sha256": "9ba3df1712e48785f21ffe417c4b4e5bde39d8456c548827530ff2f379411f52",
-   "bytes": 5906279,
+  "Super-LiberTEA-LE-1.0.3-26251122-Vanilla-Plus-Megapack.zip": {
+   "sha256": "18c785d496dd2a4998f0804423f4bb8872313121a3979a209ce07be6bf2f1a89",
+   "bytes": 5906280,
    "files": 160
   },
-  "Super-LiberTEA-LE-1.0.2-26251122-Transmog.zip": {
-   "sha256": "a5d51f0c568c8e4bd838ef9132c1b50360b2d8a286294ea4f5f071304174a96c",
-   "bytes": 1646138,
+  "Super-LiberTEA-LE-1.0.3-26251122-Transmog.zip": {
+   "sha256": "29dfbcb2892a72e3ac936519beddfb7d5e3b4244095ce73325919731b416e6f8",
+   "bytes": 1646139,
    "files": 52
   },
-  "Super-LiberTEA-LE-1.0.2-26251122-DBF-MCM.zip": {
-   "sha256": "8e4b89843c7ebb0760a771e026e56809046efaac1213c52949c045c96cee867a",
+  "Super-LiberTEA-LE-1.0.3-26251122-HudPlusPlus.zip": {
+   "sha256": "c5a747112c42b118630ec495120126f56c01da960afa6b43b09f840f723c9415",
+   "bytes": 758256,
+   "files": 7
+  },
+  "Super-LiberTEA-LE-1.0.3-26251122-DBF-MCM.zip": {
+   "sha256": "5938dffaa49e9d8236b24d7923c0f6c2ac8f8beeb4529ac66e22a3010d19f5a6",
    "bytes": 84528,
    "files": 28
   },
-  "Super-LiberTEA-LE-1.0.2-26251122-Divers-Best-Friend.zip": {
-   "sha256": "8abfdba28e9882b4d34acbc81d15e40e9f57db564d559fef177325c78b2c591f",
-   "bytes": 105007,
+  "Super-LiberTEA-LE-1.0.3-26251122-Divers-Best-Friend.zip": {
+   "sha256": "f4d12d7dbcf6d45a17447f7470cafbadcd41bfdd1b4f09081a4f1e863fd29ab2",
+   "bytes": 105008,
    "files": 36
   },
-  "Super-LiberTEA-LE-1.0.2-26251122-Bridge-Combat.zip": {
-   "sha256": "1abd2494f6094772faf1d52cee029fb52eb184f71e5dede86cf1d6a440cafbc3",
+  "Super-LiberTEA-LE-1.0.3-26251122-Bridge-Combat.zip": {
+   "sha256": "44e94b7bcaea637e4261e307016858693419aa792e4a770e90c04e8fdf56a065",
    "bytes": 466209,
    "files": 55
   },
-  "Super-LiberTEA-LE-1.0.2-26251122-War-Journalist-Proton.zip": {
-   "sha256": "253bab67c2ad6dee621ce6165ba37b343880c8964a23914a760c225046cbf356",
+  "Super-LiberTEA-LE-1.0.3-26251122-War-Journalist-Proton.zip": {
+   "sha256": "03346a58cae68f973ca0922b12646aeabae43df95903f296a3c52d2fbe876edf",
    "bytes": 935946,
    "files": 87
   },
-  "Super-LiberTEA-LE-1.0.2-26251122-Gadget-Kit-LE.zip": {
-   "sha256": "ba83a2b3143dd127cb14ae6db9a61b8eb9c99de82d7c235b088cbdfa61f618e7",
-   "bytes": 1221996,
+  "Super-LiberTEA-LE-1.0.3-26251122-Gadget-Kit-LE.zip": {
+   "sha256": "d74607f5fa5556c14efef2c5ac25ff9d2642a88b07c8dc70abffdc028d48759d",
+   "bytes": 1222374,
    "files": 53
   }
  },
  "live_acceptance": "pending",
  "offline_checks": {
-  "build_reproducible": "two builds, the same 12 zip sha256s",
-  "wine_install_checks": "16 of 16 pass (test_install.py), including files an earlier release no longer ships",
-  "separate_zips": "each Arsenal part zip has the full package's bytes for that part, the LLL zip luajit.2's patch 1dc502e7, each folder zip the files the boot install writes",
-  "undeclared_modules": "none in any folder mod (build refuses them; Gadget Kit LE had four from 1.0.0 to 1.0.1)",
-  "upgrade_from_packaging_machine_state": "1.0.2's install blocks under Wine on a copy of this machine's Mods/<5 ids> and 1.0.1 receipts (18:05): '2 written, 200 in place, 6 removed; left alone: goose_temporary_unlocks (another build is installed)', then '0 written, 202 in place'",
-  "arsenal_metadata": "every Arsenal manifest carries 'Super LiberTEA - LE 1.0.2 · branch main · build 26251122 · patch 2 · created 2026-11-02 18:20'; the boot patch is the one the 16/16 Wine checks ran (ba5ec6c16775a07b)"
+  "build_reproducible": "two builds, the same 13 zip sha256s",
+  "wine_install_checks": "16 of 16 pass (test_install.py)",
+  "hudplusplus": "separate zip only: the Arsenal folder HudPlusPlus-LuaJIT-26251122 byte for byte plus a stamped manifest; patch f43504c9 and bundle 36a837dc are the port receipt's (r9 at bfe5450, renamed at 56de681)",
+  "gadget_kit_spawner_fix": "support_weapons.lua (MISSING=10) from the live folder (deployed 2026-11-02 19:22) and gadget-kit-le/src/mcm.lua (refusal reason alone); the LE MCM test passes",
+  "undeclared_modules": "none in any folder mod"
  },
  "live_runs": [
-  "2026-11-02 17:52-17:57, fresh LLL folder, zip 046a6a72 (before the Gadget Kit fix): LLL 7 written, 254 mod files written and identical, handoff complete, 52/52 loaded, no crash reports; Gadget Kit LE First Person: 'Module not declared in this project: src/first_person/motion.lua'",
-  "2026-11-02 18:10-18:12, fresh LLL folder, this boot patch (ba5ec6c16775a07b; zip imported 18:09): LLL 7 written, 254 mod files written and identical, handoff complete, 52/52 loaded, no crash reports; Gadget Kit LE First Person initialised and was switched on (fix confirmed); Bridge Combat animation ran and paused for the Armory as designed; Photo Mode not opened, so bone posing still untested live"
+  "none of 1.0.3 itself; its full package differs from 1.0.2 (live-tested twice on 2026-11-02) only in version text and the Gadget Kit spawner fix, which ran in the live folder from 2026-11-02 19:22. HudPlusPlus r8 with its live fix (= r9's code) loaded and showed its Options page on 2026-11-03 14:00-14:11; r9 not launched"
  ]
 }

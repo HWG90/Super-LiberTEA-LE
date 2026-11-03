@@ -23,7 +23,7 @@ One HD2 Arsenal mod that brings Live Lua Loader with LuaJIT and a full set of mo
 
 ## Install
 
-1. Download `Super-LiberTEA-LE-1.0.2-26251122.zip` from [Releases](../../releases).
+1. Download `Super-LiberTEA-LE-1.0.3-26251122.zip` from [Releases](../../releases).
 2. Close the game. In HD2 Arsenal, disable any other Live Lua Loader, Bingus Shared Loader, Boot Mod Loader or Chef Shared Loader, and any separate copy of the mods above.
 3. Import the zip. Every option is on; pick the sub-options you want (Transmog, Guard Dogs).
 4. Keep it **last** in the load order (with first-mod priority on, keep it first), then Purge / Deploy.
@@ -38,10 +38,10 @@ Each item is also on the release page on its own. Use either the full package or
 | Download (`Super-LiberTEA-LE-<version>-26251122-…`) | Install |
 |---|---|
 | `Live-Lua-Loader-R38-LuaJIT.zip` | Arsenal mod, last in the load order. Everything else needs it |
-| `War-Journalist-Assets.zip`, `DiverKit.zip`, `Smarter-Guard-Dogs.zip`, `Vanilla-Plus-Megapack.zip`, `Transmog.zip` | Arsenal mods |
+| `War-Journalist-Assets.zip`, `DiverKit.zip`, `Smarter-Guard-Dogs.zip`, `Vanilla-Plus-Megapack.zip`, `Transmog.zip`, `HudPlusPlus.zip` | Arsenal mods |
 | `DBF-MCM.zip`, `Divers-Best-Friend.zip`, `Bridge-Combat.zip`, `War-Journalist-Proton.zip`, `Gadget-Kit-LE.zip` | LLL mods: extract the folder into `%LOCALAPPDATA%\LLL\Helldivers2\Mods` in the game's Proton prefix |
 
-Diver's Best Friend uses Mod Bindings Menu (in the Megapack); War Journalist uses its assets; Gadget Kit LE's pages are in DBF-MCM.
+Diver's Best Friend uses Mod Bindings Menu (in the Megapack); War Journalist uses its assets; Gadget Kit LE's pages are in DBF-MCM. HudPlusPlus (HD2 HUD Plus 0.2.9 rebuilt for build 26251122) is only a separate download; keep its row before Live Lua Loader.
 
 ## Source
 
@@ -58,16 +58,20 @@ Everything that goes into the zip is here, item by item. Each folder's `SOURCE.m
 | `sources/war-journalist-proton` | War Journalist, HWG90/DBF_PhotoMode bone-posing line (on `WJ-Proton`) at 09a0940 |
 | `sources/gadget-kit` | Goose Gadget Kit 0.5.10 (the LE changes are in `package/gadget-kit-le`) |
 | `sources/diverkit`, `sources/transmog`, `sources/smarter-guard-dogs` | the ported mods' Lua, by option |
+| `sources/hudplusplus` | HudPlusPlus: its port builder and data, and its Lua |
 | `package/` | how the zip is built: `build_package.py`, the boot install block `mods_install.lua`, its Wine test, and `lll-dropin/` (LLL's drop-in boot patch builder) |
 
 `package/RECEIPT.json` records every input and output hash of the release build; `SHA256SUMS.txt` has the zip's hash.
 
 ## Changes
 
+- **1.0.3**: HudPlusPlus, HD2 HUD Plus 0.2.9 rebuilt for build 26251122, as a separate download. Gadget Kit LE's spawner: a support weapon that cannot be delivered ends its request instead of holding every later one, and a refused request shows its reason.
 - **1.0.2**: War Journalist 1.3.4 with bone posing (pose a diver bone by bone in the Subject tab, keep up to 99 poses). Bridge Combat .12: Armory weapon swaps no longer crash, and combat starts in multiplayer sessions. Diver's Best Friend no longer starts DBF-HUD's weapon readout, which published R46 never had; the first start removes its files. Gadget Kit LE's First Person starts again: four of its modules were missing from its manifest since 1.0.0. LLL Compat Test is gone. Every item is also a separate download.
 - **1.0.1**: the Megapack no longer names a folder on my machine (a helper DLL path its code never used), and a mod folder that only holds a development shim is moved to `Backups` and replaced with the real mod. On my machine, Diver's Best Friend failed to load from such a shim.
 - **1.0.0**: first release.
 
 ## Credits
 
-See [CREDITS.md](CREDITS.md). The Megapack, Smarter Guard Dogs & Sentries, DiverKit and Transmog are other authors' mods, ported to LuaJIT and this game build; all credit for the mods themselves goes to them. There is no repository-wide licence: each item keeps its own (see the licence files in each folder and `LICENSES/` in the zip).
+See [CREDITS.md](CREDITS.md). The Megapack, Smarter Guard Dogs & Sentries, DiverKit, Transmog and HD2 HUD Plus are other authors' mods, ported to LuaJIT and this game build; all credit for the mods themselves goes to them.
+
+There is no repository-wide licence: each item keeps its own (see the licence files in each folder and `LICENSES/` in the zip).

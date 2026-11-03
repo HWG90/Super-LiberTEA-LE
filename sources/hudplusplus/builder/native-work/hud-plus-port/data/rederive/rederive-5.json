@@ -1,0 +1,2571 @@
+{
+ "ability_script_owner_entity": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "scores": [
+    [
+     "0xf4e690",
+     9
+    ],
+    [
+     "0xf4e260",
+     8
+    ],
+    [
+     "0xf4e410",
+     6
+    ],
+    [
+     "0xf3f857",
+     6
+    ]
+   ],
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0xf4e260",
+     1.12
+    ],
+    [
+     "0xf4e410",
+     1.12
+    ],
+    [
+     "0xf4e690",
+     1.12
+    ],
+    [
+     "0xf3f857",
+     0.17
+    ]
+   ]
+  }
+ },
+ "action_script_can_reload_rva_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "scores": [
+   [
+    "0xfc3693",
+    9
+   ],
+   [
+    "0xfbfa86",
+    8
+   ],
+   [
+    "0xfc3286",
+    8
+   ],
+   [
+    "0xfc3ce9",
+    8
+   ]
+  ],
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0xfbfa86",
+    8.36
+   ],
+   [
+    "0xfc3693",
+    7.95
+   ],
+   [
+    "0xfc3286",
+    7.86
+   ],
+   [
+    "0xfc3ce9",
+    3.86
+   ]
+  ],
+  "width": 8
+ },
+ "action_script_cock_rva_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "scores": [
+   [
+    "0xfb5613",
+    7
+   ],
+   [
+    "0x10532b6",
+    5
+   ],
+   [
+    "0xfbf796",
+    0
+   ],
+   [
+    "0xfa6d06",
+    0
+   ]
+  ],
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0xfbf796",
+    2.67
+   ],
+   [
+    "0xfb5613",
+    2.5
+   ],
+   [
+    "0x10532b6",
+    1.5
+   ],
+   [
+    "0xfa6d06",
+    0.79
+   ]
+  ],
+  "width": 8
+ },
+ "action_script_mag_full_rva_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "scores": [
+   [
+    "0xfc30d0",
+    45
+   ],
+   [
+    "0xfbf8d0",
+    45
+   ],
+   [
+    "0xfc36cd",
+    44
+   ],
+   [
+    "0xfbf5c5",
+    31
+   ]
+  ],
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0xfc36cd",
+    69.87
+   ],
+   [
+    "0xfc30d0",
+    64.15
+   ],
+   [
+    "0xfbf8d0",
+    51.21
+   ],
+   [
+    "0xfbf5c5",
+    2.53
+   ]
+  ],
+  "width": 8
+ },
+ "action_script_stage_bit_rva_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "scores": [
+   [
+    "0xfc373d",
+    9
+   ],
+   [
+    "0xfc3da0",
+    9
+   ],
+   [
+    "0xfbf948",
+    7
+   ],
+   [
+    "0xfc3148",
+    7
+   ]
+  ],
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0xfc3da0",
+    4.25
+   ],
+   [
+    "0xfbf948",
+    4.11
+   ],
+   [
+    "0xfc3148",
+    4.11
+   ],
+   [
+    "0xfc373d",
+    2.06
+   ]
+  ],
+  "width": 8
+ },
+ "arc_weapon_fire_row": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "status": "take-unaligned:arc_weapon_interval"
+  }
+ },
+ "attack_owner_site": {
+  "aligned": "44/59",
+  "at": "0xa017e0",
+  "evidence": "migrate-high",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.438,
+  "row": {
+   "hex": "48895c240848896c2410488974241848897c24203b15ead843024c8b15f7052e02743e458b4a2033c0418b5a280fafda418d69ff4585c97428498b7a18418b72248bcd448d04184c23c1428b0cc74e8d1cc73bce74223bca7422ffc0413bc172e033c0488b5c2408488b6c2410488b742418488b7c2420c33bca75e5418b430483f8ff74dc8bc8498b4238488b04c8ebd2488bcb",
+   "mask": "ffffffff00ffffffff00ffffffff00ffffffff00ffff00000000ffffff00000000ff00ffffff00ffffffffff00ffffffffffff00ffffffff00ffffff00ffffff00ffffffffffffffffffffffffffffffffffffffff00ffffff00ffffffffffff00ffffffffffff00ffffffff00ffffffff00ffffffff00ffffffff00ffffff00ffffffff00ffffffffff00ffffffffff00ffffff",
+   "module": "game",
+   "take": {
+    "attack_owner_manager": {
+     "end": 33,
+     "kind": "rip",
+     "offset": 29,
+     "size": 4
+    },
+    "attack_owner_of": {
+     "end": 5,
+     "kind": "here",
+     "offset": 0,
+     "size": 0
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "attack_owner_manager": {
+    "new": 47062520,
+    "old": 53636152
+   },
+   "attack_owner_of": {
+    "new": 10491872,
+    "old": 10416464
+   }
+  },
+  "vote": {
+   "scores": [
+    [
+     "0x4affd0",
+     15
+    ],
+    [
+     "0xa017e0",
+     15
+    ],
+    [
+     "0x647800",
+     10
+    ],
+    [
+     "0x88dde0",
+     10
+    ]
+   ],
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x4affd0",
+     2.8
+    ],
+    [
+     "0xa017e0",
+     2.8
+    ],
+    [
+     "0x647800",
+     1.8
+    ],
+    [
+     "0x88dde0",
+     1.8
+    ]
+   ]
+  }
+ },
+ "attack_preview_drift": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "scores": [
+    [
+     "0x4c9704",
+     0
+    ],
+    [
+     "0x6c8fee",
+     0
+    ],
+    [
+     "0x6f1aa7",
+     0
+    ],
+    [
+     "0x626cd9",
+     0
+    ]
+   ],
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x4c9704",
+     0.25
+    ],
+    [
+     "0x626cd9",
+     0.25
+    ],
+    [
+     "0x6c8fee",
+     0.25
+    ],
+    [
+     "0x6f1aa7",
+     0.25
+    ]
+   ]
+  }
+ },
+ "bombardment_default_head": {
+  "aligned": "31/33",
+  "at": "0x50c39f",
+  "evidence": "migrate-high",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.419,
+  "row": {
+   "hex": "554885c9746c488b050c7e7d02448bc14c8b904845f10048b8c94216b290852c6448f7e1488bc1",
+   "mask": "ffffffffff00ffffff00000000ffffffffffff00000000ffffffffffffffffffffffffffffffff",
+   "module": "game",
+   "take": {
+    "bombardment_default_of": {
+     "end": 4,
+     "kind": "here",
+     "offset": 1,
+     "size": 0
+    },
+    "bombardment_default_table": {
+     "end": 23,
+     "kind": "u",
+     "offset": 19,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "bombardment_default_of": {
+    "new": 5292960,
+    "old": 5258688
+   },
+   "bombardment_default_table": {
+    "new": 15811912,
+    "old": 15805056
+   }
+  },
+  "vote": {
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x4fc4d5",
+     0.14
+    ],
+    [
+     "0x507240",
+     0.14
+    ],
+    [
+     "0x50c3b6",
+     0.14
+    ],
+    [
+     "0x5143b0",
+     0.14
+    ]
+   ]
+  }
+ },
+ "bombardment_guide_heading": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "scores": [
+    [
+     "0x15b056f",
+     0
+    ],
+    [
+     "0x15b05b4",
+     0
+    ],
+    [
+     "0x116c6c8",
+     0
+    ],
+    [
+     "0x116c7ad",
+     0
+    ]
+   ],
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x15b056f",
+     1.0
+    ],
+    [
+     "0x15b05b4",
+     1.0
+    ],
+    [
+     "0x116c6c8",
+     0.33
+    ],
+    [
+     "0x116c7ad",
+     0.33
+    ]
+   ]
+  }
+ },
+ "bombardment_guide_sweep": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "status": "no-seed"
+  }
+ },
+ "bombardment_manager_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "status": "no-seed"
+ },
+ "booster_table": {
+  "evidence": "old-function",
+  "module": "game",
+  "ratio": 0.374,
+  "status": "context-unaligned"
+ },
+ "call_head_dead_of": {
+  "module": "game",
+  "parent": "dead_of",
+  "status": "parent-missing"
+ },
+ "call_head_stratagem_record": {
+  "module": "game",
+  "parent": "stratagem_record",
+  "status": "parent-missing"
+ },
+ "camera_fov_head": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x128efa0",
+    0.5
+   ],
+   [
+    "0x12a9782",
+    0.5
+   ],
+   [
+    "0x9d1210",
+    0.33
+   ],
+   [
+    "0x9d8d80",
+    0.33
+   ]
+  ],
+  "width": 8
+ },
+ "camera_fov_set_head": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0xa6df0",
+    0.33
+   ],
+   [
+    "0x2dcfd0",
+    0.33
+   ],
+   [
+    "0x4d36b0",
+    0.33
+   ]
+  ],
+  "width": 3
+ },
+ "camera_world_pose_head": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x12b4a2e",
+    0.33
+   ],
+   [
+    "0x12b4a4e",
+    0.33
+   ],
+   [
+    "0x12b4a5e",
+    0.33
+   ],
+   [
+    "0x64c3e",
+    0.12
+   ]
+  ],
+  "width": 8
+ },
+ "charge_stage_pick": {
+  "evidence": "old-function",
+  "module": "game",
+  "scores": [
+   [
+    "0x6a0bc3",
+    1
+   ],
+   [
+    "0x795d03",
+    1
+   ],
+   [
+    "0x9bdf9d",
+    1
+   ],
+   [
+    "0x9be154",
+    1
+   ]
+  ],
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x6a0bc3",
+    0.2
+   ],
+   [
+    "0x795d03",
+    0.2
+   ],
+   [
+    "0x9bdf9d",
+    0.2
+   ],
+   [
+    "0x9be154",
+    0.2
+   ]
+  ],
+  "width": 4
+ },
+ "comms_global_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "scores": [
+   [
+    "0x532eee",
+    11
+   ],
+   [
+    "0x685cfe",
+    11
+   ]
+  ],
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x532eee",
+    8.5
+   ],
+   [
+    "0x685cfe",
+    8.5
+   ]
+  ],
+  "width": 8
+ },
+ "component_card_ready_site": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "status": "context-unaligned"
+  }
+ },
+ "component_card_size_site": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "status": "context-unaligned"
+  }
+ },
+ "deposit_accessor": {
+  "aligned": "15/30",
+  "at": "0x50ac6a",
+  "evidence": "migrate-medium",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.201,
+  "row": {
+   "hex": "8b410483f8ff74134869c098000000490383a00000004883c428c3498b0a4883c428e94ffaffff4883eb0f",
+   "mask": "ffff00ffffffff00ffffffffffffffffffff00000000ffffffffffffffffffffffffff00000000ffffffff",
+   "module": "game",
+   "take": {
+    "deposit_find": {
+     "end": 39,
+     "kind": "rip",
+     "offset": 35,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "deposit_find": {
+    "new": 5285600,
+    "old": 5251600
+   }
+  },
+  "vote": {
+   "status": "no-seed"
+  }
+ },
+ "deposit_registry_find": {
+  "module": "game",
+  "parent": "deposit_find",
+  "status": "parent-missing"
+ },
+ "deposit_rows": {
+  "aligned": "57/122",
+  "at": "0x5583d0",
+  "evidence": "migrate-medium",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.358,
+  "row": {
+   "hex": "48895c2408574883ec20488b1dff967802488bf9448b4310443b4328720c488bcbe8ba3d3900448b4310443b4308720c488bcbe8a83f3900448b4310418bc80f57c0486bc13433d2480343400f11000f1140100f114020895030488b433848893cc8488d4b208b5708e8b2b10401ff4310488b5c24304883c4205fc3498b06",
+   "mask": "ffffffff00ffffffffffffffff00000000ffffffffffff00ffffff00ff00ffffffff00000000ffffff00ffffff00ff00ffffffff00000000ffffff00ffffffffffffffffffffffffffffff00ffffffffffff00ffffff00ffff00ffffff00ffffffffffffff00ffff00ff00000000ffff00ffffffff00ffffffffffffffffff",
+   "module": "game",
+   "take": {
+    "deposit_manager": {
+     "end": 17,
+     "kind": "rip",
+     "offset": 13,
+     "size": 4
+    },
+    "deposit_map": {
+     "end": 102,
+     "kind": "u",
+     "offset": 101,
+     "size": 1
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "deposit_manager": {
+    "new": 47061728,
+    "old": 53634536
+   },
+   "deposit_map": {
+    "new": 32,
+    "old": 32
+   }
+  },
+  "vote": {
+   "status": "no-seed"
+  }
+ },
+ "eagle_capacity_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "status": "no-seed"
+ },
+ "eagle_default_site": {
+  "aligned": "32/36",
+  "at": "0x50a6e0",
+  "evidence": "migrate-medium",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.393,
+  "row": {
+   "hex": "4885c9745c488b05cc9a7d02448bc14c8b90c044f10048b8898888888888888848f7e148c1ea056bc23c442bc04533c9418bc048c1e0044903c2488b10483bd174224885d2741a418bc0418d50014533c041ffc183f83b440f45c24183f93c72cf33c0c34885c074f88b48084869c198000000",
+   "mask": "ffffffff00ffffff00000000ffffffffffff00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00ffffffff00ffffffffffff00ffffffffffffffffffffffffffffffffffff00ffffffffffffff00ffff00ffffffffffffff",
+   "module": "game",
+   "take": {
+    "eagle_default_of": {
+     "end": 3,
+     "kind": "here",
+     "offset": 0,
+     "size": 0
+    },
+    "eagle_default_table": {
+     "end": 22,
+     "kind": "u",
+     "offset": 18,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "eagle_default_of": {
+    "new": 5285600,
+    "old": 5326400
+   },
+   "eagle_default_table": {
+    "new": 15811776,
+    "old": 15806072
+   }
+  },
+  "vote": {
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x500fb0",
+     0.96
+    ],
+    [
+     "0x502710",
+     0.96
+    ],
+    [
+     "0x50bac0",
+     0.96
+    ],
+    [
+     "0x50d370",
+     0.96
+    ]
+   ]
+  }
+ },
+ "eagle_pattern_count": {
+  "evidence": "migrate-medium",
+  "module": "game",
+  "ratio": 0.188,
+  "status": "take-unaligned:eagle_pattern_count",
+  "vote": {
+   "status": "take-unaligned:eagle_pattern_count"
+  }
+ },
+ "eagle_pattern_layout": {
+  "evidence": "old-function",
+  "module": "game",
+  "ratio": 0.275,
+  "status": "take-unaligned:eagle_pattern_at"
+ },
+ "eagle_pattern_origin": {
+  "evidence": "old-function",
+  "module": "game",
+  "ratio": 0.318,
+  "status": "take-unaligned:eagle_pattern_origin"
+ },
+ "eagle_preview_heading": {
+  "evidence": "old-function",
+  "module": "game",
+  "ratio": 0.274,
+  "status": "take-unaligned:eagle_degrees_at"
+ },
+ "eagle_progress_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "ratio": 0.169,
+  "status": "take-unaligned:eagle_progressing"
+ },
+ "eagle_projectile_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "ratio": 0.125,
+  "status": "context-unaligned"
+ },
+ "eagle_strafing_mode_site": {
+  "evidence": "migrate-medium",
+  "module": "game",
+  "ratio": 0.023,
+  "status": "take-unaligned:eagle_strafing_mode",
+  "vote": {
+   "status": "context-unaligned"
+  }
+ },
+ "encounter_owners_site": {
+  "aligned": "18/18",
+  "at": "0x8cad4e",
+  "evidence": "migrate-high",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.336,
+  "row": {
+   "hex": "3bf07313448bc68bd0488bcfe871eeffff8bb7380900008d460133d289873809000041b8180400008bc64869c81804000048038f68090000e885836401eb028bf08bde33d24869cbd810000041b8d810000048038f70090000e8648364018b872c090000448bc6ff87340900008b8f34090000ff87300900003bc10f47c8488b8760090000898f2c090000488d8f4809000048892cd88b5508488b5c2430488b6c2438488b7424404883c4205fe9f087cd0048895c240848896c2410",
+   "mask": "ffffff00ffffffffffffffffff00000000ffff00000000ffff00ffffffff00000000ffff00000000ffffffffff00000000ffffff00000000ff00000000ff00ffffffffffffffffff00000000ffff00000000ffffff00000000ff00000000ffff00000000ffffffffff00000000ffff00000000ffff00000000ffffffffffffffff00000000ffff00000000ffffff00000000ffffff00ffff00ffffffff00ffffffff00ffffffff00ffffffffffff00000000ffffffff00ffffffff00",
+   "module": "game",
+   "take": {
+    "encounter_owner_entity": {
+     "end": 153,
+     "kind": "u",
+     "offset": 152,
+     "size": 1
+    },
+    "encounter_owner_stride": {
+     "end": 150,
+     "kind": "scale",
+     "offset": 149,
+     "size": 1
+    },
+    "encounter_owners": {
+     "end": 133,
+     "kind": "u",
+     "offset": 129,
+     "size": 4
+    }
+   }
+  },
+  "status": "partial:too-long",
+  "values": {
+   "encounter_owner_entity": {
+    "new": 8,
+    "old": 8
+   },
+   "encounter_owner_stride": {
+    "new": 8,
+    "old": 8
+   },
+   "encounter_owners": {
+    "new": 2400,
+    "old": 2400
+   }
+  },
+  "vote": {
+   "scores": [
+    [
+     "0x8cacf0",
+     34
+    ],
+    [
+     "0x5448b0",
+     34
+    ],
+    [
+     "0x800830",
+     7
+    ],
+    [
+     "0x555ba0",
+     7
+    ]
+   ],
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x5448b0",
+     2.1
+    ],
+    [
+     "0x555ba0",
+     2.1
+    ],
+    [
+     "0x800830",
+     2.1
+    ],
+    [
+     "0x8cacf0",
+     2.1
+    ]
+   ]
+  }
+ },
+ "explosive_key_lookup_site": {
+  "aligned": "12/27",
+  "at": "0x514b89",
+  "evidence": "migrate-medium",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.17,
+  "row": {
+   "hex": "490383b80000004883c428c3498b0a4883c428e99ff8ffff488d8de0000000",
+   "mask": "ffffff00000000ffffffffffffffffffffffffff00000000ffffff00000000",
+   "module": "game",
+   "take": {
+    "explosive_data_by_key": {
+     "end": 24,
+     "kind": "rip",
+     "offset": 20,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "explosive_data_by_key": {
+    "new": 5325888,
+    "old": 5291616
+   }
+  },
+  "vote": {
+   "status": "no-seed"
+  }
+ },
+ "explosive_kind_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "ratio": 0.579,
+  "status": "build:too-long"
+ },
+ "explosive_row_site": {
+  "evidence": "migrate-medium",
+  "module": "game",
+  "ratio": 0.038,
+  "status": "take-unaligned:explosive_arm_delay_at",
+  "vote": {
+   "status": "take-unaligned:explosive_armed_at"
+  }
+ },
+ "flat_picture_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "ratio": 0.288,
+  "status": "context-unaligned"
+ },
+ "health_dead_of": {
+  "evidence": "old-function",
+  "module": "game",
+  "ratio": 0.176,
+  "status": "context-unaligned"
+ },
+ "health_rows": {
+  "aligned": "57/69",
+  "at": "0x10ff450",
+  "evidence": "migrate-high",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.538,
+  "row": {
+   "hex": "4883ec083b1576fcd3014c8b15d723be017517b8ffffffff8bc8498b8248100000488b04c84883c408c3458b8a381000004533c048895c2410418b9a4010000048896c24180fafda418d69ff488974242048893c244585c97436498bba30100000418bb23c1000000f1f8400000000008bc5418d0c184823c88b04cf4c8d1ccf3bc674363bc2743641ffc0453bc172e0b8ffffffff488b742420488b6c2418488b5c2410488b3c248bc8498b8248100000488b04c84883c408c33bc275d2",
+   "mask": "ffffffffffff00000000ffffff00000000ff00ffffffffffffffffffff00000000ffffffffffffffffffffffff00000000ffffffffffffff00ffffff00000000ffffffff00ffffffffffff00ffffffff00ffffffffffffffff00ffffff00000000ffffff00000000ffffffff00000000ffffffffffffffffffffffffffffffffffffff00ffffff00ffffffffffffff00ffffffffffffffffff00ffffffff00ffffffff00ffffffffffffffffff00000000ffffffffffffffffffffffff00",
+   "module": "game",
+   "take": {
+    "health_manager": {
+     "end": 17,
+     "kind": "rip",
+     "offset": 13,
+     "size": 4
+    }
+   }
+  },
+  "status": "partial:too-long",
+  "values": {
+   "health_manager": {
+    "new": 47061048,
+    "old": 53634696
+   }
+  },
+  "vote": {
+   "status": "no-seed"
+  }
+ },
+ "heat_accessor": {
+  "aligned": "7/13",
+  "at": "0x516862",
+  "evidence": "migrate-medium",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.119,
+  "row": {
+   "hex": "4869c050020000490383a80000004883c428c3498b0a4883c428e98ffaffff",
+   "mask": "ffffffffffffffffffff00000000ffffffffffffffffffffffffff00000000",
+   "module": "game",
+   "take": {
+    "heat_find": {
+     "end": 31,
+     "kind": "rip",
+     "offset": 27,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "heat_find": {
+    "new": 5333776,
+    "old": 5299504
+   }
+  },
+  "vote": {
+   "status": "no-seed"
+  }
+ },
+ "heat_charge_tick": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "status": "context-unaligned"
+  }
+ },
+ "heat_registry_find": {
+  "module": "game",
+  "parent": "heat_find",
+  "status": "parent-missing"
+ },
+ "heat_shot_charge_reset": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "status": "take-unaligned:weapon_heat_charge_resets"
+  }
+ },
+ "hud_squad_death_site": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "status": "context-unaligned"
+  }
+ },
+ "inventory_rows": {
+  "evidence": "old-function",
+  "module": "game",
+  "scores": [
+   [
+    "0x12cf6f9",
+    0
+   ],
+   [
+    "0x3aea1a",
+    0
+   ],
+   [
+    "0x73b362",
+    0
+   ],
+   [
+    "0x7ba823",
+    0
+   ]
+  ],
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x3aea1a",
+    0.33
+   ],
+   [
+    "0x73b362",
+    0.33
+   ],
+   [
+    "0x12cf6f9",
+    0.33
+   ],
+   [
+    "0x7ba823",
+    0.25
+   ]
+  ],
+  "width": 3
+ },
+ "line_object_add_circle_site": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x9819d7",
+    0.83
+   ],
+   [
+    "0x1290b65",
+    0.83
+   ],
+   [
+    "0xa85c79",
+    0.33
+   ]
+  ],
+  "width": 8
+ },
+ "line_object_add_line_head": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x4f0a50",
+    9.84
+   ],
+   [
+    "0x584bd0",
+    9.84
+   ],
+   [
+    "0xa0db0",
+    2.34
+   ],
+   [
+    "0x5849b0",
+    2.34
+   ]
+  ],
+  "width": 8
+ },
+ "line_object_destroy_head": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x1adce0",
+    6.5
+   ],
+   [
+    "0x3037b0",
+    6.5
+   ]
+  ],
+  "width": 8
+ },
+ "line_object_dispatch_head": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x1add30",
+    5.0
+   ],
+   [
+    "0x31cba0",
+    5.0
+   ],
+   [
+    "0x98369e",
+    0.92
+   ],
+   [
+    "0x9836e6",
+    0.92
+   ]
+  ],
+  "width": 8
+ },
+ "line_object_reset_head": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "no-seed"
+ },
+ "linked_ammo_registry": {
+  "evidence": "pattern",
+  "module": "game",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x4fede5",
+    0.7
+   ],
+   [
+    "0x5003b5",
+    0.7
+   ],
+   [
+    "0x5016d5",
+    0.7
+   ],
+   [
+    "0x501fc5",
+    0.7
+   ]
+  ],
+  "width": 8
+ },
+ "loot_rows": {
+  "aligned": "33/46",
+  "at": "0x554760",
+  "evidence": "migrate-high",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.371,
+  "row": {
+   "hex": "48895c2408574883ec20488b1d07d27802488bf9448b4310443b4330720c488bcbe8ea0c4900448b4310443b4308720c488bcbe8d80e4900448b4310418bc033d2488d0cc500000000488b435048891401488b434048893c01488d4b288b5708e82bee0401ff4310488b5c24304883c4205fc34883ec20",
+   "mask": "ffffffff00ffffffffffffffff00000000ffffffffffff00ffffff00ff00ffffffff00000000ffffff00ffffff00ff00ffffffff00000000ffffff00ffffffffffffffffff00000000ffffff00ffffffffffffff00ffffffffffffff00ffff00ff00000000ffff00ffffffff00ffffffffffffffffffff",
+   "module": "game",
+   "take": {
+    "loot_backref": {
+     "end": 85,
+     "kind": "u",
+     "offset": 84,
+     "size": 1
+    },
+    "loot_capacity": {
+     "end": 46,
+     "kind": "u",
+     "offset": 45,
+     "size": 1
+    },
+    "loot_count": {
+     "end": 24,
+     "kind": "u",
+     "offset": 23,
+     "size": 1
+    },
+    "loot_manager": {
+     "end": 17,
+     "kind": "rip",
+     "offset": 13,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "loot_backref": {
+    "new": 64,
+    "old": 64
+   },
+   "loot_capacity": {
+    "new": 8,
+    "old": 8
+   },
+   "loot_count": {
+    "new": 16,
+    "old": 16
+   },
+   "loot_manager": {
+    "new": 47061368,
+    "old": 53635016
+   }
+  },
+  "vote": {
+   "status": "no-seed"
+  }
+ },
+ "magazine_accessor": {
+  "aligned": "7/13",
+  "at": "0x4fbb46",
+  "evidence": "migrate-medium",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.109,
+  "row": {
+   "hex": "48c1e005490383a00000004883c428c3498b0a4883c428e9eefaffff4156",
+   "mask": "ffffffffffffff00000000ffffffffffffffffffffffffff00000000ffff",
+   "module": "game",
+   "take": {
+    "magazine_find": {
+     "end": 28,
+     "kind": "rip",
+     "offset": 24,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "magazine_find": {
+    "new": 5224016,
+    "old": 5190384
+   }
+  },
+  "vote": {
+   "scores": [
+    [
+     "0x4fbb3a",
+     5
+    ],
+    [
+     "0x50562a",
+     4
+    ],
+    [
+     "0x5162da",
+     3
+    ]
+   ],
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x4fbb3a",
+     1.33
+    ],
+    [
+     "0x50562a",
+     1.33
+    ],
+    [
+     "0x5162da",
+     1.33
+    ]
+   ]
+  }
+ },
+ "magazine_registry_find": {
+  "module": "game",
+  "parent": "magazine_find",
+  "status": "parent-missing"
+ },
+ "material_pair_set_head": {
+  "aligned": "45/48",
+  "at": "0x12e7bc0",
+  "evidence": "migrate-high",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.466,
+  "row": {
+   "hex": "48895c24084889742410574883ec20498bf88bf2488bd9e814f8ffff4885c0745ce80af8ffff488bd0e82295ffff488b15d3989f014c8bc7488bc84c8b4a288bd641ff51088b0b8bc1d1e8a801750583c902890b488b83f00000004885c0741d8b108bcac1e903f6c101751183ca088910488b80f00000004885c075e3488b5c2430488b7424384883c4205fc34154",
+   "mask": "ffffffff00ffffffff00ffffffffffffffffffffffffffff00000000ffffffff00ff00000000ffffffff00000000ffffff00000000ffffffffffffffffff00ffffffffff00ffffffffffffffffff00ffffffffffffffff00000000ffffffff00ffffffffffffffffffffff00ffffffffffffffff00000000ffffffff00ffffffff00ffffffff00ffffffffffffffff",
+   "module": "game",
+   "take": {
+    "material_pair_set": {
+     "end": 5,
+     "kind": "here",
+     "offset": 0,
+     "size": 0
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "material_pair_set": {
+    "new": 19823552,
+    "old": 21298864
+   }
+  },
+  "vote": {
+   "scores": [
+    [
+     "0x12e7bc0",
+     13
+    ],
+    [
+     "0x12e7c50",
+     12
+    ],
+    [
+     "0x1623a7c",
+     7
+    ],
+    [
+     "0x12e7d10",
+     6
+    ]
+   ],
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x12e7bc0",
+     10.31
+    ],
+    [
+     "0x12e7c50",
+     10.31
+    ],
+    [
+     "0x12e7d10",
+     2.94
+    ],
+    [
+     "0x1623a7c",
+     2.17
+    ]
+   ]
+  }
+ },
+ "material_texture_resource": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x2de88f",
+    0.5
+   ],
+   [
+    "0x374970",
+    0.5
+   ]
+  ],
+  "width": 3
+ },
+ "material_var_set_site": {
+  "aligned": "54/57",
+  "at": "0x12e15d0",
+  "evidence": "migrate-high",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.507,
+  "row": {
+   "hex": "48895c24084889742410574883ec20498bd88bfa488bf1e8045e0000488bd0e81cfbffff4c8b0dcdfe9f014c8bc38bd7488bc84d8b512841ff52188b168bc2d1e8a801750583ca028916488b86f00000004885c0742766660f1f8400000000008b108bcac1e903f6c101751183ca088910488b80f00000004885c075e3488b5c2430488b7424384883c4205fc3488902",
+   "mask": "ffffffff00ffffffff00ffffffffffffffffffffffffffff00000000ffffffff00000000ffffff00000000ffffffffffffffffffffff00ffffff00ffffffffffffffffff00ffffffffffffffff00000000ffffffff00ffffffffffff00000000ffffffffffffffffffffff00ffffffffffffffff00000000ffffffff00ffffffff00ffffffff00ffffffffffffffffff",
+   "module": "game",
+   "take": {
+    "material_var_set": {
+     "end": 5,
+     "kind": "here",
+     "offset": 0,
+     "size": 0
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "material_var_set": {
+    "new": 19797456,
+    "old": 21272768
+   }
+  },
+  "vote": {
+   "scores": [
+    [
+     "0x12e15d0",
+     13
+    ],
+    [
+     "0x12e14b0",
+     12
+    ],
+    [
+     "0x12e1540",
+     12
+    ],
+    [
+     "0x12e16f0",
+     12
+    ]
+   ],
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x12e14b0",
+     7.21
+    ],
+    [
+     "0x12e1540",
+     7.21
+    ],
+    [
+     "0x12e15d0",
+     7.21
+    ],
+    [
+     "0x12e16f0",
+     4.94
+    ]
+   ]
+  }
+ },
+ "menu_descriptor_widget_type_site": {
+  "module": "game",
+  "parent": "menu_row_init",
+  "status": "parent-missing"
+ },
+ "menu_finish_simple_head": {
+  "module": "game",
+  "parent": "menu_finish_simple",
+  "status": "parent-missing"
+ },
+ "menu_page_build_site": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "ratio": 0.635,
+  "status": "build:too-long",
+  "vote": {
+   "status": "build:too-long"
+  }
+ },
+ "menu_scroll_extent_head": {
+  "aligned": "6/6",
+  "at": "0x1615890",
+  "evidence": "pattern",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.158,
+  "row": {
+   "hex": "f30f10a1b00700000f28d1",
+   "mask": "ffffffff00000000ffffff",
+   "module": "game",
+   "take": {
+    "menu_scroll_extent": {
+     "end": 8,
+     "kind": "here",
+     "offset": 0,
+     "size": 0
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "menu_scroll_extent": {
+    "new": 23156880,
+    "old": 24724992
+   }
+  }
+ },
+ "menu_scroll_reset_head": {
+  "aligned": "6/6",
+  "at": "0x1615800",
+  "evidence": "pattern",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.158,
+  "row": {
+   "hex": "80b9b5070000007419f30f1089bc070000",
+   "mask": "ffff00000000ffff00ffffffff00000000",
+   "module": "game",
+   "take": {
+    "menu_scroll_reset": {
+     "end": 7,
+     "kind": "here",
+     "offset": 0,
+     "size": 0
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "menu_scroll_reset": {
+    "new": 23156736,
+    "old": 24724848
+   }
+  }
+ },
+ "menu_scroll_thumb_head": {
+  "aligned": "6/6",
+  "at": "0x16151f0",
+  "evidence": "old-function",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.423,
+  "row": {
+   "hex": "48895c2410574883ec40488bd90f29742430f30f1189a8070000",
+   "mask": "ffffffff00ffffffffffffffffffffffff00ffffffff00000000",
+   "module": "game",
+   "take": {
+    "menu_scroll_thumb": {
+     "end": 5,
+     "kind": "here",
+     "offset": 0,
+     "size": 0
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "menu_scroll_thumb": {
+    "new": 23155184,
+    "old": 24723296
+   }
+  }
+ },
+ "menu_selected_row_site": {
+  "aligned": "10/16",
+  "at": "0x1295290",
+  "evidence": "migrate-medium",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.159,
+  "row": {
+   "hex": "486381380b00003dffffff7f74164869d0e87a0000488b81000b00008b8402c47a0000c3b89c000000c34883ec38",
+   "mask": "ffffff00000000ff00000000ff00ffffffffffffffffffff00000000ffffff00000000ffff00000000ffffffffff",
+   "module": "game",
+   "take": {
+    "menu_no_setting": {
+     "end": 41,
+     "kind": "u",
+     "offset": 37,
+     "size": 4
+    },
+    "menu_panel_selected": {
+     "end": 7,
+     "kind": "u",
+     "offset": 3,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "menu_no_setting": {
+    "new": 156,
+    "old": 156
+   },
+   "menu_panel_selected": {
+    "new": 2872,
+    "old": 2872
+   }
+  },
+  "vote": {
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x1295190",
+     0.25
+    ],
+    [
+     "0x12951d0",
+     0.25
+    ],
+    [
+     "0x1295290",
+     0.25
+    ],
+    [
+     "0x1711850",
+     0.25
+    ]
+   ]
+  }
+ },
+ "menu_text_template_site": {
+  "evidence": "pattern",
+  "module": "game",
+  "status": "no-seed"
+ },
+ "menu_toggle_labels_site": {
+  "evidence": "migrate-medium",
+  "module": "game",
+  "ratio": 0.064,
+  "status": "take-unaligned:menu_toggle_off",
+  "vote": {
+   "scores": [
+    [
+     "0x135dbeb",
+     6
+    ],
+    [
+     "0x138ee07",
+     6
+    ],
+    [
+     "0x13ab6a9",
+     5
+    ],
+    [
+     "0xb7fb66",
+     0
+    ]
+   ],
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x138ee07",
+     2.44
+    ],
+    [
+     "0xb7fb66",
+     2.0
+    ],
+    [
+     "0x135dbeb",
+     2.0
+    ],
+    [
+     "0x13ab6a9",
+     1.78
+    ]
+   ]
+  }
+ },
+ "mesh_material_read": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x451f1e",
+    0.34
+   ],
+   [
+    "0x4850ea",
+    0.34
+   ],
+   [
+    "0x451ec3",
+    0.25
+   ],
+   [
+    "0x48508f",
+    0.25
+   ]
+  ],
+  "width": 5
+ },
+ "minigame_book_open": {
+  "aligned": "48/48",
+  "at": "0x5044b0",
+  "evidence": "migrate-high",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.519,
+  "row": {
+   "hex": "4883ec284c8bd14885c9750733c04883c428c38b41083b0508ac93020f84930000004c8b1dd7d37d024533c048895c243048896c24384889742440458b4b78418b9b800000000fafd848897c2420418d69ff4585c97429498b7b70418b737c908bcd418d14184823d1488d0cd78b14d73bd6740e3bd0740a41ffc0453bc172e033c9488b7c2420488b742440488b6c2438488b5c24303901751b8b410483f8ff74134869c0c0280000",
+   "mask": "ffffffffffffffffffffff00ffffffffffffffffff00ffff00000000ffff00000000ffffff00000000ffffffffffffff00ffffffff00ffffffff00ffffff00ffffff00000000ffffffffffffff00ffffff00ffffffff00ffffff00ffffff00ffffffffffffffffffffffffffffffffffffffff00ffffff00ffffffffffffff00ffffffffffff00ffffffff00ffffffff00ffffffff00ffffff00ffff00ffffffff00ffffffffffffff",
+   "module": "game",
+   "take": {
+    "minigame_manager": {
+     "end": 41,
+     "kind": "rip",
+     "offset": 37,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "minigame_manager": {
+    "new": 47061168,
+    "old": 53634816
+   }
+  },
+  "vote": {
+   "status": "no-seed"
+  }
+ },
+ "number_arg_set_head": {
+  "aligned": "78/90",
+  "at": "0x12d46df",
+  "evidence": "migrate-high",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.576,
+  "row": {
+   "hex": "5740534883ec20488bd94881c110010000e81bd9ffff84c0745b8b93b80000008bc283c8028983b80000003bc27446f7d223d081e2ff2fffff7414488b8be00000004885c9740841b001e8e2f900008b0b8bc1c1e802a801751b83c904890b488b8bf00000004885c9740a4883c4205be9bc0701004883c4205bc34889442420",
+   "mask": "ffffffffffffffffffffffffffffffffffff00000000ffffff00ffff00000000ffffffffffffff00000000ffffff00ffffffffffffffffffffff00ffffff00000000ffffffff00ffffffff00000000ffffffffffffffffffff00ffffffffffffffff00000000ffffffff00ffffffffffff00000000ffffffffffffffffffff00",
+   "module": "game",
+   "take": {
+    "number_arg_set": {
+     "end": 3,
+     "kind": "here",
+     "offset": 1,
+     "size": 0
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "number_arg_set": {
+    "new": 19744480,
+    "old": 21219792
+   }
+  },
+  "vote": {
+   "status": "no-seed"
+  }
+ },
+ "projectile_weapon_registry_find": {
+  "evidence": "pattern",
+  "module": "game",
+  "status": "no-seed"
+ },
+ "reinforce_call_alt_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "scores": [
+   [
+    "0xf4b5f2",
+    7
+   ],
+   [
+    "0xf4b692",
+    7
+   ],
+   [
+    "0xfe23b0",
+    6
+   ],
+   [
+    "0xf34cf2",
+    -3
+   ]
+  ],
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0xf4b5f2",
+    4.5
+   ],
+   [
+    "0xf4b692",
+    4.5
+   ],
+   [
+    "0xf34cf2",
+    2.0
+   ],
+   [
+    "0xfe23b0",
+    1.47
+   ]
+  ],
+  "width": 8
+ },
+ "reload_accessor": {
+  "aligned": "17/31",
+  "at": "0x50562a",
+  "evidence": "migrate-medium",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.238,
+  "row": {
+   "hex": "8b410483f8ff7414488d048048c1e004490383a00000004883c428c3498b0a4883c428e93efbffff836b0c01",
+   "mask": "ffff00ffffffff00ffffffffffffffffffffff00000000ffffffffffffffffffffffffff00000000ffff00ff",
+   "module": "game",
+   "take": {
+    "reload_find": {
+     "end": 40,
+     "kind": "rip",
+     "offset": 36,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "reload_find": {
+    "new": 5263760,
+    "old": 5230112
+   }
+  },
+  "vote": {
+   "scores": [
+    [
+     "0x50562a",
+     5
+    ],
+    [
+     "0x4fbb3a",
+     4
+    ],
+    [
+     "0x5162da",
+     4
+    ]
+   ],
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x4fbb3a",
+     1.33
+    ],
+    [
+     "0x50562a",
+     1.33
+    ],
+    [
+     "0x5162da",
+     1.33
+    ]
+   ]
+  }
+ },
+ "reload_registry_find": {
+  "module": "game",
+  "parent": "reload_find",
+  "status": "parent-missing"
+ },
+ "roots_avatar_manager_controller_base_site": {
+  "evidence": "migrate-medium",
+  "module": "game",
+  "status": "hint-unaligned",
+  "vote": {
+   "status": "context-unaligned"
+  }
+ },
+ "roots_entity_owner_rva_site": {
+  "aligned": "8/8",
+  "at": "0xbc82a",
+  "evidence": "old-function",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.429,
+  "row": {
+   "hex": "488bcfe8fe834000488b07488b0d7c79c2028b5008e86c00db00eb28488bcf",
+   "mask": "ffffffff00000000ffffffffffff00000000ffff00ff00000000ff00ffffff",
+   "module": "game",
+   "take": {
+    "roots_entity_owner_rva": {
+     "end": 18,
+     "kind": "rip",
+     "offset": 14,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "roots_entity_owner_rva": {
+    "new": 47071672,
+    "old": 54968216
+   }
+  }
+ },
+ "rounds_registry_find": {
+  "aligned": "7/7",
+  "at": "0x505da0",
+  "evidence": "parent",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.003,
+  "row": {
+   "hex": "4885c9746c488b050ce47d02",
+   "in": [
+    "rounds_find",
+    0
+   ],
+   "mask": "ffffffff00ffffff00000000",
+   "module": "game",
+   "take": {
+    "roots_entity_owner_rva": {
+     "end": 12,
+     "kind": "rip",
+     "offset": 8,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "roots_entity_owner_rva": {
+    "new": 47071672,
+    "old": 54968216
+   }
+  }
+ },
+ "screen_resolution_head": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x2e9280",
+    30.75
+   ],
+   [
+    "0x311de0",
+    30.75
+   ],
+   [
+    "0x3117df",
+    8.75
+   ],
+   [
+    "0x2dda14",
+    0.75
+   ]
+  ],
+  "width": 8
+ },
+ "shield_wait_tick": {
+  "evidence": "migrate-medium",
+  "module": "game",
+  "ratio": 0.873,
+  "status": "build:too-long",
+  "vote": {
+   "status": "build:too-long"
+  }
+ },
+ "spottable_registry_find": {
+  "aligned": "7/7",
+  "at": "0x5066b0",
+  "evidence": "parent",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.003,
+  "row": {
+   "hex": "4885c9745c488b05fcda7d02",
+   "in": [
+    "spottable_find",
+    -288
+   ],
+   "mask": "ffffffff00ffffff00000000",
+   "module": "game",
+   "take": {
+    "roots_entity_owner_rva": {
+     "end": 12,
+     "kind": "rip",
+     "offset": 8,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "roots_entity_owner_rva": {
+    "new": 47071672,
+    "old": 54968216
+   }
+  }
+ },
+ "squad_row_dead_label": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "status": "context-unaligned"
+  }
+ },
+ "squad_row_slot_widgets": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "status": "take-unaligned:squad_slot_stride"
+  }
+ },
+ "stratagem_avatar_site": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "ratio": 0.5,
+  "status": "take-unaligned:avatar_absent",
+  "vote": {
+   "status": "no-seed"
+  }
+ },
+ "stratagem_record_find": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "status": "context-unaligned"
+  }
+ },
+ "stratagem_record_name_site": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "status": "take-unaligned:stratagem_record_name"
+  }
+ },
+ "stratagem_row_mission_site": {
+  "evidence": "migrate-high",
+  "module": "game",
+  "status": "hint-not-captured",
+  "vote": {
+   "scores": [
+    [
+     "0x16ceaba",
+     21
+    ],
+    [
+     "0x16cecc3",
+     21
+    ],
+    [
+     "0x16ce25a",
+     15
+    ],
+    [
+     "0xe8b50c",
+     10
+    ]
+   ],
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x16ce25a",
+     4.77
+    ],
+    [
+     "0x16ceaba",
+     4.77
+    ],
+    [
+     "0x16cecc3",
+     4.77
+    ],
+    [
+     "0xe8b50c",
+     3.77
+    ]
+   ]
+  }
+ },
+ "stratagem_slots_clock_global_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "scores": [
+   [
+    "0xbc460",
+    38
+   ],
+   [
+    "0x3209c0",
+    38
+   ],
+   [
+    "0x2576b0",
+    37
+   ],
+   [
+    "0x257ee0",
+    37
+   ]
+  ],
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0xbc460",
+    2.24
+   ],
+   [
+    "0x2576b0",
+    2.24
+   ],
+   [
+    "0x257ee0",
+    2.24
+   ],
+   [
+    "0x3209c0",
+    2.24
+   ]
+  ],
+  "width": 8
+ },
+ "text_size_set_head": {
+  "aligned": "38/39",
+  "at": "0x12d5c70",
+  "evidence": "migrate-high",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.487,
+  "row": {
+   "hex": "4883ec28f30f1081440400004c8bc90f2ec17a027464f30f1189440400008b91b80000008bc283c8028981b80000003bc27447f7d223d081e2ff2fffff7414488b89e00000004885c9740841b001e84de40000418b098bc1c1e802a801751b83c904418909498b89f00000004885c974094883c428e926f200004883c428c3c34883ec280fb68168040000",
+   "mask": "ffffffffffffffff00000000ffffffffffffff00ff00ffffffff00000000ffff00000000ffffffffffffff00000000ffffff00ffffffffffffffffffffff00ffffff00000000ffffffff00ffffffff00000000ffffffffffffffffffffff00ffffffffffffffffff00000000ffffffff00ffffffffff00000000ffffffffffffffffffffffffff00000000",
+   "module": "game",
+   "take": {
+    "text_size_set": {
+     "end": 4,
+     "kind": "here",
+     "offset": 0,
+     "size": 0
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "text_size_set": {
+    "new": 19750000,
+    "old": 21225312
+   }
+  },
+  "vote": {
+   "scores": [
+    [
+     "0x12d5c70",
+     13
+    ],
+    [
+     "0x12d3d40",
+     11
+    ],
+    [
+     "0x12d3dc0",
+     11
+    ],
+    [
+     "0x12d5bf0",
+     11
+    ]
+   ],
+   "status": "tied-seeds",
+   "votes": [
+    [
+     "0x12d3d40",
+     0.55
+    ],
+    [
+     "0x12d3dc0",
+     0.55
+    ],
+    [
+     "0x12d5bf0",
+     0.55
+    ],
+    [
+     "0x12d5c70",
+     0.55
+    ]
+   ]
+  }
+ },
+ "throw_holding_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "status": "no-seed"
+ },
+ "throwable_registry_find": {
+  "aligned": "7/7",
+  "at": "0x515370",
+  "evidence": "parent",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.003,
+  "row": {
+   "hex": "4885c9746c488b053cee7c02",
+   "in": [
+    "throwable_find",
+    0
+   ],
+   "mask": "ffffffff00ffffff00000000",
+   "module": "game",
+   "take": {
+    "roots_entity_owner_rva": {
+     "end": 12,
+     "kind": "rip",
+     "offset": 8,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "roots_entity_owner_rva": {
+    "new": 47071672,
+    "old": 54968216
+   }
+  }
+ },
+ "ui_context_pop_head": {
+  "evidence": "pattern",
+  "module": "game",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x1181e86",
+    0.25
+   ],
+   [
+    "0x118230e",
+    0.25
+   ],
+   [
+    "0x1182337",
+    0.25
+   ],
+   [
+    "0x1611cf5",
+    0.25
+   ]
+  ],
+  "width": 4
+ },
+ "unit_mesh_count_head": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x1f218c",
+    1.67
+   ],
+   [
+    "0x1f6ab7",
+    1.67
+   ],
+   [
+    "0x1f9ba6",
+    1.67
+   ],
+   [
+    "0x1fa847",
+    1.67
+   ]
+  ],
+  "width": 8
+ },
+ "unit_mesh_head": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x1f2210",
+    1.29
+   ],
+   [
+    "0x1f6b20",
+    1.29
+   ],
+   [
+    "0x1f9c20",
+    1.29
+   ],
+   [
+    "0x1fa8c0",
+    1.29
+   ]
+  ],
+  "width": 8
+ },
+ "unit_world_pose_head": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x1f2320",
+    2.9
+   ],
+   [
+    "0x1f3020",
+    2.9
+   ],
+   [
+    "0x1f2250",
+    0.4
+   ],
+   [
+    "0x1f22e0",
+    0.4
+   ]
+  ],
+  "width": 8
+ },
+ "unit_world_position_head": {
+  "evidence": "pattern",
+  "module": "exe",
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x1f2250",
+    2.4
+   ],
+   [
+    "0x1f22e0",
+    2.4
+   ],
+   [
+    "0x1f2f90",
+    2.4
+   ],
+   [
+    "0x1f2320",
+    0.4
+   ]
+  ],
+  "width": 8
+ },
+ "weapon_charge_charging_set": {
+  "evidence": "old-function",
+  "module": "game",
+  "scores": [
+   [
+    "0x6c4a21",
+    1
+   ],
+   [
+    "0x6c4ad9",
+    1
+   ],
+   [
+    "0x6c4b8a",
+    1
+   ]
+  ],
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x6c4a21",
+    0.33
+   ],
+   [
+    "0x6c4ad9",
+    0.33
+   ],
+   [
+    "0x6c4b8a",
+    0.33
+   ]
+  ],
+  "width": 3
+ },
+ "weapon_customization_rows_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "scores": [
+   [
+    "0x6083c9",
+    16
+   ],
+   [
+    "0x60e185",
+    16
+   ],
+   [
+    "0x6942b9",
+    16
+   ],
+   [
+    "0x684e4e",
+    13
+   ]
+  ],
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x6083c9",
+    0.12
+   ],
+   [
+    "0x60e185",
+    0.12
+   ],
+   [
+    "0x684e4e",
+    0.12
+   ],
+   [
+    "0x6942b9",
+    0.12
+   ]
+  ],
+  "width": 8
+ },
+ "weapon_data_r1_stride_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "status": "no-seed"
+ },
+ "weapon_data_registry_find": {
+  "aligned": "7/7",
+  "at": "0x516310",
+  "evidence": "parent",
+  "fuzzy": [],
+  "module": "game",
+  "ratio": 0.003,
+  "row": {
+   "hex": "4885c9745c488b059cde7c02448bc14c8b909047f100",
+   "in": [
+    "weapon_data_find",
+    0
+   ],
+   "mask": "ffffffff00ffffff00000000ffffffffffff00000000",
+   "module": "game",
+   "take": {
+    "roots_entity_owner_rva": {
+     "end": 12,
+     "kind": "rip",
+     "offset": 8,
+     "size": 4
+    },
+    "weapon_data_registry_table": {
+     "end": 22,
+     "kind": "u",
+     "offset": 18,
+     "size": 4
+    }
+   }
+  },
+  "status": "ok",
+  "values": {
+   "roots_entity_owner_rva": {
+    "new": 47071672,
+    "old": 54968216
+   },
+   "weapon_data_registry_table": {
+    "new": 15812496,
+    "old": 15805400
+   }
+  }
+ },
+ "weapon_magazine_r1_at_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "scores": [
+   [
+    "0x4af2c0",
+    8
+   ],
+   [
+    "0x4b0790",
+    7
+   ],
+   [
+    "0x4ab000",
+    6
+   ],
+   [
+    "0x4b0f80",
+    6
+   ]
+  ],
+  "status": "tied-seeds",
+  "votes": [
+   [
+    "0x4ab000",
+    0.41
+   ],
+   [
+    "0x4af2c0",
+    0.41
+   ],
+   [
+    "0x4b0790",
+    0.41
+   ],
+   [
+    "0x4b0f80",
+    0.41
+   ]
+  ],
+  "width": 8
+ },
+ "weapon_magazine_rows": {
+  "evidence": "old-function",
+  "module": "game",
+  "status": "no-seed"
+ },
+ "weapon_reload_rows": {
+  "evidence": "old-function",
+  "module": "game",
+  "status": "no-seed"
+ },
+ "weapon_rounds_r1_at_site": {
+  "evidence": "old-function",
+  "module": "game",
+  "ratio": 0.147,
+  "status": "context-unaligned"
+ },
+ "weapon_rounds_rows": {
+  "evidence": "old-function",
+  "module": "game",
+  "status": "no-seed"
+ },
+ "weapon_rows": {
+  "evidence": "old-function",
+  "module": "game",
+  "status": "no-seed"
+ },
+ "weapon_wielder_rows": {
+  "evidence": "old-function",
+  "module": "game",
+  "status": "no-seed"
+ }
+}

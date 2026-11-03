@@ -24,7 +24,7 @@ import build_lll_boot as B  # noqa: E402
 import build_lll_dropin as D  # noqa: E402
 
 NAME = "Super LiberTEA - LE (Linux Edition)"
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 GAME_BUILD = "26251122"
 LLL_RELEASE = "R38-26251122-luajit.2"
 REPO = "https://github.com/HWG90/Super-LiberTEA-LE"
@@ -32,7 +32,7 @@ GUID = str(uuid.uuid5(uuid.NAMESPACE_URL, REPO))
 # Shown in every Arsenal manifest this build writes (STAMP_LINE): the repo branch it is released from, the game build,
 # the patch number of VERSION and when this release was made. CREATED is set per release, so builds stay reproducible.
 BRANCH = "main"
-CREATED = "2026-11-02 18:20"
+CREATED = "2026-11-03 15:00"
 STAMP = tuple(int(n) for n in re.split(r"[- :]", CREATED)) + (0,)
 STAMP_LINE = "Super LiberTEA - LE %s · branch %s · build %s · patch %s · created %s" % (VERSION, BRANCH, GAME_BUILD, VERSION.rsplit(".", 1)[1], CREATED)
 ARCHIVE = "9ba626afa44a3aa3.patch_0"
@@ -64,14 +64,25 @@ PARTS = [
          title="Transmog", docs=["README.md", "README.ru.md", "README.txt", "THIRD-PARTY-LICENSES.txt", "PORT-VALIDATION.json", "mod-icon.png"],
          zip="Transmog", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package."),
 ]
+# Arsenal mods released only as separate downloads beside the full package. "sha256" pins the files to the port's
+# build receipt (HudPlusPlus, HD2 HUD+ 0.2.9 rebuilt for 26251122: linux-hd2 native-work/hud-plus-port/BUILD-RECEIPT-26251122.json;
+# r9 at bfe5450, renamed at 56de681 with the same built files apart from manifest.json).
+EXTRA_PARTS = [
+    dict(key="hud-plus", source="HudPlusPlus-LuaJIT-26251122", title="HudPlusPlus r9 (LuaJIT 26251122)", docs=["icon.png"],
+         zip="HudPlusPlus", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package. "
+         "HudPlusPlus loads as an LLL addon; keep its row before the loader.",
+         sha256={"9ba626afa44a3aa3.patch_0": "f43504c963123d15b91836dd9e17e69554b429d8889b7220bd5696af6544cd36",
+                 "56e46a6dc1df0a13.lua": "36a837dcdaed00e944961982fff380876c83ca383f2919fd69f6b6dbc04cbf49"}),
+]
 # Patch files and the Lua copies Arsenal scans; backups such as *.before-dbf-save stay out.
 GAME_FILE = re.compile(r"^[0-9a-f]{16}\.(patch_\d+(\.gpu_resources|\.stream)?|lua)$")
 
 # LLL folder mods, written at boot. "source" is where collect copies from.
 FOLDER_MODS = [
+    # DBF-MCM: pinned at 0c98387 until 1.0.2; the branch was rewritten, ebe2c5b has the same luajit-ports/dbf_mcm folder.
     dict(id="dbf_mcm", title="Mod Configuration Menu (DBF-MCM)", version="0.1.74-luajit.5",
          source=Path("/home/goose/Worktrees/linux-hd2/dbf-mcm-inproc-font/luajit-ports/dbf_mcm"),
-         git=("/home/goose/Worktrees/linux-hd2/dbf-mcm-inproc-font", "0c98387"), zip="DBF-MCM", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package."),
+         git=("/home/goose/Worktrees/linux-hd2/dbf-mcm-inproc-font", "ebe2c5b"), zip="DBF-MCM", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package."),
     dict(id="divers_best_friend", title="Diver's Best Friend (ASS) R46", version="R46-luajit.2-26251122-le.1",
          source=ARSENAL / "DBF-ASS-R46-LuaJIT-26251122/Payload", base_version="R46-luajit.2-26251122", luajit_only=True,
          zip="Divers-Best-Friend", needs="Live Lua Loader R38 (LuaJIT): the Live-Lua-Loader-R38-LuaJIT download of this release, or the full package; Mod Bindings Menu for its hotkeys (in the Vanilla-Plus-Megapack download)."),
@@ -146,19 +157,23 @@ def deployed_patches():
 def collect(args):
     record = {"purpose": "Inputs of %s %s, as collected; build reads only these copies" % (NAME, VERSION), "parts": {}, "mods": {}}
     live = deployed_patches()
-    for part in PARTS:
+    for part in PARTS + EXTRA_PARTS:
         src = ARSENAL / part["source"]
         manifest = json.loads((src / "manifest.json").read_text())
-        folders = set()
-        for option in manifest["Options"]:
+        options = manifest.get("Options") or []
+        # A manifest without options deploys the mod's root folder.
+        folders = set() if options else {""}
+        for option in options:
             for entry in [option] + (option.get("SubOptions") or []):
                 folders.update(entry.get("Include") or [])
-        images = {o.get("Image") for o in manifest["Options"] if o.get("Image")} | {s.get("Image") for o in manifest["Options"] for s in o.get("SubOptions") or [] if s.get("Image")}
+        images = {o.get("Image") for o in options if o.get("Image")} | {s.get("Image") for o in options for s in o.get("SubOptions") or [] if s.get("Image")}
         def keep(rel):
             top = rel.rsplit("/", 1)[0] if "/" in rel else ""
             return rel == "manifest.json" or rel in part["docs"] or rel in images or (top in folders and GAME_FILE.match(rel.rsplit("/", 1)[-1]) is not None)
         files = tree(src, keep)
         patches = {n: sha(d) for n, d in files.items() if re.search(r"\.patch_\d+$", n)}
+        for name, digest in part.get("sha256", {}).items():
+            assert sha(files[name]) == digest, "%s: %s is not the receipt's build" % (part["key"], name)
         # What runs live today: every patch of an option the profile deploys is in the game's data/ folder.
         unseen = sorted(n for n, h in patches.items() if h not in live)
         write_tree(INPUTS / part["key"], files)
@@ -367,7 +382,7 @@ def check_options(options, files):
             assert not entry.get("Image") or entry["Image"] in files, entry["Image"]
 
 
-def separate_zips(parts, mods):
+def separate_zips(parts, mods, extras):
     """The separate downloads, {zip name: files}: LLL alone (luajit.2's Arsenal package), each Arsenal part with its own
     manifest, each LLL folder mod as its folder. Each carries SEPARATE_NOTE: how to install it and what it needs."""
     def note(title, steps, needs):
@@ -387,11 +402,11 @@ def separate_zips(parts, mods):
     lll[SEPARATE_NOTE] = note("Live Lua Loader R38 (LuaJIT) %s" % LLL_RELEASE, ARSENAL_STEPS + "\n   Turn off any other Live Lua Loader, "
                               "Bingus Shared Loader, Boot Mod Loader or Chef Shared Loader, and the full package.", "Nothing else.")
     out[SEPARATE_ZIP % (VERSION, GAME_BUILD, "Live-Lua-Loader-R38-LuaJIT")] = lll
-    for part in PARTS:
-        manifest, files = parts[part["key"]]
+    for part in PARTS + EXTRA_PARTS:
+        manifest, files = (parts if part in PARTS else extras)[part["key"]]
         files = dict(files)
         files["manifest.json"] = stamped(files["manifest.json"])
-        check_options(manifest["Options"], files)
+        check_options(manifest.get("Options") or [], files)
         if part["key"] == "megapack":
             files["LICENSE"] = MEGAPACK_LICENSE.read_bytes()
         files[SEPARATE_NOTE] = note(manifest["Name"], ARSENAL_STEPS, part["needs"])
@@ -421,6 +436,11 @@ def build(args):
         parts[part["key"]] = (manifest, dict(files, **{"manifest.json": raw}))
         for name, data in files.items():
             package[part["folder"] + "/" + name] = data
+    extras = {}
+    for part in EXTRA_PARTS:
+        files = tree(INPUTS / part["key"])
+        assert {n: sha(d) for n, d in files.items() if re.search(r"\.patch_\d+$", n)} == record["parts"][part["key"]]["patches"]
+        extras[part["key"]] = (json.loads(files["manifest.json"]), files)
     mods = {}
     for mod in FOLDER_MODS:
         files = tree(INPUTS / mod["id"])
@@ -480,7 +500,7 @@ def build(args):
     zip_name = "Super-LiberTEA-LE-%s-%s.zip" % (VERSION, GAME_BUILD)
     digest = write_zip(OUT / zip_name, package)
     sums, separate = ["%s  %s\n" % (digest, zip_name)], {}
-    for name, files in separate_zips(parts, mods).items():
+    for name, files in separate_zips(parts, mods, extras).items():
         separate[name] = {"sha256": write_zip(OUT / name, files), "bytes": (OUT / name).stat().st_size, "files": len(files)}
         sums.append("%s  %s\n" % (separate[name]["sha256"], name))
     (OUT / "SHA256SUMS.txt").write_text("".join(sums))

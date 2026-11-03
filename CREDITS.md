@@ -17,6 +17,7 @@ Packaged by Goose ([HWG90](https://github.com/HWG90)).
 - **Smarter Guard Dogs & Sentries 5.2.0**: the original release on [Nexus Mods](https://www.nexusmods.com/helldivers2/mods/16610).
 - **DiverKit Alpha 8.14.31**: the original release on [Nexus Mods](https://www.nexusmods.com/helldivers2/mods/16493).
 - **HD2 Transmog Foundation 0.2.4**: its original authors; see `sources/transmog/README.md` and `THIRD-PARTY-LICENSES.txt`.
+- **HD2 HUD Plus 0.2.9**: DDRK1ng, the original release on [Nexus Mods](https://www.nexusmods.com/helldivers2/mods/15298).
 
 These ports keep the original mods' design and change only what the new game build and the LuaJIT VM need.
 

@@ -1,0 +1,1976 @@
+{
+ "ability_frame_call": [
+  24867103
+ ],
+ "ability_manager_site": [
+  9587887
+ ],
+ "ability_running_length_lookup": [
+  8167488
+ ],
+ "ability_script_owner_entity": [
+  17592546
+ ],
+ "ability_tick_id": [
+  8161695
+ ],
+ "ability_tick_rows": [
+  8161415
+ ],
+ "action_consume_head": [
+  19914384
+ ],
+ "action_consume_site": [
+  11075583
+ ],
+ "action_consumed_entry_head": [
+  19912736
+ ],
+ "action_consumed_entry_site": [
+  19899177
+ ],
+ "action_release_head": [
+  19911600
+ ],
+ "action_release_site": [
+  10925540
+ ],
+ "action_script_can_reload_rva_site": [
+  18064513
+ ],
+ "action_script_chamber_rva_site": [
+  17975277
+ ],
+ "action_script_cock_rva_site": [
+  17452291
+ ],
+ "action_script_count_rva_site": [
+  17419977
+ ],
+ "action_script_empty_rva_site": [
+  17990871
+ ],
+ "action_script_insert_rva_site": [
+  17451623
+ ],
+ "action_script_jump_table_site": [
+  18156028
+ ],
+ "action_script_mag_full_rva_site": [
+  18029968
+ ],
+ "action_script_reloadable_rva_site": [
+  6384231
+ ],
+ "action_script_room_rva_site": [
+  18120059
+ ],
+ "action_script_seek_rva_site": [
+  17427261
+ ],
+ "action_script_set_stage_bit_rva_site": [
+  18067733
+ ],
+ "action_script_stage_bit_rva_site": [
+  18067242
+ ],
+ "action_script_switch_kind_rva_site": [
+  18063578
+ ],
+ "aim_action_site": [
+  10752682
+ ],
+ "arc_weapon_fire_manager": [
+  7610605
+ ],
+ "arc_weapon_fire_row": [
+  8438474
+ ],
+ "assisted_reload_need": [
+  7583271
+ ],
+ "assisted_reload_registry_call": [
+  6744238
+ ],
+ "attack_owner_site": [
+  10416464
+ ],
+ "attack_preview_children": [
+  20716553
+ ],
+ "attack_preview_drift": [
+  8723140
+ ],
+ "avatar_action_words": [
+  5099555
+ ],
+ "avatar_controller_dive_identity_offset_site": [
+  10746317
+ ],
+ "avatar_drop_ask": [
+  24865792
+ ],
+ "avatar_switch_action_bit": [
+  11090001
+ ],
+ "avatar_terminal_site": [
+  10048478
+ ],
+ "avatar_wanted_slot_site": [
+  8589630
+ ],
+ "axis_candidate_blob": [
+  7707865
+ ],
+ "beacon_entries": [
+  25586002
+ ],
+ "beacon_entry_key": [
+  25586203
+ ],
+ "beacon_entry_row": [
+  25586226
+ ],
+ "blur_build_flat_site": [
+  25257778
+ ],
+ "bombardment_capacity_site": [
+  8738512
+ ],
+ "bombardment_default_head": [
+  5258688
+ ],
+ "bombardment_guide_counts": [
+  8734853
+ ],
+ "bombardment_guide_heading": [
+  8722471
+ ],
+ "bombardment_guide_sweep": [
+  8722135
+ ],
+ "bombardment_manager_site": [
+  4872304
+ ],
+ "bombardment_preview_fields": [
+  8725910
+ ],
+ "bombardment_records_site": [
+  8725187
+ ],
+ "bombardment_tick_end": [
+  8725235
+ ],
+ "booster_table": [
+  24750675
+ ],
+ "c4_throw_step_site": [
+  17544563
+ ],
+ "call_head_avatar_flag_of": [
+  9917920
+ ],
+ "call_head_avatar_settings_open": [
+  5279152
+ ],
+ "call_head_comms_insert": [
+  20777616
+ ],
+ "call_head_drone_of_deposit": [
+  8912816
+ ],
+ "call_head_dropping_of": [
+  8577264
+ ],
+ "call_head_explosive_data_of": [
+  5293296
+ ],
+ "call_head_ground_height": [
+  20751232
+ ],
+ "call_head_item_of_slot": [
+  10160048
+ ],
+ "call_head_linked_ammo_target": [
+  7806576
+ ],
+ "call_head_minigame_settings": [
+  5225712
+ ],
+ "call_head_option_cell_shade": [
+  25333936
+ ],
+ "call_head_player_colour": [
+  20457040
+ ],
+ "call_head_player_of_avatar": [
+  6317344
+ ],
+ "call_head_player_record": [
+  20455904
+ ],
+ "call_head_shield_open": [
+  5223312
+ ],
+ "call_head_throw_boost_apply": [
+  8890736
+ ],
+ "call_head_throwable_capacity": [
+  10149312
+ ],
+ "call_head_throwable_fuse_seconds": [
+  7113120
+ ],
+ "call_head_widget_fade": [
+  21302736
+ ],
+ "call_head_wielder_get": [
+  7891232
+ ],
+ "camera_current_mode_site": [
+  19879363
+ ],
+ "camera_eye_cache_store": [
+  19374471
+ ],
+ "camera_subject_avatar_site": [
+  19879594
+ ],
+ "camera_tick_fov": [
+  19374291
+ ],
+ "can_fire_head": [
+  7621328
+ ],
+ "charge_accessor_call": [
+  5476435
+ ],
+ "charge_burst_site": [
+  7588980
+ ],
+ "charge_explodes_site": [
+  7589230
+ ],
+ "charge_stage_pick": [
+  7592740
+ ],
+ "charge_tick_mode": [
+  7588876
+ ],
+ "charge_tick_rows": [
+  7588308
+ ],
+ "choice_arrow_material": [
+  24858749
+ ],
+ "choice_arrow_picture": [
+  25387610
+ ],
+ "choice_arrow_uv_width": [
+  25389337
+ ],
+ "comms_call_kind_site": [
+  25585650
+ ],
+ "comms_design_size": [
+  20773428
+ ],
+ "comms_distance_site": [
+  25587839
+ ],
+ "comms_edge_margin": [
+  20773488
+ ],
+ "comms_first_site": [
+  10787175
+ ],
+ "comms_fresh_site": [
+  25583743
+ ],
+ "comms_global_site": [
+  5416222
+ ],
+ "comms_ground_site": [
+  20778310
+ ],
+ "comms_insert_site": [
+  12308215
+ ],
+ "comms_label_red_site": [
+  20780388
+ ],
+ "comms_label_site": [
+  25585349
+ ],
+ "comms_label_tint_site": [
+  20779690
+ ],
+ "comms_lifetime_site": [
+  25581882
+ ],
+ "comms_marker_layer": [
+  20772752
+ ],
+ "comms_owner_site": [
+  25582929
+ ],
+ "comms_picture_site": [
+  25584048
+ ],
+ "comms_picture_style_site": [
+  25583769
+ ],
+ "comms_ping_sound_site": [
+  20778711
+ ],
+ "comms_point_site": [
+  20779506
+ ],
+ "comms_ring_row": [
+  19874892
+ ],
+ "comms_stride_site": [
+  10782553
+ ],
+ "component_card_cooling_fill": [
+  25405698
+ ],
+ "component_card_create_head": [
+  25400608
+ ],
+ "component_card_create_site": [
+  25386473
+ ],
+ "component_card_denominator_latch": [
+  25405631
+ ],
+ "component_card_ready_site": [
+  25364731
+ ],
+ "component_card_row_site": [
+  25403391
+ ],
+ "component_card_size_site": [
+  25365760
+ ],
+ "component_card_span_unset_site": [
+  25406350
+ ],
+ "component_card_squad_layer_site": [
+  25357150
+ ],
+ "component_card_state_site": [
+  25406052
+ ],
+ "component_card_tick_head": [
+  25403344
+ ],
+ "component_card_tick_site": [
+  25365781
+ ],
+ "countdown_info_site": [
+  9989432
+ ],
+ "crosshair_first_person": [
+  24865501
+ ],
+ "crosshair_fixed_site": [
+  24856790
+ ],
+ "crosshair_gauge_material": [
+  24857244
+ ],
+ "crosshair_hidden": [
+  24865922
+ ],
+ "crosshair_hit_clock_site": [
+  24875520
+ ],
+ "crosshair_hit_kind_site": [
+  24878226
+ ],
+ "crosshair_row_key": [
+  24863968
+ ],
+ "crosshair_row_pick": [
+  24863907
+ ],
+ "crosshair_table": [
+  24864006
+ ],
+ "deposit_accessor": [
+  5253034
+ ],
+ "deposit_accessor_call": [
+  5456206
+ ],
+ "deposit_drone_path_check": [
+  8910348
+ ],
+ "deposit_instance_feeds_resource_site": [
+  7583124
+ ],
+ "deposit_rows": [
+  5455696
+ ],
+ "eagle_capacity_site": [
+  9083456
+ ],
+ "eagle_default_site": [
+  5326400
+ ],
+ "eagle_list_site": [
+  9075493
+ ],
+ "eagle_mode_site": [
+  9057341
+ ],
+ "eagle_pattern_count": [
+  9066488
+ ],
+ "eagle_pattern_layout": [
+  9065335
+ ],
+ "eagle_pattern_origin": [
+  10578623
+ ],
+ "eagle_pattern_points": [
+  9065776
+ ],
+ "eagle_preview_heading": [
+  9039886
+ ],
+ "eagle_progress_site": [
+  9061564
+ ],
+ "eagle_projectile_site": [
+  9061769
+ ],
+ "eagle_rearm_stratagem_site": [
+  6736418
+ ],
+ "eagle_strafing_mode_site": [
+  9051884
+ ],
+ "encounter_call_cooldown_site": [
+  9395941
+ ],
+ "encounter_director_site": [
+  9398783
+ ],
+ "encounter_enemy_call_kind_site": [
+  18596610
+ ],
+ "encounter_kind_site": [
+  9148072
+ ],
+ "encounter_manager_site": [
+  5100850
+ ],
+ "encounter_owners_site": [
+  9154146
+ ],
+ "encounter_rows_site": [
+  9148985
+ ],
+ "encounter_spawn_points_site": [
+  9140537
+ ],
+ "encounter_wave_site": [
+  9147849
+ ],
+ "enemy_wave_label_site": [
+  25420776
+ ],
+ "entity_lookup_invalid": [
+  16620864
+ ],
+ "entity_of_unit_head": [
+  16619904
+ ],
+ "explosion_damage_radius": [
+  20720306
+ ],
+ "explosion_modifier_of_head": [
+  10516912
+ ],
+ "explosion_upgrade_site": [
+  20409413
+ ],
+ "explosive_key_lookup_site": [
+  5293481
+ ],
+ "explosive_kind_site": [
+  9220204
+ ],
+ "explosive_manager_site": [
+  9216639
+ ],
+ "explosive_row_site": [
+  9217148
+ ],
+ "explosive_tick_mode_chain": [
+  9220857
+ ],
+ "faction_includes_head": [
+  9261312
+ ],
+ "faction_picture_site": [
+  24951534
+ ],
+ "fire_start_action_bit": [
+  10853201
+ ],
+ "flat_picture_site": [
+  24748809
+ ],
+ "function_option_count": [
+  25330494
+ ],
+ "function_option_value": [
+  25330171
+ ],
+ "game_world_store": [
+  11212981
+ ],
+ "gauge_material_keys": [
+  24732250
+ ],
+ "gui_context_slot_count": [
+  19854468
+ ],
+ "health_bar_drawn_site": [
+  25255868
+ ],
+ "health_bar_fill_site": [
+  25255934
+ ],
+ "health_dead_of": [
+  4370922
+ ],
+ "health_rows": [
+  19322688
+ ],
+ "heat_accessor": [
+  5300882
+ ],
+ "heat_accessor_call": [
+  4959191
+ ],
+ "heat_charge_tick": [
+  7745415
+ ],
+ "heat_shot_charge_reset": [
+  7745305
+ ],
+ "hit_faction_check": [
+  20629852
+ ],
+ "hit_record_frame": [
+  20630016
+ ],
+ "hit_record_near_miss": [
+  20629801
+ ],
+ "hit_record_normal": [
+  20630181
+ ],
+ "hit_record_scan": [
+  20629082
+ ],
+ "hit_record_skip_material": [
+  20630117
+ ],
+ "hit_shield_check": [
+  20629395
+ ],
+ "hit_water_check": [
+  20633176
+ ],
+ "hostile_of_head": [
+  9261584
+ ],
+ "hud_ammo_none_state_site": [
+  25284032
+ ],
+ "hud_built_site": [
+  19862499
+ ],
+ "hud_clock_site": [
+  19840204
+ ],
+ "hud_cyan_site": [
+  25427559
+ ],
+ "hud_local_invalid_site": [
+  19838890
+ ],
+ "hud_local_pause_site": [
+  19838791
+ ],
+ "hud_root_dirty": [
+  19874670
+ ],
+ "hud_scene_mission_site": [
+  19874563
+ ],
+ "hud_scene_source_site": [
+  19872926
+ ],
+ "hud_self_throwables_site": [
+  25276016
+ ],
+ "hud_squad_avatar_site": [
+  25371424
+ ],
+ "hud_squad_count_site": [
+  6335734
+ ],
+ "hud_squad_death_site": [
+  25363849
+ ],
+ "hud_squad_first_site": [
+  25352160
+ ],
+ "hud_squad_stride_site": [
+  19835564
+ ],
+ "hud_tick_clock": [
+  11223552
+ ],
+ "hud_tick_gates": [
+  19840130
+ ],
+ "hud_weapon_ammo_state_site": [
+  25281610
+ ],
+ "hud_weapon_book": [
+  25273583
+ ],
+ "hud_weapon_count_shown_site": [
+  25278021
+ ],
+ "hud_weapon_last_slot": [
+  25273828
+ ],
+ "hud_weapon_seat": [
+  25273162
+ ],
+ "hud_weapon_slot": [
+  25272869
+ ],
+ "hud_widgets_mission_hud_site": [
+  19568715
+ ],
+ "hud_widgets_panels_crosshair_at_site": [
+  19831008
+ ],
+ "hud_widgets_panels_self_panel_at_site": [
+  19830726
+ ],
+ "hud_widgets_panels_squad_panel_at_site": [
+  19832161
+ ],
+ "hud_widgets_panels_stratagem_hud_at_site": [
+  19833055
+ ],
+ "hud_widgets_shown_site": [
+  21214639
+ ],
+ "hud_widgets_stamina_panel_site": [
+  19840414
+ ],
+ "impact_lift_site": [
+  20645963
+ ],
+ "input_system_site": [
+  11224602
+ ],
+ "inventory_rows": [
+  5098763
+ ],
+ "inventory_slot_item": [
+  25364772
+ ],
+ "lab_eagle_beacon_origin": [
+  7107322
+ ],
+ "lab_eagle_beacon_ready": [
+  6949513
+ ],
+ "lab_eagle_owner": [
+  6957808
+ ],
+ "lab_eagle_released": [
+  7106805
+ ],
+ "label_template_set_site": [
+  21221167
+ ],
+ "label_text_make_head": [
+  21213088
+ ],
+ "layout_add_site": [
+  26171504
+ ],
+ "layout_down_site": [
+  25319952
+ ],
+ "layout_gap_site": [
+  26173551
+ ],
+ "layout_head_site": [
+  25318652
+ ],
+ "layout_place_head": [
+  26172528
+ ],
+ "layout_right_site": [
+  25319573
+ ],
+ "linked_ammo_registry": [
+  5287573
+ ],
+ "linked_ammo_target_site": [
+  7861075
+ ],
+ "loot_rows": [
+  5552368
+ ],
+ "magazine_accessor": [
+  5191654
+ ],
+ "map_marker_frame_site": [
+  25845373
+ ],
+ "map_marker_materials": [
+  25892906
+ ],
+ "map_marker_place": [
+  25896730
+ ],
+ "map_marker_pool_layer_site": [
+  25845845
+ ],
+ "map_marker_pool_slots_site": [
+  25845822
+ ],
+ "map_missing_value": [
+  5465614
+ ],
+ "map_points_static": [
+  25831702
+ ],
+ "map_view_map_frame_site": [
+  25872924
+ ],
+ "map_view_window": [
+  25866829
+ ],
+ "marker_row_elapsed": [
+  25581872
+ ],
+ "marker_row_kind": [
+  25582079
+ ],
+ "material_pair_set_head": [
+  21298864
+ ],
+ "material_scalar_set_head": [
+  21272336
+ ],
+ "material_var_set_site": [
+  21272768
+ ],
+ "measure_widget_entry": [
+  21291424
+ ],
+ "melee_input_lock_flag": [
+  10917409
+ ],
+ "melee_start_action_bit": [
+  10918030
+ ],
+ "melee_unlock_call_site": [
+  17440432
+ ],
+ "menu_build_native_rows_head": [
+  25193472
+ ],
+ "menu_categories_site": [
+  26829243
+ ],
+ "menu_category_select_head": [
+  26843584
+ ],
+ "menu_description_head": [
+  26842880
+ ],
+ "menu_description_show_head": [
+  25144208
+ ],
+ "menu_descriptor_head": [
+  18795872
+ ],
+ "menu_dialog_decision_head": [
+  26857056
+ ],
+ "menu_escape_labels_site": [
+  21445247
+ ],
+ "menu_escape_open_site": [
+  21443460
+ ],
+ "menu_escape_screen_site": [
+  20856336
+ ],
+ "menu_escape_stack_site": [
+  27051196
+ ],
+ "menu_first_panel_site": [
+  26844475
+ ],
+ "menu_flat_ammo_icon_site": [
+  27317069
+ ],
+ "menu_group_gap_site": [
+  25231185
+ ],
+ "menu_hint_set_head": [
+  24827968
+ ],
+ "menu_hints_site": [
+  26840290
+ ],
+ "menu_inert_setting_site": [
+  25242385
+ ],
+ "menu_input_apply_site": [
+  26841931
+ ],
+ "menu_input_dialog_site": [
+  26840701
+ ],
+ "menu_key_decode_head": [
+  5790592
+ ],
+ "menu_large_fields_site": [
+  25199927
+ ],
+ "menu_large_panels_site": [
+  26844508
+ ],
+ "menu_large_scrolls_site": [
+  25200523
+ ],
+ "menu_large_selected_site": [
+  25212526
+ ],
+ "menu_options_tab_site": [
+  26545928
+ ],
+ "menu_options_visual_head": [
+  26838416
+ ],
+ "menu_options_visual_site": [
+  21447248
+ ],
+ "menu_page_build_site": [
+  25193660
+ ],
+ "menu_play_sound_head": [
+  20086608
+ ],
+ "menu_release_rows_call_site": [
+  26835970
+ ],
+ "menu_row_fields_site": [
+  25159958
+ ],
+ "menu_row_grey_head": [
+  25165840
+ ],
+ "menu_row_grey_site": [
+  25213972
+ ],
+ "menu_row_selector_site": [
+  25160971
+ ],
+ "menu_row_title_site": [
+  25145230
+ ],
+ "menu_scroll_extent_head": [
+  24724992
+ ],
+ "menu_scroll_reset_head": [
+  24724848
+ ],
+ "menu_scroll_thumb_head": [
+  24723296
+ ],
+ "menu_selected_row_site": [
+  20962272
+ ],
+ "menu_selector_kind_site": [
+  25160865
+ ],
+ "menu_selector_set_head": [
+  25159648
+ ],
+ "menu_slider_descriptor_site": [
+  25160201
+ ],
+ "menu_slider_row_site": [
+  25160655
+ ],
+ "menu_slider_set_head": [
+  25150144
+ ],
+ "menu_string_template_site": [
+  24684231
+ ],
+ "menu_tab_select_head": [
+  24821696
+ ],
+ "menu_tab_switch_head": [
+  21447536
+ ],
+ "menu_tabs_set_head": [
+  24816720
+ ],
+ "menu_text_template_site": [
+  11547010
+ ],
+ "menu_toggle_labels_site": [
+  21954793
+ ],
+ "menu_value_type_site": [
+  25162217
+ ],
+ "meter_flat_fill_site": [
+  25250163
+ ],
+ "meter_flat_mask_site": [
+  25250569
+ ],
+ "minigame_book_open": [
+  5226768
+ ],
+ "minigame_countdown_branch": [
+  9984974
+ ],
+ "minigame_countdown_settings": [
+  10010027
+ ],
+ "minigame_countdown_start": [
+  10010047
+ ],
+ "minigame_countdown_tick": [
+  10008468
+ ],
+ "minigame_kind_dispatch": [
+  9984023
+ ],
+ "minigame_tick_countdown_step": [
+  9983416
+ ],
+ "mission_hud_map_view_at_site": [
+  19864729
+ ],
+ "network_physics_rows": [
+  10299525
+ ],
+ "network_physics_spawn_row": [
+  5992675
+ ],
+ "network_physics_spawn_xy": [
+  5992703
+ ],
+ "number_arg_set_head": [
+  21219792
+ ],
+ "open_map_find": [
+  4688072
+ ],
+ "option_cell_create_head": [
+  25332624
+ ],
+ "option_cell_create_site": [
+  25314528
+ ],
+ "option_cell_fill_fuse_head": [
+  25335312
+ ],
+ "option_cell_marker_site": [
+  25335118
+ ],
+ "option_cell_shadow_site": [
+  25332774
+ ],
+ "option_cell_text_site": [
+  25334082
+ ],
+ "owner_faction_site": [
+  19515158
+ ],
+ "pack_gauge_drone_call": [
+  25286582
+ ],
+ "pack_gauge_shield_manager": [
+  25286312
+ ],
+ "pack_gauge_shield_row": [
+  25287647
+ ],
+ "panel_magazine_outline_site": [
+  25265698
+ ],
+ "physics_actor_swap": [
+  7096051
+ ],
+ "physics_query_world": [
+  11133148
+ ],
+ "picture_init_site": [
+  21228208
+ ],
+ "picture_material_site": [
+  25401926
+ ],
+ "picture_set_site": [
+  21299760
+ ],
+ "ping_bracket_site": [
+  25590049
+ ],
+ "ping_distance_count": [
+  25587852
+ ],
+ "ping_distance_label": [
+  25579592
+ ],
+ "ping_pool_site": [
+  20776459
+ ],
+ "player_avatar_map_site": [
+  6317616
+ ],
+ "player_history_limit_site": [
+  20329274
+ ],
+ "posed_frame_init_head": [
+  21255456
+ ],
+ "posed_frame_set_head": [
+  21257120
+ ],
+ "projectile_arming_copy": [
+  20620435
+ ],
+ "projectile_explode_angle_copy": [
+  20621017
+ ],
+ "projectile_fire_fixed_direction": [
+  6372654
+ ],
+ "projectile_fire_programmed": [
+  6380285
+ ],
+ "projectile_flight_step_head": [
+  20622896
+ ],
+ "projectile_live_unit_site": [
+  20623980
+ ],
+ "projectile_path_ray": [
+  20626837
+ ],
+ "projectile_pool_capacity_site": [
+  20627067
+ ],
+ "projectile_pool_cursor_site": [
+  20617451
+ ],
+ "projectile_pool_impact_site": [
+  20635138
+ ],
+ "projectile_pool_insert_site": [
+  20622583
+ ],
+ "projectile_pool_meta_site": [
+  20620800
+ ],
+ "projectile_pool_origin_site": [
+  20621185
+ ],
+ "projectile_pool_shooter_site": [
+  20626797
+ ],
+ "projectile_pool_source_site": [
+  20646384
+ ],
+ "projectile_pool_tick_site": [
+  20623943
+ ],
+ "projectile_pool_type_site": [
+  20626601
+ ],
+ "projectile_ricochet_copy": [
+  20621729
+ ],
+ "projectile_spawn_explosions": [
+  20620828
+ ],
+ "projectile_spawn_flight": [
+  20619331
+ ],
+ "projectile_spawn_inherit": [
+  20618979
+ ],
+ "projectile_spawn_speed": [
+  20618389
+ ],
+ "projectile_spawn_state": [
+  20618200
+ ],
+ "projectile_system_fire": [
+  6383101
+ ],
+ "projectile_update_ends": [
+  20623721
+ ],
+ "projectile_update_step": [
+  20624727
+ ],
+ "projectile_weapon_registry_find": [
+  5327903
+ ],
+ "projectile_zeroing_type": [
+  6389169
+ ],
+ "raycast_hit_buffer": [
+  24496998
+ ],
+ "reinforce_call_alt_site": [
+  17649261
+ ],
+ "reinforce_call_site": [
+  17491391
+ ],
+ "reinforce_request_site": [
+  18597304
+ ],
+ "reinforce_stratagem_site": [
+  25365664
+ ],
+ "reload_accessor": [
+  5231290
+ ],
+ "reload_accessor_call": [
+  7822935
+ ],
+ "reload_script_length_call": [
+  7818987
+ ],
+ "reload_stage_write": [
+  7830552
+ ],
+ "reward_add": [
+  5374918
+ ],
+ "reward_kind_names": [
+  5846958
+ ],
+ "reward_notice_pictures": [
+  26786336
+ ],
+ "reward_record_find_head": [
+  5208880
+ ],
+ "root_build_head": [
+  21288528
+ ],
+ "root_push_head": [
+  21290784
+ ],
+ "root_tick_head": [
+  21288928
+ ],
+ "roots_avatar_manager_controller_base_site": [
+  10172377
+ ],
+ "roots_avatar_manager_controller_stride_site": [
+  9957006
+ ],
+ "roots_avatar_manager_map_site": [
+  10048253
+ ],
+ "roots_avatar_manager_rva_site": [
+  2662188
+ ],
+ "roots_entity_owner_entity_layout_id_at_site": [
+  18357785
+ ],
+ "roots_entity_owner_rva_site": [
+  762090
+ ],
+ "roots_hud_manager_rva_site": [
+  3811468
+ ],
+ "roots_player_manager_rva_site": [
+  3820505
+ ],
+ "roster_find_player": [
+  20307823
+ ],
+ "roster_local_presence_site": [
+  19838818
+ ],
+ "roster_pointers_site": [
+  10118805
+ ],
+ "roster_row_booster": [
+  8745644
+ ],
+ "roster_rows_at_site": [
+  18778917
+ ],
+ "roster_rows_global_site": [
+  5506512
+ ],
+ "roster_rows_map_site": [
+  11209140
+ ],
+ "rounds_accessor_call": [
+  5410699
+ ],
+ "rounds_registry_call": [
+  7702712
+ ],
+ "rounds_reserve_reload": [
+  7828708
+ ],
+ "sample_book_find_head": [
+  5314416
+ ],
+ "sample_grade_chain": [
+  20780461
+ ],
+ "screen_edge_margin_site": [
+  25541056
+ ],
+ "seat_driver_site": [
+  24865983
+ ],
+ "seat_role_site": [
+  24865831
+ ],
+ "self_health_row": [
+  25280265
+ ],
+ "self_layout_request_on": [
+  25270840
+ ],
+ "self_layout_requests": [
+  25280087
+ ],
+ "self_panel_action_bits": [
+  25279927
+ ],
+ "self_panel_ammo_gauge": [
+  25277986
+ ],
+ "self_panel_bright_site": [
+  25284100
+ ],
+ "self_panel_charge": [
+  24871841
+ ],
+ "self_panel_curved_mask_site": [
+  25263895
+ ],
+ "self_panel_gauge_site": [
+  25276888
+ ],
+ "self_panel_health_bar_site": [
+  25279344
+ ],
+ "self_panel_health_danger_site": [
+  25271254
+ ],
+ "self_panel_health_widget": [
+  25259821
+ ],
+ "self_panel_magazine_low_site": [
+  25278819
+ ],
+ "self_panel_normal_colour_site": [
+  25279072
+ ],
+ "self_panel_pack_cell_shown": [
+  25274633
+ ],
+ "self_panel_pack_low_site": [
+  25277856
+ ],
+ "self_panel_picture_site": [
+  25275008
+ ],
+ "self_panel_reserve_low_site": [
+  25279239
+ ],
+ "self_panel_reserve_shown": [
+  25278858
+ ],
+ "self_panel_reserve_text_place": [
+  25266689
+ ],
+ "self_panel_spare_shown": [
+  25278945
+ ],
+ "self_panel_stims_site": [
+  25275243
+ ],
+ "self_panel_throwable_icon_site": [
+  25269182
+ ],
+ "self_panel_throwable_text_site": [
+  25276063
+ ],
+ "self_panel_times_text": [
+  25266237
+ ],
+ "self_panel_weapon_wake": [
+  25271456
+ ],
+ "self_panel_weapon_widget": [
+  25259640
+ ],
+ "self_reserve_text_site": [
+  25278870
+ ],
+ "self_stim_icon_site": [
+  25267720
+ ],
+ "self_stims_text_site": [
+  25275144
+ ],
+ "self_throwable_picture_site": [
+  25274539
+ ],
+ "self_weapon_block_site": [
+  25270194
+ ],
+ "shield_blocks_head": [
+  6646352
+ ],
+ "shield_break_wait": [
+  6630051
+ ],
+ "shield_link_goid_scan": [
+  6651531
+ ],
+ "shield_wait_tick": [
+  6623520
+ ],
+ "shooter_velocity_of_head": [
+  7687472
+ ],
+ "shots_chamber_magazine": [
+  7584472
+ ],
+ "shots_chamber_rounds": [
+  7584667
+ ],
+ "shoulder_node_site": [
+  17426489
+ ],
+ "sos_stratagem_site": [
+  6736355
+ ],
+ "spawn_throw_reach_site": [
+  7091945
+ ],
+ "speedtree_pass": [
+  20629330
+ ],
+ "spottable_registry_call": [
+  4919446
+ ],
+ "squad_bracket_tint_site": [
+  25372387
+ ],
+ "squad_cell_blur_layer_site": [
+  25372072
+ ],
+ "squad_cell_share_site": [
+  25373650
+ ],
+ "squad_cell_unset_site": [
+  25371908
+ ],
+ "squad_corpse_node": [
+  25361929
+ ],
+ "squad_fill_picture_site": [
+  25254268
+ ],
+ "squad_mark_head_site": [
+  25368865
+ ],
+ "squad_picture_curve": [
+  25359200
+ ],
+ "squad_picture_layer": [
+  25356178
+ ],
+ "squad_row_dead_label": [
+  25363562
+ ],
+ "squad_row_player": [
+  25360098
+ ],
+ "squad_row_skull": [
+  25359163
+ ],
+ "squad_row_slot_widgets": [
+  25365865
+ ],
+ "squad_row_weapon_object": [
+  25368234
+ ],
+ "squad_stim_cell_site": [
+  25364675
+ ],
+ "stamina_panel_share_site": [
+  25294499
+ ],
+ "static_position_row_address": [
+  5797696
+ ],
+ "static_position_rows": [
+  6797357
+ ],
+ "status_mask_inputs": [
+  25583855
+ ],
+ "status_mask_material": [
+  25400952
+ ],
+ "stratagem_action_index_head": [
+  5790592
+ ],
+ "stratagem_arrow_press_call_site": [
+  11071120
+ ],
+ "stratagem_arrow_press_head": [
+  11075792
+ ],
+ "stratagem_arrow_press_site": [
+  11076155
+ ],
+ "stratagem_arrow_shadow_site": [
+  25387722
+ ],
+ "stratagem_arrow_site": [
+  11076527
+ ],
+ "stratagem_avatar_site": [
+  11069312
+ ],
+ "stratagem_ball_slot_site": [
+  11108629
+ ],
+ "stratagem_card_badge_site": [
+  25402270
+ ],
+ "stratagem_card_count_text_site": [
+  25402502
+ ],
+ "stratagem_card_dim_site": [
+  25394444
+ ],
+ "stratagem_card_fill_0_site": [
+  25401698
+ ],
+ "stratagem_card_fill_name_site": [
+  25402876
+ ],
+ "stratagem_card_mask_1_site": [
+  25401132
+ ],
+ "stratagem_card_mask_2_site": [
+  25401303
+ ],
+ "stratagem_card_mask_3_site": [
+  25401481
+ ],
+ "stratagem_card_noise_site": [
+  25404414
+ ],
+ "stratagem_card_uses_text_site": [
+  25403049
+ ],
+ "stratagem_code_of_head": [
+  10553024
+ ],
+ "stratagem_code_site": [
+  6740842
+ ],
+ "stratagem_delivery": [
+  7004124
+ ],
+ "stratagem_info_table": [
+  7003933
+ ],
+ "stratagem_input_pick_site": [
+  6741955
+ ],
+ "stratagem_input_site": [
+  25393933
+ ],
+ "stratagem_invalid_avatar_site": [
+  25376337
+ ],
+ "stratagem_kind_end": [
+  18817811
+ ],
+ "stratagem_list_input_head": [
+  25384496
+ ],
+ "stratagem_list_input_site": [
+  25377994
+ ],
+ "stratagem_list_opacity_site": [
+  25374845
+ ],
+ "stratagem_list_row_walk": [
+  25382184
+ ],
+ "stratagem_list_tick_head": [
+  25381392
+ ],
+ "stratagem_list_tick_site": [
+  25377188
+ ],
+ "stratagem_open_full_site": [
+  25376974
+ ],
+ "stratagem_panel_bracket_site": [
+  25375228
+ ],
+ "stratagem_panel_create_head": [
+  25374736
+ ],
+ "stratagem_panel_create_site": [
+  19833095
+ ],
+ "stratagem_panel_group_site": [
+  25375073
+ ],
+ "stratagem_panel_input_site": [
+  25377869
+ ],
+ "stratagem_panel_root_site": [
+  25374890
+ ],
+ "stratagem_press_shift_site": [
+  19914429
+ ],
+ "stratagem_random_site": [
+  25390717
+ ],
+ "stratagem_record_find": [
+  25365130
+ ],
+ "stratagem_record_name_site": [
+  26362719
+ ],
+ "stratagem_record_rows_site": [
+  18777199
+ ],
+ "stratagem_records_site": [
+  25405253
+ ],
+ "stratagem_row_arrow_site": [
+  25387592
+ ],
+ "stratagem_row_arrow_step_site": [
+  25388221
+ ],
+ "stratagem_row_blur_site": [
+  25385872
+ ],
+ "stratagem_row_cap": [
+  6746377
+ ],
+ "stratagem_row_card_site": [
+  25392600
+ ],
+ "stratagem_row_mission_site": [
+  25365193
+ ],
+ "stratagem_row_number_site": [
+  25390157
+ ],
+ "stratagem_row_raised_site": [
+  25391988
+ ],
+ "stratagem_row_record": [
+  25383080
+ ],
+ "stratagem_row_texts_site": [
+  25386864
+ ],
+ "stratagem_row_unavailable_state": [
+  25390036
+ ],
+ "stratagem_row_visible_site": [
+  25397212
+ ],
+ "stratagem_row_walk": [
+  25382507
+ ],
+ "stratagem_row_zone_states": [
+  25389584
+ ],
+ "stratagem_slot_uses": [
+  25405572
+ ],
+ "stratagem_slots_clock_global_site": [
+  761120
+ ],
+ "stratagem_slots_global_site": [
+  6313974
+ ],
+ "stratagem_slots_key_from_at_site": [
+  10430361
+ ],
+ "stratagem_start_end_site": [
+  11070811
+ ],
+ "stratagem_tag_of_head": [
+  20390544
+ ],
+ "stratagem_tag_site": [
+  20408649
+ ],
+ "string_text_curved_site": [
+  18838593
+ ],
+ "string_text_make_head": [
+  21222288
+ ],
+ "targeting_arc_site": [
+  7071438
+ ],
+ "targeting_map_site": [
+  7076620
+ ],
+ "text_font_set_head": [
+  18838336
+ ],
+ "text_size_set_head": [
+  21225312
+ ],
+ "text_string_set_head": [
+  21224800
+ ],
+ "throw_action_site": [
+  11111121
+ ],
+ "throw_aim_site": [
+  11114050
+ ],
+ "throw_holding_site": [
+  11105928
+ ],
+ "throw_launch_site": [
+  7101874
+ ],
+ "throw_long_site": [
+  11111227
+ ],
+ "throw_mover_velocity_site": [
+  11115462
+ ],
+ "throw_reach_site": [
+  11115632
+ ],
+ "throw_release_delay_site": [
+  11107869
+ ],
+ "throwable_fuse_change_site": [
+  7112440
+ ],
+ "throwable_registry_call": [
+  5524690
+ ],
+ "throwable_rows": [
+  7102847
+ ],
+ "turret_capacity_site": [
+  7213344
+ ],
+ "turret_manager_site": [
+  7214144
+ ],
+ "turret_rows_site": [
+  7214264
+ ],
+ "turret_used_site": [
+  7214832
+ ],
+ "ui_camera_store": [
+  11214056
+ ],
+ "ui_context_pop_head": [
+  19854544
+ ],
+ "ui_context_push_head": [
+  19854512
+ ],
+ "ui_language_ready_site": [
+  21447014
+ ],
+ "ui_world_context_body": [
+  19849025
+ ],
+ "ui_world_context_build_head": [
+  19852256
+ ],
+ "ui_world_context_empty": [
+  19852327
+ ],
+ "ui_world_store": [
+  11213060
+ ],
+ "unit_component_key": [
+  20531551
+ ],
+ "unit_none_site": [
+  16620462
+ ],
+ "upgrade_value_of_head": [
+  20411024
+ ],
+ "upgrade_value_site": [
+  11040612
+ ],
+ "warn_colour_tick": [
+  25278404
+ ],
+ "weapon_aim_corrected_pick": [
+  6368719
+ ],
+ "weapon_aim_point_write": [
+  7688475
+ ],
+ "weapon_block_fade_site": [
+  25292251
+ ],
+ "weapon_can_fire_ask": [
+  6384863
+ ],
+ "weapon_charge_charging_set": [
+  7594410
+ ],
+ "weapon_charge_rows": [
+  5476026
+ ],
+ "weapon_customization_map_site": [
+  7644138
+ ],
+ "weapon_customization_rows_site": [
+  7668033
+ ],
+ "weapon_data_fire_node_site": [
+  7687421
+ ],
+ "weapon_data_instance_ammo_icon_site": [
+  25275068
+ ],
+ "weapon_data_mode_write": [
+  7692345
+ ],
+ "weapon_data_r1_axis_1_site": [
+  18585926
+ ],
+ "weapon_data_r1_stride_site": [
+  5800577
+ ],
+ "weapon_data_records_site": [
+  7707852
+ ],
+ "weapon_data_registry_call": [
+  5281313
+ ],
+ "weapon_data_rows": [
+  25273606
+ ],
+ "weapon_display_owner": [
+  20566864
+ ],
+ "weapon_fire_speed_unit": [
+  6385744
+ ],
+ "weapon_function_detonator_site": [
+  8216440
+ ],
+ "weapon_function_of_head": [
+  24671488
+ ],
+ "weapon_heat_rows": [
+  7754416
+ ],
+ "weapon_magazine_r1_at_site": [
+  4911296
+ ],
+ "weapon_magazine_rows": [
+  5787792
+ ],
+ "weapon_muzzle_node": [
+  7876971
+ ],
+ "weapon_reload_instance_reload_ability_site": [
+  7818520
+ ],
+ "weapon_reload_rows": [
+  5806030
+ ],
+ "weapon_reloading_ask": [
+  7612394
+ ],
+ "weapon_rounds_instance_reload_amount_site": [
+  7826422
+ ],
+ "weapon_rounds_instance_threshold_0_site": [
+  7844854
+ ],
+ "weapon_rounds_instance_threshold_1_site": [
+  7844729
+ ],
+ "weapon_rounds_r1_at_site": [
+  7849671
+ ],
+ "weapon_rounds_row_read": [
+  7613204
+ ],
+ "weapon_rounds_rows": [
+  5807184
+ ],
+ "weapon_rows": [
+  5840544
+ ],
+ "weapon_screen_engine_unit": [
+  18832214
+ ],
+ "weapon_wielder_rows": [
+  18256096
+ ],
+ "wheel_fuse_mode_site": [
+  25331075
+ ],
+ "wheel_fuse_option_site": [
+  25331374
+ ],
+ "widget_anchor_set_head": [
+  21295456
+ ],
+ "widget_attach_head": [
+  21284288
+ ],
+ "widget_color_set_head": [
+  21268112
+ ],
+ "widget_destroy_head": [
+  21290352
+ ],
+ "widget_destroy_site": [
+  11934635
+ ],
+ "widget_detach_head": [
+  21292736
+ ],
+ "widget_layer_set_head": [
+  21271024
+ ],
+ "widget_local_opacity": [
+  21303637
+ ],
+ "widget_local_parent_position": [
+  21275699
+ ],
+ "widget_local_size_site": [
+  21263166
+ ],
+ "widget_material_get_site": [
+  21296864
+ ],
+ "widget_material_set_head": [
+  21297152
+ ],
+ "widget_opacity_set_head": [
+  21269200
+ ],
+ "widget_pivot_set_head": [
+  21295312
+ ],
+ "widget_position_set_head": [
+  21264032
+ ],
+ "widget_refresh_head": [
+  21282144
+ ],
+ "widget_rotation_set": [
+  21270256
+ ],
+ "widget_rotation_set_head": [
+  21270256
+ ],
+ "widget_scale_set_site": [
+  21266128
+ ],
+ "widget_scale_slide_site": [
+  21307008
+ ],
+ "widget_shadow_offset_site": [
+  25265887
+ ],
+ "widget_shown_bit_read": [
+  24701419
+ ],
+ "widget_shown_set_head": [
+  21301472
+ ],
+ "widget_size_factor_site": [
+  21265056
+ ],
+ "widget_size_set_head": [
+  21262688
+ ],
+ "widget_transform_size": [
+  21275670
+ ],
+ "widget_uv_set": [
+  21229296
+ ],
+ "widget_uv_set_head": [
+  21229296
+ ],
+ "wield_get_fire": [
+  25324088
+ ],
+ "wield_get_plain": [
+  8200857
+ ],
+ "world_text_flat": [
+  20572084
+ ],
+ "world_text_font": [
+  25402659
+ ],
+ "worn_pack_site": [
+  7582977
+ ]
+}

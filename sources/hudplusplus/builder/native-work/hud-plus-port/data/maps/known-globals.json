@@ -1,0 +1,6248 @@
+{
+ "0x0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x0",
+  "sources": [
+   "megapack-port/FoliagePassThrough/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x10": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x10",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1083e70": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf146b0",
+  "sources": [
+   "global-347ce38.json",
+   "mbm-global-347ce38-output.json"
+  ]
+ },
+ "0x10a8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x10a8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x10bd74": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x10bd74",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0x10c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x10c",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x110": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x110",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/FoliagePassThrough/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1100": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1100",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x118f80": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x118f80",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x119ac0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x119ac0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x11a608": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x11a608",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x11ec5fb": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x107ddc0",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0x11ec607": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x107ddc0",
+  "sources": [
+   "global-348e2f8.json"
+  ]
+ },
+ "0x11f20e7": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x10838a0",
+  "sources": [
+   "global-348e8f8.json"
+  ]
+ },
+ "0x11f2279": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1083a99",
+  "sources": [
+   "global-348e8f8.json"
+  ]
+ },
+ "0x11ff88": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x11ff88",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1200": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1200",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1238": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1240",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0x129c58b": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x112e46b",
+  "sources": [
+   "global-348e2f8.json"
+  ]
+ },
+ "0x129c5a8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x112e488",
+  "sources": [
+   "global-348e2f8.json"
+  ]
+ },
+ "0x12c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12c",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x12fde90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1190e30",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x12fe350": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x11912f0",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x12fe361": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1191301",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x12fe4ce": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x119146e",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x12fe4cf": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x119146f",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x12fe4e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1191480",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x12fe4f1": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1191491",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x12fe649": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x11915e9",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x131f80": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x131f80",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1327f50": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x11bbaf0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x136b213": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1200b73",
+  "sources": [
+   "global-348e8f8.json"
+  ]
+ },
+ "0x136b230": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1200b90",
+  "sources": [
+   "global-348e8f8.json"
+  ]
+ },
+ "0x138": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x140",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x1388030": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x121e980",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x1388044": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x121e994",
+  "sources": [
+   "global-3772268.json"
+  ]
+ },
+ "0x1388054": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x121e9a4",
+  "sources": [
+   "global-3772ee8.json"
+  ]
+ },
+ "0x1392680": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1229090",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x13a4d0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x13a4d0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x13b010": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x13b010",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x13bb60": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x13bb60",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x13be426": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1255466",
+  "sources": [
+   "global-346d580.json"
+  ]
+ },
+ "0x13bebcc": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1255c0c",
+  "sources": [
+   "global-346d580.json"
+  ]
+ },
+ "0x13c0350": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12573a0",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x13c075a": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12577aa",
+  "sources": [
+   "global-346d580.json"
+  ]
+ },
+ "0x13c084c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x125789c",
+  "sources": [
+   "global-346d580.json"
+  ]
+ },
+ "0x13c6a8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x13c6a8",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x13cb47d": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x126249d",
+  "sources": [
+   "global-346d578.json"
+  ]
+ },
+ "0x13d56c6": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x126c836",
+  "sources": [
+   "global-346d578.json"
+  ]
+ },
+ "0x13d59a5": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x126cb15",
+  "sources": [
+   "global-346d578.json"
+  ]
+ },
+ "0x13d61e6": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x126d356",
+  "sources": [
+   "global-346d578.json"
+  ]
+ },
+ "0x13f5dce": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5679b1",
+  "sources": [
+   "global-348e2f8.json"
+  ]
+ },
+ "0x13f5deb": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x128cc1d",
+  "sources": [
+   "global-348e2f8.json"
+  ]
+ },
+ "0x13f685b": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5679b1",
+  "sources": [
+   "global-348e8f8.json"
+  ]
+ },
+ "0x14": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x14",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x140ecf6": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12a5f80",
+  "sources": [
+   "global-3772268.json"
+  ]
+ },
+ "0x1413cc": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1413cc",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1413d8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1413d8",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x141e4c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x141e4c",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x141e58": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x141e58",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x141e5c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x141e5c",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x141e64": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x141e64",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1420bb8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12b8728",
+  "sources": [
+   "global-3772268.json"
+  ]
+ },
+ "0x142219": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x142219",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x142260b": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12ba17b",
+  "sources": [
+   "global-3772268.json"
+  ]
+ },
+ "0x14315bc": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12c913c",
+  "sources": [
+   "global-3772268.json"
+  ]
+ },
+ "0x1431d3d": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12c98bd",
+  "sources": [
+   "global-3772268.json"
+  ]
+ },
+ "0x1439d40": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12d1a50",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x143a0f0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12d1e00",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x143bf90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12d3ca0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x143c950": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12d4660",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x143eef0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12d6c00",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x1447160": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12dee70",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x14476a0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12df3b0",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1448ad0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12e07e0",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x14499e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12e16f0",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x144c5c0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12e42d0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x144cfb0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12e4cc0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x144d320": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12e5030",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x144e1a0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12e5eb0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x144f800": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x12e7510",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x148": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x148",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x148b938": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1521958",
+  "sources": [
+   "megapack-port/FlameDamageFixed/MAP.json"
+  ]
+ },
+ "0x148ba78": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1521a98",
+  "sources": [
+   "megapack-port/StickyGrenadeHandles/MAP.json"
+  ]
+ },
+ "0x14b3148": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1549168",
+  "sources": [
+   "megapack-port/FlameDamageFixed/MAP.json"
+  ]
+ },
+ "0x14c0350": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x135b4f0",
+  "sources": [
+   "megapack-port/GalacticMenuHotkey/MAP.json"
+  ]
+ },
+ "0x158": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x158",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x160": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x168",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x162c8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x162c8",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0x164": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x164",
+  "sources": [
+   "megapack-port/StickyGrenadeHandles/MAP.json"
+  ]
+ },
+ "0x1658990": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x16f5510",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x166c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166c",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x1670": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1670",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x16a16d8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x17430a0",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x171c8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x171d0",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0x173a750": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x15ae780",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x173f150": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x15b3180",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x178dc50": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x160eec0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x1793f60": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x16151f0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1794530": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x16157c0",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x1794570": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1615800",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1794600": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1615890",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x17aac50": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x162bee0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x17d4fa1": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1656241",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17d5b62": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1656e02",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1880",
+  "sources": [
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x17e4404": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x16656a4",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17e456c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1664df0",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17e46cc": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1664df0",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17ec621": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166d8c1",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17ec709": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166d9a9",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17ec7e9": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166da89",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17ec8d1": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166db71",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17ec9a1": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166dc41",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17ecd89": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166e029",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17ed950": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166ebf0",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17eda82": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166ed22",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17edb67": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166ee07",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17edc96": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166ef36",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17edf75": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166f215",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17ee057": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166d450",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17ee130": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166d450",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17ee20a": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x166f4aa",
+  "sources": [
+   "global-37c5478.json"
+  ]
+ },
+ "0x17fab90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x167be30",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x17fc2c0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x167d560",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x17fe7e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x167fa80",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x17fe8d0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x167fb70",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x17ff4b0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1680750",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x17ff700": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x16809a0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x18": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x18",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x1800fe0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1682280",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1807060": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1688300",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1812940": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1693b90",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x1813dd0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1695020",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x186a0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x186a0",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x18d2b60": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1753dc0",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x19984c0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1819740",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1998590": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1819810",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x19999c0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x181ac40",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1a": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1a",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x1a100f0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1ab76f8",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json",
+   "megapack-port/FlameDamageFixed/MAP.json",
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json",
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x1d470": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1d478",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x1eb0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1eb0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x1f": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1f",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x1f028": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1f030",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0x2": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x20": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x20",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x200": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x200",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x2068": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2068",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x213f2b8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1fc7988",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x21d45b0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x205d3f0",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0x21e2d30": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x206b040",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x21e89e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2070f20",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x21e8a10": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2070f50",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x220": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x220",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x223ead7": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x20c8c27",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x2247e40": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x20d2060",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x228": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x228",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x230888": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x230768",
+  "sources": [
+   "megapack-port/FlameDamageFixed/MAP.json"
+  ]
+ },
+ "0x23280": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x23280",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x23621a8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x24099e8",
+  "sources": [
+   "megapack-port/FlameDamageFixed/MAP.json"
+  ]
+ },
+ "0x2369b00": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2411200",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json",
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x23c6558": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2245d70",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c658c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2245da4",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c6660": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2245e78",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c678c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2245fa4",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c68c0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x22460f0",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c69f8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2246210",
+  "sources": [
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0x23c6ad0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2246308",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c6ccc": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x22464ec",
+  "sources": [
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0x23c6d70": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x22465b4",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c6e28": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2246668",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c7080": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x22468b8",
+  "sources": [
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0x23c7100": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2246938",
+  "sources": [
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0x23c7110": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2246948",
+  "sources": [
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0x23c7410": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2246c78",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c75b0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2246e20",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c77f0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2247060",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c7b4c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x22473bc",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c7b70": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x22473e0",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c7e00": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2247670",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c800c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2247884",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c80d0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2247948",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23c8208": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2247a80",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x23cbff0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x224b8e0",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x24": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x24",
+  "sources": [
+   "megapack-port/FlameDamageFixed/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x24cd80": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x24cd80",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x24cd8c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x24cd8c",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x24cd98": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x24cd98",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x263c010": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x24b5010",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x263cc50": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x24b5c50",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x263cc90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x24b5c90",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x263ccc0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x24b5cc0",
+  "sources": [
+   "megapack-port/StratagemHeroExpanded/MAP.json"
+  ]
+ },
+ "0x263cf70": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x24b5f70",
+  "sources": [
+   "megapack-port/StratagemHeroExpanded/MAP.json"
+  ]
+ },
+ "0x26438a0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x24bc8a0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x26c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x26c",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x27ba8a8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2861d88",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json",
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x27c3298": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x286a768",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x27c5b40": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x286d030",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x27c5cf0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x286d1d8",
+  "sources": [
+   "megapack-port/StickyGrenadeHandles/MAP.json"
+  ]
+ },
+ "0x27c5e40": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x286d330",
+  "sources": [
+   "megapack-port/FlameDamageFixed/MAP.json"
+  ]
+ },
+ "0x27c5e48": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x286d338",
+  "sources": [
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x27c8d80": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2870240",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x27cd910": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2874ed0",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x27cdb40": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2875080",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x27cdc30": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2875170",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x27ef06435506e446": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x27ef06435506e446",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x28": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x28",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x280": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x288",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x288": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x290",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x2a8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2a8",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x2afc": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2afc",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x2b0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2b0",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x2b0d": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2b0d",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x2bd870": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x28d3a0",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x2c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2c",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x2def98": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2def98",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x2e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e0",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x2f28": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2f28",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x2f80": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2f80",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x2fab8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2fab8",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x2fce0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2fce0",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x2fdc": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2fdc",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x2fdf9": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2fdf9",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x2fe34": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2fe34",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x3": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x30": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x30",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x31af50": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ea5a0",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x31b360": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ea9b0",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x31e030": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ed5c0",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x320dd0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2f0260",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x321030": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2f04c0",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x328": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x328",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x328d2a0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2c44280",
+  "sources": [
+   "megapack-port/KnowYourConstellation/MAP.json"
+  ]
+ },
+ "0x328f280": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2c46260",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x32e98e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ca1f40",
+  "sources": [
+   "megapack-port/KnowYourConstellation/MAP.json"
+  ]
+ },
+ "0x32ec990": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ca50b0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x32ec9a8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ca50c8",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x32ecc60": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ca5320",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x32fc": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x32fc",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x32fda90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2cb6240",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x330": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x330",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x3310210": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2cc8bb0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33114d0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2cc9f30",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x3326308": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce14c8",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "bridge-global-consensus.json",
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "megapack-port/ArmoryPreviewCache/MAP.json",
+   "megapack-port/BetterLobbyManagement/MAP.json",
+   "megapack-port/GalacticMenuHotkey/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x3326318": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce14d8",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x3326328": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce14e8",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x3326338": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1500",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x3326340": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1508",
+  "sources": [
+   "bridge-global-consensus.json",
+   "hdh-port/MAP.json",
+   "megapack-port/BetterLobbyManagement/MAP.json",
+   "megapack-port/GalacticMenuHotkey/MAP.json",
+   "megapack-port/KnowYourConstellation/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "megapack-port/ShallowWaterDiving/MAP.json",
+   "megapack-port/SoundSystemsRebalanced/MAP.json",
+   "mom-port/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x3326348": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce14f8",
+  "sources": [
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x3326378": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1538",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x3326388": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1548",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x33263b8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1578",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x3326420": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1fd0",
+  "sources": [
+   "bridge-global-consensus.json",
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json"
+  ]
+ },
+ "0x3326428": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce15d8",
+  "sources": [
+   "megapack-port/GalacticMenuHotkey/MAP.json"
+  ]
+ },
+ "0x3326468": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1618",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "bridge-global-consensus.json",
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "megapack-port/ArcThrowerRevamped/MAP.json",
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/ControllableHoverPack/MAP.json",
+   "megapack-port/GalacticMenuHotkey/MAP.json",
+   "megapack-port/HolsterYourShield/MAP.json",
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json",
+   "megapack-port/ShallowWaterDiving/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x33264f8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce16a8",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x3326508": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce16b8",
+  "sources": [
+   "bridge-global-consensus.json"
+  ]
+ },
+ "0x3326558": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1708",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0x3326570": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1720",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x3326598": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1748",
+  "sources": [
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0x33265e8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1798",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json"
+  ]
+ },
+ "0x33265f0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce17a0",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "megapack-port/GalacticMenuHotkey/MAP.json"
+  ]
+ },
+ "0x3326640": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce17f0",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x3326648": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce17f8",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json"
+  ]
+ },
+ "0x3326660": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1810",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "megapack-port/ArcThrowerRevamped/MAP.json",
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x3326688": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1838",
+  "sources": [
+   "enemyhp-port/globals.json"
+  ]
+ },
+ "0x33266a0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1850",
+  "sources": [
+   "megapack-port/ArcThrowerRevamped/MAP.json",
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/ControllableHoverPack/MAP.json",
+   "megapack-port/EnemyCollisionSynchronized/MAP.json",
+   "megapack-port/GalacticMenuHotkey/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json",
+   "megapack-port/SentryAimRetention/MAP.json",
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0x33266b0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1860",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x33266d8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1888",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json"
+  ]
+ },
+ "0x3326700": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce18b0",
+  "sources": [
+   "megapack-port/GalacticMenuHotkey/MAP.json"
+  ]
+ },
+ "0x3326730": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce18e0",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "dbf-hud-port/global-proofs-qualified.json"
+  ]
+ },
+ "0x3326738": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce18e8",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "bridge-global-consensus.json",
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "megapack-port/ControllableHoverPack/MAP.json",
+   "megapack-port/HolsterYourShield/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x3326740": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce18f0",
+  "sources": [
+   "megapack-port/LaserSentryCooldown/MAP.json",
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x3326920": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1ad8",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x3326948": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1af8",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x33269c0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1b78",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x3326a38": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1bf8",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x3326a80": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1c40",
+  "sources": [
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0x3326a98": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1c58",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json"
+  ]
+ },
+ "0x3326aa0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1c68",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "megapack-port/KnowYourConstellation/MAP.json"
+  ]
+ },
+ "0x3326aa8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1c60",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json"
+  ]
+ },
+ "0x3326ab0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1c70",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json"
+  ]
+ },
+ "0x3326b20": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1ce0",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x3326bb0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1d70",
+  "sources": [
+   "megapack-port/FlameDamageFixed/MAP.json"
+  ]
+ },
+ "0x3326bb8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1d78",
+  "sources": [
+   "megapack-port/ControllableHoverPack/MAP.json"
+  ]
+ },
+ "0x3326bf0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1db0",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0x3326c20": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1de8",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "megapack-port/ArcThrowerRevamped/MAP.json"
+  ]
+ },
+ "0x3326c40": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1e00",
+  "sources": [
+   "bridge-global-consensus.json"
+  ]
+ },
+ "0x3326cb8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1e78",
+  "sources": [
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x3326ce0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1ea0",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x3326cf0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1eb0",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json"
+  ]
+ },
+ "0x3326cf8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1eb8",
+  "sources": [
+   "bridge-global-consensus.json"
+  ]
+ },
+ "0x3326d20": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1ee0",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "bridge-global-consensus.json",
+   "enemyhp-port/globals.json",
+   "megapack-port/ArcThrowerRevamped/MAP.json",
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/ControllableHoverPack/MAP.json",
+   "megapack-port/HolsterYourShield/MAP.json",
+   "megapack-port/ShallowWaterDiving/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x3326d30": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1ef0",
+  "sources": [
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x3326d48": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1f08",
+  "sources": [
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "megapack-port/LaserSentryCooldown/MAP.json"
+  ]
+ },
+ "0x3326d58": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1f18",
+  "sources": [
+   "hdh-port/MAP.json"
+  ]
+ },
+ "0x3326d68": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1f28",
+  "sources": [
+   "bridge-global-consensus.json"
+  ]
+ },
+ "0x3326d70": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1f30",
+  "sources": [
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x3326d78": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1f38",
+  "sources": [
+   "megapack-port/GalacticMenuHotkey/MAP.json"
+  ]
+ },
+ "0x3326dc0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce1f88",
+  "sources": [
+   "bridge-global-consensus.json",
+   "megapack-port/ArcThrowerRevamped/MAP.json",
+   "megapack-port/ControllableHoverPack/MAP.json",
+   "megapack-port/HolsterYourShield/MAP.json"
+  ]
+ },
+ "0x3326e68": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce2040",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json",
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/GalacticMenuHotkey/MAP.json",
+   "megapack-port/KnowYourConstellation/MAP.json"
+  ]
+ },
+ "0x3327550": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce2738",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328230": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3490",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328238": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3498",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328248": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce34a8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328250": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce34b0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328260": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce34c0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328268": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce34c8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328270": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce34d0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328278": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce34d8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328280": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce34e0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328288": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce34e8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328290": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce34f0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328298": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce34f8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33282a0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3500",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33282a8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3508",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33282b0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3510",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33282b8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3518",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33282c0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3520",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33282c8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3528",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33282d0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3530",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33282e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3540",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33282e8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3548",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33282f0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3550",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328300": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3560",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328310": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3570",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328318": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3578",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328320": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3580",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328328": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3588",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328340": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce35a0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328368": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce35c8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328370": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce35d0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328390": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce35f0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328398": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce35f8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33283b8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3618",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33283c0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3620",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33283c8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3628",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33283d0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3630",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33283d8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3638",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33283e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3640",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33283e8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3648",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33283f0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3650",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x33283f8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3658",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328400": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3660",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328408": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3668",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328410": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3670",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328418": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3678",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328420": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3680",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328428": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3688",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328430": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3690",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328438": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce3698",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328440": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce36a0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328448": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce36a8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328450": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce36b0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328458": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce36b8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328460": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce36c0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328468": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce36c8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328470": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce36d0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328478": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce36d8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328480": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce36e0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3328488": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce36e8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x346bf98": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2ce41b8",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "bridge-global-consensus.json",
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "enemyhp-port/globals.json",
+   "hdh-port/MAP.json",
+   "megapack-port/ArcThrowerRevamped/MAP.json",
+   "megapack-port/ArmoryPreviewCache/MAP.json",
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/ControllableHoverPack/MAP.json",
+   "megapack-port/GalacticMenuHotkey/MAP.json",
+   "megapack-port/HolsterYourShield/MAP.json",
+   "megapack-port/LaserSentryCooldown/MAP.json",
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json",
+   "megapack-port/ShallowWaterDiving/MAP.json",
+   "megapack-port/StickyGrenadeHandles/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x346bfa0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e271f8",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/FlameDamageFixed/MAP.json",
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x346d500": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e28758",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x346d518": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38278",
+  "sources": [
+   "megapack-port/KnowYourConstellation/MAP.json"
+  ]
+ },
+ "0x346d520": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e28770",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x346d530": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e28780",
+  "sources": [
+   "hdh-port/MAP.json"
+  ]
+ },
+ "0x346d538": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e28788",
+  "sources": [
+   "bridge-global-consensus.json",
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json"
+  ]
+ },
+ "0x346d558": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e287a8",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x346d560": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e287d0",
+  "sources": [
+   "bridge-global-consensus.json",
+   "dbf-hud-port/global-proofs-qualified.json",
+   "dbf-hud-port/global-proofs.json",
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x346d578": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e287d8",
+  "sources": [
+   "megapack-port/HellpodSteeringUnlocked/MAP.json"
+  ]
+ },
+ "0x346d580": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e287e0",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x347cd80": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e380b0",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x347cd90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e380c8",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "megapack-port/ArmoryPreviewCache/MAP.json",
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x347cd98": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e380d0",
+  "sources": [
+   "megapack-port/KnowYourConstellation/MAP.json"
+  ]
+ },
+ "0x347cdf8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38128",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json",
+   "megapack-port/KnowYourConstellation/MAP.json"
+  ]
+ },
+ "0x347ce28": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38160",
+  "sources": [
+   "bridge-global-consensus.json",
+   "hdh-port/MAP.json",
+   "megapack-port/ArmoryPreviewCache/MAP.json",
+   "megapack-port/BetterLobbyManagement/MAP.json",
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/GalacticMenuHotkey/MAP.json",
+   "megapack-port/KnowYourConstellation/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x347ce30": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38168",
+  "sources": [
+   "enemyhp-port/globals.json"
+  ]
+ },
+ "0x347ce38": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38170",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json",
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/GalacticMenuHotkey/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x347ce50": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38188",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0x347ce60": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38190",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "megapack-port/ArmoryPreviewCache/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x347ce80": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e381b8",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json",
+   "megapack-port/KnowYourConstellation/MAP.json"
+  ]
+ },
+ "0x347ce90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e381c8",
+  "sources": [
+   "bridge-global-consensus.json"
+  ]
+ },
+ "0x347cea8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e381e0",
+  "sources": [
+   "bridge-global-consensus.json"
+  ]
+ },
+ "0x347ceb0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e381e8",
+  "sources": [
+   "bridge-global-consensus.json",
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x347ced8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38210",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0x347cee0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38218",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0x347cee8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38220",
+  "sources": [
+   "megapack-port/KnowYourConstellation/MAP.json"
+  ]
+ },
+ "0x347cef0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38228",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "hdh-port/MAP.json",
+   "megapack-port/BetterLobbyManagement/MAP.json",
+   "megapack-port/KnowYourConstellation/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x347cef8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38230",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x347cf18": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38250",
+  "sources": [
+   "bridge-global-consensus.json",
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/GalacticMenuHotkey/MAP.json",
+   "megapack-port/HellpodSteeringUnlocked/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x347cf20": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38258",
+  "sources": [
+   "bridge-global-consensus.json"
+  ]
+ },
+ "0x347d7e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e38988",
+  "sources": [
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x3483c20": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e3f0d0",
+  "sources": [
+   "bridge-global-consensus.json",
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x3483c24": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e3f0d4",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x3483c34": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e3f0e4",
+  "sources": [
+   "bridge-global-consensus.json"
+  ]
+ },
+ "0x3483c38": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e3f0e8",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x3483c4c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e3f0fc",
+  "sources": [
+   "megapack-port/HolsterYourShield/MAP.json"
+  ]
+ },
+ "0x3483c5c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e3f10c",
+  "sources": [
+   "megapack-port/HolsterYourShield/MAP.json"
+  ]
+ },
+ "0x3484988": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e3feb8",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x348da98": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e493c8",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x348e2f8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e49c28",
+  "sources": [
+   "megapack-port/FoliagePassThrough/MAP.json"
+  ]
+ },
+ "0x348e8f8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e4a228",
+  "sources": [
+   "megapack-port/BetterStratagemBounce/MAP.json"
+  ]
+ },
+ "0x348eaf8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x2e4a428",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x3772268": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x312d998",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "enemyhp-port/globals.json",
+   "megapack-port/KnowYourConstellation/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3772ee8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x312e618",
+  "sources": [
+   "enemyhp-port/globals.json",
+   "megapack-port/KnowYourConstellation/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x3773420": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x312eb50",
+  "sources": [
+   "megapack-port/KnowYourConstellation/MAP.json"
+  ]
+ },
+ "0x378": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x378",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x37982a0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3153a10",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x37982a8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3153a18",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x3799810": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3154f90",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x37c5478": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3180c08",
+  "sources": [
+   "armor_lut_editor-global-consensus.json",
+   "enemyhp-port/globals.json",
+   "megapack-port/KnowYourConstellation/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x37c5650": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3180de0",
+  "sources": [
+   "megapack-port/GalacticMenuHotkey/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "megapack-port/ShallowWaterDiving/MAP.json",
+   "mom-port/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0x37c5b50": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x31812e0",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x37c7560": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3182d60",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x37c7670": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3182e70",
+  "sources": [
+   "megapack-port/FoliagePassThrough/MAP.json"
+  ]
+ },
+ "0x37cb470": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3186f48",
+  "sources": [
+   "migrate_rvas tie-refs"
+  ]
+ },
+ "0x37cb600": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x31870e0",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json",
+   "megapack-port/BetterStratagemBounce/MAP.json",
+   "megapack-port/StratagemHeroExpanded/MAP.json"
+  ]
+ },
+ "0x38": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x38",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x38013b": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x386e3b",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x38031c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x38701c",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x38053d": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x38723d",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x3a48": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3a48",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x3a8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3a8",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x3b4": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3b4",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x3c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3c",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x3c0000": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3c0000",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0x3ce4c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3ceac",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0x3e90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3e90",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x3f7cb8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3d0e3d",
+  "sources": [
+   "war-journalist-renderer-global-map.json"
+  ]
+ },
+ "0x3f7cf6": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3d0e7b",
+  "sources": [
+   "war-journalist-renderer-global-map.json"
+  ]
+ },
+ "0x3f8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3f8",
+  "sources": [
+   "megapack-port/FlameDamageFixed/MAP.json"
+  ]
+ },
+ "0x3fef20": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3fef20",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x4": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x40": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x40",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x41c0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x41c0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x4290": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4290",
+  "sources": [
+   "hdh-port/MAP.json"
+  ]
+ },
+ "0x429c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x429c",
+  "sources": [
+   "hdh-port/MAP.json",
+   "megapack-port/ArmoryPreviewCache/MAP.json",
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/KnowYourConstellation/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x42b0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x42b0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x44": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x44",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x440": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x440",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x461c76": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x468a96",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x461fc7": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x468de7",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x468ca758": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x468ca758",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x4a8fbf9": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4a8fbf9",
+  "sources": [
+   "megapack-port/SentryAimRetention/MAP.json"
+  ]
+ },
+ "0x4aab0a": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4b13ca",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4aabca": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4b148a",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4b0074": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4b68f0",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x4b012a": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4b69ea",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x4b2ca9": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4b9569",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4b2f83": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4b9843",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4b55b0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4bbea0",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4ba5f8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4c0ce8",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4ba88d": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4c0f7d",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4baa3a": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4c112a",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4bac6a": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4c135a",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4baea9": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4c1599",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4bb219": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4c1909",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4bc95d": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4c312d",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4bc9ef": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4c31bf",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4bcab3": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4c5970",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4bcb39": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4c3309",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4bcbf4": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4c33c4",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4c730d": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4ce01d",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4ca8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4ca8",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x4cf5a0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4d63d0",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4cf73d": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4d656d",
+  "sources": [
+   "bridge-global-3326420-output.json",
+   "global-3326420.json"
+  ]
+ },
+ "0x4d1c334d294dfa97": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4d1c334d294dfa97",
+  "sources": [
+   "megapack-port/ArcThrowerRevamped/MAP.json",
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/ControllableHoverPack/MAP.json",
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0x4d24": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4d24",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x4d28": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4d28",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x4d54d3": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4dc493",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x4dc08": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4dc08",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x4e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4e0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x4eda23": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4f5c23",
+  "sources": [
+   "bridge-global-3326e68-output.json",
+   "global-3326e68.json"
+  ]
+ },
+ "0x4f3e52": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x4fc1b2",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x5": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x50cd90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x515370",
+  "sources": [
+   "megapack-port/StickyGrenadeHandles/MAP.json"
+  ]
+ },
+ "0x517236": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x51f9b6",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x517290": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x51fa10",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x517337": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x51fab7",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x521": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x529",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0x529a8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x529a8",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x53d900": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x53d900",
+  "sources": [
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0x53e880": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x53e888",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x54": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x54",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "megapack-port/StickyGrenadeHandles/MAP.json"
+  ]
+ },
+ "0x5405d6": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x549406",
+  "sources": [
+   "global-33264f8.json"
+  ]
+ },
+ "0x54066a": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x54949a",
+  "sources": [
+   "global-33264f8.json"
+  ]
+ },
+ "0x545aea": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x54e94a",
+  "sources": [
+   "wj-feature-completion/hover-global-map.json"
+  ]
+ },
+ "0x545b8f": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x54e9ef",
+  "sources": [
+   "wj-feature-completion/hover-global-map.json"
+  ]
+ },
+ "0x547c70": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x547cb0",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x547d20": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x547d60",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x547d24": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x547d64",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x5499db": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x552800",
+  "sources": [
+   "bridge-global-3326e68-output.json",
+   "global-3326e68.json"
+  ]
+ },
+ "0x551bab": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x55a9fd",
+  "sources": [
+   "bridge-global-3326e68-output.json",
+   "global-3326e68.json"
+  ]
+ },
+ "0x551c42": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x55aa94",
+  "sources": [
+   "bridge-global-3326e68-output.json",
+   "global-3326e68.json"
+  ]
+ },
+ "0x551e6a": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x55acba",
+  "sources": [
+   "bridge-global-3326e68-output.json",
+   "global-3326e68.json"
+  ]
+ },
+ "0x552333": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x55b183",
+  "sources": [
+   "bridge-global-3326e68-output.json",
+   "global-3326e68.json"
+  ]
+ },
+ "0x552661": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x55b4b1",
+  "sources": [
+   "bridge-global-3326e68-output.json",
+   "global-3326e68.json"
+  ]
+ },
+ "0x5528eb": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x55b72e",
+  "sources": [
+   "bridge-global-3326e68-output.json",
+   "global-3326e68.json"
+  ]
+ },
+ "0x552d07": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x55c08c",
+  "sources": [
+   "bridge-global-3326e68-output.json",
+   "global-3326e68.json"
+  ]
+ },
+ "0x5682ab": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x57124b",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x568ec1": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5715a1",
+  "sources": [
+   "global-33264f8.json"
+  ]
+ },
+ "0x56902d": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x571e99",
+  "sources": [
+   "wj-feature-completion/hover-global-map.json"
+  ]
+ },
+ "0x572d49": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x57bddb",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x573420": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x57a1f0",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x5737de": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x57c86e",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x574e": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x574e",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x5750": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5750",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x5754": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5754",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x5758": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5758",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x5768": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5768",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x5778": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5778",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x58": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x58",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x598": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x598",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x5bb4d2": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5c4312",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x5bd6f1": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5c6531",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x5c08cb": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5c970b",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0x5c0b40": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5c9980",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x5e33f7": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5eca77",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x5e3698": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5ecd18",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x5e4f3a": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5ee60a",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x5ec80f4f1cdb66cf": {
+  "accepted": true,
+  "alternatives": 0,
+  "new": "0x5ec80f4f1cdb66cf",
+  "sources": [
+   "megapack-port/ControllableHoverPack/MAP.json"
+  ]
+ },
+ "0x5f0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5f8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x5f5494": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5fe45d",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x5f576a": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5fe67d",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0x6": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x6",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x60": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x60",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x601191": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x60a2b1",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x6016fb": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x60a81b",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x605894": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x60ea64",
+  "sources": [
+   "global-33266a0.json",
+   "mbm-global-33266a0-output.json"
+  ]
+ },
+ "0x60796e": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x610b3e",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x6084f5": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x6116c5",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x609520": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x6126f0",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x6095b1": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x612781",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x60961e": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x6127ee",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0x6098c7": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x612a97",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x6098d0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x612aa0",
+  "sources": [
+   "global-347ce38.json",
+   "mbm-global-347ce38-output.json"
+  ]
+ },
+ "0x60b0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x60b0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x60b5e1": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x6147e1",
+  "sources": [
+   "global-33264f8.json"
+  ]
+ },
+ "0x60b8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x60b8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x60d0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x60d0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x61": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x61",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x611a8e": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x61ad5e",
+  "sources": [
+   "global-33264f8.json"
+  ]
+ },
+ "0x614dd8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x61e088",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x616523": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x61f7d3",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0x617dcb": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x62106b",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0x617fa3": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x621243",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0x639830": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x642f30",
+  "sources": [
+   "megapack-port/GalacticMenuHotkey/MAP.json"
+  ]
+ },
+ "0x64": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x64",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x64617c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x64f4ec",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0x65122c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x65aa42",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x6544ad": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x65dcbd",
+  "sources": [
+   "global-346d560.json"
+  ]
+ },
+ "0x660": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x660",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x6617f3": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x66b0d3",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0x661c36": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x66b516",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0x661cf0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x66b5d0",
+  "sources": [
+   "megapack-port/GalacticMenuHotkey/MAP.json"
+  ]
+ },
+ "0x661cfa": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x66b5da",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0x66319b": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x66cb0b",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0x66f102": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x678c32",
+  "sources": [
+   "global-33264f8.json"
+  ]
+ },
+ "0x66f2be": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x678dee",
+  "sources": [
+   "global-33264f8.json"
+  ]
+ },
+ "0x67fc51": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x689911",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0x6816bc": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x68b37c",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0x6abfd1": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x6b64d1",
+  "sources": [
+   "global-33264f8.json"
+  ]
+ },
+ "0x6ac13e": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x6b663e",
+  "sources": [
+   "global-33264f8.json"
+  ]
+ },
+ "0x6bd498": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x6c7b58",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0x70": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x74",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x718c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x718c",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x7190": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7190",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x7198": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7198",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x71f8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x71f8",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x74": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x78",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x755f90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x761700",
+  "sources": [
+   "megapack-port/ArcThrowerRevamped/MAP.json"
+  ]
+ },
+ "0x76": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7a",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x77dec0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x805160",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x77f4f0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x806790",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x781e104c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x781e104c",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x788": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x788",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x78bfc0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x78bfc0",
+  "sources": [
+   "megapack-port/StickyGrenadeHandles/MAP.json"
+  ]
+ },
+ "0x7972f0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x81e620",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x7993d0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x820700",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x799540": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x820870",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x799880": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x820c40",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x799ba0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x820f60",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x79f860": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x826d10",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x7a4b30": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7b0410",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x7ab0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7ab0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x7abd00": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7b76a0",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0x7ac4": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7ac4",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x7ae8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7ae8",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x7b8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7b8",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x7c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7f",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0x7c8c90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7c8810",
+  "sources": [
+   "megapack-port/HellpodSteeringUnlocked/MAP.json"
+  ]
+ },
+ "0x7ce220": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x855900",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x7cf050": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x856730",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x7cfe10": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x8574f0",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x7f9070": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x880750",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x7fde8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7fde8",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x7fff": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x7fff",
+  "sources": [
+   "megapack-port/ArcThrowerRevamped/MAP.json"
+  ]
+ },
+ "0x8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x8",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/FoliagePassThrough/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x81e6": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x81e6",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x81e8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x81e8",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x81ec": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x81ec",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x81f0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x81f0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x81f4": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x81f4",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x8200": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x8200",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x8210": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x8210",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x830f63": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x83de19",
+  "sources": [
+   "wj-feature-completion/hover-global-map.json"
+  ]
+ },
+ "0x83c420": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x8492a0",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0x851b0d": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x85eb8d",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0x85416e": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x8611de",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0x8708c0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x87dc70",
+  "sources": [
+   "global-346d580.json"
+  ]
+ },
+ "0x8732e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x880760",
+  "sources": [
+   "global-347ce38.json",
+   "mbm-global-347ce38-output.json"
+  ]
+ },
+ "0x873310": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x880790",
+  "sources": [
+   "global-347ce38.json",
+   "mbm-global-347ce38-output.json"
+  ]
+ },
+ "0x8745a9": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x881a19",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0x8745b9": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x881a29",
+  "sources": [
+   "global-347ce38.json",
+   "mbm-global-347ce38-output.json"
+  ]
+ },
+ "0x875afe": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x882f6e",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0x875b38": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x882d40",
+  "sources": [
+   "global-347ce38.json",
+   "mbm-global-347ce38-output.json"
+  ]
+ },
+ "0x880334": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x88d964",
+  "sources": [
+   "wj-feature-completion/hover-global-map.json"
+  ]
+ },
+ "0x880525": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x88db55",
+  "sources": [
+   "wj-feature-completion/hover-global-map.json"
+  ]
+ },
+ "0x8c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x8c",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x8c0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x8c0",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x8c8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x8c8",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x9": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x9",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x90",
+  "sources": [
+   "megapack-port/FoliagePassThrough/MAP.json"
+  ]
+ },
+ "0x91": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x95",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0x91f0c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x91f0c",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x91f18": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x91f18",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x92318": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x92318",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x928f4": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x928f4",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x92900": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x92900",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x92902": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x92902",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x92960": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x92960",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x92968": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x92968",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x92984": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x92984",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x92a3b5": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x93b285",
+  "sources": [
+   "global-346d578.json"
+  ]
+ },
+ "0x92a4a6": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x93b376",
+  "sources": [
+   "global-346d578.json"
+  ]
+ },
+ "0x92a56c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x93b43c",
+  "sources": [
+   "global-346d578.json"
+  ]
+ },
+ "0x92fc4": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x92fc4",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x92ff0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x92ff0",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x94": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x94",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0x96de9cd50f7306e6": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x96de9cd50f7306e6",
+  "sources": [
+   "megapack-port/ArcThrowerRevamped/MAP.json"
+  ]
+ },
+ "0x97a145": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x98bcc5",
+  "sources": [
+   "global-347ce38.json",
+   "mbm-global-347ce38-output.json"
+  ]
+ },
+ "0x97b341": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x98cec1",
+  "sources": [
+   "global-347ce38.json",
+   "mbm-global-347ce38-output.json"
+  ]
+ },
+ "0x97c3de": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x98de50",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0x97c42c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x98dfb8",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0x98040": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x98040",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x98044": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x98044",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x997800": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x9a9450",
+  "sources": [
+   "megapack-port/GalacticMenuHotkey/MAP.json"
+  ]
+ },
+ "0x9abc30": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x9bd850",
+  "sources": [
+   "megapack-port/HolsterYourShield/MAP.json"
+  ]
+ },
+ "0x9ac8e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x9be500",
+  "sources": [
+   "megapack-port/HolsterYourShield/MAP.json"
+  ]
+ },
+ "0x9b796d": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x9c95fd",
+  "sources": [
+   "wj-feature-completion/hover-global-map.json"
+  ]
+ },
+ "0x9b8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x9b8",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0x9b86af": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x826b10",
+  "sources": [
+   "wj-feature-completion/hover-global-map.json"
+  ]
+ },
+ "0x9b878a": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x74ab2a",
+  "sources": [
+   "wj-feature-completion/hover-global-map.json"
+  ]
+ },
+ "0x9c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x9c",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x9da0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x9da0",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0x9f3d0e": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa0647e",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0x9f59ec": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa081dc",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0xa": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xa00000000": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa00000000",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0xa4e50": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa6f70",
+  "sources": [
+   "myc-port/MAP.json"
+  ]
+ },
+ "0xa5bd18": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa776f8",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0xa610b3": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa7ca93",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0xa61844": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa7d224",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0xa6d9d6": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa893c6",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0xa732f9": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa8ece9",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0xa733a5": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa8ed95",
+  "sources": [
+   "global-347ce28.json"
+  ]
+ },
+ "0xa7ad0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa7ad0",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0xa7ad8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa7ad8",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0xa7b78": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xa7b78",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0xa9a0c0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xab5ba0",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0xa9c3e0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xab7ec0",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0xa9d560": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xab9040",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0xa9dd90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xab9870",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0xab2a7b35": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xab2a7b35",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xac21c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xac29c",
+  "sources": [
+   "hdh-port/MAP.json",
+   "megapack-port/BetterLobbyManagement/MAP.json",
+   "megapack-port/SoundSystemsRebalanced/MAP.json"
+  ]
+ },
+ "0xac550": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xac5d0",
+  "sources": [
+   "megapack-port/BetterLobbyManagement/MAP.json"
+  ]
+ },
+ "0xaceba9": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x5cf0d0",
+  "sources": [
+   "global-346d580.json"
+  ]
+ },
+ "0xad5d25": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xaf1e45",
+  "sources": [
+   "global-347ce38.json",
+   "mbm-global-347ce38-output.json"
+  ]
+ },
+ "0xad64cc": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xaf25ec",
+  "sources": [
+   "global-347ce38.json",
+   "mbm-global-347ce38-output.json"
+  ]
+ },
+ "0xad694e": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xaf2940",
+  "sources": [
+   "global-347ce38.json",
+   "mbm-global-347ce38-output.json"
+  ]
+ },
+ "0xae0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xae0",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0xae288": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xae308",
+  "sources": [
+   "megapack-port/KnowYourConstellation/MAP.json"
+  ]
+ },
+ "0xae8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xae8",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0xaed0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xaed0",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0xb00": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xb00",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xb0e": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xb0e",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xb10": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xb10",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xb14": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xb14",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xb18": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xb18",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xb1c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xb1c",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xb28": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xb28",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xb38": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xb38",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xb40": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xb40",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xb5c443": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xb78ce3",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0xb870ad": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xba559d",
+  "sources": [
+   "global-37c7670.json"
+  ]
+ },
+ "0xb9b4": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xb9b4",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0xbe20b0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xc008b0",
+  "sources": [
+   "megapack-port/HolsterYourShield/MAP.json"
+  ]
+ },
+ "0xc": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xc",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xc1501": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x3f35d0",
+  "sources": [
+   "global-3326308.json"
+  ]
+ },
+ "0xc4": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xc4",
+  "sources": [
+   "megapack-port/HolsterYourShield/MAP.json"
+  ]
+ },
+ "0xc67c7faf": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xc67c7faf",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xc8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xc8",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xc8098": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x19c810",
+  "sources": [
+   "global-3326308.json"
+  ]
+ },
+ "0xc8141": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x19c810",
+  "sources": [
+   "global-3326308.json"
+  ]
+ },
+ "0xc8471": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x19cbd6",
+  "sources": [
+   "global-3326308.json"
+  ]
+ },
+ "0xc8520": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x1ede7d",
+  "sources": [
+   "global-3326308.json"
+  ]
+ },
+ "0xc86b7": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x19cbd6",
+  "sources": [
+   "global-3326308.json"
+  ]
+ },
+ "0xc886b": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x19cbd6",
+  "sources": [
+   "global-3326308.json"
+  ]
+ },
+ "0xc8af9": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x19cbd6",
+  "sources": [
+   "global-3326308.json"
+  ]
+ },
+ "0xc8c92": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0x19cbd6",
+  "sources": [
+   "global-3326308.json"
+  ]
+ },
+ "0xd": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xd",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0xd0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xd0",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json",
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0xd0cfa0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xd658d0",
+  "sources": [
+   "megapack-port/EnemyCollisionSynchronized/MAP.json"
+  ]
+ },
+ "0xd2f20": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xd2f60",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0xd48": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xd48",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xd8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xd8",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xdd690": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xda120",
+  "sources": [
+   "megapack-port/SoundSystemsRebalanced/MAP.json"
+  ]
+ },
+ "0xdfe8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xdfe8",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xe": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xe",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0xe0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xe2",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0xe068": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xe068",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xe06c": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xe06c",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json",
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xe5": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xe7",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0xe8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xe8",
+  "sources": [
+   "megapack-port/ReinforcementBeaconsFixed/MAP.json"
+  ]
+ },
+ "0xee218": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xee218",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ },
+ "0xf": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf",
+  "sources": [
+   "megapack-port/ModBindingsMenu/MAP.json"
+  ]
+ },
+ "0xf12558": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf14008",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0xf12bb8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf14680",
+  "sources": [
+   "megapack-port/ConsistentVaulting/MAP.json"
+  ]
+ },
+ "0xf12bc0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf14688",
+  "sources": [
+   "megapack-port/HolsterYourShield/MAP.json"
+  ]
+ },
+ "0xf12c90": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf14758",
+  "sources": [
+   "megapack-port/StickyGrenadeHandles/MAP.json"
+  ]
+ },
+ "0xf12cb8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf14780",
+  "sources": [
+   "megapack-port/ControllableHoverPack/MAP.json"
+  ]
+ },
+ "0xf12cc8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf14790",
+  "sources": [
+   "megapack-port/LaserSentryCooldown/MAP.json"
+  ]
+ },
+ "0xf12cf0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf147b8",
+  "sources": [
+   "myc-port/MAP.json"
+  ]
+ },
+ "0xf12e10": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf148d8",
+  "sources": [
+   "megapack-port/ArmoryPreviewCache/MAP.json"
+  ]
+ },
+ "0xf12e20": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf148e8",
+  "sources": [
+   "megapack-port/ShallowWaterDiving/MAP.json"
+  ]
+ },
+ "0xf12e98": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf14960",
+  "sources": [
+   "myc-port/MAP.json"
+  ]
+ },
+ "0xf1aeb0": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf1c978",
+  "sources": [
+   "megapack-port/HolsterYourShield/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0xf22ec8": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf24990",
+  "sources": [
+   "megapack-port/ArcThrowerRevamped/MAP.json",
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/ControllableHoverPack/MAP.json",
+   "megapack-port/GalacticMenuHotkey/MAP.json",
+   "megapack-port/HolsterYourShield/MAP.json",
+   "megapack-port/ShallowWaterDiving/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0xf32f18": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf349e0",
+  "sources": [
+   "megapack-port/ArcThrowerRevamped/MAP.json",
+   "megapack-port/ConsistentVaulting/MAP.json",
+   "megapack-port/ControllableHoverPack/MAP.json",
+   "megapack-port/GalacticMenuHotkey/MAP.json",
+   "megapack-port/HolsterYourShield/MAP.json",
+   "megapack-port/ShallowWaterDiving/MAP.json",
+   "myc-port/MAP.json"
+  ]
+ },
+ "0xf4": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf8",
+  "sources": [
+   "megapack-port/FoliagePassThrough/MAP.json"
+  ]
+ },
+ "0xf4240": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf4240",
+  "sources": [
+   "megapack-port/ClickableScrollbars/MAP.json"
+  ]
+ },
+ "0xf98": {
+  "accepted": false,
+  "alternatives": 0,
+  "new": "0xf98",
+  "sources": [
+   "mom-port/MAP.json"
+  ]
+ }
+}

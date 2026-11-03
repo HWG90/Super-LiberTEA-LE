@@ -84,6 +84,45 @@ do
     mem[#mem]=nil;why=attempt(nil);assert(why:find('memory unavailable'),why)
     DBFMCM=saved;GOOSE_GADGET_SPAWNER_REQUESTS_V1=nil
     assert(natives==0,'native bound during guard checks')
+
+    -- a resident package whose exact UNIT never registers cannot deliver that row: the request
+    -- ends with a reason before any inventory change and the next one is accepted (live
+    -- 2026-11-02: "Unidentified support 2739958254" held the queue for the rest of the session)
+    do
+        local W,AV,RENDER,EP,PM,ST,MENU,CHAT=0x61000000,0x1234,0x5678,0x62000000,0x63000000,0x64000000,0x65000000,0x66000000
+        local TR,TROWS,LED,LEDROWS,APP,API,LOADER,URES,UMAN=0x67000000,0x68000000,0x69000000,0x6A000000,0x6B000000,0x6C000000,0x6D000000,0x6E000000,0x6F000000
+        local EMPTY=string.rep('\255',8)
+        local function ptr(at,v)put(at,le(v,8))end
+        ptr(G+0x2ce1508,ST);ptr(G+0x2e38160,MENU);ptr(G+0x2e28788,CHAT);put(CHAT+0x27E50,'\0')
+        put(EP,string.rep('\0',8)..le(AV,4)..le(RENDER,4)..le(0,4)..'\1\0\0\0')
+        put(PM+0x70,le(1,4));ptr(PM+0x110,EP)
+        put(ST+0xac29c,le(4,4));ptr(G+0x2ce41b8,W);ptr(G+0x2ce1ee0,PM);put(MENU+0x4294,le(0,4));put(MENU+0x42B0,le(0,4))
+        ptr(G+0x2ce16b8,TR);ptr(TR+0x68,TROWS);put(TROWS+0x2E0,string.rep('\0',12))
+        ptr(G+0x2e381e8,LED);ptr(G+0x2ce14c8,E+0x2870240);ptr(E+0x1ab7808,APP)
+        ptr(E+0x2870240+0x10,API);ptr(APP+0x400,LOADER);ptr(LOADER+0x208,0x70000000)
+        ptr(API+0x2F0,E+0x2F01E0);ptr(API+0x328,E+0x2F0860)
+        put(LED,le(LEDROWS,8)..le(8,4)..le(0,4)..EMPTY..le(0,4))
+        local ledger={at=LEDROWS,bytes=string.rep(EMPTY..le(0,8),8)};mem[#mem+1]=ledger
+        put(LOADER+0x218,string.rep('\0',512*24+12))
+        ptr(E+0x1AB7838,URES);ptr(URES+0x3F8,UMAN);put(UMAN+0x2C0,le(1,4));ptr(UMAN+0x2C8,0x71000000)
+        local resident,calls=false,{}
+        local fakes={SUPPORT_PRESENT=function()return 0 end,
+            SUPPORT_REQUEST=function(_,ids)ledger.bytes=require('ffi').string(ids,8)..le(1,4)..le(0,4)..ledger.bytes:sub(17);resident=true end}
+        local dio={read=read,module=fio.module,hashmap=function()return 0 end,resident=function()return resident end,
+            native=function(_,_,_,label)return fakes[label]or function()calls[#calls+1]=label end end}
+        local menu={is_open=function()return false end,menu_binding_status=function()return{focused=true,editing=false}end}
+        local view={can_start=true,context=2,menu_closed=true,render=RENDER,token='actor',base={scene=4,game=G,world=W,avatar=AV,ep=EP,pm=PM}}
+        local clock=0
+        local m=dofile('src/spawner/support_weapons.lua').new({io=dio,load=mod.require,catalogue=catalogue,scene=4,
+            anchor={x=0,y=0,z=0,facing_x=1,facing_y=0,radius=1,vertical=1},delivery='inventory',globals={DBFMCM=menu},
+            optional_guards={[0x4D4190]=true},observe=function()return view end,now=function()return clock end})
+        m:set_enabled(true);assert(m:queue(1))
+        clock=clock+1;m:update(view);assert(m:status()=='Loading '..catalogue[1].name,m:status())
+        for _=1,30 do clock=clock+1;m:update(view)end
+        assert(m:status():find(catalogue[1].name..' cannot be delivered',1,true),m:status())
+        assert(#calls==0,'native delivery step called: '..tostring(calls[1]))
+        local ok,why=m:queue(2);assert(ok,why)
+    end
 end
 
 -- fifth stratagem slot against fake mission memory
@@ -166,7 +205,12 @@ values.spawner_enabled=true;assert(menu:update(0.3));assert(fake.enabled==true)
 values.spawner_weapon=2;assert(byid.spawner_equip.on_activate()==true)
 assert(fake.queued[1]==2 and closed==1)
 values.spawner_stratagem=3;assert(byid.spawner_add_stratagem.on_activate()==true and fake.stratagem==3 and closed==2)
+-- a refusal reaches the menu: MCM shows a string result as the notice and drops a second value
+function fake:queue()return false,'A support request is already pending'end
+assert(byid.spawner_equip.on_activate()=='A support request is already pending' and closed==2)
+function fake:queue_stratagem()return false,'A stratagem request is already pending'end
+assert(byid.spawner_add_stratagem.on_activate()=='A stratagem request is already pending' and closed==2)
 menu:refresh_status();assert(byid.spawner_status.label=='Status: Spawner fixture')
 assert(byid.spawner_stratagem_status.label=='Status: Slot fixture')
 assert(menu:shutdown());assert(fake.enabled==false)
-print('Spawner catalogue (38 rows, LAS-44 Nova), request lifecycle without premature native calls, optional packed guard, fifth stratagem slot, and MCM page passed')
+print('Spawner catalogue (38 rows, LAS-44 Nova), request lifecycle without premature native calls, optional packed guard, model-less row ends its request, fifth stratagem slot, and MCM page with visible refusals passed')
