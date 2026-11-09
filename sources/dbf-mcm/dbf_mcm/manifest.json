@@ -1,7 +1,7 @@
 {
   "id": "dbf_mcm",
   "name": "Mod Configuration Menu",
-  "version": "0.1.74-luajit.5",
+  "version": "0.1.74-luajit.7",
   "author": "Goose",
   "lll": {
     "entry": "main.lua",

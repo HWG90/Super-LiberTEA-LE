@@ -1,0 +1,307 @@
+<div id="dbf-bracket-quiet">
+  <div class="viz-controls" aria-label="Combat preview controls">
+    <label class="form-label">Scene
+      <select class="form-select" id="dbf-scene">
+        <option value="combat">Combat · healthy</option>
+        <option value="aim">Aiming</option>
+        <option value="sprint">Sprinting</option>
+        <option value="injured">Injured</option>
+        <option value="select">Stratagem selection</option>
+        <option value="critical">Low ammo / injured</option>
+        <option value="supplies">Low supplies</option>
+        <option value="ready">Stratagem ready</option>
+        <option value="reload">Reloading</option>
+        <option value="throw">Throw preview</option>
+        <option value="ship">On the ship</option>
+      </select>
+    </label>
+    <button type="button" class="btn" id="dbf-fire">Fire</button>
+    <button type="button" class="btn" id="dbf-reload">Reload</button>
+    <label class="form-check"><input type="checkbox" class="form-check-input" id="dbf-details"><span class="form-check-label">Show details</span></label>
+    <span class="text-small text-muted">Design study · simulated data</span>
+  </div>
+  <div class="viz-carousel" aria-label="Bracket information density">
+    <section data-variant="Quiet" aria-label="Quiet Bracket combat HUD">
+      <div class="dbf-scene" data-design="bracket" data-density="quiet" data-scene="combat" aria-label="Quiet Bracket near-crosshair HUD preview">
+        <div class="dbf-sky"></div><div class="dbf-horizon"></div><div class="dbf-ground"></div>
+        <div class="dbf-preview-title">DBF <span>QUIET BRACKET</span></div>
+        <div class="dbf-mission"><span>TERMINID CONTROL</span><span>RETRIEVE LAUNCH CODES</span></div>
+        <div class="dbf-focus" aria-label="Clear aiming area"><b></b><b></b><b></b><b></b></div>
+        <div class="dbf-hud" aria-label="Near-crosshair instruments">
+          <div class="dbf-vitals" aria-label="Health and stamina">
+            <div class="dbf-vital-label"><i data-lucide="heart-pulse" aria-hidden="true"></i><span class="dbf-health-text">84</span></div>
+            <div class="dbf-meter dbf-health"><span></span></div>
+            <div class="dbf-meter dbf-stamina"><span></span></div>
+            <div class="dbf-supplies"><span><i data-lucide="syringe" aria-hidden="true"></i> 2</span><span><i data-lucide="circle-dot" aria-hidden="true"></i> 3</span></div>
+          </div>
+          <div class="dbf-ammo" aria-label="Ammunition and weapon mode">
+            <div class="dbf-rounds"><span class="dbf-count">32</span><span class="dbf-capacity">/ 45</span></div>
+            <div class="dbf-mode">AUTO <span>5 MAGS</span></div>
+            <div class="dbf-ammo-track"><span></span></div>
+          </div>
+          <div class="dbf-cooldowns" aria-label="Equipped stratagems">
+            <div class="dbf-slot ready" aria-label="Orbital precision strike ready"><i data-lucide="crosshair" aria-hidden="true"></i><span>READY</span></div>
+            <div class="dbf-slot cooling" aria-label="Eagle airstrike cooling down, 12 seconds"><i data-lucide="plane" aria-hidden="true"></i><span>0:12</span></div>
+            <div class="dbf-slot ready" aria-label="Machine gun ready"><i data-lucide="boxes" aria-hidden="true"></i><span>READY</span></div>
+            <div class="dbf-slot cooling" aria-label="Guard dog cooling down, 58 seconds"><i data-lucide="scan" aria-hidden="true"></i><span>0:58</span></div>
+          </div>
+        </div>
+        <div class="dbf-warning" aria-live="polite">RELOAD <span>5 ROUNDS</span></div>
+        <div class="dbf-selection" aria-label="Expanded DBF stratagem selection">
+          <div class="dbf-selection-head">STRATAGEMS <span>RELEASE TO CALL</span></div>
+          <button type="button" data-call="Orbital precision strike" class="dbf-choice selected" aria-pressed="true"><i data-lucide="crosshair" aria-hidden="true"></i><span>ORBITAL PRECISION STRIKE<small>READY · ↑ → ↓ ↓ ↓</small></span></button>
+          <button type="button" data-call="Eagle airstrike" class="dbf-choice" aria-pressed="false"><i data-lucide="plane" aria-hidden="true"></i><span>EAGLE AIRSTRIKE<small>COOLDOWN · 0:12</small></span></button>
+          <button type="button" data-call="Machine gun" class="dbf-choice" aria-pressed="false"><i data-lucide="boxes" aria-hidden="true"></i><span>MACHINE GUN<small>READY · ↓ ← ↓ ↑ →</small></span></button>
+          <button type="button" data-call="Guard dog" class="dbf-choice" aria-pressed="false"><i data-lucide="scan" aria-hidden="true"></i><span>GUARD DOG<small>COOLDOWN · 0:58</small></span></button>
+        </div>
+        <div class="dbf-throw"><span class="dbf-impact"></span><span class="dbf-distance">24 m <small>IMPACT</small></span><span class="dbf-throw-line"></span></div>
+        <div class="dbf-state-caption" aria-live="polite">Combat</div>
+      </div>
+    </section>
+    <section data-variant="Original" aria-label="Original Bracket combat HUD" hidden>
+      <div class="dbf-scene" data-design="bracket" data-density="original" data-scene="combat" aria-label="DBF Bracket near-crosshair HUD preview">
+        <div class="dbf-sky"></div><div class="dbf-horizon"></div><div class="dbf-ground"></div>
+        <div class="dbf-preview-title">DBF <span>BRACKET</span></div>
+        <div class="dbf-mission"><span>TERMINID CONTROL</span><span>RETRIEVE LAUNCH CODES</span></div>
+        <div class="dbf-focus" aria-label="Clear aiming area"><b></b><b></b><b></b><b></b></div>
+        <div class="dbf-hud" aria-label="Near-crosshair instruments">
+          <div class="dbf-vitals" aria-label="Health and stamina">
+            <div class="dbf-vital-label"><i data-lucide="heart-pulse" aria-hidden="true"></i><span class="dbf-health-text">84</span></div>
+            <div class="dbf-meter dbf-health"><span></span></div>
+            <div class="dbf-meter dbf-stamina"><span></span></div>
+            <div class="dbf-supplies"><span><i data-lucide="syringe" aria-hidden="true"></i> 2</span><span><i data-lucide="circle-dot" aria-hidden="true"></i> 3</span></div>
+          </div>
+          <div class="dbf-ammo" aria-label="Ammunition and weapon mode">
+            <div class="dbf-rounds"><span class="dbf-count">32</span><span class="dbf-capacity">/ 45</span></div>
+            <div class="dbf-mode">AUTO <span>5 MAGS</span></div>
+            <div class="dbf-ammo-track"><span></span></div>
+          </div>
+          <div class="dbf-cooldowns" aria-label="Equipped stratagems">
+            <div class="dbf-slot ready" aria-label="Orbital precision strike ready"><i data-lucide="crosshair" aria-hidden="true"></i><span>READY</span></div>
+            <div class="dbf-slot cooling" aria-label="Eagle airstrike cooling down, 12 seconds"><i data-lucide="plane" aria-hidden="true"></i><span>0:12</span></div>
+            <div class="dbf-slot ready" aria-label="Machine gun ready"><i data-lucide="boxes" aria-hidden="true"></i><span>READY</span></div>
+            <div class="dbf-slot cooling" aria-label="Guard dog cooling down, 58 seconds"><i data-lucide="scan" aria-hidden="true"></i><span>0:58</span></div>
+          </div>
+        </div>
+        <div class="dbf-warning" aria-live="polite">RELOAD <span>5 ROUNDS</span></div>
+        <div class="dbf-selection" aria-label="Expanded DBF stratagem selection">
+          <div class="dbf-selection-head">STRATAGEMS <span>RELEASE TO CALL</span></div>
+          <button type="button" data-call="Orbital precision strike" class="dbf-choice selected" aria-pressed="true"><i data-lucide="crosshair" aria-hidden="true"></i><span>ORBITAL PRECISION STRIKE<small>READY · ↑ → ↓ ↓ ↓</small></span></button>
+          <button type="button" data-call="Eagle airstrike" class="dbf-choice" aria-pressed="false"><i data-lucide="plane" aria-hidden="true"></i><span>EAGLE AIRSTRIKE<small>COOLDOWN · 0:12</small></span></button>
+          <button type="button" data-call="Machine gun" class="dbf-choice" aria-pressed="false"><i data-lucide="boxes" aria-hidden="true"></i><span>MACHINE GUN<small>READY · ↓ ← ↓ ↑ →</small></span></button>
+          <button type="button" data-call="Guard dog" class="dbf-choice" aria-pressed="false"><i data-lucide="scan" aria-hidden="true"></i><span>GUARD DOG<small>COOLDOWN · 0:58</small></span></button>
+        </div>
+        <div class="dbf-throw"><span class="dbf-impact"></span><span class="dbf-distance">24 m <small>IMPACT</small></span><span class="dbf-throw-line"></span></div>
+        <div class="dbf-state-caption" aria-live="polite">Combat</div>
+      </div>
+    </section>
+  </div>
+</div>
+<style>
+#dbf-bracket-quiet .viz-carousel{margin-top:12px}
+#dbf-bracket-quiet .dbf-scene{--dbf-text:#f1efdf;--dbf-dim:#b2b6b1;--dbf-yellow:#ffe800;--dbf-danger:#ff755c;--dbf-surface:#111917;--dbf-track:#73827b55;--dbf-size:1;--dbf-clearance:65px;--dbf-opacity:.94;position:relative;min-height:430px;overflow:hidden;isolation:isolate;color:var(--dbf-text);background:#2a3833;font:14px "Arial Narrow","Roboto Condensed",Arial,sans-serif;font-variant-numeric:tabular-nums}
+#dbf-bracket-quiet .dbf-sky{position:absolute;inset:0;background:linear-gradient(180deg,#78867b 0%,#52695e 44%,#263b32 74%,#17291e 100%);z-index:-3}
+#dbf-bracket-quiet .dbf-horizon{position:absolute;inset:27% -5% 0;background:#30493d;clip-path:polygon(0 48%,13% 38%,21% 49%,36% 22%,45% 42%,54% 31%,62% 51%,75% 17%,87% 40%,100% 24%,100% 100%,0 100%);z-index:-2}
+#dbf-bracket-quiet .dbf-ground{position:absolute;inset:54% -5% -6%;background:linear-gradient(174deg,#324c39 0%,#1c3023 65%,#14241c);clip-path:polygon(0 16%,25% 8%,44% 16%,62% 4%,83% 14%,100% 5%,100% 100%,0 100%);z-index:-1}
+#dbf-bracket-quiet .dbf-preview-title{position:absolute;top:22px;left:22px;font-size:20px;font-weight:700;letter-spacing:.05em}
+#dbf-bracket-quiet .dbf-preview-title span{margin-left:10px;font-size:11px;font-weight:400;color:var(--dbf-dim);letter-spacing:.14em}
+#dbf-bracket-quiet .dbf-mission{position:absolute;left:22px;top:60px;display:grid;gap:5px;font-size:11px;letter-spacing:.07em;color:var(--dbf-dim)}
+#dbf-bracket-quiet .dbf-mission span+span{color:var(--dbf-text)}
+#dbf-bracket-quiet .dbf-focus{position:absolute;left:50%;top:47%;width:6px;height:6px;transform:translate(-50%,-50%)}
+#dbf-bracket-quiet .dbf-focus b{position:absolute;background:var(--dbf-text);opacity:.9}
+#dbf-bracket-quiet .dbf-focus b:nth-child(1){width:7px;height:1px;left:-11px;top:2px}
+#dbf-bracket-quiet .dbf-focus b:nth-child(2){width:7px;height:1px;right:-11px;top:2px}
+#dbf-bracket-quiet .dbf-focus b:nth-child(3){width:1px;height:7px;top:-11px;left:2px}
+#dbf-bracket-quiet .dbf-focus b:nth-child(4){width:1px;height:7px;bottom:-11px;left:2px}
+#dbf-bracket-quiet .dbf-hud{position:absolute;left:50%;top:47%;transform:scale(var(--dbf-size));transform-origin:0 0;opacity:var(--dbf-opacity)}
+#dbf-bracket-quiet .dbf-vitals{position:absolute;right:var(--dbf-clearance);top:28px;width:97px}
+#dbf-bracket-quiet .dbf-vital-label{display:flex;align-items:center;justify-content:space-between;font-size:12px;margin-bottom:6px}
+#dbf-bracket-quiet .dbf-scene svg{width:14px;height:14px;stroke-width:1.8;flex-shrink:0}
+#dbf-bracket-quiet .dbf-meter{height:3px;background:var(--dbf-track);margin-bottom:5px}
+#dbf-bracket-quiet .dbf-meter span{display:block;height:100%;width:84%;background:var(--dbf-text)}
+#dbf-bracket-quiet .dbf-stamina{height:2px;margin-top:5px}
+#dbf-bracket-quiet .dbf-stamina span{width:62%;opacity:.6}
+#dbf-bracket-quiet .dbf-supplies{display:flex;justify-content:space-between;margin-top:9px;font-size:12px}
+#dbf-bracket-quiet .dbf-supplies span{display:flex;gap:5px;align-items:center}
+#dbf-bracket-quiet .dbf-ammo{position:absolute;left:var(--dbf-clearance);top:23px;width:97px}
+#dbf-bracket-quiet .dbf-rounds{display:flex;gap:7px;align-items:baseline}
+#dbf-bracket-quiet .dbf-count{font-size:36px;letter-spacing:-.05em;font-weight:700;line-height:1}
+#dbf-bracket-quiet .dbf-capacity{font-size:13px;color:var(--dbf-dim)}
+#dbf-bracket-quiet .dbf-mode{display:flex;justify-content:space-between;margin-top:7px;font-size:11px;letter-spacing:.04em}
+#dbf-bracket-quiet .dbf-mode span{color:var(--dbf-dim)}
+#dbf-bracket-quiet .dbf-ammo-track{height:2px;background:var(--dbf-track);margin-top:9px}
+#dbf-bracket-quiet .dbf-ammo-track span{display:block;height:100%;width:71%;background:var(--dbf-text)}
+#dbf-bracket-quiet .dbf-cooldowns{position:absolute;top:116px;left:-108px;width:216px;display:flex;justify-content:space-between;gap:12px}
+#dbf-bracket-quiet .dbf-slot{display:grid;justify-items:center;gap:6px;width:42px;color:var(--dbf-dim)}
+#dbf-bracket-quiet .dbf-slot svg{width:22px;height:22px}
+#dbf-bracket-quiet .dbf-slot span{font-size:11px;letter-spacing:.01em}
+#dbf-bracket-quiet .dbf-slot.ready{color:var(--dbf-text)}
+#dbf-bracket-quiet .dbf-slot.cooling svg{opacity:.4}
+#dbf-bracket-quiet .dbf-warning{display:none;position:absolute;top:calc(47% - 45px);left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.1em;color:var(--dbf-yellow)}
+#dbf-bracket-quiet .dbf-warning span{display:none}
+#dbf-bracket-quiet .dbf-selection{display:none;position:absolute;top:calc(47% - 86px);left:calc(50% - 144px);width:288px;padding:12px;box-sizing:border-box;background:var(--dbf-surface);border-left:2px solid var(--dbf-yellow);box-shadow:0 5px 25px #0004}
+#dbf-bracket-quiet .dbf-selection-head{display:flex;justify-content:space-between;font-size:11px;color:var(--dbf-yellow);margin-bottom:9px;letter-spacing:.06em}
+#dbf-bracket-quiet .dbf-selection-head span{font-size:11px;color:var(--dbf-dim);letter-spacing:0}
+#dbf-bracket-quiet .dbf-choice{font:inherit;width:100%;display:flex;align-items:center;gap:10px;padding:8px 5px;text-align:left;border:0;background:transparent;color:var(--dbf-dim)}
+#dbf-bracket-quiet .dbf-choice svg{width:19px;height:19px}
+#dbf-bracket-quiet .dbf-choice>span{font-size:12px;line-height:1.3}
+#dbf-bracket-quiet .dbf-choice small{display:block;font-size:11px;color:var(--dbf-dim);margin-top:3px}
+#dbf-bracket-quiet .dbf-choice.selected{background:#ffe80016;color:var(--dbf-yellow)}
+#dbf-bracket-quiet .dbf-choice:focus-visible{outline:2px solid var(--dbf-yellow)}
+#dbf-bracket-quiet .dbf-state-caption{position:absolute;bottom:18px;left:22px;color:var(--dbf-dim);font-size:11px;letter-spacing:.04em}
+#dbf-bracket-quiet .dbf-throw{display:none;position:absolute;left:50%;top:47%}
+#dbf-bracket-quiet .dbf-impact{position:absolute;width:32px;height:12px;border:1px solid var(--dbf-yellow);border-radius:50%;left:-16px;top:-6px}
+#dbf-bracket-quiet .dbf-distance{position:absolute;left:24px;top:-7px;white-space:nowrap;font-size:14px;color:var(--dbf-yellow)}
+#dbf-bracket-quiet .dbf-distance small{font-size:11px;color:var(--dbf-dim);margin-left:4px}
+#dbf-bracket-quiet .dbf-throw-line{position:absolute;left:-53px;top:17px;height:91px;width:41px;border-left:1px solid var(--dbf-yellow);border-top:1px solid var(--dbf-yellow);border-radius:90% 0 0 0;transform:rotate(23deg);opacity:.7}
+#dbf-bracket-quiet [data-design="rail"] .dbf-vitals{top:64px;right:20px;width:96px}
+#dbf-bracket-quiet [data-design="rail"] .dbf-ammo{top:61px;left:20px;width:96px}
+#dbf-bracket-quiet [data-design="rail"] .dbf-cooldowns{top:157px;left:-108px}
+#dbf-bracket-quiet [data-design="rail"] .dbf-vital-label{margin-bottom:5px}
+#dbf-bracket-quiet [data-scene="aim"] .dbf-vitals,#dbf-bracket-quiet [data-scene="aim"] .dbf-cooldowns,#dbf-bracket-quiet [data-scene="aim"] .dbf-mode,#dbf-bracket-quiet [data-scene="aim"] .dbf-ammo-track{display:none}
+#dbf-bracket-quiet [data-scene="aim"] .dbf-ammo{top:30px;left:50px}
+#dbf-bracket-quiet [data-scene="aim"] .dbf-count{font-size:26px}
+#dbf-bracket-quiet [data-scene="select"] .dbf-selection{display:block}
+#dbf-bracket-quiet [data-scene="select"] .dbf-hud,#dbf-bracket-quiet [data-scene="select"] .dbf-focus{visibility:hidden}
+#dbf-bracket-quiet [data-scene="critical"] .dbf-warning{display:block}
+#dbf-bracket-quiet [data-scene="critical"] .dbf-health span{width:24%;background:var(--dbf-danger)}
+#dbf-bracket-quiet [data-scene="critical"] .dbf-health-text{color:var(--dbf-danger)}
+#dbf-bracket-quiet [data-scene="critical"] .dbf-count{color:var(--dbf-yellow)}
+#dbf-bracket-quiet [data-scene="critical"] .dbf-ammo-track span{background:var(--dbf-yellow)}
+#dbf-bracket-quiet [data-scene="throw"] .dbf-throw{display:block}
+#dbf-bracket-quiet [data-scene="throw"] .dbf-ammo{display:none}
+#dbf-bracket-quiet [data-scene="throw"] .dbf-cooldowns{visibility:hidden}
+#dbf-bracket-quiet [data-scene="ship"] .dbf-hud,#dbf-bracket-quiet [data-scene="ship"] .dbf-focus,#dbf-bracket-quiet [data-scene="ship"] .dbf-mission{display:none}
+#dbf-bracket-quiet .dbf-scene.hide-ready .dbf-slot.ready{visibility:hidden}
+#dbf-bracket-quiet .dbf-preview-title,#dbf-bracket-quiet .dbf-mission{display:none}
+#dbf-bracket-quiet [data-density="quiet"] .dbf-capacity,#dbf-bracket-quiet [data-density="quiet"] .dbf-mode,#dbf-bracket-quiet [data-density="quiet"] .dbf-ammo-track,#dbf-bracket-quiet [data-density="quiet"] .dbf-cooldowns{display:none}
+#dbf-bracket-quiet [data-density="quiet"] .dbf-count{font-size:30px;font-weight:500}
+#dbf-bracket-quiet [data-density="quiet"] .dbf-ammo{top:30px;width:80px}
+#dbf-bracket-quiet [data-density="quiet"] .dbf-vitals{top:35px;width:80px;display:none}
+#dbf-bracket-quiet [data-density="quiet"] .dbf-vitals{height:64px}
+#dbf-bracket-quiet [data-density="quiet"] .dbf-vital-label{position:absolute;top:0;left:0;width:100%;margin:0}
+#dbf-bracket-quiet [data-density="quiet"] .dbf-health{position:absolute;top:18px;left:0;width:100%;margin:0}
+#dbf-bracket-quiet [data-density="quiet"] .dbf-stamina{position:absolute;top:27px;left:0;width:100%;margin:0}
+#dbf-bracket-quiet [data-density="quiet"] .dbf-supplies{position:absolute;top:39px;left:0;width:100%;margin:0}
+#dbf-bracket-quiet [data-density="quiet"].show-health .dbf-vitals,#dbf-bracket-quiet [data-density="quiet"].show-stamina .dbf-vitals,#dbf-bracket-quiet [data-density="quiet"].show-stim .dbf-vitals,#dbf-bracket-quiet [data-density="quiet"].show-grenade .dbf-vitals{display:block}
+#dbf-bracket-quiet [data-density="quiet"] .dbf-vital-label,#dbf-bracket-quiet [data-density="quiet"] .dbf-health,#dbf-bracket-quiet [data-density="quiet"] .dbf-stamina,#dbf-bracket-quiet [data-density="quiet"] .dbf-supplies{display:none}
+#dbf-bracket-quiet [data-density="quiet"].show-health .dbf-health,#dbf-bracket-quiet [data-density="quiet"].show-stamina .dbf-stamina{display:block}
+#dbf-bracket-quiet [data-density="quiet"].show-health .dbf-vital-label{display:flex}
+#dbf-bracket-quiet [data-density="quiet"] .dbf-health-text{visibility:hidden}
+#dbf-bracket-quiet [data-density="quiet"].critical-health .dbf-health-text{visibility:visible}
+#dbf-bracket-quiet [data-density="quiet"].show-stim .dbf-supplies,#dbf-bracket-quiet [data-density="quiet"].show-grenade .dbf-supplies{display:flex;justify-content:flex-end}
+#dbf-bracket-quiet [data-density="quiet"] .dbf-supplies>span{display:none}
+#dbf-bracket-quiet [data-density="quiet"].show-stim .dbf-supplies>span:first-child,#dbf-bracket-quiet [data-density="quiet"].show-grenade .dbf-supplies>span:last-child{display:flex}
+#dbf-bracket-quiet [data-density="quiet"].show-stim.show-grenade .dbf-supplies{justify-content:space-between}
+#dbf-bracket-quiet [data-density="quiet"].no-stims .dbf-supplies>span:first-child{color:var(--dbf-danger)}
+#dbf-bracket-quiet [data-scene="ready"] .dbf-warning{display:flex;align-items:center;gap:7px;top:calc(47% + 96px);color:var(--dbf-text);letter-spacing:.03em}
+#dbf-bracket-quiet .dbf-scene.low-ammo .dbf-warning{display:block}
+#dbf-bracket-quiet .dbf-scene.low-ammo .dbf-count{color:var(--dbf-yellow)}
+#dbf-bracket-quiet [data-scene="critical"]:not(.low-ammo) .dbf-warning{display:none}
+#dbf-bracket-quiet [data-scene="critical"]:not(.low-ammo) .dbf-count{color:var(--dbf-text)}
+#dbf-bracket-quiet [data-scene="reload"] .dbf-warning{display:block;top:calc(47% + 78px);font-size:11px;letter-spacing:.03em;color:var(--dbf-dim)}
+#dbf-bracket-quiet [data-density="quiet"][data-scene="reload"] .dbf-ammo-track{display:block;width:48px;margin-top:7px}
+#dbf-bracket-quiet [data-density="quiet"].details .dbf-capacity{display:inline}
+#dbf-bracket-quiet [data-density="quiet"].details .dbf-mode{display:flex}
+#dbf-bracket-quiet [data-density="quiet"].details .dbf-cooldowns{display:flex}
+#dbf-bracket-quiet [data-density="quiet"].details .dbf-health-text{visibility:visible}
+#dbf-bracket-quiet [data-density="quiet"][data-scene="aim"] .dbf-vitals{display:none}
+#dbf-bracket-quiet [data-density="quiet"][data-scene="ship"] .dbf-hud{display:none}
+@media(max-width:480px){#dbf-bracket-quiet .dbf-scene{min-height:420px}#dbf-bracket-quiet .dbf-vitals{width:87px;right:16px;top:64px}#dbf-bracket-quiet .dbf-ammo{width:87px;left:16px;top:61px}#dbf-bracket-quiet .dbf-cooldowns{top:157px}#dbf-bracket-quiet .dbf-count{font-size:30px}#dbf-bracket-quiet .dbf-preview-title{left:14px}#dbf-bracket-quiet .dbf-mission{left:14px}#dbf-bracket-quiet [data-scene="aim"] .dbf-ammo{top:30px;left:40px}}
+@media(prefers-reduced-motion:no-preference){#dbf-bracket-quiet .dbf-ammo-track span{transition:width 70ms linear}}
+</style>
+<script>
+(() => {
+  const root = document.getElementById('dbf-bracket-quiet');
+  const select = root.querySelector('#dbf-scene');
+  const fire = root.querySelector('#dbf-fire');
+  const reload = root.querySelector('#dbf-reload');
+  const details = root.querySelector('#dbf-details');
+  const scenes = [...root.querySelectorAll('.dbf-scene')];
+  const defaults = { scene: 'combat', rounds: 32, call: 'Orbital precision strike', details: false, returnScene: 'combat', version: 2 };
+  const saved = window.openai && window.openai.widgetState;
+  const content = saved && saved.modelContent;
+  const state = { ...defaults, ...(content && content.version === 2 ? content : {}) };
+  const allowed = [...select.options].map(option => option.value);
+  if (!allowed.includes(state.scene)) state.scene = 'combat';
+  if (!Number.isInteger(state.rounds) || state.rounds < 0 || state.rounds > 45) state.rounds = 32;
+  const settings = scenes.map(() => ({ scale: 1, clearance: 65, opacity: 94 }));
+  let reloadTimer;
+  function persist() {
+    if (window.openai && window.openai.setWidgetState) {
+      window.openai.setWidgetState({ modelContent: { ...state }, privateContent: null }).catch(() => {});
+    }
+  }
+  function render() {
+    select.value = state.scene;
+    details.checked = state.details === true;
+    const actionable = ['combat', 'aim', 'critical', 'injured', 'sprint', 'supplies', 'ready'].includes(state.scene);
+    fire.disabled = !actionable || state.rounds === 0;
+    reload.disabled = !actionable || state.rounds === 45;
+    const effective = state.scene === 'reload' ? state.returnScene : state.scene;
+    const health = effective === 'critical' ? 24 : effective === 'injured' ? 42 : effective === 'supplies' ? 64 : 100;
+    const stamina = effective === 'sprint' ? 37 : 100;
+    const stims = ['critical', 'supplies'].includes(effective) ? 0 : 2;
+    const grenades = effective === 'supplies' ? 1 : 3;
+    scenes.forEach((scene, index) => {
+      const config = settings[index];
+      const count = state.rounds;
+      scene.dataset.scene = state.scene;
+      scene.style.setProperty('--dbf-size', config.scale);
+      scene.style.setProperty('--dbf-clearance', config.clearance + 'px');
+      scene.style.setProperty('--dbf-opacity', config.opacity / 100);
+      scene.classList.toggle('details', state.details === true);
+      scene.classList.toggle('show-health', health < 100 || state.details === true);
+      scene.classList.toggle('critical-health', health <= 25);
+      scene.classList.toggle('show-stamina', stamina < 100 || state.details === true);
+      scene.classList.toggle('show-stim', health < 100 || state.details === true);
+      scene.classList.toggle('show-grenade', state.scene === 'throw' || grenades <= 1 || state.details === true);
+      scene.classList.toggle('no-stims', stims === 0);
+      scene.classList.toggle('low-ammo', count <= 9 && actionable);
+      scene.querySelector('.dbf-count').textContent = state.scene === 'reload' ? '—' : String(count);
+      scene.querySelector('.dbf-health-text').textContent = String(health);
+      scene.querySelector('.dbf-health span').style.width = health + '%';
+      scene.querySelector('.dbf-health span').style.background = health <= 25 ? 'var(--dbf-danger)' : 'var(--dbf-text)';
+      scene.querySelector('.dbf-stamina span').style.width = stamina + '%';
+      const supplies = scene.querySelectorAll('.dbf-supplies>span');
+      supplies[0].lastChild.textContent = ' ' + stims;
+      supplies[1].lastChild.textContent = ' ' + grenades;
+      scene.querySelector('.dbf-ammo-track span').style.width = state.scene === 'reload' ? '60%' : (count / 45 * 100) + '%';
+      scene.querySelector('.dbf-warning').textContent = state.scene === 'reload' ? 'RELOADING' : state.scene === 'ready' ? 'EAGLE READY' : count === 0 ? 'RELOAD · EMPTY' : 'RELOAD';
+      scene.querySelector('.dbf-state-caption').textContent = select.selectedOptions[0].textContent;
+      scene.querySelectorAll('.dbf-choice').forEach(choice => {
+        const selected = choice.dataset.call === state.call;
+        choice.classList.toggle('selected', selected);
+        choice.setAttribute('aria-pressed', String(selected));
+      });
+    });
+  }
+  select.addEventListener('change', () => { clearTimeout(reloadTimer); state.scene = select.value; state.returnScene = 'combat'; state.rounds = state.scene === 'critical' ? 5 : 32; render(); persist(); });
+  fire.addEventListener('click', () => { state.rounds = Math.max(0, state.rounds - 1); render(); persist(); });
+  reload.addEventListener('click', () => {
+    clearTimeout(reloadTimer);
+    state.returnScene = state.scene;
+    state.scene = 'reload'; render(); persist();
+    reloadTimer = setTimeout(() => { state.scene = state.returnScene; state.rounds = 45; render(); persist(); }, 900);
+  });
+  details.addEventListener('change', () => { state.details = details.checked; render(); persist(); });
+  root.querySelectorAll('.dbf-choice').forEach(choice => choice.addEventListener('click', () => { state.call = choice.dataset.call; render(); persist(); }));
+  window.addEventListener('openai:set_globals', event => {
+    const next = event.detail && event.detail.globals && event.detail.globals.widgetState;
+    const model = next && next.modelContent;
+    if (model && model.version === 2 && allowed.includes(model.scene)) state.scene = model.scene;
+    if (model && Number.isInteger(model.rounds) && model.rounds >= 0 && model.rounds <= 45) state.rounds = model.rounds;
+    if (model && typeof model.call === 'string') state.call = model.call;
+    if (model && typeof model.details === 'boolean') state.details = model.details;
+    if (model && allowed.includes(model.returnScene)) state.returnScene = model.returnScene;
+    render();
+  });
+  render();
+  if (globalThis.Tweak) scenes.forEach((scene, index) => {
+    const tweak = new Tweak({ container: scene, onChange: render });
+    tweak.addSlider(settings[index], 'scale', { label: 'HUD scale', min: .8, max: 1.25, step: .05 });
+    if (index === 0) tweak.addSlider(settings[index], 'clearance', { label: 'Aim clearance', min: 50, max: 90, step: 5, unit: 'px' });
+    tweak.addSlider(settings[index], 'opacity', { label: 'HUD opacity', min: 60, max: 100, step: 5, unit: '%' });
+  });
+})();
+</script>

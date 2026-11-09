@@ -4283,8 +4283,36 @@ function M.new(bridge,report,backend,process)
   end)
   if not ok then return nil,tostring(result)end;return result
  end
- function self:commit_capabilities()
-  return {commit_verified=self.phase=='ready'and commit_info~=nil and code_current(),cache_layout_verified=false}
+ -- The mission picker has its own category setters. Its players global is
+ -- also proven by the startup catalogue resolver, independently of the ship
+ -- Armory commit code. Keep both proofs strict when both are available.
+ local function deployment_commit_source(category)
+  local info=category==Category.armor and targets.deployment_commit or targets.player_commits and targets.player_commits[category]
+  assert(info,'Equipment category setter unavailable')
+  local players=commit_info and commit_info.players_global
+  local data=bridge.catalog_bridge
+  if data then
+   assert(type(data.verify)=='function'and data.verify()==true,'Equipment catalogue proof changed')
+   assert(data.armor_catalog==info.profile_global,'Equipment profile proof differs')
+   assert(not players or players==data.players,'Equipment players proofs differ')
+   players=data.players
+  end
+  assert(type(players)=='number'and inside(players-base,8,false)and not inside(players-base,8,true),
+   'Equipment players proof unavailable')
+  return info,players
+ end
+ function self:commit_capabilities(category,opts)
+  local ok,verified=pcall(function()
+   if not(self.phase=='ready'and code_current())then return false end
+   local ctx=context()
+   if ctx.payload then
+    if opts and opts.reconcile then return false end
+    deployment_commit_source(category or Category.armor)
+    return ctx.unchanged()
+   end
+   return commit_info~=nil and ctx.unchanged()
+  end)
+  return {commit_verified=ok and verified==true,cache_layout_verified=false}
  end
  -- `opts.reconcile` takes the snapshot for a profile reconcile (commit_worn):
  -- an armor-category commit whose protected context masks all three equipment
@@ -4295,7 +4323,7 @@ function M.new(bridge,report,backend,process)
  -- take its view through the helmet or cape catalog.
  function self:commit_snapshot(catalog_result,opts)
   local ok,result=pcall(function()
-   assert(self.phase=='ready'and commit_info and code_current(),'native Armory commit proof unavailable')
+   assert(self.phase=='ready'and code_current(),'native equipment commit proof unavailable')
    local view,why=self:snapshot(opts and opts.view or catalog_result);assert(view,why)
    assert(view.native_view_mode==View.single and view.identity_mapping_verified,'verified native Armor context required')
    local category=catalog_result.category or 0
@@ -4312,15 +4340,20 @@ function M.new(bridge,report,backend,process)
    if ctx.payload then
     assert(not reconcile,'profile reconcile requires the ship Armory')
     assert(view.native_category==category,'Equipment picker category changed before Apply')
-    assert(targets.deployment_commit,'Equipment Apply unavailable')
-    local players=assert(pointer(watch(commit_info.players_global,8)),'Equipment players unavailable')
+    local info,players_global=deployment_commit_source(category)
+    local unchanged=ctx.unchanged
+    ctx.unchanged=function()
+     local current,current_players=deployment_commit_source(category)
+     return current==info and current_players==players_global and unchanged()
+    end
+    local players=assert(pointer(watch(players_global,8)),'Equipment players unavailable')
     local n=u32(watch(players+Players.count,4),0);assert(n>=1 and n<=Players.capacity,'Equipment player bounds rejected')
     local local_player=assert(pointer(watch(players+Players.local_player,8)),'Equipment local player unavailable')
     assert(u32(watch(local_player+Players.player_id,4),0)==ctx.player_id,'Equipment local player changed')
     local flags=u32(watch(players+Players.flags,4),0)
     assert(math.floor(flags/Players.flag_bit_3)%2==0 and math.floor(flags/Players.flag_bit_11)%2==0,'Unready before applying a variant')
     local payload=watch(ctx.payload,Payload.size)
-    local profile_slot=watch(targets.deployment_commit.profile_global,8)
+    local profile_slot=watch(info.profile_global,8)
     local profile=assert(pointer(profile_slot),'Equipment profile unavailable')
     local key=tostring(ctx.owner)..':'..tostring(ctx.payload)..profile_slot
     if key~=commit_session_key then commit_session_key=key;commit_session={}end
@@ -4332,6 +4365,7 @@ function M.new(bridge,report,backend,process)
     commit_snapshots[out]={category=category,ctx=ctx,payload=payload,profile=profile,player_id=ctx.player_id}
     return out
    end
+   assert(commit_info,'native Armory commit proof unavailable')
    local old,current=watch(ctx.owner+Armory.committed,Loadout.size),watch(ctx.owner+Armory.pending,Loadout.size)
    local mirrors=watch(ctx.owner+Armory.mirrors,Armory.mirrors_size)
    local settings_slot=watch(commit_info.settings_global,8);local settings=assert(pointer(settings_slot),'native settings unavailable')
@@ -4373,8 +4407,7 @@ function M.new(bridge,report,backend,process)
    assert(saved.category==category,'Equipment category changed before Apply')
    if saved.ctx.payload then
     assert(self:verify_commit(expected),'Equipment changed before Apply')
-    local info=assert(category==Category.armor and targets.deployment_commit or targets.player_commits and targets.player_commits[category],
-     'Equipment category setter unavailable');local calls=prepared()
+    local info=deployment_commit_source(category);local calls=prepared()
     assert(calls.executable(info.entry)and type(calls.deployment_commit)=='function','Equipment commit backend unavailable')
     local payload_offset=category==Category.helmet and Payload.helmet or category==Category.cape and Payload.cape or Payload.armor
     local at=saved.ctx.payload+payload_offset;local desired=packed_u32(record.item_id)
@@ -4388,9 +4421,11 @@ function M.new(bridge,report,backend,process)
      assert(read(span.at,span.n)==required,'Equipment evidence changed after assignment')
     end
     assert(catalog_result.verify_owned({id})==true,'Equipment ownership changed before native call')
+    deployment_commit_source(category)
     attempted=true;assert(calls.deployment_commit(info.entry,saved.profile,saved.player_id,record.item_id)~=false,'Equipment native Apply failed')
     live=context();assert(live.owner==saved.ctx.owner and live.payload==saved.ctx.payload,'Equipment owner changed during Apply')
     assert(read(live.payload,Payload.size)==data and code_current(),'Equipment changed during Apply')
+    deployment_commit_source(category)
     return true
    end
    assert(not expected.pending_nonarmor and mask_armor(saved.old)==mask_armor(saved.current)
@@ -5023,7 +5058,7 @@ function M.new(grid,player,catalog,opts)
  end
  assert(not reconcile or category==0,'a profile reconcile is an armor-category commit')
  local field=category==1 and 'helmet_id' or category==2 and 'cape_id' or 'armor_id'
- local caps=grid:commit_capabilities()
+ local caps=grid:commit_capabilities(category,opts)
  if not(caps and caps.commit_verified)then return nil,'Native equipment commit is unavailable.'end
  local first,why=player:sample();if not first then return nil,why end
  local observations=setmetatable({},{__mode='k'})
@@ -5978,7 +6013,11 @@ function M.attach(binding,host)
    local has_others=false;for k,v in pairs(others)do if v and target[k]~=nil then has_others=true end end
    if has_others then
     local ran,accepted,message=pcall(original_start,instance,snapshot,now,others)
-    if not ran or not accepted then return false,stop('Apply incomplete: '..tostring(ran and message or accepted))end
+    if not ran or not accepted then
+     -- DiverKit already distinguishes an untouched rejection from a partial apply.
+     -- Transmog has only prepared its operation; its armor phase has not begun.
+     return false,stop(ran and tostring(message) or 'Apply incomplete: '..tostring(accepted))
+    end
     state.stage='equipment';instance.busy=true
    else state.stage='armor';instance.busy=true end
    report('apply_requested',target.transmog and target.transmog.label or 'original armor')
@@ -16703,6 +16742,7 @@ function M.start(k,env)
   -- selection proof, whose code only the ship Armory runs.
   local ok,data=pcall(catalog.bridge)
   found.progression_global=ok and type(data)=='table'and data.progression or nil
+  found.catalog_bridge=ok and type(data)=='table'and data or nil
   -- Two globals the resolver found by signature are also in the fixed tables.
   local game=k:service('game')
   if game then game.alias('ui_manager',found.manager_global);game.alias('menu',found.menu_global)end

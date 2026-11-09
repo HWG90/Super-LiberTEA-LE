@@ -11,7 +11,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from build_package import PARTS  # noqa: E402
+from build_package import PARTS, GADGET_KIT, MODULAR_CREDITS  # noqa: E402
 
 INPUTS = HERE / "out" / "inputs"
 SHIPPED = HERE / "out" / "package"
@@ -21,13 +21,14 @@ LUA_TYPE = 0xA14E8DFA2CD117E2
 BINARY = re.compile(r"\.(dll|exe|lib|pdb|obj|o|a|so|bin|dmp|zip)$", re.I)
 
 
-def git_export(repo, commit, dest, paths=(), keep=lambda name: True):
-    """The files of <commit> (optionally only <paths>) into dest, as git stores them."""
+def git_export(repo, commit, dest, paths=(), keep=lambda name: True, strip=""):
+    """The files of <commit> (optionally only <paths>) into dest, as git stores them, less a leading <strip>."""
     data = subprocess.run(["git", "-C", str(repo), "archive", "--format=tar", commit, *paths], capture_output=True, check=True).stdout
     with tarfile.open(fileobj=io.BytesIO(data)) as tar:
         for member in tar.getmembers():
             if member.isfile() and keep(member.name):
-                target = dest / member.name
+                assert member.name.startswith(strip), member.name
+                target = dest / member.name[len(strip):]
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(tar.extractfile(member).read())
     return subprocess.run(["git", "-C", str(repo), "rev-parse", commit], capture_output=True, text=True, check=True).stdout.strip()
@@ -87,8 +88,12 @@ def main():
     repo = parser.parse_args().repo.expanduser()
     inputs = json.loads((HERE / "INPUTS.json").read_text())
     receipt = json.loads((HERE / "RECEIPT.json").read_text())
-    for sub in ("package", "sources"):
-        shutil.rmtree(repo / sub, ignore_errors=True)
+    # sources/gadget-kit is the kit's own working copy (the Gadget Kit work edits it in this repo): it is checked against
+    # the collected kit below, never regenerated.
+    shutil.rmtree(repo / "package", ignore_errors=True)
+    for path in (repo / "sources").iterdir() if (repo / "sources").exists() else []:
+        if path.name != "gadget-kit":
+            shutil.rmtree(path) if path.is_dir() else path.unlink()
     package = repo / "package"
     for name in ["build_package.py", "make_repo.py", "mods_install.lua", "test_install.py", "icon.svg", "INPUTS.json", "RECEIPT.json"]:
         (package / name).parent.mkdir(parents=True, exist_ok=True)
@@ -105,10 +110,14 @@ def main():
 
     dest = src / "live-lua-loader"
     commit = git_export(Path("/home/goose/Worktrees/linux-hd2/lll-r38-luajit2"), "8b25fad", dest)
+    # Know Your Constellation's conversion carries the Megapack's forecast-panel layout as shipped (2026-11-08).
+    kyc = "bingus-conversions/KnowYourConstellation/26251122/1d106bd89d3a79ac.lua"
+    shutil.copyfile(INPUTS / "megapack/options/KnowYourConstellation/1d106bd89d3a79ac.lua", dest / kyc)
     source_md(dest, "Live Lua Loader (LLL) R38", [
         "HWG90/LLL, branch `LLL_JIT_Live`, commit `%s` (tag `R38-26251122-luajit.2`)." % commit,
         "The Lua 5.1 LLL in the boot patch is composed from this tree (`tools/build_steam_release.py`); the LuaJIT runtime",
-        "embeds its in-process variant (see `../luajit-runtime`). The drop-in boot patch is built by `package/lll-dropin/`."])
+        "embeds its in-process variant (see `../luajit-runtime`). The drop-in boot patch is built by `package/lll-dropin/`.",
+        "`%s` is the Megapack's Know Your Constellation as shipped, with the 2026-11-08 forecast-panel layout." % kyc])
     report["live-lua-loader"] = commit
 
     dest = src / "luajit-runtime"
@@ -123,12 +132,12 @@ def main():
     report["luajit-runtime"] = commit
 
     dest = src / "war-journalist-proton"
-    commit = git_export(Path("/home/goose/Documents/ChatGPT/Linux HD2/.claude/worktrees/wj-proton-bone-posing-668ec2/prior-war-journalist"),
-                        "09a0940", dest)
+    commit = git_export(Path("/home/goose/Worktrees/linux-hd2/wj-proton-lua51-parity"), "71eec8a", dest,
+                        keep=lambda n: not n.endswith((".zip", ".dll", ".exe")))
     wj = inputs["mods"]["dbf_freecam"]
-    source_md(dest, "War Journalist (Proton) 1.3.4, bone posing", [
-        "HWG90/DBF_PhotoMode, branch `claude/wj-proton-bone-posing` (the bone-posing line on top of `WJ-Proton` 9613fcf),",
-        "commit `%s`. The LLL folder mod `dbf_freecam` is built by" % commit,
+    source_md(dest, "War Journalist (Proton) 1.4.0", [
+        "HWG90/DBF_PhotoMode, branch `codex/wj-proton-lua51-parity-20261106` (the Proton line with the Lua 5.1 changes",
+        "merged in), commit `%s`. The LLL folder mod `dbf_freecam` is built by" % commit,
         "`python3 tools/build_proton_candidate.py` (build %s). Its two native bridges" % wj["build"],
         "(`hd2_nativeinfo_c1578203689e39b9.dll`, `hd2_nativeinfo_8db3d96f8c3cbb24.dll`) come from `tools/build_steam_native_bridge.py`",
         "and `tools/build_steam_scene_bridge.py`. The 1.2.0 assets (compiled game resources) ship as they are; their shader",
@@ -136,12 +145,13 @@ def main():
     report["war-journalist-proton"] = commit
 
     for mod, folder, title, notes in [
-        ("dbf_mcm", "dbf-mcm", "Mod Configuration Menu (DBF-MCM) 0.1.74-luajit.5",
+        ("dbf_mcm", "dbf-mcm", "Mod Configuration Menu (DBF-MCM) 0.1.74-luajit.7",
          ["The LLL folder mod as shipped: `luajit-ports/dbf_mcm` of the Linux HD2 workspace, branch",
-          "`claude/dbf-mcm-inproc-font`, commit `%s`." % inputs["mods"]["dbf_mcm"]["git"]["commit"]]),
+          "`indev/dbf-mcm-performance`, commit `%s`." % inputs["mods"]["dbf_mcm"]["git"]["commit"]]),
         ("divers_best_friend", "ass", "Diver's Best Friend (ASS) R46, LuaJIT 26251122 (LE build)",
          ["The LLL folder mod as shipped (plain LuaJIT; no native files). Built from",
-          "`native-work/dbf-ass-luajit/divers_best_friend` of the Linux HD2 workspace, commit `%s`." % inputs["mods"]["divers_best_friend"]["source_commit"],
+          "`native-work/dbf-ass-luajit/divers_best_friend` of the Linux HD2 workspace, branch `indev/optimistic-proskuriakova-e07a63`,",
+          "commit `%s` (with the HUD+ stratagem handoff fixes)." % inputs["mods"]["divers_best_friend"]["git"]["commit"],
           "The LE build leaves out DBF-HUD's weapon readout that the port also started (six `src/weapon_status*.lua`",
           "modules and their lines in main.lua; `package/build_package.py`, ASS_DROPPED and ASS_MAIN)."]),
     ]:
@@ -159,19 +169,40 @@ def main():
         "`native/BridgeCombatWeaponMenu-bcb24cbfd1cd.dll` from `dll/native/weapon_menu.cpp` (`build_dll.py`, Zig 0.14.1)."])
     report["bridge-combat"] = commit
 
+    # Gadget Kit: the repo's own copy is the kit's source; every non-binary file of the collected kit must be in it as is.
     dest = src / "gadget-kit"
-    kit = Path("/home/goose/Projects/Linux HD2 Mods/builds/26251122/mods/gadget-kit/src")
-    copy_tree(kit, dest, keep=lambda rel: not rel.startswith(("dist/", "docs/", "port51/", "native/memory/")) and not BINARY.search(rel)
-              and "/__pycache__/" not in rel)
-    copy_tree(INPUTS / "goose_temporary_unlocks", dest, keep=lambda rel: not BINARY.search(rel))
-    source_md(dest, "Goose Gadget Kit 0.5.10 (the LE build ships only Spawner and First Person)", [
-        "The kit's source for Steam build 26251122 with the Lua exactly as 0.5.10 shipped. Super LiberTEA - LE builds",
-        "Gadget Kit LE from it with `package/gadget-kit-le/` (its main.lua and src/mcm.lua) and leaves out the Unlocks and",
-        "Gameplay modules (`package/build_package.py`, LE_DROPPED). Native ADS helpers: `native/first_person/` and",
-        "`native/near_clip/` (`build*.py`); the binaries ship in the release."])
+    assert json.loads((dest / "manifest.json").read_text())["version"] == GADGET_KIT, "sources/gadget-kit is not the collected kit"
+    kit = INPUTS / "goose_temporary_unlocks"
+    differ = [p.relative_to(kit).as_posix() for p in kit.rglob("*") if p.is_file() and not BINARY.search(p.name)
+              and (dest / p.relative_to(kit)).read_bytes() != p.read_bytes()] if dest.exists() else ["(missing)"]
+    assert not differ, "sources/gadget-kit differs from the collected kit: %s" % differ[:5]
+    report["gadget-kit"] = GADGET_KIT
+
+    dest = src / "dbf-modular"
+    project = Path("/home/goose/Projects/HellForge/Backports/DBF-Modular")
+    copy_tree(STAGE / "dbf_modular", dest / "dbf_modular")
+    for folder in ("tests", "tools", "design"):
+        copy_tree(project / folder, dest / folder, keep=lambda rel: not BINARY.search(rel) and "/__pycache__/" not in rel)
+    for name in ("README.md", "LICENSE"):
+        shutil.copyfile(project / name, dest / name)
+    credits = (project / "CREDITS.md").read_bytes()
+    assert credits.count(MODULAR_CREDITS) == 1
+    (dest / "CREDITS.md").write_bytes(credits.replace(MODULAR_CREDITS, b""))
+    source_md(dest, "DBF Modular 0.1.0-dev.23-26251122", [
+        "`dbf_modular/` is the LLL folder mod as shipped (without the withheld native Heat Limiter). `tests/`, `tools/` and",
+        "`design/` are the project's, from `~/Projects/HellForge/Backports/DBF-Modular` (not yet committed there). Its",
+        "offline tests read snapshots of LLL and DBF-MCM, whose sources are in `../live-lua-loader` and `../dbf-mcm`."])
+
+    dest = src / "nova-weapon-fov"
+    commit = git_export(Path("/home/goose/Projects/Linux HD2 Mods/.claude/worktrees/transmog-armor-equip-bug-c59577"), "cefd305", dest,
+                        ["builds/26251122/mods/nova-weapon-fov"], strip="builds/26251122/mods/nova-weapon-fov/")
+    source_md(dest, "Nova Weapon FOV 0.1.0-26251122", [
+        "The Linux HD2 Mods workspace, branch `indev/nova-weapon-fov-zoom-92372e`, commit `%s`: `stage/goose_nova_weapon_fov`" % commit,
+        "is the LLL folder mod as shipped, `tests/harness.lua` its offline checks, `live/` the probes the values were found with."])
+    report["nova-weapon-fov"] = commit
 
     for part, folder, title, notes in [
-        ("diverkit", "diverkit", "DiverKit Alpha 8.14.31, LuaJIT 26251122 r6",
+        ("diverkit", "diverkit", "DiverKit Alpha 8.14.31, LuaJIT 26251122 r10",
          ["Original: Nexus Mods (Helldivers 2) mod 16493. LuaJIT port for build 26251122 by Goose. Extracted from the shipped",
           "patch, by option folder; each file is one Lua resource named by its resource key."]),
         ("transmog", "transmog", "HD2 Transmog Foundation 0.2.4, LuaJIT 26251122",
@@ -189,17 +220,14 @@ def main():
         count = extract_part(part, dest)
         source_md(dest, title, notes + ["", "%d Lua resources." % count])
         report[folder] = count
+    # HudPlusPlus Modular r1: the module refactor's own sources/hudplusplus (a branch of this repo), its README worded
+    # without the word "licensed" (no licensing text about HUD+ anywhere, the user's rule).
     dest = src / "hudplusplus"
-    commit = git_export(Path("/home/goose/Worktrees/linux-hd2/bridge-combat-26251122"), "56de681", dest / "builder",
-                        ["native-work/hud-plus-port"], keep=lambda n: not BINARY.search(n))
-    count = extract_part("hud-plus", dest / "lua", INPUTS / "hud-plus")
-    source_md(dest, "HudPlusPlus r9, LuaJIT 26251122", [
-        "HudPlusPlus is HD2 HUD Plus 0.2.9 by DDRK1ng (Nexus Mods, helldivers2/mods/15298) rebuilt for game build 26251122",
-        "and renamed. `builder/native-work/hud-plus-port` (Linux HD2 workspace, branch `indev/hud-plus-search-815c13`, commit",
-        "`%s`) builds the Arsenal mod from HUD+ 0.2.9: `build_port.py`, the data it reads (`data/`, with" % commit,
-        "`manual-26251122.json` giving the evidence for every value found by hand), `tools/` and `tests/`. Its README.md",
-        "describes the method; LIVE-CHECK.md lists the first-launch checks. `lua/` holds the Lua the shipped patch",
-        "carries, named by resource key (%d file%s)." % (count, "" if count == 1 else "s")])
+    commit = git_export(Path("/home/goose/Projects/HellForge/Backports/hudplusplus"), "9a416e1", dest, ["sources/hudplusplus"],
+                        keep=lambda n: not BINARY.search(n), strip="sources/hudplusplus/")
+    readme = (dest / "README.md").read_text()
+    assert readme.count("does not contain the licensed texture/material payloads") == 1
+    (dest / "README.md").write_text(readme.replace("the licensed texture/material payloads", "the texture/material payloads"))
     report["hudplusplus"] = commit
     for name in ("README.md", "README.ru.md", "THIRD-PARTY-LICENSES.txt"):
         shutil.copyfile(INPUTS / "transmog" / name, src / "transmog" / name)

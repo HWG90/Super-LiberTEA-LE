@@ -1,0 +1,47 @@
+07:36:57 batch 5085: 1 commands
+07:36:57 > eval local f=assert(io.open('Z:/home/goose/Projects/Linux HD2 Mods/.claude/worktrees/transmog-armor-equip-bug-c59577/builds/26251122/mods/nova-weapon-fov/live/weapon_rows.lua','rb'));local s=f:read('*a');f:close();local c=assert(loadstring(s,'@nova-weapon-rows'));setfenv(c,getfenv(1));return c()
+07:36:57 F (TPV vertical FOV setting) 90
+07:36:57 entity rows capacity 256
+07:36:57 ENTITY 1284 row 10 res b814eece17533bc4 Z 2 3 4 C 0.55 1 1.25 N -0.17 0 flag 0
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N -0.17 0 flag 0
+07:36:57   DIFF entity/resource 12 74:2/1 78:3/1 7C:4/1 13C:0.55/0.6 140:1/0.7 144:1.25/0.9 154:50/0 158:100/0 15C:200/0 160:1.401e-45/0 3C4:0/2.522e-44 3C8:-4/0
+07:36:57 ENTITY 1551 row 11 res 73d84eaae8c75342 Z 3.5 2.5 1 C 0.6 0.6 0.6 N 0 0.1 flag 0
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N 0 0.1 flag 0
+07:36:57   DIFF entity/resource 10 74:3.5/1 78:2.5/1 140:0.6/0.7 144:0.6/0.9 154:150/0 158:75/0 15C:25/0 160:1.401e-45/0 3C4:0/2.522e-44 3C8:-2/0
+07:36:57 ENTITY 1174 row 5 res 41f2def484634b59 Z 2 3 4 C 0.8 1 1.25 N 0.05 0.09 flag 1
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N 0.05 0.09 flag 1
+07:36:57   DIFF entity/resource 12 74:2/1 78:3/1 7C:4/1 13C:0.8/0.6 140:1/0.7 144:1.25/0.9 154:50/0 158:100/0 15C:200/0 160:1.401e-45/0 3C4:0/2.522e-44 3C8:-11/0
+07:36:57 ENTITY 1176 row 6 res b814eece17533bc4 Z 2 3 4 C 0.55 1 1.25 N -0.17 0 flag 0
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N -0.17 0 flag 0
+07:36:57   DIFF entity/resource 12 74:2/1 78:3/1 7C:4/1 13C:0.55/0.6 140:1/0.7 144:1.25/0.9 154:50/0 158:100/0 15C:200/0 160:1.401e-45/0 3C4:0/2.522e-44 3C8:-4/0
+07:36:57 ENTITY 667 row 0 res 3c86e871923f3970 Z 1 2 3 C 0.6 0.6 0.6 N 0 0 flag 0
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N 0 0 flag 0
+07:36:57   DIFF entity/resource 10 78:2/1 7C:3/1 140:0.6/0.7 144:0.6/0.9 154:25/0 158:50/0 15C:100/0 160:1.401e-45/0 3C4:0/2.522e-44 3C8:-1/0
+07:36:57 ENTITY 4194464 row 12 res c85f576d5e086147 Z 1 1 1 C 0.25 0.25 0.25 N 0.05 0.03 flag 0
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N 0.05 0.03 flag 0
+07:36:57   DIFF entity/resource 7 54:75/140 58:75/140 13C:0.25/0.6 140:0.25/0.7 144:0.25/0.9 3C4:0/2.522e-44 3C8:-10/0
+07:36:57 ENTITY 1191 row 7 res c85f576d5e086147 Z 1 1 1 C 0.25 0.25 0.25 N 0.05 0.03 flag 0
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N 0.05 0.03 flag 0
+07:36:57   DIFF entity/resource 7 54:75/140 58:75/140 13C:0.25/0.6 140:0.25/0.7 144:0.25/0.9 3C4:0/2.522e-44 3C8:-10/0
+07:36:57 ENTITY 1196 row 8 res b814eece17533bc4 Z 2 3 4 C 0.55 1 1.25 N -0.17 0 flag 0
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N -0.17 0 flag 0
+07:36:57   DIFF entity/resource 12 74:2/1 78:3/1 7C:4/1 13C:0.55/0.6 140:1/0.7 144:1.25/0.9 154:50/0 158:100/0 15C:200/0 160:1.401e-45/0 3C4:0/2.522e-44 3C8:-4/0
+07:36:57 ENTITY 1207 row 9 res b80951732a5f58f4 Z 1 1 1 C 0.25 0.25 0.25 N 0 0 flag 0
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N 0 0 flag 0
+07:36:57   DIFF entity/resource 15 13C:0.25/0.6 140:0.25/0.7 144:0.25/0.9 3C4:1.962e-44/2.522e-44 3C8:1/0 3CC:2.242e-44/2.522e-44 3D0:1/0 3D4:2.803e-45/2.522e-44 3D8:1/0 3DC:4.204e-45/2.522e-44 3E0:1/0 3E4:5.605e-45/2.522e-44 3E8:1/0 3EC:7.006e-45/2.522e-44 3F0:1/0
+07:36:57 ENTITY 737 row 1 res 3c86e871923f3970 Z 1 2 3 C 0.6 0.6 0.6 N 0 0 flag 0
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N 0 0 flag 0
+07:36:57   DIFF entity/resource 10 78:2/1 7C:3/1 140:0.6/0.7 144:0.6/0.9 154:25/0 158:50/0 15C:100/0 160:1.401e-45/0 3C4:0/2.522e-44 3C8:-1/0
+07:36:57 ENTITY 874 row 3 res ce063aa33d95a812 Z 1 1 1 C 0.25 0.25 0.25 N 0 0 flag 0
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N 0 0 flag 0
+07:36:57   DIFF entity/resource 11 13C:0.25/0.6 140:0.25/0.7 144:0.25/0.9 3C4:0/2.522e-44 3C8:-5/0 3CC:1.401e-45/2.522e-44 3D0:1.2/0 3D4:2.803e-45/2.522e-44 3D8:0.6/0 3DC:1.401e-44/2.522e-44 3E0:0.6/0
+07:36:57 ENTITY 747 row 2 res 3c86e871923f3970 Z 1 2 3 C 0.6 0.6 0.6 N 0 0 flag 0
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N 0 0 flag 0
+07:36:57   DIFF entity/resource 10 78:2/1 7C:3/1 140:0.6/0.7 144:0.6/0.9 154:25/0 158:50/0 15C:100/0 160:1.401e-45/0 3C4:0/2.522e-44 3C8:-1/0
+07:36:57 ENTITY 880 row 4 res ce063aa33d95a812 Z 1 1 1 C 0.25 0.25 0.25 N 0 0 flag 0
+07:36:57   RESOURCE Z 1 1 1 C 0.6 0.7 0.9 N 0 0 flag 0
+07:36:57   DIFF entity/resource 11 13C:0.25/0.6 140:0.25/0.7 144:0.25/0.9 3C4:0/2.522e-44 3C8:-5/0 3CC:1.401e-45/2.522e-44 3D0:1.2/0 3D4:2.803e-45/2.522e-44 3D8:0.6/0 3DC:1.401e-44/2.522e-44 3E0:0.6/0
+07:36:57 = true
+07:36:57 < 10.00 ms of work over 1 frame
+07:36:57 batch 5085 done
+

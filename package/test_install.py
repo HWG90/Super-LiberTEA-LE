@@ -1,12 +1,14 @@
-"""Run Super LiberTEA - LE's boot install blocks (out/work/install-blocks.lua: LLL luajit.2's block, then the mods block)
-under Wine with LLL's Windows Lua 5.1.4 (../lll/work/wine-lua/lua51.exe), as the game runs them at boot.
+"""Run Super LiberTEA - LE's boot install blocks (out/work/install-blocks-<dbf>.lua: LLL luajit.2's block, then the mods
+block of that DBF variant) under Wine with LLL's Windows Lua 5.1.4 (../lll/work/wine-lua/lua51.exe), as the game runs
+them at boot.
 
 The blocks write into the scratch prefix's own LOCALAPPDATA, from a fake game folder with a space in its path (the
 real layout by name, as ../lll/test_dropin_install.py builds it). Cases: fresh install, repeat start, a missing mod
 file, a file you changed, another build of a mod installed over this one, receipts lost (folders adopted), a
 foreign mod folder on a fresh install, the first start after an earlier release of this package, files an earlier
-release wrote and this one no longer ships (removed unless you changed them), and a development shim in place of a
-mod (set aside to Backups, the mod installed).
+release wrote and this one no longer ships (removed unless you changed them), a development shim in place of a
+mod (set aside to Backups, the mod installed), a DBF installed another way beside the chosen one, and switching the
+DBF choice both ways (the other DBF goes to Backups).
   /usr/bin/python3 -I test_install.py --prefix <scratch WINEPREFIX> --scratch <scratch dir>
 """
 import argparse, json, os, shutil, subprocess, zlib
@@ -24,14 +26,23 @@ def main():
     receipt = json.loads((HERE / "RECEIPT.json").read_text())
     version = receipt["version"]
     stage = HERE / "out" / "stage"
-    mods = {m: {p.relative_to(stage / m).as_posix(): p.read_bytes() for p in sorted((stage / m).rglob("*")) if p.is_file()}
-            for m in receipt["mods"]}
-    total = sum(len(f) for f in mods.values())
+    every = {m: {p.relative_to(stage / m).as_posix(): p.read_bytes() for p in sorted((stage / m).rglob("*")) if p.is_file()}
+             for m in receipt["mods"]}
     tools = args.scratch / "superlibertea-tools"
     shutil.rmtree(tools, ignore_errors=True)
     tools.mkdir(parents=True)
     shutil.copyfile(LUA, tools / "lua51.exe")
-    shutil.copyfile(HERE / "out" / "work" / "install-blocks.lua", tools / "blocks.lua")
+    mods, total = {}, 0
+
+    def use(dbf):
+        # The boot install of one DBF variant: its mods are what same() and the counts check.
+        nonlocal mods, total
+        shutil.copyfile(HERE / "out" / "work" / ("install-blocks-%s.lua" % dbf), tools / "blocks.lua")
+        mods = {m: every[m] for m in receipt["variants"][dbf]["mods"]}
+        total = sum(len(f) for f in mods.values())
+
+    default, alternative = list(receipt["variants"])
+    use(default)
     game = args.scratch / "Steam Library" / "Helldivers 2"
     shutil.rmtree(game.parent, ignore_errors=True)
     (game / "data" / "game").mkdir(parents=True)
@@ -134,17 +145,17 @@ def main():
 
     # An earlier release shipped two files this one does not (1.0.1's ASS carried DBF-HUD's weapon readout): the one
     # still as it wrote it is removed, the one you changed stays.
-    dbf = home / "Mods/divers_best_friend"
-    gone, kept = b"-- weapon readout as 1.0.1 wrote it\n", b"-- weapon strip as 1.0.1 wrote it\n"
-    (dbf / "src/weapon_status.lua").write_bytes(gone)
-    (dbf / "src/weapon_status_strip.lua").write_bytes(b"-- your edit\n")
-    with (home / "SuperLiberTEA/divers_best_friend.txt").open("a") as f:
-        for name, data in (("src/weapon_status.lua", gone), ("src/weapon_status_strip.lua", kept)):
+    dbf = home / "Mods/goose_bridge_combat"
+    gone, kept = b"-- a module as an earlier release wrote it\n", b"-- another one as it wrote it\n"
+    (dbf / "src/retired_a.lua").write_bytes(gone)
+    (dbf / "src/retired_b.lua").write_bytes(b"-- your edit\n")
+    with (home / "SuperLiberTEA/goose_bridge_combat.txt").open("a") as f:
+        for name, data in (("src/retired_a.lua", gone), ("src/retired_b.lua", kept)):
             f.write("%d\t%d\t%s\n" % (len(data), zlib.adler32(data), name))
     _, line = start()
     check("files an earlier release no longer ships", line, "mods: 0 written, %d in place, 1 removed; left alone: "
-          "divers_best_friend/src/weapon_status_strip.lua (changed since an earlier release wrote it; no longer part of this mod)" % total)
-    assert not (dbf / "src/weapon_status.lua").exists() and (dbf / "src/weapon_status_strip.lua").read_bytes() == b"-- your edit\n"
+          "goose_bridge_combat/src/retired_b.lua (changed since an earlier release wrote it; no longer part of this mod)" % total)
+    assert not (dbf / "src/retired_a.lua").exists() and (dbf / "src/retired_b.lua").read_bytes() == b"-- your edit\n"
     _, line = start()
     check("... next start", line, "mods: 0 written, %d in place" % total)
     assert "removed" not in line and "left alone" not in line
@@ -159,6 +170,7 @@ def main():
 
     # A development shim in place of ASS, as on the porting machine: R46's manifest beside a main.lua that loads the
     # mod from an Arsenal folder by drive path. It is not a build: its folder goes to Backups as it is.
+    use("r46")
     shutil.rmtree(home.parent, ignore_errors=True)
     dbf = home / "Mods/divers_best_friend"
     (dbf / "config").mkdir(parents=True)
@@ -178,6 +190,36 @@ def main():
     _, line = start()
     check("... next start", line, "mods: 0 written, %d in place" % total)
     assert "set aside" not in line
+
+    # A DBF installed another way beside the variant's DBF: left alone and reported, never moved.
+    use(default)
+    shutil.rmtree(home.parent, ignore_errors=True)
+    (home / "Mods/divers_best_friend").mkdir(parents=True)
+    (home / "Mods/divers_best_friend/manifest.json").write_bytes(b'{"id":"divers_best_friend","version":"own"}\n')
+    _, line = start()
+    check("a DBF you installed beside the choice", line, "mods: %d written, 0 in place; left alone: divers_best_friend "
+          "(another DBF provider is installed; set one to false in LLL.cfg)" % total)
+    assert (home / "Mods/divers_best_friend/manifest.json").read_bytes() == b'{"id":"divers_best_friend","version":"own"}\n'
+
+    # Switching the DBF choice in Arsenal: the next start installs the chosen DBF and moves the one this package wrote.
+    shutil.rmtree(home.parent, ignore_errors=True)
+    start()
+    first = next(m for m in receipt["variants"][alternative]["sets_aside"])
+    use(alternative)
+    second = receipt["variants"][default]["sets_aside"][0]
+    _, line = start()
+    check("switch to %s" % alternative, line, "mods: %d written, %d in place; set aside: %s (the other DBF choice, now Backups/%s-superlibertea-"
+          % (len(every[second]), total - len(every[second]), first, first))
+    assert not (home / "Mods" / first).exists() and not (home / "SuperLiberTEA" / (first + ".txt")).exists()
+    same()
+    use(default)
+    _, line = start()
+    check("... and back to %s" % default, line, "mods: %d written, %d in place; set aside: %s (the other DBF choice"
+          % (len(every[first]), total - len(every[first]), second))
+    same()
+    _, line = start()
+    check("... next start", line, "mods: 0 written, %d in place" % total)
+    assert "set aside" not in line and "left alone" not in line
     print("all cases pass")
 
 

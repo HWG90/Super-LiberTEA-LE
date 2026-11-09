@@ -68,6 +68,9 @@ function Pose:_load()
     pcall(ffi.cdef,'uint32_t NADSE_SetMotion(uint64_t generation,float dx,float dy,float dz);')
     pcall(ffi.cdef,'uint32_t NADSE_SetTransform(uint64_t generation,float dx,float dy,float dz,float qx,float qy,float qz,float qw);')
     pcall(ffi.cdef,'uint32_t NADSE_SetAuthoredTransform(uint64_t generation,float dx,float dy,float dz,float qx,float qy,float qz,float qw);')
+    pcall(ffi.cdef,'uint32_t NADSE_SetZoomPolicy(uint64_t generation,uint32_t active);')
+    pcall(ffi.cdef,'uint32_t NADSE_SetTransition(uint64_t generation,uint64_t epoch,float progress,uint32_t ads);')
+    pcall(ffi.cdef,'uint32_t NADSE_BeginSteady(const NADSE_Config*,uint64_t*);')
     assert(ffi.sizeof('NADSE_Config')==104 and ffi.sizeof('NADSE_Stats')==80,'Pose helper ABI layout mismatch')
     self.ffi=ffi
     if self.library then return self.library end
@@ -189,7 +192,8 @@ function Pose:begin(config,prepared)
     -- The native helper publishes this opaque generation before pointer CAS.
     -- Keep it as uint64 cdata, including when native entry raises afterward.
     local handle={owner=self,disarmed=false,stats=false,generation=self.ffi.new('uint64_t[1]')}
-    local called,result=pcall(library.NADSE_Begin,value,handle.generation)
+    local begin=config.steady_entry==true and library.NADSE_BeginSteady or library.NADSE_Begin
+    local called,result=pcall(begin,value,handle.generation)
     if PORT51.number(handle.generation[0])~=0 then self.owned=handle end
     if not called then return false,'Pose arm result uncertain: '..tostring(result) end
     result=PORT51.number(result)
@@ -248,6 +252,26 @@ function Pose:set_motion(handle,dx,dy,dz,qx,qy,qz,qw,authored_ads)
     local library=self:_load()
     local setter=authored_ads and library.NADSE_SetAuthoredTransform or library.NADSE_SetTransform
     if setter(handle.generation[0],dx,dy,dz,qx,qy,qz,qw)~=1 then return false,self:_error('Pose motion') end
+    return true
+end
+
+function Pose:set_zoom_policy(handle,active)
+    if PORT51.kind(handle)~='table' or handle.owner~=self or self.owned~=handle or handle.disarmed then
+        return false,'Pose zoom policy handle is not owned'
+    end
+    if PORT51.kind(active)~='boolean' then return false,'Pose zoom policy requires a Boolean state' end
+    if self:_load().NADSE_SetZoomPolicy(handle.generation[0],active and 1 or 0)~=1 then
+        return false,self:_error('Pose zoom policy')
+    end
+    return true
+end
+
+function Pose:transition(handle,packet)
+    if PORT51.kind(handle)~='table'or handle.owner~=self or self.owned~=handle or handle.disarmed then return false,'Pose transition handle is not owned'end
+    if PORT51.kind(packet)~='table'or PORT51.kind(packet.epoch)~='number'or packet.epoch<1 or packet.epoch%1~=0 or packet.epoch>9007199254740991
+        or PORT51.kind(packet.progress)~='number'or packet.progress~=packet.progress or packet.progress<0 or packet.progress>1
+        or PORT51.kind(packet.ads)~='boolean'then return false,'Invalid shared presentation phase'end
+    if self:_load().NADSE_SetTransition(handle.generation[0],packet.epoch,packet.progress,packet.ads and 1 or 0)~=1 then return false,self:_error('Pose transition')end
     return true
 end
 

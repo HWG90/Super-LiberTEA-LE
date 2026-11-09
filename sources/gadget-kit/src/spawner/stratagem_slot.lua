@@ -21,6 +21,7 @@ end
 function M.new(options)
     local io, write, observe = assert(options.io), assert(options.write), assert(options.observe)
     local stratagems, support, items = assert(options.stratagems), options.support, options.items or {}
+    local now = options.now or os.clock
     local self = {reason = 'Choose a stratagem', pending = nil, added = nil}
     local function r(at, n) local s = io.read(at, n); assert(type(s) == 'string' and #s == n, 'Stratagem memory unavailable'); return s end
     local function p(at) local s = r(at, 8); local v = word(s) + word(s, 4) * 4294967296; assert(v >= 65536 and v < 2 ^ 47, 'Stratagem pointer unavailable'); return v end
@@ -43,6 +44,21 @@ function M.new(options)
     end
 
     function self:choices() local t = {}; for i, row in ipairs(stratagems) do t[i] = row.name end; return t end
+    function self:groups()
+        local groups, by_name = {}, {}
+        for _, name in ipairs({'Eagles', 'Orbitals', 'Weapons', 'Backpacks', 'Turrets', 'Deployables'}) do
+            local group = {name=name, entries={}}
+            groups[#groups + 1], by_name[name] = group, group
+        end
+        for index, row in ipairs(stratagems) do
+            local entries = by_name[row.group].entries
+            entries[#entries + 1] = {name=row.name, index=index}
+        end
+        for _, group in ipairs(groups) do
+            table.sort(group.entries, function(a, b) return a.name:lower() < b.name:lower() end)
+        end
+        return groups
+    end
     function self:queue(index)
         local row = stratagems[index]
         if not row then return false, 'Choose a stratagem' end
@@ -54,12 +70,17 @@ function M.new(options)
     end
     function self:update(enabled)
         local job = self.pending
-        if not job or not enabled then return end
+        if not job or not enabled or (job.next_poll and now() < job.next_poll) then return end
         local ok, why = pcall(function()
             local view, wait = observe()
             if not (view and view.can_start) then return wait or 'Waiting for normal mission gameplay' end
             assert(io.read(view.base.pm + 0x70, 4) == le(1, 4), 'The fifth slot needs a solo mission')
             local l = list()
+            if job.mission and (job.mission ~= l.mission or job.token ~= l.token) then
+                self.pending = nil
+                return 'Mission changed. Choose a stratagem for this mission.'
+            end
+            job.mission, job.token = l.mission, l.token
             if self.added and self.added.mission == l.mission and self.added.token == l.token then
                 self.pending = nil; return 'The fifth slot was already added this mission'
             end
@@ -73,9 +94,22 @@ function M.new(options)
                         local queued, refused = support:queue(index, 'preload')
                         if not queued then return refused end
                         job.preload = true
+                    elseif not support:preload_pending(index) then
+                        self.pending = nil
                     end
                     return support:status()
                 end
+            end
+            if job.row.package then
+                local ready, reason = support:ensure_package(job.row.package, view)
+                if not ready then
+                    job.next_poll = now() + 0.5
+                    return reason or ('Loading ' .. job.row.name)
+                end
+                -- A package request can yield to the engine before the append.
+                local current = list()
+                assert(current.mission == l.mission and current.token == l.token and current.count == l.count,
+                    'Mission stratagem list changed during load')
             end
             local at = l.payload + LIST + l.count * STRIDE
             assert(r(at, STRIDE) == string.rep('\0', STRIDE), 'Next stratagem slot is not empty')

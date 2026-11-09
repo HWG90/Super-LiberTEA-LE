@@ -12,6 +12,7 @@ function M.new(backend, log, monotonic)
     local initial, deadline, started, body_token, body_dispatch_at
     local pose_seen, reacquire_started, reacquire_updates, pose_aiming, pose_rearm
     local enabled, manual, next_manual_entry = false, false, nil
+    local manual_ads_return, manual_has_pose
     local placement = {x=0.15,y=0,z=-0.12}
     local summary = { runs = 0, enter_attempts = 0, release_attempts = 0,
         observed_native_without_aim = 0, samples = 0 }
@@ -49,6 +50,12 @@ function M.new(backend, log, monotonic)
     end
     local function manual_player(snapshot)
         return valid(snapshot) and PORT51.kind(snapshot.player_identity)=='string' and snapshot.player_identity~=''
+    end
+    local function player_snapshot()
+        if backend.pin_first_person==true and PORT51.kind(backend.pin_player_snapshot)=='function'then
+            return call('pin_player_snapshot')
+        end
+        return call('player_snapshot')
     end
     local function observe(snapshot)
         summary.samples = summary.samples + 1
@@ -137,6 +144,7 @@ function M.new(backend, log, monotonic)
         for key, value in pairs(summary) do result[key] = value end
         result.phase, result.cleanup_pending = self.phase, self.lease ~= nil and self.phase == 'cleanup_pending'
         result.enabled, result.manual = enabled, manual
+        result.player_identity=initial and initial.player_identity or nil
         return result
     end
     function self:retry_cleanup()
@@ -159,6 +167,7 @@ function M.new(backend, log, monotonic)
         end
         self.lease, initial, deadline, started, body_token, body_dispatch_at = nil, nil, nil, nil, nil, nil
         pose_seen, reacquire_started, reacquire_updates, pose_aiming, pose_rearm = nil, nil, nil, nil, nil
+        manual_ads_return, manual_has_pose = nil, nil
         summary.body_event_pending = false
         self.phase = self.closing and 'disabled' or 'idle'
         report('Stopped: ' .. tostring(summary.stop_reason or why or 'manual stop'))
@@ -166,6 +175,7 @@ function M.new(backend, log, monotonic)
     end
     function self:stop(reason)
         enabled = false
+        manual_ads_return, manual_has_pose = nil, nil
         if self.lease and summary.mode == 'unlinked_sights' then
             local stats = call('alignment_status', self.lease)
             if PORT51.kind(stats) == 'table' then
@@ -192,6 +202,7 @@ function M.new(backend, log, monotonic)
         self.lease, self.phase = lease, lease and 'running' or 'waiting'
         initial = { identity = current.identity, player_identity = current.player_identity, aiming = current.aiming }
         enabled, manual, next_manual_entry = true, seconds == 0, timestamp + 0.1
+        manual_ads_return, manual_has_pose = nil, lease ~= nil
         started, deadline = timestamp, seconds > 0 and timestamp + seconds or nil
         summary.runs = summary.runs + 1
         summary.duration, summary.before_aiming = seconds, current.aiming
@@ -224,7 +235,7 @@ function M.new(backend, log, monotonic)
         if seconds==0 and (not manual_player(current) or current.safe~=true or current.camera_kind~=4
             or current.aiming or current.controller_active or current.weapon_ready==false) then
             local player,problem=current,nil
-            if not manual_player(player) then player,problem=call('player_snapshot')end
+            if not manual_player(player) then player,problem=player_snapshot()end
             if not manual_player(player) then
                 report('Start refused: '..tostring(problem or why or 'Stable local player unavailable'))
                 return false,label
@@ -249,6 +260,16 @@ function M.new(backend, log, monotonic)
         if seconds == 0 and (PORT51.kind(current.player_identity) ~= 'string' or current.player_identity == '') then
             report('Start refused: stable local player identity unavailable')
             return false, label
+        end
+        local function wait_for_pin(reason)
+            if seconds~=0 or mode~='pose_offset' or backend.pin_first_person~=true then return nil end
+            local player=player_snapshot()
+            if not manual_player(player) or player.foreign_camera then return nil end
+            local timestamp,problem=now();if not timestamp then return false,problem end
+            begin_session(player,timestamp,seconds,mode,nil,nil)
+            summary.wait_reason=reason or'Waiting for native arms; first-person camera enabled'
+            report('First person enabled; waiting: '..tostring(summary.wait_reason))
+            return true,self:status()
         end
         local prepared_token
         if seconds==0 and mode=='pose_offset' and PORT51.kind(backend.camera_only_weapon)=='function'
@@ -276,6 +297,8 @@ function M.new(backend, log, monotonic)
         elseif mode == 'pose_offset' then
             local ready, token = call('prepare_pose', current)
             if ready ~= true then
+                local waiting,result=wait_for_pin(token or'Pose helper preflight pending')
+                if waiting~=nil then return waiting,result end
                 report('Start refused before camera entry: ' .. tostring(token or 'Pose helper preflight failed'))
                 return false, label
             end
@@ -291,6 +314,8 @@ function M.new(backend, log, monotonic)
             entered, lease = call('enter', current, mode == 'unlinked_sights' and prepared_token or nil)
         end
         if entered ~= true or lease == nil then
+            local waiting,result=wait_for_pin(lease or'Native arms entry pending')
+            if waiting~=nil then return waiting,result end
             report('Start refused: ' .. tostring(lease or 'Native entry was not accepted'))
             return false, label
         end
@@ -316,12 +341,41 @@ function M.new(backend, log, monotonic)
         report('First person enabled; waiting: ' .. tostring(summary.wait_reason))
         return true
     end
+    function self:suspend(reason)
+        if self.closing or not enabled or not manual or summary.mode~='pose_offset'then return false,'Only persistent True First Person can suspend'end
+        summary.suspend_reason=reason or'Temporary capability unavailable'
+        -- Release is acknowledged before a later qualified Update may acquire
+        -- a new lease. User intent and scalar placement survive, pointers do not.
+        return manual_wait(summary.suspend_reason)
+    end
+    local function publish_transition(current)
+        if not self.lease or PORT51.kind(backend.presentation_transition)~='function'
+            or PORT51.kind(backend.set_pose_transition)~='function'then return true end
+        local ok,packet=pcall(backend.presentation_transition)
+        if not ok or PORT51.kind(packet)~='table'or packet.player_identity~=current.player_identity
+            or packet.identity~=current.identity then return true end
+        local done,why=call('set_pose_transition',self.lease,packet)
+        if done~=true then return false,why or'Presentation phase was refused'end
+        summary.transition_epoch,summary.transition_progress=packet.epoch,packet.progress
+        return true
+    end
     local function manual_update(timestamp)
         local current, why = call('snapshot')
         local player, player_problem = current, nil
-        if not manual_player(current) then player, player_problem = call('player_snapshot') end
+        if not manual_player(current) then player, player_problem = player_snapshot() end
         if not manual_player(player) then
             return manual_wait(player_problem or why or 'Local player or camera context unavailable')
+        end
+        -- An ADS request may retire before the released camera is ready. Keep
+        -- only its placement-entry intent through cleanup and snapshot gaps;
+        -- a different player, body, firearm or viewmodel must never inherit it.
+        if manual_ads_return and (player.player_identity ~= manual_ads_return.player_identity
+            or (valid(current) and current.identity ~= manual_ads_return.identity)) then
+            manual_ads_return = nil
+        end
+        if manual_has_pose and manual_player(current) and current.controller_active
+            and current.identity == initial.identity and current.player_identity == initial.player_identity then
+            manual_ads_return = {identity=current.identity,player_identity=current.player_identity}
         end
         if self.lease and player.player_identity ~= initial.player_identity then
             return manual_wait('Local player or camera context changed')
@@ -329,7 +383,11 @@ function M.new(backend, log, monotonic)
         if player.safe ~= true or (player.camera_kind ~= 4 and player.camera_kind ~= 6) then
             return manual_wait(player.reason or 'Gameplay action or camera owns the view')
         end
-        if valid(current) then observe(current) end
+        if valid(current) then
+            observe(current)
+            local ready,problem=publish_transition(current)
+            if ready~=true then return manual_wait(problem)end
+        end
         if manual_player(current) and PORT51.kind(backend.camera_only_weapon)=='function'
             and call('camera_only_weapon',current)==true then
             -- Retire an outgoing firearm lease before the head fallback owns
@@ -350,7 +408,7 @@ function M.new(backend, log, monotonic)
                 -- A fresh safe snapshot may authorize waiting, never reusing
                 -- the former lease or its preparation token.
                 local fresh = call('snapshot')
-                local stable = valid(fresh) and fresh or call('player_snapshot')
+                local stable = valid(fresh) and fresh or player_snapshot()
                 local final_stats = self.lease.pose_stats or self.lease.alignment_stats or stats or {}
                 local retirement_error = self.lease.pose_error or final_stats.error
                 -- A backend poll may already have disarmed for an owner/action
@@ -365,7 +423,15 @@ function M.new(backend, log, monotonic)
                         or retiring_owner) then
                     return manual_wait(problem or 'Native pose owner changed')
                 else return self:stop(problem or 'Pose helper is no longer armed') end
-            else return true end
+            else
+                -- A retained request can finish its own ADS return without a
+                -- new lease. Its completed blend must not affect a later,
+                -- unrelated action recovery on this same firearm.
+                if not current.controller_active and stats.target_weight==1 and stats.blend==1 then
+                    manual_ads_return=nil
+                end
+                return true
+            end
         end
         if self.lease then
             -- A later update must obtain a fresh full snapshot after cleanup.
@@ -383,18 +449,24 @@ function M.new(backend, log, monotonic)
             return true
         end
         summary.enter_attempts = summary.enter_attempts + 1
-        local entered, lease = call('enter_pose', current, token, 0)
+        local blend_entry = manual_ads_return ~= nil
+            and manual_ads_return.identity == current.identity
+            and manual_ads_return.player_identity == current.player_identity
+        local entered, lease = call('enter_pose', current, token, 0, blend_entry)
         if entered ~= true or lease == nil then
             report('First person enabled; waiting: ' .. tostring(lease or 'Native entry was not accepted'))
             return true
         end
         self.lease, self.phase, pose_seen, pose_rearm = lease, 'running', nil, false
+        manual_ads_return, manual_has_pose = nil, true
         -- Rebase only after the former lease has acknowledged retirement and a
         -- later, complete safe local-player/firearm snapshot accepted entry.
         initial.identity, initial.player_identity = current.identity, current.player_identity
         summary.wait_reason = nil
         summary.reacquisitions = summary.reacquisitions + 1
         if lease.cleanup_only then return manual_wait('Pose helper entry requires cleanup') end
+        local phased,phase_problem=publish_transition(current)
+        if phased~=true then return manual_wait(phase_problem)end
         report('First person enabled; native camera reacquired')
         return true
     end

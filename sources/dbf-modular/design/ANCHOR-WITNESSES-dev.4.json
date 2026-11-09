@@ -1,0 +1,35 @@
+{
+  "target": "Steam26251122 / Linux-Proton / current EXE",
+  "capture": "2026-11-07T02:20:24-05:00",
+  "source": "Existing DBF backend read via local relay, current EXE module lookup; read-only",
+  "heads_64_bytes": {
+    "unit_alive": "4883ec28e8e7b9eaff4885c00f95c04883c428c34883ec70c74230ffffffff9040534883ec20e8c5b9eaff488bc8488bd8488b10ff523084c07412488b13488b",
+    "unit_node": "40534883ec208bdae8b3c2eaff488bc84c8b0041ff90e8000000488bd033c0448b42104585c07414488b52400f1f4000391c82740cffc0413bc072f4b8ffffff",
+    "unit_world_position": "40534883ec204863dae802d7eaff488bc84c8b0041ff90e8000000488bcb48c1e1064883c130488b40284803c14883c4205bc3488944242057410fbe403c33d2",
+    "unit_world_pose": "40534883ec204863dae872d6eaff488bc84c8b0041ff90e8000000488bcb48c1e10648034828488bc14883c4205bc3c340534883ec204863dae842d6eaff488b"
+  },
+  "reference": "reference/hudplus-positioning/{calls,numbers,pin}.lua; HudPlusPlus-Modular-Source/src/game/world_pose.lua",
+  "scope": "Use semantic function bodies only; old witnesses included changing padding/next-function bytes. Preserve module PE identity, executable protection and fresh masked function-body checks.",
+  "new_getter": "unit_world_pose / exe RVA0x1f3020 / uintptr_t(uint32_t,int32_t)",
+  "rendering": "Read-only bone-local point projection; retained flat GUI, no world-UI/camera ownership.",
+  "record_engine_unit": {
+    "offset": 12,
+    "source": "Pinned HUD+ numbers.lua:773 and game/world_inputs.lua player+weapon consumers",
+    "meaning": "Engine Unit handle; Original DBF +16 remains an entity/reference identity",
+    "live_capture": "dist/LIVE-ENGINE-UNITS-dev.4.decoded.txt",
+    "body_reference": 1166,
+    "body_engine_handle": 14117,
+    "body_alive": true,
+    "resolved_head_node": 90,
+    "weapon_reference": 1170,
+    "weapon_engine_handle": 14145,
+    "weapon_alive": true
+  },
+  "live_pose_projection": {
+    "capture": "dist/LIVE-ENGINE-PROJECTION-dev.4.txt",
+    "engine_handle": 14117,
+    "node": 90,
+    "projected": true,
+    "pose_adapter_validated": true
+  }
+}

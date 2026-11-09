@@ -105,9 +105,9 @@ do
         local ledger={at=LEDROWS,bytes=string.rep(EMPTY..le(0,8),8)};mem[#mem+1]=ledger
         put(LOADER+0x218,string.rep('\0',512*24+12))
         ptr(E+0x1AB7838,URES);ptr(URES+0x3F8,UMAN);put(UMAN+0x2C0,le(1,4));ptr(UMAN+0x2C8,0x71000000)
-        local resident,calls=false,{}
+        local resident,calls,requests=false,{},0
         local fakes={SUPPORT_PRESENT=function()return 0 end,
-            SUPPORT_REQUEST=function(_,ids)ledger.bytes=require('ffi').string(ids,8)..le(1,4)..le(0,4)..ledger.bytes:sub(17);resident=true end}
+            SUPPORT_REQUEST=function(_,ids)requests=requests+1;ledger.bytes=require('ffi').string(ids,8)..le(1,4)..le(0,4)..ledger.bytes:sub(17);resident=true end}
         local dio={read=read,module=fio.module,hashmap=function()return 0 end,resident=function()return resident end,
             native=function(_,_,_,label)return fakes[label]or function()calls[#calls+1]=label end end}
         local menu={is_open=function()return false end,menu_binding_status=function()return{focused=true,editing=false}end}
@@ -121,6 +121,184 @@ do
         for _=1,30 do clock=clock+1;m:update(view)end
         assert(m:status():find(catalogue[1].name..' cannot be delivered',1,true),m:status())
         assert(#calls==0,'native delivery step called: '..tostring(calls[1]))
+        assert(requests==1)
+        local key='54dc633a67baa93d'
+        -- The fixture ledger has space for one package at a time.
+        ledger.bytes=string.rep(EMPTY..le(0,8),8)
+        resident=false
+        assert(m:ensure_package(key,view));assert(m:ensure_package(key,view))
+        assert(requests==2 and #calls==0)
+        -- Direct equips use the native inventory path with MCM open and Spawner off.
+        -- Give each slot an incumbent and simulate engine acknowledgements at the ABI.
+        local ffi=require('ffi')
+        local manager,rows,ep_rows,registry,generations,units,unit,definition=
+            0x72000000,0x73000000,0x74000000,0x75000000,0x76000000,0x77000000,0x78000000,0x79000000
+        ptr(G+0x2ce18e8,manager);put(manager+0x18,le(1,4));ptr(manager+0x40,ep_rows)
+        ptr(ep_rows,EP);ptr(manager+0x50,rows)
+        local inv={at=rows,bytes=le(101,4)..le(102,4)..le(103,4)..le(0xFFFFFFFF,4)..le(0,8)..le(0,4)..le(1,4)..le(0,8)..le(0,8)}
+        mem[#mem+1]=inv
+        ptr(E+0x1ab76f8,registry);put(registry+0x98,le(2,4));ptr(registry+0xA0,generations)
+        ptr(registry+0x88,units);put(generations+1,'\0');ptr(units+8,unit);put(unit+8,le(1,4))
+        put(definition,string.rep('\0',16))
+        local next_eid,selections=110,0
+        local function rawhex(t)return(t:gsub('%x%x',function(x)return string.char(tonumber(x,16)) end)):reverse() end
+        local function number(v)return tonumber(ffi.cast('uintptr_t',v))end
+        fakes.SUPPORT_PRESENT=function()return 1 end
+        fakes.SUPPORT_FETCH=function(_,_,id,canonical)ffi.copy(canonical,id,8);return definition end
+        local authored=0x7a000000
+        put(authored,string.rep('\0',32)..rawhex('123456789abcdef0')..string.rep('\0',0x58-40))
+        fakes.SUPPORT_DEFAULTS=function(_,_,records) records[2]=authored end
+        local target,modifiers,commits
+
+        fakes.SUPPORT_SPAWN=function(result,id,desc)
+            local list=ffi.cast('uint64_t **',ffi.cast('uint8_t *',desc)+0x50)[0]
+            local expected=modifiers and modifiers[2] or '123456789abcdef0'
+            local count=tonumber(ffi.cast('uint32_t *',list)[0])
+            if expected=='0000000000000000' then assert(count==0)
+            else assert(count==1 and ffi.string(list+1,8)==rawhex(expected)) end
+            assert(commits==0,'Reinforcement record committed before spawning')
+            next_eid=next_eid+1;result[0]=next_eid
+            local actual=ffi.new('uint64_t[1]',id);assert(ffi.string(actual,8)==rawhex(target.type))
+            put(W+0xf349e0+next_eid*24,rawhex(target.type)..le(next_eid,4)..le(1,4)..le(0,4)..le(1,4))
+        end
+        local offsets={[1]=0,[2]=4,[3]=8,[6]=12}
+        local net,mission,wielder,hand=0x7B000000,0x7C000000,0x7D000000,0x7E000000
+        ptr(G+0x2E38228,net);ptr(G+0x2E38188,mission)
+        put(net+0xB398,'hostpeer');put(net+0xB3A8,'hostpeer')
+        put(mission,'hostpeer'..string.rep('X',16));put(mission+0x2D800,le(1,4))
+        ptr(G+0x2CE1FD0,wielder);put(wielder+0x1C,le(1,4));ptr(wielder+0x48,ep_rows);ptr(wielder+0x60,hand)
+        put(wielder+0x20,le(1,4))
+        local held={at=hand,bytes=le(101,4)..string.rep('\0',0x1d0-4)};mem[#mem+1]=held
+        local body=unit+0x1000
+        put(body+8,le(RENDER,4));put(PM+0x53dcd0,le(AV,4))
+        local parent={at=unit+0x1d0,bytes=le(0,8)};mem[#mem+1]=parent
+        local wieldable=0x7f000000;ptr(G+0x2ce1f88,wieldable);ptr(wieldable+0x40,wieldable+256)
+        put(wieldable+260,le(AV,4))
+        local removed,removed_count,unissued={},0,nil
+        for id=101,103 do
+            put(W+0xf349e0+id*24,rawhex('123450000000abcd')..le(id,4)..le(id+10,4)..le(0,4)..le(1,4))
+        end
+        fakes.SUPPORT_REMOVE=function(world,id)
+            if unissued then
+                assert(number(world)==W and id==unissued and id==next_eid)
+                removed[id]=true
+                return
+            end
+            error('Unexpected entity removal')
+        end
+        fakes.SUPPORT_FLOOR_REMOVE=function(world,at,flags)
+            assert(number(world)==W and flags==0)
+            local id=(number(at)-W-0xf349e0)/24
+            assert(not removed[id])
+            if id==101 then
+                assert(held.bytes:sub(1,4)==le(next_eid,4) and parent.bytes==le(body,8))
+                removed_count=removed_count+1
+            end
+        end
+        fakes.SUPPORT_PLAYER_SELECT=function(controller,slot)
+            assert(number(controller)==PM+0x53dcd0 and slot==1)
+        end
+        local notifications=0
+        fakes.SUPPORT_PUBLISH_EQUIP=function(to,avatar,id,slot)
+            assert(to==-2 and avatar==AV and id==next_eid and slot~=6);notifications=notifications+1
+        end
+        fakes.SUPPORT_EQUIP=function(im,avatar,eid,slot,flag)
+            assert(number(im)==manager and avatar==AV and eid==next_eid and flag==(slot==6 and 0 or 4) and commits==1)
+            local off=offsets[slot];inv.bytes=inv.bytes:sub(1,off)..le(eid,4)..inv.bytes:sub(off+5)
+        end
+        fakes.SUPPORT_SELECT=function(im,avatar,slot)
+            assert(number(im)==manager and avatar==AV and slot==1);selections=selections+1
+        end
+        dio.hashmap=function(at,id)if at==W+0xf1c978 then
+            if removed[id] then return nil,'Hash map entry is absent' end
+            return id end return 0 end
+        menu.is_open=function()return true end
+        local editing=dofile('src/spawner/support_weapons.lua').new({io=dio,load=mod.require,catalogue=catalogue,scene=4,
+            anchor={x=450,y=0,z=0,facing_x=1,facing_y=0,radius=1,vertical=1},globals={DBFMCM=menu},
+            optional_guards={[0x4D4190]=true},now=function()return clock end,observe=function()return view end})
+        ledger.bytes=string.rep(EMPTY..le(0,8),8);resident=false
+        for i,slot in ipairs({1,2,3,6}) do
+            local kind=({1,3,2,6})[i]
+            target={kind=kind,type=('abcdef000000%04x'):format(i),package=key}
+            local old=slot==6 and 0xFFFFFFFF or 100+i
+            local before=inv.bytes
+            modifiers=slot==1 and {[2]='fedcba9876543210'} or slot==2 and {[2]='0000000000000000'} or nil
+            commits=0
+            local ok,_,swap=editing:replace_loadout_item(view,slot,target,old,modifiers,function()commits=commits+1 end)
+            assert(ok)
+            if slot~=6 then
+                assert(swap and not swap.complete)
+                if slot==1 then
+                    clock=clock+1;editing:update(view)
+                    assert(removed_count==0 and not swap.complete,'Retired a weapon still in hand')
+                    held.bytes=le(next_eid,4)..held.bytes:sub(5)
+                    clock=clock+1;editing:update(view)
+                    assert(removed_count==0,'Removed previous weapon while replacement model remained on the floor')
+                    parent.bytes=le(body,8)
+                    for n=1,2 do clock=clock+1;editing:update(view) end
+                    assert(removed_count==1 and not swap.complete,'Replayed removal or assumed it completed')
+                elseif slot==3 then
+                    -- The old ID points to a new UNIT generation; never remove it.
+                    for _,v in ipairs(mem) do
+                        if v.at==W+0xf349e0+old*24 then v.bytes=v.bytes:sub(1,12)..le(500,4)..v.bytes:sub(17) end
+                    end
+                end
+                if slot~=3 then removed[old]=true end
+                clock=clock+1;editing:update(view);assert(swap.complete,swap.error)
+                assert(removed_count==1)
+            end
+            local pos=offsets[slot]
+            assert(inv.bytes==before:sub(1,pos)..le(next_eid,4)..before:sub(pos+5))
+            assert(not pcall(editing.replace_loadout_item,editing,view,slot,target,old))
+        end
+        -- A failed reinforcement commit leaves the original in hand and cleans
+        -- only the unissued entity. The menu can retry normally.
+        local previous=tonumber(ffi.cast('const uint32_t *',inv.bytes)[0])
+        unissued=next_eid+1
+        target={kind=1,type='abcdef0000000001',package=key}
+        commits=0
+        assert(not pcall(editing.replace_loadout_item,editing,view,1,target,previous,nil,function() error('commit failed') end))
+        assert(removed[unissued] and held.bytes:sub(1,4)==le(previous,4))
+        unissued=nil
+        assert(selections==1 and notifications==3 and requests==3)
+        -- Equip the three hidden guns via the normal Spawner queue. Their native
+        -- slot and in-hand selection must agree, including the sidearm slot.
+        local hidden=dofile('src/loadout_catalogue.lua').hidden
+        assert(#hidden==3)
+        menu.is_open=function()return false end
+        local equipped
+        fakes.SUPPORT_EQUIP=function(_,avatar,eid,slot)
+            assert(avatar==AV and slot==equipped and eid==next_eid)
+            local off=offsets[slot];inv.bytes=inv.bytes:sub(1,off)..le(eid,4)..inv.bytes:sub(off+5)
+        end
+        fakes.SUPPORT_SELECT=function(_,avatar,slot)
+            assert(avatar==AV and slot==equipped)
+            inv.bytes=inv.bytes:sub(1,28)..le(slot,4)..inv.bytes:sub(33)
+            held.bytes=le(next_eid,4)
+        end
+        for _,gun in ipairs(hidden) do
+            GOOSE_GADGET_SPAWNER_REQUESTS_V1=nil
+            ledger.bytes=string.rep(EMPTY..le(0,8),8);resident=false
+            local sp=Spawner.new(nil,{extra_weapons=hidden,backend={},io=dio,observe=function()return view end,
+                now=function()return clock end})
+            DBFMCM=menu
+            local at
+            for i,name in ipairs(sp:choices()) do if name==gun.name then at=i end end
+            assert(at and at>38 and #sp:choices()==41)
+            sp:set_enabled(true)
+            target,modifiers,commits=gun,nil,0
+            equipped=gun.kind==1 and 1 or 2
+            local before,first=inv.bytes,next_eid
+            assert(sp:queue(at))
+            for _=1,5 do clock=clock+1;sp:update() end
+            assert(sp:status()==gun.name..' equipped directly',sp:status())
+            assert(next_eid==first+1 and before:sub(9,16)==inv.bytes:sub(9,16))
+            local other=equipped==1 and 5 or 1
+            assert(before:sub(other,other+3)==inv.bytes:sub(other,other+3))
+            assert(sp:shutdown())
+        end
+        DBFMCM=saved
+        GOOSE_GADGET_SPAWNER_REQUESTS_V1=nil
         local ok,why=m:queue(2);assert(ok,why)
     end
 end
@@ -159,6 +337,29 @@ do
     assert(queued[1]==7 and queued[2]=='preload' and writes==before and slot:status()=='Loading fixture')
     loaded=true;slot:update(true);assert(slot:status():find('RS%-422 Railgun added'),slot:status())
     assert(get(pay+0x788,4)==le(4,4) and get(pay+0x188+3*0x30,4)==le(58,4))
+    -- A standalone backpack/sentry must wait for its stratagem package; a
+    -- changed mission discards the request instead of consuming the next slot.
+    local tick,polls,ready=0,0,false
+    local packages={'3e78581fdab81a73','54dc633a67baa93d'}
+    list[4]={name='Jump Pack',kind=137,package=packages[1]}
+    list[5]={name='Autocannon Sentry',kind=140,package=packages[2]}
+    function support:ensure_package(key,observed)
+        assert((key==packages[1] or key==packages[2]) and observed==view)
+        polls=polls+1
+        return ready
+    end
+    slot=Slot.new({io=fio,observe=function()return view end,support=support,stratagems=list,
+        now=function()return tick end,write=function(at,b)writes=writes+1;set(at,b);return true end})
+    local start=writes
+    assert(slot:queue(4));slot:update(true);slot:update(true)
+    assert(polls==1 and writes==start and slot:status()=='Loading Jump Pack')
+    set(rec+8,'changed!');ready=true;tick=1;slot:update(true)
+    assert(polls==1 and writes==start and slot:status():find('Mission changed'))
+    for index=4,5 do
+        set(rec+8,'package'..index);assert(slot:queue(index));slot:update(true)
+        assert(get(pay+0x188+index*0x30,4)==le(list[index].kind,4))
+        assert(writes==start+2*(index-3))
+    end
     -- co-op refused
     set(rec+8,'mission3');solo=false;setpm()
     slot=Slot.new({io=fio,observe=function()return view end,support=support,items={},stratagems=list,write=function()error('no write')end})
@@ -180,10 +381,10 @@ function fake:choices()return{'A','B'}end
 function fake:queue(i)self.queued[#self.queued+1]=i;return true end
 function fake:set_enabled(v)self.enabled=v;return true end
 function fake:status()return'Spawner fixture'end
-function fake:stratagem_choices()return{'S1','S2','S3'}end
+function fake:stratagem_groups()return s:stratagem_groups() end
 function fake:queue_stratagem(i)self.stratagem=i;return true end
 function fake:stratagem_status()return'Slot fixture'end
-local spec,values,closed
+local spec,values,closed,restored
 DBFMCM={mods={}}
 function DBFMCM.close()closed=(closed or 0)+1;return true end
 function DBFMCM.register(t)
@@ -191,7 +392,13 @@ function DBFMCM.register(t)
     for _,page in ipairs(t.pages)do for _,control in ipairs(page.controls)do
         if control.id and control.default~=nil then values[control.id]=control.default end
     end end
-    local h={get=function(id)return values[id]end,unregister=function()DBFMCM.mods[t.id]=nil;return true end}
+    values.spawner_stratagem=2 -- AC-8 Autocannon in the old flat picker
+    local h={get=function(id)return values[id]end,
+        set_many=function(next_values)
+            assert(not restored);restored=true
+            for key,value in pairs(next_values) do values[key]=value end
+            return true
+        end,unregister=function()DBFMCM.mods[t.id]=nil;return true end}
     DBFMCM.mods[t.id]={handle=h,pages=t.pages,controls={}}
     return h
 end
@@ -204,13 +411,38 @@ assert(fake.enabled==false)
 values.spawner_enabled=true;assert(menu:update(0.3));assert(fake.enabled==true)
 values.spawner_weapon=2;assert(byid.spawner_equip.on_activate()==true)
 assert(fake.queued[1]==2 and closed==1)
-values.spawner_stratagem=3;assert(byid.spawner_add_stratagem.on_activate()==true and fake.stratagem==3 and closed==2)
+local rows=dofile('src/spawner/stratagems.lua')
+assert(restored and values.spawner_stratagem==0)
+local weapons=byid.spawner_stratagem_weapons_section.children[1]
+assert(weapons.choices[values[weapons.id]]=='AC-8 Autocannon')
+local seen,groups,total={},{},0
+for _,section in ipairs(page.controls) do
+    if section.children then
+        groups[#groups+1]=section.label
+        assert(section.type=='section' and section.collapsed==true)
+        local choice,add=unpack(section.children)
+        assert(choice.type=='choice' and add.type=='button')
+        for i,name in ipairs(choice.choices) do
+            values[choice.id]=i
+            assert(add.on_activate()==true)
+            local row=assert(rows[fake.stratagem])
+            assert(row.name==name and row.group==section.label and not seen[row.kind])
+            seen[row.kind]=true
+            total=total+1
+        end
+    end
+end
+assert(table.concat(groups,',')=='Eagles,Orbitals,Weapons,Backpacks,Turrets,Deployables')
+assert(total==#rows and total==102 and closed==total+1)
+for _,kind in ipairs({137,57,69,140,12,108,28}) do assert(seen[kind]) end
+for _,kind in ipairs({7,51,119,127,149}) do assert(not seen[kind]) end
+local add=byid.spawner_stratagem_backpacks_section.children[2]
 -- a refusal reaches the menu: MCM shows a string result as the notice and drops a second value
 function fake:queue()return false,'A support request is already pending'end
-assert(byid.spawner_equip.on_activate()=='A support request is already pending' and closed==2)
+assert(byid.spawner_equip.on_activate()=='A support request is already pending' and closed==total+1)
 function fake:queue_stratagem()return false,'A stratagem request is already pending'end
-assert(byid.spawner_add_stratagem.on_activate()=='A stratagem request is already pending' and closed==2)
+assert(add.on_activate()=='A stratagem request is already pending' and closed==total+1)
 menu:refresh_status();assert(byid.spawner_status.label=='Status: Spawner fixture')
 assert(byid.spawner_stratagem_status.label=='Status: Slot fixture')
 assert(menu:shutdown());assert(fake.enabled==false)
-print('Spawner catalogue (38 rows, LAS-44 Nova), request lifecycle without premature native calls, optional packed guard, model-less row ends its request, fifth stratagem slot, and MCM page with visible refusals passed')
+print('Spawner catalogue (38 rows, LAS-44 Nova), request lifecycle without premature native calls, optional packed guard, model-less row ends its request, 102 grouped fifth-slot choices, saved-selection migration, package residency and visible MCM refusals passed')

@@ -50,6 +50,7 @@ end
 function Adapter:_error(operation)
     local ok,code=pcall(function()return PORT51.number(self:_load().NADSB_Error())end)
     code=ok and code or nil
+    self.failure_native_error=code
     return operation..' failed (native blur code '..tostring(code or 'unavailable')..')',code
 end
 function Adapter:_config(config)
@@ -158,6 +159,9 @@ function Blur.new(backend,log,helper,monotonic)
         return value
     end
     local function fault(why)
+        local code=self.failure_native_error or helper.failure_native_error
+        self.failure_native_error=PORT51.kind(code)=='number'and code~=0 and code or nil
+        self.failure_kind=self.failure_native_error==3 and 'temporary_read'or(self.failure_native_error and 'unsafe'or nil)
         self.fault=tostring(why);log('Native blur: '..self.fault);return false,self.fault
     end
     local function clear_binding()
@@ -176,6 +180,7 @@ function Blur.new(backend,log,helper,monotonic)
     function self:result()
         local r={};for k,v in pairs(self.last)do r[k]=v end
         r.phase,r.cleanup_pending,r.error_message=self.phase,self.phase=='cleanup_pending',self.fault
+        r.failure_native_error,r.failure_kind=self.failure_native_error,self.failure_kind
         r.retiring=self.retiring==true
         r.retirement_pending=self.retiring==true and r.cleanup_pending
         return r
@@ -211,6 +216,7 @@ function Blur.new(backend,log,helper,monotonic)
         return done,reason
     end
     function self:update(controller)
+        self.failure_native_error,self.failure_kind=nil,nil;helper.failure_native_error=nil
         if self.phase=='cleanup_pending'then
             if self.retiring then return retire()end
             return self:stop()
@@ -238,6 +244,7 @@ function Blur.new(backend,log,helper,monotonic)
             if not done then self:stop();return fault(why)end
             if self.last.armed~=true or(self.last.error and self.last.error~=0)then
                 if self.last.armed==false and RETIRED[self.last.error]then return retire()end
+                self.failure_native_error=self.last.error
                 self:stop();return fault('Native blur policy disarmed or rejected ownership')
             end
             return true
@@ -268,6 +275,7 @@ function Blur.new(backend,log,helper,monotonic)
         if not accepted then self:stop();return fault(problem)end
         if self.last.armed~=true or(self.last.error and self.last.error~=0)then
             if self.last.armed==false and RETIRED[self.last.error]then return retire()end
+            self.failure_native_error=self.last.error
             self:stop();return fault('Native blur policy did not remain armed')
         end
         return true

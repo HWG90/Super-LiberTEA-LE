@@ -1,0 +1,339 @@
+{
+  "version": "0.5.38-cffi-26251122",
+  "target_build": 26251122,
+  "lua51_cffi_suites": [
+    {
+      "fixture": "action_placement.lua",
+      "passed": true
+    },
+    {
+      "fixture": "action_state.lua",
+      "passed": true
+    },
+    {
+      "fixture": "aim_marker_source.lua",
+      "passed": true
+    },
+    {
+      "fixture": "aim_markers.lua",
+      "passed": true
+    },
+    {
+      "fixture": "backend.lua",
+      "passed": true
+    },
+    {
+      "fixture": "backend_transition.lua",
+      "passed": true
+    },
+    {
+      "fixture": "blur.lua",
+      "passed": true
+    },
+    {
+      "fixture": "camera.lua",
+      "passed": true
+    },
+    {
+      "fixture": "camera_compat.lua",
+      "passed": true
+    },
+    {
+      "fixture": "clock.lua",
+      "passed": true
+    },
+    {
+      "fixture": "compat51_bindings.lua",
+      "passed": true
+    },
+    {
+      "fixture": "controller.lua",
+      "passed": true
+    },
+    {
+      "fixture": "diagnostics.lua",
+      "passed": true
+    },
+    {
+      "fixture": "dof.lua",
+      "passed": true
+    },
+    {
+      "fixture": "editor.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_aim.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_auto.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_camera_pose.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_capture.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_capture_ready.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_fov.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_handoff.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_native_ads.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_person.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_presentation.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_projection.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_render.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_retarget.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_source_pose.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_warm.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_weapon_children.lua",
+      "passed": true
+    },
+    {
+      "fixture": "first_person_movement.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fov.lua",
+      "passed": true
+    },
+    {
+      "fixture": "head_placement.lua",
+      "passed": true
+    },
+    {
+      "fixture": "head_visibility.lua",
+      "passed": true
+    },
+    {
+      "fixture": "held_fire.lua",
+      "passed": true
+    },
+    {
+      "fixture": "locomotion.lua",
+      "passed": true
+    },
+    {
+      "fixture": "menu.lua",
+      "passed": true
+    },
+    {
+      "fixture": "motion.lua",
+      "passed": true
+    },
+    {
+      "fixture": "motion_runtime.lua",
+      "passed": true
+    },
+    {
+      "fixture": "native_ads_option.lua",
+      "passed": true
+    },
+    {
+      "fixture": "near_clip.lua",
+      "passed": true
+    },
+    {
+      "fixture": "pose_adapter.lua",
+      "passed": true
+    },
+    {
+      "fixture": "ready_pose.lua",
+      "passed": true
+    },
+    {
+      "fixture": "ready_pose_backend.lua",
+      "passed": true
+    },
+    {
+      "fixture": "recovery.lua",
+      "passed": true
+    },
+    {
+      "fixture": "runtime_frame.lua",
+      "passed": true
+    },
+    {
+      "fixture": "runtime_recovery.lua",
+      "passed": true
+    },
+    {
+      "fixture": "skinned_placement.lua",
+      "passed": true
+    },
+    {
+      "fixture": "support_hand.lua",
+      "passed": true
+    },
+    {
+      "fixture": "transition.lua",
+      "passed": true
+    },
+    {
+      "fixture": "vignette.lua",
+      "passed": true
+    },
+    {
+      "fixture": "zoom.lua",
+      "passed": true
+    }
+  ],
+  "total_suites": 53,
+  "syntax_files": 83,
+  "native_helpers": "unchanged from installed0.5.36; production DLL and source hashes verified against build receipts",
+  "combined_mcm_and_f11_f8_integration_passed": true,
+  "module_closure_passed": true,
+  "atomic_install_tests_passed": true,
+  "head_observation": {
+    "isolated_root": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-hotpath",
+    "baseline": "installed0.5.36 copy supplied by parent; source hashes in tfp-head-fastpath-baseline/baseline.json",
+    "scope": [
+      "src/first_person/head_visibility.lua",
+      "src/first_person/model_shadow_source.lua",
+      "tests/first_person/head_visibility.lua"
+    ],
+    "final_sha256": {
+      "src/first_person/head_visibility.lua": "cda09bf23b0db3d750e4805d5fa607a2ccc872c1527a266f7f6e20a1cff47d77",
+      "src/first_person/model_shadow_source.lua": "fac450ee5f348f6a219aac0b609b03ec1921edbbe52d0d1b541d6d24a65e1374",
+      "tests/first_person/head_visibility.lua": "83891fe717bbdcc043bbade813732d63b88593474493f446824e466f7ed610f8"
+    },
+    "tests": {
+      "head_visibility_cases": 68,
+      "runtimes": [
+        "Lua5.1 packaged realCFFI",
+        "LuaJIT actualcompat"
+      ],
+      "steady_frames_in_regression": 100
+    },
+    "source_backed_counter_100_steady_frames": {
+      "baseline": {
+        "full_snapshots": 200,
+        "alignment_context_calls": 1200,
+        "SDK_writes": 0,
+        "player_plus_full_snapshot_calls": 300,
+        "direct_fixture_read_callbacks": 7900
+      },
+      "candidate": {
+        "full_snapshots": 0,
+        "alignment_context_calls": 0,
+        "SDK_writes": 0,
+        "player_plus_full_snapshot_calls": 200,
+        "direct_fixture_read_callbacks": 10800
+      },
+      "important_limit": "Old full snapshots, alignment_context and scalar getters are fake in this byte-backed fixture, so direct_read_callbacks omit their production read chains. Compare call counts; no timing or FPS claim."
+    },
+    "fastpath_contract": {
+      "read_only_return": true,
+      "mutations_use_original_full_guards": true,
+      "admission": "native6 + full model observation + exact last masks + same owner/epoch/flags + complete renderer/kept-clothing arrays/resources + complete cached topology endpoints + descriptor/backpack/appearance/SDK identities",
+      "closing_checks": "model topology + descriptor; player-only ownership + appearance + registry pointer/tables/capacity + every inspected UnitRef generation/object",
+      "failure": "immediate original full resolve; refresh kept layouts while retaining per-row ownership/foreign-mask history"
+    },
+    "no_live_calls_or_install": true
+  },
+  "phase_publication": {
+    "scope": "Private generation-owned phase publication only; no new native export, DLL, hook or shared struct ABI. No installed files or live process modified.",
+    "source_sha256": {
+      "src/first_person/backend.lua": "8397a53063b8282123055935b1356671bb8192fcc95d22a0367a0fa50f85ab0d",
+      "tests/first_person/backend_transition.lua": "3132c0f1215b2aaa75168f6377099d23a41284a1e95b7d4704c6fbdf0158dcff"
+    },
+    "baseline": {
+      "source": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit/src/first_person/backend.lua",
+      "sha256": "6ee6fd30809f86054a8c9f4c03572696f710a00832c930b2846a37238d73dd4a"
+    },
+    "affected_suites": [
+      {
+        "fixture": "backend.lua",
+        "passed": true
+      },
+      {
+        "fixture": "backend_transition.lua",
+        "passed": true
+      },
+      {
+        "fixture": "controller.lua",
+        "passed": true
+      },
+      {
+        "fixture": "motion_runtime.lua",
+        "passed": true
+      },
+      {
+        "fixture": "runtime_frame.lua",
+        "passed": true
+      },
+      {
+        "fixture": "runtime_recovery.lua",
+        "passed": true
+      }
+    ],
+    "paired_measurement": {
+      "baseline": {
+        "snapshots": 3,
+        "contexts": 3,
+        "protected_reads": 187,
+        "native_transition_calls": 2,
+        "native_motion_calls": 1
+      },
+      "fixed": {
+        "snapshots": 1,
+        "contexts": 1,
+        "protected_reads": 77,
+        "native_transition_calls": 1,
+        "native_motion_calls": 1
+      }
+    }
+  },
+  "camera_pin_removed": true,
+  "new_hooks": false,
+  "structure_abis_changed": false,
+  "settings_changed": false,
+  "baseline_live": {
+    "version": "0.5.36",
+    "fps_off": 107,
+    "fps_on": 85,
+    "profiler_removed_drop_confirmed": true
+  },
+  "optimized_live_fps": "pending clean restart and same-scene check",
+  "camera_animation": "accepted natural/stable35; unchanged native helpers in38",
+  "zoom_sensitivity": "unresolved native scaling; uninstalled workspace zoom/DOF development explicitly excluded",
+  "live_acceptance": "pending",
+  "source_hashes_checked": true
+}

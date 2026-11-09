@@ -1,5 +1,9 @@
 # HudPlusPlus on build 26251122
 
+**Modular checkout:** this is the original port research/build record. For edits to the refactored
+runtime, use [`../../../README.md`](../../../README.md) and `../../../tools/build.py`; this historical
+builder reads the original bundle and local captures rather than the editable `src/` modules.
+
 HudPlusPlus is HD2 HUD+ 0.2.9 rebuilt for game build 26251122 and renamed (2026-11-03) because nearly
 everything in it was re-derived or changed. Arsenal shows it as "HudPlusPlus" (package folder
 `HudPlusPlus-LuaJIT-26251122`); its GUID, LLL addon name `mods/hd2_hud/hd2_hud_plus` and settings file are

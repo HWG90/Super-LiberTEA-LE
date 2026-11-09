@@ -1,0 +1,134 @@
+{
+  "helpers": [
+    {
+      "name": "camera",
+      "file": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-seamless/dist/native-camera-remake/native_ads_camera_26251122_c329263b5e79.dll",
+      "sha256": "13175a39b9d5b7bbcf14435ea9b784974c33c3116f37676bd0b6aba7d68b2c5f",
+      "bytes": 438784,
+      "source_sha256": {
+        "native_ads_camera.cpp": "7596ba348a0ade8ebc843f7775395b08c72ce1b94c6a0fda476c88ea024c0982",
+        "native_ads_camera.h": "a9b441871f474ce45f64b9ebde0e2b41f58cbfae7436a97ec7fd817309d987bc",
+        "native_memory.h": "5820ec96d4e5986bea7026d4ff0f0238a516b2ee51d5ba79340c4bd3e5a5902b",
+        "free_aim_math.h": "7a159d2928ebffeb4061c81f2c929e0ef07f99591aec6a239666f5241ada82e2",
+        "camera_correction.h": "ff7793a8ca9109faea3b8da6b2aa366c85c8c332175c0d3abe8c6e7a585df08e"
+      },
+      "fixture_source_sha256": {
+        "camera_fixture.cpp": "aa425d18290874d9befad4719dd9d77800c455e82ead63a51ac88b4a805bdeab",
+        "camera_correction_fixture.cpp": "e9b125da21f7f943db73532fcedf4d94c2981dc5b6c69f33a8147053f03f75ab"
+      },
+      "smoke_source_sha256": "9c19aca3fd9fd5f7a8f17ce46f4397b9a4b430c0bebaf3260595cf657bb3ecd0",
+      "compiler": "/home/goose/Documents/Codex/2026-10-22/a-2/work/ffi-comparison/toolchain/zig-x86_64-linux-0.14.1/zig",
+      "command": [
+        "/home/goose/Documents/Codex/2026-10-22/a-2/work/ffi-comparison/toolchain/zig-x86_64-linux-0.14.1/zig",
+        "c++",
+        "-target",
+        "x86_64-windows-gnu",
+        "-std=c++17",
+        "-fms-extensions",
+        "-O2",
+        "-shared",
+        "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-seamless/native/first_person/native_ads_camera.cpp",
+        "-o",
+        "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-seamless/dist/native-camera-remake/native_ads_camera_26251122_c329263b5e79.dll"
+      ],
+      "fixture_passed": true,
+      "correction_fixture_passed": true,
+      "production_dll_smoke_passed": true,
+      "new_hook": false,
+      "policy": "existing camera API +20 setter only; native6 exact; qualified normal4 positional correction; no pin/raw look/vehicle lock",
+      "profile_updated": true,
+      "game_tested": false,
+      "installation": false,
+      "native_cases": 54,
+      "correction_cases": 14
+    },
+    {
+      "name": "editor",
+      "file": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-performance/dist/editor-contention/native_ads_editor_26251122_7fd176073730.dll",
+      "sha256": "22b7cee1b21cae8f8e4bb2b4f903a1f992bd0517c35cbb38bd8367a29395bf54",
+      "bytes": 371200,
+      "source_sha256": {
+        "native_ads_editor.cpp": "ccc422c838ae5d13b34d6554cb29bbafb89e6da242adb53b88c65bd1a1240e59",
+        "native_ads_editor.h": "8b0f5f84d9c2ee6dadcb0a19306e909d8a53285df87cd213db453f8948d5eb29",
+        "native_memory.h": "5820ec96d4e5986bea7026d4ff0f0238a516b2ee51d5ba79340c4bd3e5a5902b",
+        "presentation_phase.h": "6a5f190ed56c386e7862e6b13253800845d5701646d3d5dd2e0bd01f1d5dc4a9"
+      },
+      "fixture_source_sha256": "6e4936a7726bb2ee0a7e05bb15a6caa9bd8fe17c25eb2b024ca148383e360200",
+      "smoke_source_sha256": "369b8afcec2d0292b380a5936acb9e4a2264f3306c27509dd674df00d49e7e5a",
+      "command": [
+        "/home/goose/Documents/Codex/2026-10-22/a-2/work/ffi-comparison/toolchain/zig-x86_64-linux-0.14.1/zig",
+        "c++",
+        "-target",
+        "x86_64-windows-gnu",
+        "-std=c++17",
+        "-fms-extensions",
+        "-O2",
+        "-shared",
+        "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-performance/native/first_person/native_ads_editor.cpp",
+        "-o",
+        "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-performance/dist/editor-contention/native_ads_editor_26251122_7fd176073730.dll"
+      ],
+      "fixture_passed": true,
+      "production_dll_smoke_passed": true,
+      "new_hook": false,
+      "profile_updated": true,
+      "installed": false,
+      "game_tested": false,
+      "isolated_candidate": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-performance",
+      "native_cases": 96
+    },
+    {
+      "name": "fov",
+      "file": "dist/fov-shared/native_ads_fov_26251122_60bbecd29508.dll",
+      "sha256": "43252d9d03e1e10b6e737e38da4eaa5d58d180de2192dafde02c28c3b51e8110",
+      "source_sha256": {
+        "native_ads_fov.cpp": "de42b429ef03a4869c8718d76d247edd957ad2475d3463ed6ba0043d007abda0",
+        "native_ads_fov.h": "5203883f9adfd7f97bdeb33f05629b49ba0601911b2cc06214d4326544c1c811",
+        "fov_fixture.cpp": "29f1c847285daf8617a59ed93181fdcd27b43562ad9c084a9eaa89f3f27ea787",
+        "native_memory.h": "5820ec96d4e5986bea7026d4ff0f0238a516b2ee51d5ba79340c4bd3e5a5902b"
+      },
+      "fixture_passed": true,
+      "production_dll_smoke_passed": true
+    }
+  ],
+  "fov_details": {
+    "target_build": 26251122,
+    "filename": "native_ads_fov_26251122_60bbecd29508.dll",
+    "sha256": "43252d9d03e1e10b6e737e38da4eaa5d58d180de2192dafde02c28c3b51e8110",
+    "input_sha256": {
+      "native_ads_fov.cpp": "de42b429ef03a4869c8718d76d247edd957ad2475d3463ed6ba0043d007abda0",
+      "native_ads_fov.h": "5203883f9adfd7f97bdeb33f05629b49ba0601911b2cc06214d4326544c1c811",
+      "fov_fixture.cpp": "29f1c847285daf8617a59ed93181fdcd27b43562ad9c084a9eaa89f3f27ea787",
+      "native_memory.h": "5820ec96d4e5986bea7026d4ff0f0238a516b2ee51d5ba79340c4bd3e5a5902b"
+    },
+    "config_bytes": 80,
+    "stats_bytes": 88,
+    "abi": 1,
+    "new_hook": false,
+    "new_dispatch_slots": false,
+    "executable_writes": false,
+    "protection_changes": false,
+    "source_api": "NADSF_SetTransition(generation,epoch,linear_progress,ads)",
+    "native_cases": 63,
+    "fixture_passed": true,
+    "production_dll_smoke_passed": true,
+    "live_acceptance": "pending",
+    "profile_changed": false,
+    "lua_cases": 26,
+    "lua_fixture_passed": true,
+    "lua_source_sha256": "af912c31b35f404c7ba9d0a57261ada2274afe79b566b6bfc8bf114e1bc367c2",
+    "lua_fixture_sha256": "3103e22f5915a139f69262a8678cf8a4d19a5d5990648ec689d71345f97aea0c"
+  },
+  "new_hooks": false,
+  "in_game_tested": false,
+  "camera_policy": {
+    "status": "rebuilt from pre-pin32",
+    "native6": "original position pointer and quaternion untouched",
+    "fallback": "qualified on-foot normal4 positional correction only",
+    "pin": false,
+    "raw_look": false,
+    "new_hook": false,
+    "high_resolution_clock": "QPC",
+    "independent_review": "clear; final registry-close delta reviewed"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "hud_commit": "9a416e1213660fcc2eb3ef436162ad8dad5a0396",
+  "selected": "Read-only five native getters plus UI/action fields; original full metadata retained only as reference",
+  "files": {
+    "numbers.lua": "559dc342bd5f4b10d82cf71c86707ee2c6beec33cfa6dc0cef9fd634b3695307",
+    "calls.lua": "8a1ebf76c4c31b94c0a3f549f2fd143835e1a39f6e31a2a1e1de02fdf3e07660",
+    "pin.lua": "fb5be5403abe3334e6c90f0c6c77117135e40b3a1fbdbb601176d84191c6b9b2"
+  },
+  "identity_witnesses": {
+    "exe": {
+      "sha256": "257fd7de21a04e8668e02e5c820edf3435176fbde3569765255cc52a5ea20f9d",
+      "timestamp": 1793103434,
+      "size_of_image": 44032000,
+      "machine": 34404,
+      "optional_magic": 523
+    },
+    "game": {
+      "sha256": "61dcfcd201dacbf3545c97beb8a5a6186e9850d2670bf60b0e058320b477f6df",
+      "timestamp": 1793123839,
+      "size_of_image": 54009856,
+      "machine": 34404,
+      "optional_magic": 523
+    }
+  },
+  "identity_evidence": "Current installed build26251122 files hash-match original HUD+ pins. Runtime uses bounded module PE identity plus fresh executable-page and masked-code witnesses, not per-frame whole-file hashing."
+}

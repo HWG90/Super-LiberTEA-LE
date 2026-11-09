@@ -15,9 +15,10 @@ function M.new(sr,preview_only,diagnostic_log,shared_fonts)
         local ok,w,h=pcall(G.resolution);return ok and positive(w) and positive(h)
     end
     local debug_font='core/performance_hud/debug'
-    local font_source,active_font
+    local font_source,active_font;local font_lifetime={}
     local metrics,vertical_metrics={},{}
     local metric_generation,metric_ready,vertical_count=0,false,0
+    local metric_retry=false
     self.font_key=debug_font;self.metric_key=debug_font..'|0'
     local function reset_metrics()
         metrics={};vertical_metrics={};vertical_count=0;metric_generation=metric_generation+1
@@ -61,7 +62,7 @@ function M.new(sr,preview_only,diagnostic_log,shared_fonts)
         return changed
     end
     function self.set_font_source(source)
-        font_source=source;font_state.failed_key=nil;font_state.bound={}
+        font_source=source;font_lifetime={};font_state.failed_key=nil;font_state.bound={}
         if preview_view then preview_view.set_font_source(source)end
         if popup_view then popup_view.set_font_source(source)end
     end
@@ -69,15 +70,23 @@ function M.new(sr,preview_only,diagnostic_log,shared_fonts)
     -- frozen HEX descriptor, never a retained frame-local native ID.
     function self.refresh_font()
         if not drawable()then return false end
+        -- Wrapping must not retain fallback widths after a transient native
+        -- measurement failure. Retry next composition without throwing away
+        -- the successful widths already in the per-font cache.
+        if metric_retry then
+            metric_retry=false;metric_generation=metric_generation+1
+            self.metric_key=self.font_key..'|'..metric_generation
+        end
+        local ready=gui~=nil and live()
+        if ready~=metric_ready then font_lifetime={}end
         local descriptor
         if font_source and type(font_source.resolve)=='function' then
-            local ok,value=pcall(font_source.resolve,sr)
+            local ok,value=pcall(font_source.resolve,sr,font_lifetime)
             local function valid_hex(v)return type(v)=='string' and #v==16 and v:match('^%x+$')end
             if ok and type(value)=='table' and valid_hex(value.font) and valid_hex(value.material) and valid_hex(value.atlas)
                 and sr.IdString64 and type(sr.IdString64.from_hex)=='function' and type(G.material)=='function'
                 and sr.Material and type(sr.Material.set_texture)=='function' then descriptor=value end
         end
-        local ready=gui~=nil and live()
         -- Cold first paint uses stock metrics; only a warm, bound GUI adopts.
         if not ready then
             if gui then font_state.failed_key=nil end
@@ -123,8 +132,9 @@ function M.new(sr,preview_only,diagnostic_log,shared_fonts)
                 local lo,hi=G.text_extents(gui,value,font_id(),size)
                 return math.max(hi.x,hi.x-lo.x)
             end)
-            if ok and type(native_width)=='number'and native_width<math.huge and (native_width>0 or (count==0 and native_width==0))then width=native_width;metrics[key]=width end
+            if ok and type(native_width)=='number'and native_width<math.huge and (native_width>0 or (count==0 and native_width==0))then width=native_width;metrics[key]=width;return width end
         end
+        if type(G.text_extents)=='function'then metric_retry=true end
         return width
     end
     local function destroy_item(item)
@@ -149,7 +159,7 @@ function M.new(sr,preview_only,diagnostic_log,shared_fonts)
         if gui and live()then self.clear();for _,g in pairs(preview_guis)do sr.World.destroy_gui(world,g)end;sr.World.destroy_gui(world,gui)end
         for _,g in pairs(preview_guis)do font_state.guis[g]=nil;font_state.bound[g]=nil end
         if gui then font_state.guis[gui]=nil;font_state.bound[gui]=nil end
-        preview_guis={};ids={};gui,world=nil,nil;metric_ready=false;reset_metrics()
+        preview_guis={};ids={};gui,world=nil,nil;metric_ready=false;font_lifetime={};reset_metrics()
     end
     -- Compare retained state directly. Stringifying every coordinate and color
     -- for every primitive creates garbage even when the menu is unchanged.

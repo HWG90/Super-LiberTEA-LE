@@ -1,0 +1,30 @@
+{
+  "evidence": "ev_5af4710518311da482be5088f162db6a3e337ef24c411f364af1914c174e7fdc",
+  "procedure": {
+    "address": "0x77dc50",
+    "name": "entry",
+    "classification": {
+      "external": false,
+      "thunk": false,
+      "thunk_target": null,
+      "provenance": "ghidra-function-manager"
+    },
+    "body": {
+      "available": true,
+      "provenance": "ghidra-function-body-address-set",
+      "ranges": [
+        {
+          "start": "0x77dc50",
+          "end": "0x77ddf6"
+        }
+      ],
+      "total_bytes": 423,
+      "span_bytes": 423,
+      "non_contiguous": false,
+      "contains_entry": true
+    },
+    "signature": "undefined entry()",
+    "locals": []
+  },
+  "pseudocode": "\n/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */\n\nulong entry(undefined8 param_1,undefined8 param_2,int param_3,long param_4)\n\n{\n  uint uVar1;\n  int iVar2;\n  long lVar3;\n  int iVar4;\n  ulong uVar5;\n  uint uVar6;\n  uint uVar7;\n  undefined8 uStack0000000000000018;\n  \n  if (param_3 == _DAT_02e3f0e4) {\n    return 0;\n  }\n  uVar1 = *(uint *)(param_4 + 0x28);\n  uVar6 = 0;\n  if (uVar1 == 0) {\n    return 0;\n  }\n  uVar7 = uVar6;\n  while( true ) {\n    uVar5 = (ulong)(uVar7 + *(int *)(param_4 + 0x30) * param_3 & uVar1 - 1);\n    iVar4 = *(int *)(*(long *)(param_4 + 0x20) + uVar5 * 8);\n    if (iVar4 == *(int *)(param_4 + 0x2c)) break;\n    if (iVar4 == param_3) goto LAB_0077dce0;\n    uVar7 = uVar7 + 1;\n    if (uVar1 <= uVar7) {\n      return 0;\n    }\n  }\n  if (iVar4 != param_3) {\n    return 0;\n  }\nLAB_0077dce0:\n  uVar1 = *(uint *)(*(long *)(param_4 + 0x20) + uVar5 * 8 + 4);\n  if (uVar1 == 0xffffffff) {\n    return 0;\n  }\n  iVar4 = *(int *)(*(long *)(param_4 + 0x48) + (ulong)uVar1 * 0x24);\n  if (iVar4 == _DAT_02e3f0e4) {\n    return 0;\n  }\n  if (iVar4 == _DAT_02e3f0d0) {\n    return 0;\n  }\n  uVar1 = *(uint *)(_DAT_02ce1798 + 0x28);\n  uStack0000000000000018 = param_2;\n  if (uVar1 != 0) {\n    lVar3 = *(long *)(_DAT_02ce1798 + 0x20);\n    uVar7 = uVar6;\n    do {\n      uVar5 = (ulong)(uVar7 + *(int *)(_DAT_02ce1798 + 0x30) * iVar4 & uVar1 - 1);\n      iVar2 = *(int *)(lVar3 + uVar5 * 8);\n      if (iVar2 == *(int *)(_DAT_02ce1798 + 0x2c)) {\n        if (iVar2 == iVar4) {\nLAB_0077ddb9:\n          if (*(int *)(lVar3 + uVar5 * 8 + 4) != -1) {\n            uVar5 = func_0x0088de80(lVar3,*(int *)(_DAT_02ce1798 + 0x2c),iVar4);\n            return uVar5;\n          }\n        }\n        break;\n      }\n      if (iVar2 == iVar4) goto LAB_0077ddb9;\n      uVar7 = uVar7 + 1;\n    } while (uVar7 < uVar1);\n  }\n  if (iVar4 != _DAT_02e3f0d0) {\n    uVar1 = *(uint *)(_DAT_02ce18c8 + 0x28);\n    if (uVar1 != 0) {\n      lVar3 = *(long *)(_DAT_02ce18c8 + 0x20);\n      do {\n        uVar5 = (ulong)(uVar6 + *(int *)(_DAT_02ce18c8 + 0x30) * iVar4 & uVar1 - 1);\n        iVar2 = *(int *)(lVar3 + uVar5 * 8);\n        if (iVar2 == *(int *)(_DAT_02ce18c8 + 0x2c)) {\n          if (iVar2 != iVar4) {\n            return 0;\n          }\nLAB_0077ddd4:\n          if (*(int *)(lVar3 + uVar5 * 8 + 4) == -1) {\n            return 0;\n          }\n          iVar4 = func_0x00a05900(lVar3,*(int *)(_DAT_02ce18c8 + 0x2c),iVar4,_DAT_02ce18c8);\n          return (ulong)(iVar4 != 0);\n        }\n        if (iVar2 == iVar4) goto LAB_0077ddd4;\n        uVar6 = uVar6 + 1;\n      } while (uVar6 < uVar1);\n    }\n  }\n  return 0;\n}\n\n"
+}

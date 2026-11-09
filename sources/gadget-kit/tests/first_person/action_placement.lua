@@ -66,3 +66,42 @@ print('Live dive entry, flight and prone recovery variants: 8 passed')
 local roll_profile=A.saved({},'1234567890abcdef','sprint',{x=.1,y=.2,z=.3,roll=70},false)
 assert(A.resolve({action_placements=roll_profile},'1234567890abcdef','sprint').roll==70)
 print('Per-weapon/action roll round trip passed')
+
+-- Family defaults are resource-whitelisted against the combined catalogue.
+-- The resource read by the pose backend uses the type's little-endian bytes.
+local catalogue=dofile(NATIVE_ADS_TEST_ROOT..'/src'..'/loadout_catalogue.lua')
+A.configure_catalogue(catalogue.gear)
+local scythe='5663fbf6d81eee27'
+local info=assert(A.weapon_info(scythe));assert(info.name=='LAS-5 Scythe'and info.family=='energy')
+assert(not A.weapon_info('0000000000000000'))
+local cfg={placement={x=.15,y=0,z=-.12},family_placement_defaults=true}
+local family=A.resolve(cfg,scythe,'idle');assert(family.z==-.115)
+assert(A.resolve(cfg,scythe,'sprint').z==-.115)
+assert(A.resolve(cfg,scythe,'ads').x==0)
+assert(A.resolve(cfg,'0000000000000000','idle').z==-.12)
+cfg.family_placement_defaults=false;assert(A.resolve(cfg,scythe,'idle').z==-.12)
+cfg.family_placement_defaults=true;cfg.placement.x=.133;assert(A.resolve(cfg,scythe,'idle').x==.133)
+cfg.placement={x=.15,y=0,z=-.12};cfg.weapon_placements={[scythe]={x=.21,y=0,z=0}}
+assert(A.resolve(cfg,scythe,'idle').x==.21)
+cfg.action_placements={__all={idle={x=.22,y=0,z=0}},[scythe]={idle={x=.23,y=0,z=0}}}
+assert(A.resolve(cfg,scythe,'idle').x==.23)
+assert(A.default_placement(cfg,scythe,'idle').z==-.115 and A.default_placement(cfg,scythe,'ads').z==0)
+-- Melee, unidentified and catalogue ambiguity never create a firearm guess.
+for _,row in ipairs(catalogue.gear)do
+ if row.name:match('^CQC')or row.name:match('^Item ')or row.name=='Breaching Hammer'then
+  if row.type then local chunks={};for i=15,1,-2 do chunks[#chunks+1]=row.type:sub(i,i+1)end;assert(not A.weapon_info(table.concat(chunks)))end
+ end
+end
+local unknown='0011223344556677'
+A.configure_catalogue({{kind=1,name='AR-23 Liberator',type=unknown},{kind=3,name='P-2 Peacemaker',type=unknown}})
+assert(not A.weapon_info('7766554433221100'))
+A.configure_catalogue(catalogue.gear)
+local seen={}
+for _,row in ipairs(catalogue.gear)do
+ if row.type then local chunks={};for i=15,1,-2 do chunks[#chunks+1]=row.type:sub(i,i+1)end
+  local key=table.concat(chunks);local entry=A.weapon_info(key)
+  if entry then assert(A.valid(A.family_baseline(key)));seen[entry.family]=true end
+ end
+end
+for _,name in ipairs({'rifle','compact','sidearm','marksman','shotgun','energy','support'})do assert(seen[name],name)end
+print('Catalogue-backed composition: seven families, exact keys, unknown/melee refusal, saved-profile priority and opt-in preservation passed')

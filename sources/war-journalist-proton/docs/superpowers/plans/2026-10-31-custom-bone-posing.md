@@ -571,3 +571,22 @@ branch; Arsenal profile "LuaJIT Proton", folder install in the LLL Mods folder).
   `Port-Candidate-Backups/war-journalist-proton-1.3.4-3fc60e7-before-bone-posing-dev.5-20261102T050828Z`;
   audit 77/77; Settings untouched). The Lua 5.1 line has the same change as
   595e813 (BML dev.6). Live acceptance of the new drag: pending the user's run.
+- 2026-11-02 17:40 UTC: two BML pose fixes cherry-picked from
+  `claude/wj-chef-unified` (BML bone posing now lives there): 70eb156 as 6cdfc57
+  (bone edits survive a Photo Mode close and apply again on the next open) and
+  d035e77 as 09a0940 (adapter.reconcile after a foreign restore, so subject
+  discovery no longer refuses until restart; Proton keeps `self.abandon` beside
+  the new `self.reconcile`). `bone-posing-dev.6` built: 77 modules, build
+  20261102.1740-09a0940, package sha256 54010819.... Not installed: the live
+  folder had been moved to `Mods/BACKUP/dbf_freecam` (dev.5) at 06:05 UTC and
+  the last launch ran another Arsenal profile with the archive-mod
+  "War Journalist 1.4.0-dev.3", whose LLL line "needs Chef Shared Loader" is
+  that package's own gate (LLL declines it by design, e03cf10 on
+  `claude/wj-chef-unified`; Boot Mod Loader runs it). Who parked the Proton
+  folder is unknown.
+- 2026-11-02 18:19 UTC, on the user's word: dev.6 installed into LLL
+  `Mods/dbf_freecam` with the game closed; the parked dev.5 copy became the
+  backup `Port-Candidate-Backups/war-journalist-proton-1.3.4-2b70a92-before-bone-posing-dev.6-20261102T181913Z`;
+  audit 77/77; Settings untouched
+  (`INSTALL-RECEIPT-folder-c61ac87-bone-posing-dev.6.json`). dev.5's drag and
+  dev.6's two fixes are untested live on Proton.

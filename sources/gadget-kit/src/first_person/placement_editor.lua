@@ -3,6 +3,7 @@ local PORT51=mod.require('src/first_person/compat51.lua')
 -- independent of the manually enabled native first-person camera.
 -- Draft offsets are absolute; native placement always starts from fresh poses.
 local Integration=mod.require('src/first_person.lua')
+local Style=mod.require('src/first_person/ui_style.lua')
 local M = {}
 local BASELINE = { x = .15, y = 0, z = -.12 }
 local LIMIT = .5
@@ -147,27 +148,44 @@ function M.new(controller, store, log, monotonic)
         local scale = math.max(.6, math.min(1.5, h / 1080))
         panel = { x = 24 * scale, y = h - 280 * scale, w = math.min(w - 48 * scale, 530 * scale), h = 256 * scale }
         local commands = {}
-        local function rect(r, color, alpha)
-            commands[#commands + 1] = { type = 'rect', x = r.x, y = r.y, w = r.w, h = r.h, c = color, a = alpha or 1, layer = 300 }
+        local colors,sizes=Style.tokens.colors,Style.tokens.style
+        local sr=rawget(_G,'stingray')
+        local segments=sr and sr.Gui and PORT51.kind(sr.Gui.triangle)=='function' and 4 or 0
+        local function shapes(items,color)
+            for _,shape in ipairs(items)do
+                commands[#commands+1]={type=shape.kind,x=shape.x,y=shape.y,w=shape.w,h=shape.h,
+                    points=shape.points,c=color,a=color[4]/255,layer=300}
+            end
         end
-        local function text(value, x, y, size, color)
+        local function rect(r,color,radius)
+            shapes(Style.rounded_rect_shapes(r.x,r.y,r.w,r.h,radius*scale,segments),color)
+        end
+        local function outline(r,color,radius,width)
+            shapes(Style.rounded_outline_shapes(r.x,r.y,r.w,r.h,radius*scale,width*scale,segments),color)
+        end
+        local function text(value, x, y, size, color,bold)
+            color=color or colors.text
             commands[#commands + 1] = { type = 'text', text = value, x = x, y = y,
-                size = size * scale, c = color or {234, 235, 228}, a = 1, layer = 301 }
+                size = size * scale, c = color, a = color[4]/255, layer = 301,text_bold=bold==true }
         end
-        rect(panel, {15, 18, 20}, .92)
+        rect(panel,colors.panel,sizes.window_rounding)
+        outline(panel,colors.line,sizes.window_rounding,sizes.window_border)
         local x, top = panel.x + 16 * scale, panel.y + panel.h - 28 * scale
-        text((store.title or 'WEAPON PLACEMENT')..(weapon_key and ('  ['..weapon_key..']') or ''), x, top, 17, {244, 202, 53})
+        text(((store.title or 'WEAPON PLACEMENT')..(weapon_key and ('  ['..weapon_key..']') or '')):upper(), x, top, 17,colors.yellow,true)
         text('Editing: '..actions[action_index][2]..'   (placement preview)', x+80*scale, top-30*scale, 16)
         text(string.format('Right %+.1f cm   Forward %+.1f cm   Up %+.1f cm', draft.x * 100, draft.y * 100, draft.z * 100), x, top - 66 * scale, 16)
         text(string.format('Yaw %+.1f  Pitch %+.1f  Roll %+.1f deg',draft.yaw or 0,draft.pitch or 0,draft.roll or 0),x,top-94*scale,15)
-        text(store.rotation==false and 'Left drag: move   Wheel: depth   Shift: fine' or 'L: move  R: yaw/pitch  M: roll  Wheel: depth  Shift: fine', x, top - 118 * scale, 15)
+        text(store.rotation==false and 'Left drag: move   Wheel: depth   Shift: fine' or 'L: move  R: yaw/pitch  M: roll  Wheel: depth  Shift: fine', x, top - 118 * scale, 15,colors.text_dim)
         local supported=PORT51.kind(store.action_supported)~='function' or plain(store,'action_supported',actions[action_index][1])==true
-        text(supported and 'Wheel: depth   Arrows: move   PgUp/PgDn: depth' or 'Preset only: automatic action mapping needs a live trace', x, top - 142 * scale, 14)
-        text((ready and label or 'Release the activation click/key to begin'):sub(1, 72), x, top - 174 * scale, 13, {181, 187, 188})
+        text(supported and 'Wheel: depth   Arrows: move   PgUp/PgDn: depth' or 'Preset only: automatic action mapping needs a live trace', x, top - 142 * scale, 14,colors.text_dim)
+        text((ready and label or 'Release the activation click/key to begin'):sub(1, 72), x, top - 174 * scale, 13,colors.text_dim)
         buttons = {}
         for i,item in ipairs({{'previous_action','<'},{'next_action','>'}})do
             local r={x=x+(i-1)*40*scale,y=top-36*scale,w=32*scale,h=26*scale}
-            buttons[item[1]]=r;rect(r,{41,44,46});text(item[2],r.x+10*scale,r.y+6*scale,15)
+            buttons[item[1]]=r
+            rect(r,colors.field,sizes.frame_rounding)
+            outline(r,colors.line,sizes.frame_rounding,sizes.secondary_border)
+            text(item[2],r.x+10*scale,r.y+6*scale,15,colors.text,true)
         end
         local count=4+(store.reset_all and 1 or 0)-(store.single_save and 1 or 0)
         local bw,gap,by=count==4 and 112*scale or (panel.w-32*scale-(count-1)*10*scale)/count,10*scale,panel.y+12*scale
@@ -178,10 +196,12 @@ function M.new(controller, store, log, monotonic)
         for index,item in ipairs(items)do
             local bounds = { x = x + (index - 1) * (bw + gap), y = by, w = bw, h = 28 * scale }
             buttons[item[1]] = bounds
-            rect(bounds, {41, 44, 46})
-            text(item[2], bounds.x + 10 * scale, bounds.y + 7 * scale, 14)
+            local primary=item[1]=='save'
+            rect(bounds,primary and colors.yellow or colors.field,sizes.frame_rounding)
+            if not primary then outline(bounds,colors.line,sizes.frame_rounding,sizes.secondary_border)end
+            text(item[2]:upper(), bounds.x + 10 * scale, bounds.y + 7 * scale, 14,primary and colors.on_yellow or colors.text,true)
         end
-        text(store.footer or 'Save weapon / all applies to the selected action only', panel.x, panel.y - 20 * scale, 13, {244, 202, 53})
+        text(store.footer or 'Save weapon / all applies to the selected action only', panel.x, panel.y - 20 * scale, 13,colors.text_dim)
         local ok, why = plain(view, 'draw', commands)
         if ok == false or why ~= nil then return false, why or 'Editor drawing refused' end
         return true
@@ -342,7 +362,11 @@ function M.new(controller, store, log, monotonic)
                     local ok,why=plain(store,'reset_all');if not ok then report(why or 'Reset all refused');return true end
                     local p=plain(store,'get_action',weapon_key,actions[action_index][1]);if not valid(p)then return close('Reset value unavailable')end
                     original=copy(p);next_draft=copy(p);report('All saved placements in this editor reset')
-                elseif action == 'reset' then next_draft = store.baseline and copy(store.baseline)or(actions[action_index][1]=='ads' and {x=0,y=0,z=0}or copy(BASELINE)); report('Default placement previewed; save to keep it')
+                elseif action == 'reset' then
+                    local baseline=store.baseline
+                    if PORT51.kind(baseline)=='function'then baseline=plain(store,'baseline',weapon_key,actions[action_index][1])end
+                    next_draft=valid(baseline)and copy(baseline)or(actions[action_index][1]=='ads'and{x=0,y=0,z=0}or copy(BASELINE))
+                    report('Default placement previewed; save to keep it')
                 elseif not panel or not inside(sample.x, sample.y, panel) then
                     if finite(sample.x) and finite(sample.y) then drag = { x = sample.x, y = sample.y } end
                 end

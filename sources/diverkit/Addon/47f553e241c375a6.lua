@@ -1,7 +1,7 @@
 -- HD2-Addon: mods/codex/loadouts
 local MODULE='mods/codex/loadouts'
 local LOG_NAME='DiverKit.log'
-local BUILD='diverkit-alpha8.14.31-luajit-26251122-r6'
+local BUILD='diverkit-alpha8.14.31-luajit-26251122-r10'
 local port_tick,port_shutdown,port_state
 local function safe_tostring(value)
     local ok, rendered = pcall(tostring, value)
@@ -2244,6 +2244,9 @@ function M.copy_snapshot(s)
     for _,k in ipairs(M.character_fields) do out[k]=s[k] end
     if s.vehicle_skins then out.vehicle_skins=JSON.array();for i,v in ipairs(s.vehicle_skins) do out.vehicle_skins[i]=v end end
     for i,v in ipairs(s.stratagems) do out.stratagems[i]={slot=i,key=v.key,enum=v.enum} end
+    -- Preserve saved recipes during unrelated edits even when Transmog is disabled.
+    -- Its adapter owns recipe validation; copies must not alias the saved record.
+    if s.transmog~=nil then out.transmog=JSON.decode(JSON.encode(s.transmog)) end
     return out
 end
 function M.validate(db)
@@ -3933,6 +3936,94 @@ local function readers(context)
     local function pointer(at) local b=read(at,8);return assert(api.pointer(b),'Game pointer unavailable') end
     return read,u32,pointer
 end
+-- 26251122's normal weapon setter starts TEST RDX,RDX / JZ +0x830.
+-- With no payload it jumps straight to RET, before any stack setup, catalog
+-- access or equipment mutation. Let normal execution initialize its lazy pages;
+-- never change their permissions, copy code, or call a UI-handler interior.
+function M.prepare_weapon(context)
+    local layout=context.compat
+    assert(layout and layout.stamp==0x6ae0e5ff and layout.image_size==0x3382000,
+        'Weapon initialization requires the verified game build')
+    assert(context.native_write_accepted==true,'Native apply is unavailable')
+    local ffi,api,kernel=context.ffi,context.api,context.kernel
+    assert(kernel.GetModuleHandleA('game.dll')==ffi.cast('void *',context.game),'Game module changed')
+    assert(Compat.verify(context),'Game compatibility evidence changed')
+    local rva=Compat.address(context,0x1365e60)
+    assert(rva==0x11fb880 and Compat.resident(context,0x1365e60),'Weapon entry has no resident code witness')
+    local witnessed=false
+    for _,p in ipairs(layout.proofs) do
+        if p.name=='weapon_ui_arguments' and p.rva==0x1306439 and not p.cold
+            and p.symbols[0x1365e60] then witnessed=true end
+    end
+    assert(witnessed,'Weapon caller has not been verified')
+    local at=context.game+rva;local finish=at+0x839
+    local function mapped(address)
+        local region=ffi.new('uint8_t[48]')
+        assert(tonumber(kernel.VirtualQuery(ffi.cast('const void *',address),ffi.cast('void *',region),48))==48,
+            'Weapon initialization page is unreadable')
+        local bytes=ffi.string(region,48)
+        assert(api.u32(bytes,32)==0x1000 and api.u32(bytes,40)==0x40000,
+            'Weapon initialization page is not the mapped game code')
+        assert(ffi.cast('void *',api.pointer(bytes,8))==ffi.cast('void *',context.game),
+            'Weapon initialization allocation does not belong to game.dll')
+        local protect=api.u32(bytes,36)
+        assert(protect==0x01 or protect==0x20,
+            string.format('Unexpected weapon initialization protection: 0x%X',protect or 0))
+        if context.private_report then context.private_report('apply.weapon_initialization_page',
+            string.format('rva=0x%X protect=0x%X',tonumber(address-context.game),protect)) end
+        return protect
+    end
+    local entry_protect,return_protect=mapped(at),mapped(finish)
+    local prefix='\72\133\210\15\132\48\8\0\0'
+    local entry=api.read(at,9);local ending=api.read(finish,1)
+    assert((entry==nil and entry_protect==0x01) or entry==prefix,'Weapon null-payload branch changed or unreadable')
+    assert((ending==nil and return_protect==0x01) or ending=='\195','Weapon null-payload return changed or unreadable')
+    assert(not context.weapon_init_attempted,'Weapon initialization did not complete; see DiverKit.log')
+    context.weapon_init_attempted=true
+    if context.private_report then context.private_report('apply.weapon_initialization','null_payload') end
+    -- The exact resident caller above supplies the target when the target itself
+    -- is still unreadable. Its null branch is pinned to this build and rechecked
+    -- immediately after the game's page handler returns.
+    local spec=functions.weapon
+    local kind=function_types[spec[2]]
+    if not kind then kind=ffi.typeof(spec[2]);function_types[spec[2]]=kind end
+    ffi.cast(kind,at)(nil,nil,0,0,0)
+    assert(api.read(at,9)==prefix and api.read(finish,1)=='\195','Weapon initialization code did not verify')
+    assert(Compat.verify(context) and Compat.resident(context,0x1365e60),'Weapon initialization evidence changed')
+    if context.private_report then context.private_report('apply.weapon_initialization','verified') end
+end
+-- Both calls in this exact-build UI handler identify the two entries on the
+-- same lazy page. Compare the live caller, including its relative displacements.
+local strat_ui=string.char(68,139,194,139,151,92,40,0,0,72,141,143,184,58,5,0,232,26,128,65,0,72,141,143,184,58,5,0,72,199,194,255,255,255,255,232,215,128,65,0)
+local strat_guard=string.char(0x83,0xfa,4,0x0f,0x83,0xbc,0,0,0) -- cmp edx,4; jae ret
+function M.prepare_stratagem(context,check_only)
+    local layout,ffi,api,kernel=context.compat,context.ffi,context.api,context.kernel
+    assert(context.native_write_accepted==true and layout and layout.stamp==0x6ae0e5ff and layout.image_size==0x3382000,'Stratagem initialization requires the verified game build')
+    assert(kernel.GetModuleHandleA('game.dll')==ffi.cast('void *',context.game),'Game module changed')
+    assert(Compat.verify(context),'Game compatibility evidence changed')
+    assert(Compat.address(context,0x189cf80)==0x171e260 and Compat.address(context,0x189d050)==0x171e330,'Stratagem function mapping changed')
+    local function protect(rva)
+        local q=ffi.new('uint8_t[48]');local at=context.game+rva
+        assert(tonumber(kernel.VirtualQuery(ffi.cast('const void *',at),ffi.cast('void *',q),48))==48,'Stratagem code page query failed')
+        local b=ffi.string(q,48)
+        assert(api.u32(b,32)==0x1000 and api.u32(b,40)==0x40000 and ffi.cast('void *',api.pointer(b,8))==ffi.cast('void *',context.game),'Stratagem page is not mapped game code')
+        return api.u32(b,36)
+    end
+    local at=context.game+0x171e260
+    assert(protect(0x1306231)==0x20 and api.read(context.game+0x1306231,#strat_ui)==strat_ui,'Stratagem UI caller changed or unavailable')
+    local page=protect(0x171e260);local entry=api.read(at,9);local ret=api.read(at+0xc5,1)
+    assert((page==1 and not entry and not ret) or (page==0x20 and entry==strat_guard and ret==string.char(195)),'Stratagem slot guard changed or unavailable')
+    if check_only then return page end
+    assert(page==1 and not context.strat_init_attempted,'Stratagem initialization did not complete; see DiverKit.log')
+    context.strat_init_attempted=true
+    if context.private_report then context.private_report('apply.stratagem_initialization','out_of_range_slot') end
+    -- Slots 0..3 are valid. Slot 4 returns before touching the card or ID.
+    local spec=functions.stratagem;local kind=function_types[spec[2]] or ffi.typeof(spec[2]);function_types[spec[2]]=kind
+    ffi.cast(kind,at)(nil,4,0)
+    assert(protect(0x171e260)==0x20 and api.read(at,9)==strat_guard and api.read(at+0xc5,1)==string.char(195),'Stratagem initialization code did not verify')
+    assert(Compat.verify(context) and Compat.resident(context,0x189cf80) and Compat.resident(context,0x189d050),'Stratagem initialization evidence changed')
+    if context.private_report then context.private_report('apply.stratagem_initialization','verified') end
+end
 function M.bind(context)
     assert(context.native_write_accepted==true,'DiverKit current native apply validation is pending')
     local ffi,api,kernel=context.ffi,context.api,context.kernel
@@ -3943,8 +4034,9 @@ function M.bind(context)
             int WriteProcessMemory(void *,void *,const void *,size_t,size_t *);]]
         declared=true
     end
-    local native={}
-    for name,spec in pairs(functions) do
+    local native,unavailable={},{}
+    local function bind_one(name)
+        local spec=functions[name]
         local at=context.game+Compat.address(context,spec[1])
         local loaded=Compat.resident(context,spec[1])
         if loaded then
@@ -3957,12 +4049,24 @@ function M.bind(context)
         if loaded then
             local kind=function_types[spec[2]]
             if not kind then kind=ffi.typeof(spec[2]);function_types[spec[2]]=kind end
-            native[name]=ffi.cast(kind,at)
+            native[name]=ffi.cast(kind,at);unavailable[name]=nil
         else
-            -- 26088801 decrypts code the first time the game runs it: until that screen
-            -- has been used this session, refuse this one call instead of every apply.
-            native[name]=function() error('Game code for '..name..' is not loaded yet; open that game screen once, then try again',0) end
+            local message=name=='weapon' and 'Weapon selection is unavailable; see DiverKit.log'
+                or 'Game code for '..name..' is not loaded yet; open that game screen once, then try again'
+            unavailable[name]=message
+            native[name]=function() error(message,0) end
         end
+    end
+    for name in pairs(functions) do bind_one(name) end
+    function native.require_ready(name)
+        assert(functions[name],'Unknown apply function: '..tostring(name))
+        if unavailable[name] and (name=='weapon' or name=='stratagem' or name=='rebuild') then
+            if name=='weapon' then M.prepare_weapon(context) else M.prepare_stratagem(context) end
+            -- Both code pages may contain other functions in this bind table.
+            -- Refresh every binding while the transaction is still read-only.
+            for key in pairs(functions) do bind_one(key) end
+        end
+        if unavailable[name] then error(unavailable[name],0) end
     end
     function native.write_gear(at,expected,id)
         assert(api.read(at,4)==expected,'Equipment changed before apply')
@@ -4157,7 +4261,32 @@ function M.preflight(context,native,target,current,fields,report)
     plan.character=Character.preflight(context,info,target,current,fields)
     plan.check_ownership()
     assert(M.session(context)==token,'Loadout screen changed before apply')
+    M.require_ready(context,native,plan)
     return plan
+end
+-- Check every setter needed by this transaction before weapon modifications,
+-- character flags or payload fields can change. Unrelated cold code stays optional.
+function M.require_ready(context,native,plan)
+    local changed=#plan.weapons>0 or #plan.gear>0 or plan.stratagem_changed
+    local function need(name) native.require_ready(name) end
+    if #plan.weapons>0 then need('weapon') end
+    if plan.weapon_mods and plan.weapon_mods.switch then need('weapon_mod_slot');changed=true end
+    for _,g in ipairs(plan.gear) do need(g.spec.name) end
+    if plan.stratagem_changed then need('stratagem');need('rebuild') end
+    for _,v in ipairs(plan.character and plan.character.changes or {}) do
+        changed=true
+        if v.name~='voice_pack' or v.entry.id~='random' then need(v.name) end
+    end
+    for _,v in ipairs(plan.extras and plan.extras.changes or {}) do
+        changed=true;need(v.name)
+        if v.name=='booster' then need('booster_notify');need('booster_icon') end
+    end
+    if plan.skins and plan.skins.changed then need('vehicle_skins') end
+    if changed then need('commit');need('refresh') end
+    if #plan.weapons>0 or #plan.gear>0 then
+        local read,u32=readers(context);local card=plan.info.card
+        if read(card+0x1ee11,1)=='\0' and u32(card+0x1b818)==1 then need('equipment_icons') end
+    end
 end
 function M.differences(target,current,fields)
     if not current then return {'equipment unavailable'} end
@@ -7151,7 +7280,7 @@ local function start_presets()
                 local ok,choices=pcall(Cosmetics.read,context,engine,state.cosmetic_kind,icons)
                 if ok then state.cosmetic_choices=choices end
             elseif state.editor=='skins' then
-                local ok,choices=pcall(Cosmetics.skins,context)
+                local ok,choices=pcall(Cosmetics.read_skins,context)
                 if ok then state.skin_catalog=choices end
             end
         end

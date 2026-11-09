@@ -6,12 +6,28 @@ function MODULE.install(context)
     local active,section_open,visible_controls,selectable,change,saved_notice=
         context.helpers.active,context.helpers.section_open,context.helpers.visible_controls,
         context.helpers.selectable,context.helpers.change,context.helpers.saved_notice
-    function self.compose(w,h)
+    function self.compose(w,h,borrow_static)
 
         if type(w)~='number'or type(h)~='number'or not(w>0 and h>0 and w<math.huge and h<math.huge)then return {}end
-        if not self.visible then if self.finish_text_field then self.finish_text_field(true)end;self.release_console();state.hits={};state.drag=nil;state.window_drag=nil;state.window_resize=nil;self.dropdown=nil;self.context_menu=nil;state.scroll_drag=nil;self.text_edit=nil;self.color_picker=nil;self.pointer_x,self.pointer_y=nil,nil;return {}end
+        if not self.visible then state.rich_layouts=nil;if self.finish_text_field then self.finish_text_field(true)end;self.release_console();state.hits={};state.drag=nil;state.window_drag=nil;state.window_resize=nil;self.dropdown=nil;self.context_menu=nil;state.scroll_drag=nil;self.text_edit=nil;self.color_picker=nil;self.pointer_x,self.pointer_y=nil,nil;return {}end
 
         local commands={};state.hits={};state.choice_bounds={}
+        -- Retain wrapping only for text used this frame. The metric generation
+        -- changes when the GUI/font becomes ready, so cold fallback widths never
+        -- survive adoption of the native face. Unversioned/custom measurers keep
+        -- their original eager behavior.
+        local previous_rich=state.rich_layouts or {};local current_rich={}
+        local function rich(owner,value,width,size)
+            value=tostring(value or '')
+            local cached=previous_rich[owner];local metric_key=self.font_metric_key
+            if not metric_key or not cached or cached.value~=value or cached.width~=width
+                or cached.size~=size or cached.metric_key~=metric_key or cached.renderer~=M.rich then
+                cached={value=value,width=width,size=size,metric_key=metric_key,renderer=M.rich,
+                    lines=M.rich(value,width,size,measure)}
+            end
+            current_rich[owner]=cached
+            return cached.lines
+        end
         local s=math.min(math.min(w/1920,h/1080)*math.max(.75,math.min(1.5,self.ui_scale or 1)),w/1100,h/600)
         local font_scale=math.max(.8,math.min(1.3,self.font_scale or 1))
         local ww=math.max(1100,math.min(w/s,self.window_width or self.default_window_width or 1500));local wh=math.max(600,math.min(h/s,self.window_height or self.default_window_height or 820))
@@ -42,6 +58,29 @@ function MODULE.install(context)
             local p={};for index=1,#points,2 do p[index]=ox+points[index]*s;p[index+1]=oy+points[index+1]*s end
             local offset=role=='emblem'and 4 or role=='emblem_cutout'and 5 or role=='hazard'and 2 or 0
             commands[#commands+1]={type='triangle',points=p,c=color,a=1,layer=shape_layer+offset,ui_role=role,surface_offset=offset}
+        end
+        -- Decorations are static between geometry/theme changes. The internal
+        -- read-only view opts into borrowed commands; ordinary compose callers
+        -- still receive fresh geometry they may modify without corrupting cache.
+        local function decoration_copy(command)
+            local copy={};for key,value in pairs(command)do copy[key]=value end
+            local points={};for index,value in ipairs(command.points)do points[index]=value end
+            copy.points=points;return copy
+        end
+        local function decoration(name,draw)
+            state.decorations=state.decorations or {}
+            local keys={ox,oy,s,ww,wh,shape_layer,accent[1],accent[2],accent[3],
+                T.header[1],T.header[2],T.header[3],Branding.skull,Branding.hazards}
+            local cached=state.decorations[name];local same=cached~=nil
+            if same then for index,value in ipairs(keys)do if cached.keys[index]~=value then same=false;break end end end
+            if same then
+                for _,command in ipairs(cached.commands)do commands[#commands+1]=borrow_static and command or decoration_copy(command)end
+            else
+                local first=#commands+1;draw()
+                cached={keys=keys,commands={}}
+                for index=first,#commands do cached.commands[#cached.commands+1]=borrow_static and commands[index]or decoration_copy(commands[index])end
+                state.decorations[name]=cached
+            end
         end
         local function border(x,y,rw,rh,color,role)
             local stroke=math.min(2/s,rw/2,rh/2)
@@ -135,8 +174,10 @@ function MODULE.install(context)
         rect(1,wh-61,ww-2,60,T.header);rect(1,wh-62,ww-2,1,T.line)
         rect(1,56,self.sidebar_width-1,wh-118,T.panel)
         rect(self.sidebar_width,56,1,wh-118,T.line)
-        Branding.hazards(2,wh-11,ww-4,7,accent,triangle)
-        Branding.skull(20,wh-43,64,accent,T.header,triangle)
+        decoration('header',function()
+            Branding.hazards(2,wh-11,ww-4,7,accent,triangle)
+            Branding.skull(20,wh-43,64,accent,T.header,triangle)
+        end)
 
         shape_layer=100
         hit(0,wh-60,ww,60,function(mx,my)
@@ -339,7 +380,7 @@ function MODULE.install(context)
                 if control.native_binding_id or control.collapsible or (control.type~='text' and control.type~='section')then ordinal=ordinal+1 end
                 if control==selected then selected_at=#display+1 end
                 if not control.native_binding_id and control.type=='text' and control.text_role~='title' and control.text_role~='selection'then
-                    for _,line in ipairs(M.rich(control.label,row_width*s,20*s*font_scale,measure))do
+                    for _,line in ipairs(rich(control,control.label,row_width*s,20*s*font_scale))do
                         local parts={};for _,span in ipairs(line.spans)do parts[#parts+1]=span.text end
                         display[#display+1]={control=control,label=table.concat(parts),body=true,row=ordinal}
                     end
@@ -671,7 +712,7 @@ function MODULE.install(context)
 
             local help_size=M.text_size(18,'hint',font_scale)
             local line_height=math.ceil(help_size+5)
-            local lines=M.rich(help,hw*s,help_size*s,measure);local visible=math.max(1,math.floor(help_height/line_height))
+            local lines=rich(page,help,hw*s,help_size*s);local visible=math.max(1,math.floor(help_height/line_height))
 
             self.help_scroll=math.min(self.help_scroll,math.max(0,#lines-visible))
 
@@ -694,7 +735,7 @@ function MODULE.install(context)
 
         rect(1,1,ww-2,54,T.panel)
         rect(1,55,ww-2,1,T.line)
-        Branding.hazards(2,2,ww-4,3,accent,triangle)
+        decoration('footer',function()Branding.hazards(2,2,ww-4,3,accent,triangle)end)
         local shortcut=M.key_name(api.menu_toggle_key or 46)
         bounded(25,32,shortcut..' / Esc  Close     Tab  Accept / Apply     Shift+Tab  Focus     Enter  Edit',14,muted,ww-380)
         bounded(ww-260,32,'DBF MCM  /  '..tostring(api.version or ''),14,muted,235)
@@ -909,7 +950,7 @@ function MODULE.install(context)
 
         end
 
-        state.text_age=visible_text_age
+        state.text_age=visible_text_age;state.rich_layouts=current_rich
         if self.context_menu then
             local popup=self.context_menu;surface_scope='context';shape_layer=360
             local width=220

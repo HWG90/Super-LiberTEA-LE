@@ -21,7 +21,7 @@ return {
     },
     alignment = {
         abi = 1,
-        library = 'native/native_ads_alignment_26251122_bcd13229a6a7.dll',
+        library = 'native/native_ads_alignment_26251122_2668bd6c56b1.dll',
         duration_ms = 10500,
         executable = {
             name = 'helldivers2.exe', timestamp = 0x6ae0964a, image_size = 0x29fe000,
@@ -37,7 +37,7 @@ return {
         -- contains l_hand(13), r_hand(34), weapon attachment8; camera50 is a
         -- sibling under root4. Its copied local vector cannot move that camera.
         abi = 2,
-        library = 'native/native_ads_editor_26251122_bcd13229a6a7.dll',
+        library = 'native/native_ads_editor_26251122_7fd176073730.dll',
         duration_ms = 30500,
         blend_ms = 150,
         -- Arms/weapon branch parent coordinates; screen-right/down remains live QA.
@@ -50,18 +50,20 @@ return {
         },
     },
     fov = {
-        abi = 1,
-        library = 'native/native_ads_fov_26251122_bcd13229a6a7.dll',
+        abi = 1,ads_blend_ms=180,
+        library = 'native/native_ads_fov_26251122_60bbecd29508.dll',
         executable = { name = 'helldivers2.exe', timestamp = 0x6ae0964a, image_size = 0x29fe000 },
     },
-    blur = {abi=1,library='native/native_ads_blur_26251122_bcd13229a6a7.dll'},
+    blur = {abi=1,library='native/native_ads_blur_26251122_2668bd6c56b1.dll'},
     -- Near clip: game.dll 0x110DCAB sets near 0.05 through CameraAPI+0x68 each update.
     near = {abi=1,library='native/native_ads_near_26251122_8e4f29e63a3f.dll'},
+    -- Owned normal4 body only: skip the native hipfire start/end events.
+    held_fire = {abi=1,library='native/native_ads_heldfire_26251122_11ec08060d94.dll'},
     motion = {
         world_pose = {rva=0x1f3020,hex='40534883ec204863dae872d6eaff488bc84c8b0041ff90e8000000488bcb48c1e10648034828488bc14883c4205bc3c3'},
     },
     camera = {
-        abi=1,library='native/native_ads_camera_26251122_bcd13229a6a7.dll',
+        abi=1,library='native/native_ads_camera_26251122_c329263b5e79.dll',
         forward=.18,up=.04,smoothing_ms=100,blend_ms=120,max_gap_ms=250,
         executable={name='helldivers2.exe',timestamp=0x6ae0964a,image_size=0x29fe000},
     },

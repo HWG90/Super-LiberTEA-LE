@@ -1,5 +1,6 @@
 #pragma once
 #include "free_aim_math.h"
+#include "presentation_phase.h"
 #include <cstdint>
 namespace CameraTransition {
 struct Pose{FreeAim::Q q{};float p[3]{};};
@@ -11,10 +12,24 @@ inline FreeAim::Q toward_identity(FreeAim::Q q,float t){
  return {q.x*scale,q.y*scale,q.z*scale,std::cos((1-t)*angle)};
 }
 struct State{
+ PresentationPhase::State shared{};
  bool valid=false,active=false,last_ads=false;uint32_t kind=0,weapon=0;uint64_t start=0,previous=0,transitions=0;Pose last{};FreeAim::Q error{};float offset[3]{};
  void reset(){valid=active=false;}
  void apply(const Pose& desired,uint32_t next_kind,bool ads,uint32_t next_weapon,uint64_t tick,Pose& out){
   out=desired;
+  if(shared.matches(ads,tick)){
+   const bool continuous=valid&&tick>=previous&&tick-previous<=250;
+   const float step=shared.step(ads);
+   float distance=0;for(unsigned a=0;a<3;++a)distance+=(last.p[a]-desired.p[a])*(last.p[a]-desired.p[a]);
+   // Positions are root-relative in the pinned path: real root/vehicle travel
+   // remains immediate. A body/teleport-sized solve never traverses geometry.
+   if(continuous&&distance<=4&&step<1){
+    const auto delta=FreeAim::mul(last.q,FreeAim::inv(desired.q));
+    out.q=FreeAim::mul(toward_identity(delta,step),desired.q);
+    for(unsigned a=0;a<3;++a)out.p[a]=last.p[a]+(desired.p[a]-last.p[a])*step;
+   }
+   valid=true;active=continuous&&step<1;last=out;kind=next_kind;weapon=next_weapon;last_ads=ads;previous=tick;return;
+  }
   if(!valid){if(next_kind==6)valid=true;}
   else if(tick<previous||tick-previous>250){active=false;}
   else if(!ads&&(kind!=next_kind||last_ads||next_weapon!=weapon)){

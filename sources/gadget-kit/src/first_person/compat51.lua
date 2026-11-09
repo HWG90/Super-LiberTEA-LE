@@ -128,7 +128,31 @@ function M.inspect_function(fn,read,is_executable)
  return {addr=entry,what='C'}
 end
 local function_reader,function_executable
+local native_jit_funcinfo
+local function binding_address(value)
+ assert(native_type(value)=='number' and value==value and value>=65536 and value<2^47
+  and value%1==0,'Native binding address is unavailable')
+ return {addr=value,what='C'}
+end
 local function function_info(fn)
+ assert(native_type(fn)=='function' and debug.getinfo(fn,'S').what=='C','Native C function required')
+ -- _VERSION is also "Lua 5.1" under LuaJIT. Its GCfunc layout differs from
+ -- stock Lua's CClosure, so use the runtime's native introspection first.
+ local runtime=rawget(_G,'jit') or package.loaded.jit
+ if native_type(runtime)=='table' and native_type(runtime.version)=='string'
+  and runtime.version:match('^LuaJIT ')then
+  assert(native_type(runtime.status)=='function' and debug.getinfo(runtime.status,'S').what=='C',
+   'Native LuaJIT runtime API differs')
+  if not native_jit_funcinfo then
+   local utility=require('jit.util')
+   assert(native_type(utility)=='table' and native_type(utility.funcinfo)=='function'
+    and debug.getinfo(utility.funcinfo,'S').what=='C','Native LuaJIT introspection API differs')
+   native_jit_funcinfo=utility.funcinfo
+  end
+  local info=native_jit_funcinfo(fn)
+  assert(native_type(info)=='table','Native LuaJIT function information is unavailable')
+  return binding_address(info.addr)
+ end
  local native=package.loaded.hd2_nativeinfo
  if not native and tostring(fn)=='[function]' then
   local path=assert(mod and mod.dir,'Native binding module directory unavailable')..'/port51/hd2_nativeinfo_8d03e036881e4ddc.dll'
@@ -137,7 +161,11 @@ local function function_info(fn)
   assert(native_type(native.function_address)=='function','Native binding helper API differs')
   package.loaded.hd2_nativeinfo=native
  end
- if native then return {addr=native.function_address(fn),what='C'}end
+ if native then
+  assert(native_type(native)=='table' and native_type(native.function_address)=='function',
+   'Native binding helper API differs')
+  return binding_address(native.function_address(fn))
+ end
  if not function_reader then
   assert(ffi.os=='Windows','Windows protected closure reader required')
   ffi.cdef [[

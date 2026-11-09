@@ -69,6 +69,27 @@ local function motion_module(b)
         return motion
     end}
 end
+local function render_module(b)
+    return {new=function(globals,callback,log,deps)
+        assert(globals==_G and type(callback)=='function' and type(deps.active)=='function'
+            and type(deps.foreign)=='function')
+        b.render_callback,b.render_deps=callback,deps
+        local renderer={}
+        function renderer:start()
+            b.render_starts=(b.render_starts or 0)+1
+            if b.render_start_failure then return false,'fixture render unavailable'end
+            b.render_active=true;return true
+        end
+        function renderer:stop()
+            b.render_stops=(b.render_stops or 0)+1
+            if b.render_stop_failure then return false,'fixture render cleanup pending'end
+            b.render_active=false;return true
+        end
+        function renderer:is_clean()return not b.render_active end
+        function renderer:result()return{active=b.render_active==true}end
+        return renderer
+    end}
+end
 local function presentation_module(b,prefix)
     return {new=function()
         local manager={}
@@ -186,7 +207,7 @@ local function mock()
         if self.pose_preflight_failure then return false,'fixture pose preflight failed' end
         return true,{identity=snapshot.identity,serial=self.pose_preparations}
     end
-    function b:enter_pose(snapshot,token,duration_ms)
+    function b:enter_pose(snapshot,token,duration_ms,blend_entry)
         equal(token.identity,snapshot.identity)
         assert(duration_ms >= 0 and duration_ms <= 30500 and duration_ms == math.ceil(duration_ms))
         if self.camera_before_entry then
@@ -196,11 +217,14 @@ local function mock()
         self.pose_tokens=self.pose_tokens or {};self.pose_tokens[#self.pose_tokens+1]=token
         self.pose_durations = self.pose_durations or {}
         self.pose_durations[#self.pose_durations + 1] = duration_ms
+        self.pose_entry_blends = self.pose_entry_blends or {}
+        self.pose_entry_blends[#self.pose_entry_blends + 1] = blend_entry==true
         self.pose_armed = true
         self.pose_weapon_updates, self.pose_zero_restores = 3, 1
         local entered,lease = self:enter(snapshot)
         if entered then
             lease.pose = true
+            lease.pose_blend_entry = blend_entry==true
             if self.pose_cleanup_only then lease.cleanup_only=true; self.current.camera_kind=4 end
         end
         return entered,lease
@@ -407,6 +431,58 @@ test('manual pose defaults to no timeout while native baseline retains its bound
     end
     local c,b,clock=mock(); assert(c:start()); equal(c:result().duration,30)
     clock.value=130; c:update(); assert(c:is_clean()); assert(not c:is_enabled())
+end)
+
+test('manual ADS returns blend placement without changing their persistent lifetime',function()
+    local c,b,clock=mock();b.current.record=11;assert(c:start(0,'pose_offset'))
+    equal(b.pose_entry_blends[1],false)
+    b.current.aiming=true;b.current.controller_active=true;assert(c:update())
+    b.current.record=12;assert(c:update());equal(c.phase,'waiting');equal(b.entries,1)
+    b.current.camera_kind=4;b.current.aiming=false;b.current.controller_active=false;clock.value=101
+    assert(c:update());equal(b.entries,2);equal(b.pose_durations[2],0);equal(b.pose_entry_blends[2],true)
+    clock.value=10000;assert(c:update());assert(c:is_enabled());equal(b.entries,2)
+    assert(c:stop())
+end)
+
+test('manual ADS entry intent survives cleanup retries and a missing full firearm snapshot',function()
+    local c,b,clock=mock();assert(c:start(0,'pose_offset'))
+    b.current.controller_active=true;assert(c:update())
+    b.current.camera_kind=4;b.current.controller_active=false;b.no_firearm=true;b.cleanup_failures=2;clock.value=101
+    assert(not c:update());equal(c.phase,'cleanup_pending')
+    assert(not c:update());equal(b.entries,1)
+    assert(c:update());equal(c.phase,'waiting')
+    assert(c:update());equal(b.entries,1)
+    b.no_firearm=false;assert(c:update());equal(b.entries,2);equal(b.pose_entry_blends[2],true)
+    assert(c:stop())
+end)
+
+test('manual ADS return never transfers its blend to a different body or firearm',function()
+    for _,change in ipairs({'weapon','body','weapon-away-and-back'})do
+        local c,b,clock=mock();assert(c:start(0,'pose_offset'))
+        b.current.controller_active=true;assert(c:update())
+        b.current.camera_kind=4;b.current.controller_active=false;clock.value=101
+        b.current.identity='other-owner/weapon'
+        if change=='body'then b.current.player_identity='other-body-generation'end
+        assert(c:update());equal(c.phase,'waiting')
+        if change=='weapon-away-and-back'then b.current.identity='context/avatar/weapon-A'end
+        assert(c:update());equal(b.entries,2);equal(b.pose_entry_blends[2],false)
+        assert(c:stop())
+    end
+end)
+
+test('ordinary manual reacquisition and a fresh session still use steady placement',function()
+    local c,b,clock=mock();assert(c:start(0,'pose_offset'))
+    b.current.controller_active=true;assert(c:update())
+    b.current.controller_active=false;assert(c:update())
+    b.current.camera_kind=4;clock.value=101;assert(c:update());assert(c:update())
+    equal(b.pose_entry_blends[2],false)
+    b.current.controller_active=true;assert(c:update());assert(c:stop())
+    b.current.controller_active=false;b.current.camera_kind=4;assert(c:start(0,'pose_offset'))
+    equal(b.pose_entry_blends[3],false);assert(c:stop())
+    c,b,clock=mock();b.current.camera_kind=6;b.current.controller_active=true
+    assert(c:start(0,'pose_offset'));equal(b.entries,0)
+    assert(c:update());b.current.camera_kind=4;b.current.controller_active=false;clock.value=101
+    assert(c:update());equal(b.pose_entry_blends[1],false);assert(c:stop())
 end)
 
 test('initial manual enable accepts held balls missing firearms actions and seated cameras as waiting intent', function()
@@ -996,7 +1072,7 @@ test('menu is optional and manual buttons only', function()
     end
     _G.DBFMCM = api; assert(menu:update()); equal(registered, 1); equal(b.entries, 0)
     local controls = api.mods.goose_native_ads_camera_test.controls
-    assert(controls.start_test.on_activate()); equal(b.entries, 1)
+    assert(controls.start_true_first_person.on_activate()); equal(b.entries, 1)
     b.cleanup_failures = 1; assert(not controls.stop_test.on_activate())
     menu:begin_shutdown(); assert(not menu:shutdown()); equal(unregistered, 0)
     assert(c:retry_cleanup()); assert(menu:shutdown()); equal(unregistered, 1)
@@ -1006,10 +1082,10 @@ test('LLL disable keeps API and state until cleanup acknowledges', function()
     local _, b = mock()
     local modules = { ['src/action_placement.lua']=dofile(root..'/src/action_placement.lua'), ['src/backend.lua'] = { new = function() return b end },
         ['src/controller.lua'] = Controller, ['src/menu.lua'] = Menu,
-        ['src/placement_editor.lua'] = Editor,['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),
+        ['src/placement_editor.lua'] = Editor,['src/zoom.lua']={attach=function(fov)return fov end},['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),
         ['src/camera.lua']=camera_module(b),['src/motion_runtime.lua']=motion_module(b),
         ['src/camera_compat.lua']=compat_module(b),['src/head_visibility.lua']=presentation_module(b,'head'),['src/first_person_movement.lua']=presentation_module(b,'movement'),['src/near_clip.lua']=presentation_module(b,'near') }
-    _G.mod = { require = function(name) return assert(modules[name] or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua'))) end, log = function() end }
+    _G.mod = { require = function(name) return assert(modules[name] or((name=='src/model_shadow_source.lua'or name=='src/vignette.lua'or name=='src/native_ads_option.lua')and dofile(root..'/'..name))or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')) or(name=='src/aim_markers.lua'and dofile(root..'/src/aim_markers.lua'))) end, log = function() end }
     _G.NativeADSCameraTest = nil
     local runtime = dofile(root .. '/main.lua')
     runtime.on_enable(); local api = assert(_G.NativeADSCameraTest)
@@ -1025,12 +1101,12 @@ test('runtime toggle disables manual first person during a weapon wait', functio
     local _,b=mock()
     local modules={['src/action_placement.lua']=dofile(root..'/src/action_placement.lua'),['src/backend.lua']={new=function()return b end},
         ['src/controller.lua']=Controller,['src/menu.lua']=Menu,['src/placement_editor.lua']=Editor,
-        ['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),['src/camera.lua']=camera_module(b),
+        ['src/zoom.lua']={attach=function(fov)return fov end},['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),['src/camera.lua']=camera_module(b),
         ['src/motion_runtime.lua']=motion_module(b),['src/camera_compat.lua']=compat_module(b),['src/head_visibility.lua']=presentation_module(b,'head'),['src/first_person_movement.lua']=presentation_module(b,'movement'),['src/near_clip.lua']=presentation_module(b,'near')}
-    _G.mod={require=function(name)return assert(modules[name] or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')))end,log=function()end}
+    _G.mod={require=function(name)return assert(modules[name] or((name=='src/model_shadow_source.lua'or name=='src/vignette.lua'or name=='src/native_ads_option.lua')and dofile(root..'/'..name))or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')) or(name=='src/aim_markers.lua'and dofile(root..'/src/aim_markers.lua')))end,log=function()end}
     _G.NativeADSCameraTest=nil
     local runtime=dofile(root..'/main.lua');runtime.on_enable();local api=assert(_G.NativeADSCameraTest)
-    assert(api.toggle());local _,result=api.status();equal(result.enabled,true);equal(result.manual,true)
+    assert(api.start());local _,result=api.status();equal(result.enabled,true);equal(result.manual,true)
     equal(result.camera.cleanup_pending,false);equal(result.motion.phase,'idle');equal(result.motion.dx,0)
     b.current.camera_kind=4;runtime.on_update()
     _,result=api.status();equal(result.phase,'waiting');equal(result.enabled,true)
@@ -1043,9 +1119,9 @@ test('runtime FOV cleanup blocks new starts independently of clean camera state'
     local _,b=mock()
     local modules={['src/action_placement.lua']=dofile(root..'/src/action_placement.lua'),['src/backend.lua']={new=function()return b end},
         ['src/controller.lua']=Controller,['src/menu.lua']=Menu,['src/placement_editor.lua']=Editor,
-        ['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),['src/camera.lua']=camera_module(b),
+        ['src/zoom.lua']={attach=function(fov)return fov end},['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),['src/camera.lua']=camera_module(b),
         ['src/motion_runtime.lua']=motion_module(b),['src/camera_compat.lua']=compat_module(b),['src/head_visibility.lua']=presentation_module(b,'head'),['src/first_person_movement.lua']=presentation_module(b,'movement'),['src/near_clip.lua']=presentation_module(b,'near')}
-    _G.mod={require=function(name)return assert(modules[name] or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')))end,log=function()end}
+    _G.mod={require=function(name)return assert(modules[name] or((name=='src/model_shadow_source.lua'or name=='src/vignette.lua'or name=='src/native_ads_option.lua')and dofile(root..'/'..name))or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')) or(name=='src/aim_markers.lua'and dofile(root..'/src/aim_markers.lua')))end,log=function()end}
     _G.NativeADSCameraTest=nil
     local runtime=dofile(root..'/main.lua');runtime.on_enable();local api=assert(_G.NativeADSCameraTest)
     assert(api.start());equal(b.fov_active,true);b.fov_end_failure=true
@@ -1059,9 +1135,9 @@ test('runtime head-camera cleanup independently blocks pose and baseline starts 
     local _,b=mock()
     local modules={['src/action_placement.lua']=dofile(root..'/src/action_placement.lua'),['src/backend.lua']={new=function()return b end},
         ['src/controller.lua']=Controller,['src/menu.lua']=Menu,['src/placement_editor.lua']=Editor,
-        ['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),['src/camera.lua']=camera_module(b),
+        ['src/zoom.lua']={attach=function(fov)return fov end},['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),['src/camera.lua']=camera_module(b),
         ['src/motion_runtime.lua']=motion_module(b),['src/camera_compat.lua']=compat_module(b),['src/head_visibility.lua']=presentation_module(b,'head'),['src/first_person_movement.lua']=presentation_module(b,'movement'),['src/near_clip.lua']=presentation_module(b,'near')}
-    _G.mod={require=function(name)return assert(modules[name] or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')))end,log=function()end}
+    _G.mod={require=function(name)return assert(modules[name] or((name=='src/model_shadow_source.lua'or name=='src/vignette.lua'or name=='src/native_ads_option.lua')and dofile(root..'/'..name))or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')) or(name=='src/aim_markers.lua'and dofile(root..'/src/aim_markers.lua')))end,log=function()end}
     _G.NativeADSCameraTest=nil
     local runtime=dofile(root..'/main.lua');runtime.on_enable();local api=assert(_G.NativeADSCameraTest)
     assert(api.start());runtime.on_update();equal(b.camera_active,true)
@@ -1081,9 +1157,9 @@ test('runtime yields to held Photo Mode without prearming or updating head and F
     local modules={['src/action_placement.lua']=dofile(root..'/src/action_placement.lua'),['src/backend.lua']={new=function()return b end},
         ['src/controller.lua']={new=function(backend,log)return Controller.new(backend,log,function()return clock.value end)end},
         ['src/menu.lua']=Menu,['src/placement_editor.lua']=Editor,
-        ['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),['src/camera.lua']=camera_module(b),
+        ['src/zoom.lua']={attach=function(fov)return fov end},['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),['src/camera.lua']=camera_module(b),
         ['src/motion_runtime.lua']=motion_module(b),['src/camera_compat.lua']=compat_module(b),['src/head_visibility.lua']=presentation_module(b,'head'),['src/first_person_movement.lua']=presentation_module(b,'movement'),['src/near_clip.lua']=presentation_module(b,'near')}
-    _G.mod={require=function(name)return assert(modules[name] or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')))end,log=function()end}
+    _G.mod={require=function(name)return assert(modules[name] or((name=='src/model_shadow_source.lua'or name=='src/vignette.lua'or name=='src/native_ads_option.lua')and dofile(root..'/'..name))or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')) or(name=='src/aim_markers.lua'and dofile(root..'/src/aim_markers.lua')))end,log=function()end}
     _G.NativeADSCameraTest=nil
     local runtime=dofile(root..'/main.lua');runtime.on_enable();local api=assert(_G.NativeADSCameraTest)
     assert(api.start());local _,result=api.status()
@@ -1109,9 +1185,9 @@ test('compatibility cleanup independently blocks starts and retains API until sh
     local _,b=mock()
     local modules={['src/action_placement.lua']=dofile(root..'/src/action_placement.lua'),['src/backend.lua']={new=function()return b end},
         ['src/controller.lua']=Controller,['src/menu.lua']=Menu,['src/placement_editor.lua']=Editor,
-        ['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),['src/camera.lua']=camera_module(b),
+        ['src/zoom.lua']={attach=function(fov)return fov end},['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),['src/camera.lua']=camera_module(b),
         ['src/motion_runtime.lua']=motion_module(b),['src/camera_compat.lua']=compat_module(b),['src/head_visibility.lua']=presentation_module(b,'head'),['src/first_person_movement.lua']=presentation_module(b,'movement'),['src/near_clip.lua']=presentation_module(b,'near')}
-    _G.mod={require=function(name)return assert(modules[name] or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')))end,log=function()end}
+    _G.mod={require=function(name)return assert(modules[name] or((name=='src/model_shadow_source.lua'or name=='src/vignette.lua'or name=='src/native_ads_option.lua')and dofile(root..'/'..name))or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')) or(name=='src/aim_markers.lua'and dofile(root..'/src/aim_markers.lua')))end,log=function()end}
     _G.NativeADSCameraTest=nil
     local runtime=dofile(root..'/main.lua');runtime.on_enable();local api=assert(_G.NativeADSCameraTest)
     assert(api.start());equal(b.compat_installed,true)
@@ -1130,11 +1206,11 @@ end)
 test('pose cleanup failure never skips independent head and movement restoration',function()
     local _,b=mock()
     local modules={['src/action_placement.lua']=dofile(root..'/src/action_placement.lua'),['src/backend.lua']={new=function()return b end},['src/controller.lua']=Controller,
-        ['src/menu.lua']=Menu,['src/placement_editor.lua']=Editor,['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),
+        ['src/menu.lua']=Menu,['src/placement_editor.lua']=Editor,['src/zoom.lua']={attach=function(fov)return fov end},['src/fov.lua']=fov_module(b),['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),
         ['src/camera.lua']=camera_module(b),['src/motion_runtime.lua']=motion_module(b),
         ['src/camera_compat.lua']=compat_module(b),['src/head_visibility.lua']=presentation_module(b,'head'),
         ['src/first_person_movement.lua']=presentation_module(b,'movement'),['src/near_clip.lua']=presentation_module(b,'near')}
-    _G.mod={require=function(name)return assert(modules[name] or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')))end,log=function()end};_G.NativeADSCameraTest=nil
+    _G.mod={require=function(name)return assert(modules[name] or((name=='src/model_shadow_source.lua'or name=='src/vignette.lua'or name=='src/native_ads_option.lua')and dofile(root..'/'..name))or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')) or(name=='src/aim_markers.lua'and dofile(root..'/src/aim_markers.lua')))end,log=function()end};_G.NativeADSCameraTest=nil
     local runtime=dofile(root..'/main.lua');runtime.on_enable();local api=assert(_G.NativeADSCameraTest)
     assert(api.start());runtime.on_update();equal(b.head_active,true);equal(b.movement_active,true)
     local head_stops,movement_stops=b.head_stops or 0,b.movement_stops or 0
@@ -1151,12 +1227,12 @@ end)
 test('DoF restoration independently blocks starts and retains API until acknowledged',function()
     local _,b=mock()
     local modules={['src/action_placement.lua']=dofile(root..'/src/action_placement.lua'),['src/backend.lua']={new=function()return b end},['src/controller.lua']=Controller,
-        ['src/menu.lua']=Menu,['src/placement_editor.lua']=Editor,['src/fov.lua']=fov_module(b),
+        ['src/menu.lua']=Menu,['src/placement_editor.lua']=Editor,['src/zoom.lua']={attach=function(fov)return fov end},['src/fov.lua']=fov_module(b),
         ['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),
         ['src/camera.lua']=camera_module(b),['src/motion_runtime.lua']=motion_module(b),
         ['src/camera_compat.lua']=compat_module(b),['src/head_visibility.lua']=presentation_module(b,'head'),
         ['src/first_person_movement.lua']=presentation_module(b,'movement'),['src/near_clip.lua']=presentation_module(b,'near')}
-    _G.mod={require=function(name)return assert(modules[name] or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')))end,log=function()end};_G.NativeADSCameraTest=nil
+    _G.mod={require=function(name)return assert(modules[name] or((name=='src/model_shadow_source.lua'or name=='src/vignette.lua'or name=='src/native_ads_option.lua')and dofile(root..'/'..name))or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')) or(name=='src/aim_markers.lua'and dofile(root..'/src/aim_markers.lua')))end,log=function()end};_G.NativeADSCameraTest=nil
     local runtime=dofile(root..'/main.lua');runtime.on_enable();local api=assert(_G.NativeADSCameraTest)
     assert(api.start());runtime.on_update();equal(b.dof_active,true)
     b.dof_end_failure=true
@@ -1169,21 +1245,22 @@ test('DoF restoration independently blocks starts and retains API until acknowle
     equal(b.dof_active,false);equal(b.dof_pending,false);assert(not api.start());_G.mod=nil
 end)
 
-local function coordinated_runtime()
+local function coordinated_runtime(extra)
     local _,b=mock()
     local modules={['src/action_placement.lua']=dofile(root..'/src/action_placement.lua'),['src/backend.lua']={new=function()return b end},['src/controller.lua']=Controller,
-        ['src/menu.lua']=Menu,['src/placement_editor.lua']=Editor,['src/fov.lua']=fov_module(b),
+        ['src/menu.lua']=Menu,['src/placement_editor.lua']=Editor,['src/zoom.lua']={attach=function(fov)return fov end},['src/fov.lua']=fov_module(b),
         ['src/blur.lua']=presentation_module(b,'blur'),['src/dof.lua']=presentation_module(b,'dof'),
         ['src/camera.lua']=camera_module(b),['src/motion_runtime.lua']=motion_module(b),
         ['src/camera_compat.lua']=compat_module(b),['src/head_visibility.lua']=presentation_module(b,'head'),
         ['src/first_person_movement.lua']=presentation_module(b,'movement'),['src/near_clip.lua']=presentation_module(b,'near')}
+    if extra then for name,value in pairs(extra(b))do modules[name]=value end end
     local previous_mod,previous_api=_G.mod,_G.NativeADSCameraTest
-    _G.mod={require=function(name)return assert(modules[name] or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')))end,log=function()end};_G.NativeADSCameraTest=nil
+    _G.mod={require=function(name)return assert(modules[name] or((name=='src/model_shadow_source.lua'or name=='src/vignette.lua'or name=='src/native_ads_option.lua')and dofile(root..'/'..name))or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')) or(name=='src/aim_markers.lua'and dofile(root..'/src/aim_markers.lua')))end,log=function()end};_G.NativeADSCameraTest=nil
     local runtime=dofile(root..'/main.lua');runtime.on_enable();local api=assert(_G.NativeADSCameraTest)
     local function restore()_G.mod,_G.NativeADSCameraTest=previous_mod,previous_api end
     return b,runtime,api,restore
 end
-test('confirmed renderer suppression retires scoped blur while pending and unowned states keep it active',function()
+test('scoped blur remains filtered throughout acknowledged and pending renderer suppression',function()
     local b,runtime,api,restore=coordinated_runtime()
     assert(api.start());equal(b.blur_active,true);runtime.on_update();equal(b.dof_active,true)
     local updates=b.blur_updates
@@ -1192,27 +1269,27 @@ test('confirmed renderer suppression retires scoped blur while pending and unown
     b.dof_suppressed=true;b.dof_pending=true;runtime.on_update();equal(b.blur_active,true);equal(b.blur_updates,updates+1)
     b.dof_active=false;runtime.on_update();equal(b.blur_active,true);equal(b.blur_updates,updates+2)
     b.dof_suppressed=false;runtime.on_update();equal(b.blur_active,true);equal(b.blur_updates,updates+3)
-    b.dof_suppressed=true;runtime.on_update();equal(b.blur_active,false)
+    b.dof_suppressed=true;runtime.on_update();equal(b.blur_active,true)
     updates=b.blur_updates
     for _=1,20 do runtime.on_update()end
-    equal(b.blur_updates,updates);equal(b.entries,1);local _,state=api.status();equal(state.enabled,true)
+    equal(b.blur_updates,updates+20);equal(b.entries,1);local _,state=api.status();equal(state.enabled,true)
     equal(b.camera_active,true);equal(b.head_active,true);assert(runtime.on_disable());restore()
 end)
-test('loss of confirmed suppression reacquires scoped blur without camera reacquisition',function()
+test('renderer suppression changes preserve scoped blur until Photo handoff',function()
     local b,runtime,api,restore=coordinated_runtime()
-    assert(api.start());runtime.on_update();b.dof_suppressed=true;runtime.on_update();equal(b.blur_active,false)
+    assert(api.start());runtime.on_update();b.dof_suppressed=true;runtime.on_update();equal(b.blur_active,true)
     local updates=b.blur_updates
     b.dof_suppressed=false;runtime.on_update();equal(b.blur_active,true);equal(b.blur_updates,updates+1);equal(b.entries,1)
     runtime.on_update();equal(b.blur_active,true);equal(b.entries,1)
-    b.dof_suppressed=true;runtime.on_update();equal(b.blur_active,false)
+    b.dof_suppressed=true;runtime.on_update();equal(b.blur_active,true)
     b.photo_held=true;updates=b.blur_updates;local dof_updates=b.dof_updates
     runtime.on_update();equal(b.blur_updates,updates);equal(b.blur_active,false);equal(b.dof_updates,dof_updates+1)
     assert(runtime.on_disable());restore()
 end)
-test('scoped blur retirement failure preserves cleanup and independent DoF restoration',function()
+test('scoped blur shutdown failure preserves cleanup and independent renderer restoration',function()
     local b,runtime,api,restore=coordinated_runtime()
     assert(api.start());runtime.on_update();b.dof_suppressed=true;b.blur_end_failure=true
-    runtime.on_update();local _,state=api.status()
+    assert(not api.stop());local _,state=api.status()
     equal(state.enabled,false);equal(b.blur_pending,true);equal(b.dof_active,false)
     equal(b.head_active,false);equal(b.movement_active,false);equal(b.camera_active,false)
     assert(not api.start());assert(not api.start_native());assert(not api.preflight());equal(b.entries,1)
@@ -1220,6 +1297,432 @@ test('scoped blur retirement failure preserves cleanup and independent DoF resto
     assert(b.dof_stops>dof_stops)
     b.blur_end_failure=false;assert(runtime.on_cleanup_poll());equal(_G.NativeADSCameraTest,nil)
     equal(b.blur_pending,false);assert(not api.start());restore()
+end)
+local function automatic_runtime(warm)
+    local time=100;local engine_clock=stingray.Application.time_since_launch
+    stingray.Application.time_since_launch=function()return time end
+    local manager={enabled=false,phase='off',cache={},starts=0,updates=0}
+    local backend
+    local function resource()
+        return backend.resource_key or'aaaaaaaaaaaaaaaa'
+    end
+    local function status()
+        local s=backend.current
+        if not s then return{}end
+        local key=resource();local known=manager.cache[s.player_identity..':'..key]~=nil
+        return{safe=s.safe==true,neutral=not s.aiming and not s.controller_active and not s.reloading and not backend.not_neutral,
+            player_identity=s.player_identity,weapon_identity=s.identity,weapon_key=key,camera_kind=s.camera_kind,
+            controller_active=s.controller_active==true,known=known,cached_ready=known and s.camera_kind==4}
+    end
+    function manager:is_enabled()return self.enabled end
+    function manager:is_clean()return not self.enabled and self.phase=='off'end
+    function manager:status()return self.phase end
+    function manager:reference_status()return status()end
+    function manager:refresh_target()
+        local s=status();self.weapon_key,self.weapon_identity=s.weapon_key,s.weapon_identity;return true
+    end
+    function manager:cached_capture()
+        local s=status();local saved=self.cache[s.player_identity..':'..s.weapon_key]
+        if not saved then return nil end
+        local out={};for k,v in pairs(saved)do out[k]=v end
+        out.weapon_identity=s.weapon_identity;return out
+    end
+    function manager:start(reference)
+        local s=status();assert(s.camera_kind==4 and s.safe)
+        assert(reference.identity==s.player_identity and reference.weapon_identity==s.weapon_identity and reference.weapon_key==s.weapon_key)
+        assert(reference.aim and reference.aim.method=='native_zero_offset_capture')
+        assert(reference.reference.x==.15 and reference.reference.z==-.12)
+        assert(reference.aim.reference.x==0 and reference.aim.reference.y==0 and reference.aim.reference.z==0)
+        assert(reference.source_fov==reference.aim.source_fov and reference.aim.projection.fov==1.5)
+        self.cache[s.player_identity..':'..s.weapon_key]=reference
+        self.last_capture=reference
+        self.enabled,self.phase=true,'Fird Person';self.starts=self.starts+1;self:refresh_target();return true
+    end
+    function manager:stop()self.enabled,self.phase=false,'off';return true end
+    function manager:prepare_native_ads(s)
+        assert(self.enabled and backend.current.camera_kind==4 and s.identity==backend.current.identity)
+        backend.native_ads_prepares=(backend.native_ads_prepares or 0)+1;return true
+    end
+    function manager:update()self.updates=self.updates+1;return true end
+    function manager:render_pose()
+        assert(backend.frame_active,'Render pose must own its fresh backend frame')
+        backend.render_pose_calls=(backend.render_pose_calls or 0)+1
+        if backend.render_pose_error then error('fixture render pose error')end
+        if backend.render_pose_refused then return false,'fixture render pose refused'end
+        return true
+    end
+    local b,runtime,api,base_restore=coordinated_runtime(function(value)
+        backend=value;backend.current.record=900;backend.current.weapon_unit=901;backend.capture_calls=0
+        if warm then
+            backend.camera_ready=function()return backend.warm_ready==true,'fixture packed FP page'end
+            backend.warm_start=function(_,s)
+                assert(s.camera_kind==4 and not backend.warm_lease)
+                backend.warm_entries=(backend.warm_entries or 0)+1;backend.warm_ready=true
+                local lease={origin=s,request=901};backend.warm_lease=lease
+                backend.current.camera_kind,backend.current.record=6,901;return true,lease
+            end
+            backend.warm_finish=function(_,lease)
+                assert(lease==backend.warm_lease)
+                backend.warm_finishes=(backend.warm_finishes or 0)+1
+                if backend.warm_finish_failure then return false,'fixture warm cleanup pending'end
+                backend.warm_exits=(backend.warm_exits or 0)+1;lease.done=true;backend.warm_lease=nil
+                backend.current.camera_kind,backend.current.record=4,900;return true
+            end
+        end
+        local motion=motion_module(backend)
+        local new_motion=motion.new
+        motion.new=function(...)
+            local m=new_motion(...)
+            function m:capture_neutral(native_ads)
+                backend.motion_capture_calls=(backend.motion_capture_calls or 0)+1
+                backend.motion_native_ads=native_ads==true;backend.motion_capture_ready=true;return true
+            end
+            function m:reset()backend.motion_capture_ready=false;backend.motion_native_ads=false;backend.motion_resets=(backend.motion_resets or 0)+1;return true end
+            function m:result()return{phase=backend.motion_capture_ready and'capture'or'idle',capture_ready=backend.motion_capture_ready==true,
+                capture_native_ads=backend.motion_native_ads==true,dx=0,dy=0,dz=0}end
+            return m
+        end
+        return{
+            ['src/motion_runtime.lua']=motion,
+            ['src/fird_person.lua']={render_pose_verified=true,
+                capture=function(_,_,_,token)
+                    local s=status();assert(s.camera_kind==6 and s.safe and s.neutral)
+                    assert(token.identity==s.weapon_identity and token.player_identity==s.player_identity and token.weapon_key==s.weapon_key)
+                    backend.capture_calls=backend.capture_calls+1
+                    local ads=backend.motion_native_ads==true
+                    local counter=ads and'ads_capture_calls'or'hip_capture_calls';backend[counter]=(backend[counter]or 0)+1
+                    return{identity=s.player_identity,weapon_identity=s.weapon_identity,weapon_key=s.weapon_key,weapon_unit=backend.current.weapon_unit,
+                        source_fov=1.5,reference=ads and{x=0,y=0,z=0}or{x=.15,y=0,z=-.12},pivot={0,.5,0},
+                        projection={fov=1.5,position=ads and{0,.8,0}or{.15,.8,-.12},rotation={0,0,0,1}}}
+                end,
+                new=function(_,_,_,_,_,_,_,_,_,options)
+                    assert(options.fov and options.source and options.retarget and options.aim and options.native_ads and type(options.aim_mode)=='function')
+                    assert(options.render_driven==true,'Production Fird must publish at render')
+                    assert(options.camera_frame and options.camera_frame.fixture_camera,'Production Fird must use the paired presented camera pose')
+                    assert(options.presentation==nil,'Automatic Fird must retain the third-person model links')
+                    manager.options=options;return manager
+                end},
+            ['src/fird_auto.lua']=dofile(root..'/src/fird_auto.lua'),
+            ['src/fird_warm.lua']=dofile(root..'/src/fird_warm.lua'),
+            ['src/fird_capture_ready.lua']={scene_lens=function()return 1.5 end,new=function()return{
+                reset=function()backend.readiness_resets=(backend.readiness_resets or 0)+1 end,
+                update=function(_,sample)
+                    backend.readiness_samples=(backend.readiness_samples or 0)+1
+                    assert(sample.snapshot.identity==sample.target.weapon_identity)
+                    if backend.readiness_hold or(backend.readiness_hold_ads and sample.motion.capture_native_ads)
+                        or not sample.motion.capture_ready then return false,'Waiting for fixture pose'end
+                    assert(sample.fov.armed and sample.camera.armed and sample.pose.armed)
+                    return true,{identity=sample.snapshot.identity,player_identity=sample.snapshot.player_identity,
+                        request=sample.snapshot.record,weapon_key=sample.target.weapon_key,lens=sample.lens}
+                end}end},
+            ['src/fird_fov.lua']={new=function()return{}end},
+            ['src/fird_presentation.lua']={new=function()error('Native presentation changes are forbidden in retarget mode')end},
+            ['src/fird_source_pose.lua']={fixture_source=true},['src/fird_retarget.lua']={fixture_retarget=true},
+            ['src/fird_camera_pose.lua']={fixture_camera=true},
+            ['src/fird_weapon_children.lua']={fixture_children=true},
+            ['src/fird_render.lua']=render_module(backend),
+            ['src/fird_aim.lua']=dofile(root..'/src/fird_aim.lua'),
+            ['src/fird_native_ads.lua']=dofile(root..'/src/fird_native_ads.lua'),
+            ['src/skinned_placement.lua']={},['src/support_hand.lua']={}}
+    end)
+    local function step(n)
+        for _=1,n or 1 do time=time+.1;runtime.on_update()end
+    end
+    local function restore()base_restore();stingray.Application.time_since_launch=engine_clock end
+    return b,runtime,api,manager,step,restore
+end
+test('retained Fird diagnostic API captures the current weapon while API start retains TFP',function()
+    local b,runtime,api,m,step,restore=automatic_runtime()
+    assert(api.start_fird());equal(b.entries,0);local _,state=api.status();assert(state.enabled and state.fird.pending)
+    step(9);assert(m.enabled and m.starts==1 and m.updates>0)
+    equal(b.entries,1);equal(b.exits,1);assert(b.capture_calls>=4 and b.hip_capture_calls>=2 and b.ads_capture_calls>=2 and b.motion_capture_calls>0)
+    assert(m.last_capture.projection.position[1]==.15 and m.last_capture.aim.projection.position[1]==0)
+    equal(m.options.aim_mode(),'fird')
+    _,state=api.status();assert(state.enabled and state.fird.enabled and not state.fird.pending)
+    assert(api.toggle());assert(not m.enabled);step(3);equal(b.entries,1)
+    local captures=b.capture_calls;assert(api.start());equal(b.entries,2)
+    _,state=api.status();assert(state.mode=='pose_offset'and state.manual and state.enabled)
+    step(2);equal(b.capture_calls,captures);assert(not m.enabled)
+    assert(api.toggle());assert(runtime.on_disable());restore()
+end)
+test('Fird automatic entry waits for asynchronous cleanup and does not overlap the FP and render owners',function()
+    local b,runtime,api,m,step,restore=automatic_runtime()
+    assert(api.start());step(1);b.dof_end_failure=true;assert(api.start_fird())
+    assert(not api.start());assert(not api.start_native());step(4)
+    assert(not m.enabled and m.starts==0);equal(b.entries,1);equal(b.dof_pending,true)
+    b.dof_end_failure=false;step(10);assert(m.enabled and m.starts==1)
+    equal(b.entries,2);equal(b.exits,2);assert(not b.fov_active and not b.camera_active)
+    assert(api.toggle());assert(runtime.on_disable());restore()
+end)
+test('Fird render owns a fresh frame and forwards failures without native camera entry or unbalanced cleanup',function()
+    local b,runtime,api,m,step,restore=automatic_runtime()
+    assert(api.start_fird());step(9);assert(m.enabled and b.render_active and m.options.render_driven)
+    local entries,exits=b.entries,b.exits
+    local begins,ends=b.frame_begins,b.frame_ends
+    assert(b.render_deps.active() and b.render_deps.foreign()==false)
+    assert(b.render_callback());equal(b.render_pose_calls,1)
+    equal(b.frame_begins,begins+1);equal(b.frame_ends,ends+1);assert(not b.frame_active)
+    b.render_pose_error=true
+    local called,done,why=pcall(b.render_callback)
+    assert(called and done==false);contains(why,'fixture render pose error')
+    equal(b.frame_begins,begins+2);equal(b.frame_ends,ends+2);assert(not b.frame_active)
+    b.render_pose_error=false;b.render_pose_refused=true
+    done,why=b.render_callback();assert(done==false);contains(why,'fixture render pose refused')
+    equal(b.frame_begins,begins+3);equal(b.frame_ends,ends+3);assert(not b.frame_active)
+    b.frame_active=true;assert(not b.render_deps.active());assert(b.render_callback())
+    equal(b.frame_begins,begins+3);equal(b.frame_ends,ends+3);b.frame_active=false
+    equal(b.entries,entries);equal(b.exits,exits)
+    assert(api.toggle());assert(not b.render_deps.active());assert(b.render_callback())
+    equal(b.frame_begins,begins+3);equal(b.frame_ends,ends+3)
+    assert(runtime.on_disable());assert(not b.render_active and b.render_stops>0);restore()
+end)
+test('Fird render unsubscribe failure retains the runtime cleanup contract until the owned listener drains',function()
+    local b,runtime,api,m,step,restore=automatic_runtime()
+    assert(api.start_fird());step(9);assert(m.enabled)
+    b.render_stop_failure=true
+    assert(not runtime.on_disable());equal(_G.NativeADSCameraTest,api)
+    assert(not m.enabled and not b.render_deps.active())
+    local calls=b.render_pose_calls;assert(b.render_callback());equal(b.render_pose_calls,calls)
+    b.render_stop_failure=false;assert(runtime.on_cleanup_poll())
+    equal(_G.NativeADSCameraTest,nil);assert(not b.render_active);restore()
+end)
+test('unknown weapon swaps capture once and cached weapons return without another native FP session',function()
+    local b,runtime,api,m,step,restore=automatic_runtime()
+    assert(api.start_fird());step(9);assert(m.enabled);equal(b.entries,1)
+    b.current.identity='context/avatar/weapon-B';b.current.weapon_unit=902;b.resource_key='bbbbbbbbbbbbbbbb'
+    step(14);assert(m.enabled and m.starts==2);equal(b.entries,2);equal(b.exits,2)
+    local captures=b.capture_calls
+    b.current.identity='context/avatar/weapon-A';b.current.weapon_unit=901;b.resource_key='aaaaaaaaaaaaaaaa'
+    step(8);equal(b.entries,2);equal(b.capture_calls,captures);assert(m.enabled)
+    assert(api.toggle());assert(runtime.on_disable());restore()
+end)
+test('toggle cancellation during retained diagnostic capture clears intent and never starts Fird Person later',function()
+    local b,runtime,api,m,step,restore=automatic_runtime()
+    b.readiness_hold=true;assert(api.start_fird());step(4);equal(b.entries,1);equal(b.current.camera_kind,6)
+    assert(api.toggle());equal(b.current.camera_kind,4);equal(b.exits,1)
+    b.readiness_hold=false;step(15);assert(not m.enabled and m.starts==0);equal(b.entries,1);equal(b.capture_calls,0)
+    local _,state=api.status();assert(not state.enabled)
+    assert(runtime.on_disable());restore()
+end)
+test('toggle cancellation during retained zero-offset sight sampling retires the same FP lease without starting a partial reference',function()
+    local b,runtime,api,m,step,restore=automatic_runtime()
+    b.readiness_hold_ads=true;assert(api.start_fird());step(6)
+    assert((b.hip_capture_calls or 0)>=2 and not b.ads_capture_calls and b.motion_native_ads)
+    equal(b.entries,1);assert(api.toggle());equal(b.exits,1)
+    b.readiness_hold_ads=false;step(12);assert(not m.enabled and m.starts==0);equal(b.entries,1)
+    assert(runtime.on_disable());restore()
+end)
+test('Photo Mode holds an automatic diagnostic Fird request without native entry and cancellation prevents a later bootstrap',function()
+    local b,runtime,api,m,step,restore=automatic_runtime()
+    b.photo_held=true;assert(api.start_fird());step(8);equal(b.entries,0);assert(not m.enabled)
+    assert(api.toggle());b.photo_held=false;step(8);equal(b.entries,0);equal(b.capture_calls,0)
+    assert(runtime.on_disable());restore()
+end)
+test('bounded Fird probes reject invalid/active requests and always cancel capture or active view at the deadline',function()
+    for _,phase in ipairs({'capture','active'})do
+        local b,runtime,api,m,step,restore=automatic_runtime()
+        assert(not api.probe_fird(nil))
+        for _,duration in ipairs({'2',0,.5,11,math.huge,0/0})do assert(not api.probe_fird(duration))end
+        equal(b.entries,0);local _,state=api.status();assert(not state.enabled)
+        b.readiness_hold=phase=='capture'
+        assert(api.probe_fird(phase=='capture'and 1 or 2));assert(not api.probe_fird(1))
+        step(phase=='capture'and 4 or 9)
+        if phase=='capture'then assert(not m.enabled and b.current.camera_kind==6)
+        else assert(m.enabled and m.starts==1)end
+        assert(not api.probe_fird(1));step(20)
+        _,state=api.status();assert(not state.enabled and not m.enabled and b.current.camera_kind==4,phase)
+        equal(b.entries,1);equal(b.exits,1);local captures=b.capture_calls
+        b.readiness_hold=false;step(8);equal(b.entries,1);equal(b.capture_calls,captures)
+        assert(api.start());assert(not api.probe_fird(1));assert(api.toggle())
+        assert(runtime.on_disable());restore()
+    end
+end)
+test('F11 cancellation keeps polling an owned warm camera after automatic intent is off',function()
+    local b,runtime,api,m,step,restore=automatic_runtime(true)
+    b.warm_finish_failure=true;assert(api.start_fird());step(3)
+    equal(b.warm_entries,1);assert(b.warm_lease and b.current.camera_kind==6)
+    equal(b.entries,0);assert(not b.pose_preparations and m.starts==0)
+    assert(not api.toggle());local _,state=api.status();assert(not state.enabled)
+    assert(not api.probe_fird(1));local retries=b.warm_finishes;step(3)
+    assert(b.warm_finishes>retries and b.warm_lease and b.entries==0)
+    b.warm_finish_failure=false;step(2)
+    assert(not b.warm_lease and b.current.camera_kind==4);equal(b.warm_exits,1)
+    step(8);equal(b.entries,0);assert(not m.enabled and m.starts==0)
+    assert(runtime.on_disable());restore()
+end)
+
+local function native_animation_runtime()
+    local time=100;local engine_clock=stingray.Application.time_since_launch
+    stingray.Application.time_since_launch=function()return time end
+    local manager={enabled=false,phase='off',native_animation=true,starts=0,updates=0,stops=0}
+    local backend
+    function manager:is_enabled()return self.enabled end
+    function manager:is_clean()return not self.enabled and self.phase=='off'end
+    function manager:status()return self.phase end
+    function manager:refresh_target()
+        self.refreshes=(self.refreshes or 0)+1
+        local s=backend.current;if not s then return false,'fixture player unavailable'end
+        self.weapon_identity=s.identity;return true
+    end
+    function manager:start_native()
+        self.starts=self.starts+1
+        assert(backend.entries==backend.exits,'Native-animation view overlapped an owned FP camera')
+        assert(not backend.camera_active and not backend.dof_pending,'Previous view cleanup was not acknowledged')
+        if backend.native_start_partial then self.enabled,self.phase=true,'starting'end
+        if backend.native_start_failure then return false,'fixture native animation start refused'end
+        self.enabled,self.phase=true,'Native animation'
+        if self.options.ready_pose then self.options.ready_pose:request(true)end
+        return true
+    end
+    function manager:stop()
+        self.stops=self.stops+1;self.enabled=false
+        if self.options and self.options.ready_pose then self.options.ready_pose:stop()end
+        if backend.native_stop_failure then self.phase='cleanup pending';return false,'fixture native animation cleanup pending'end
+        self.phase='off';return true
+    end
+    function manager:update()self.updates=self.updates+1;return true end
+    function manager:start()error('Native animation must not consume an FP capture')end
+    function manager:render_pose()error('Native animation must not rewrite render poses')end
+    function manager:reference_status()error('Native animation must not bootstrap a weapon reference')end
+    function manager:cached_capture()error('Native animation must not discover captured placement')end
+    local b,runtime,api,base_restore=coordinated_runtime(function(value)
+        backend=value
+        return{
+            ['src/ready_pose.lua']=dofile(root..'/src/ready_pose.lua'),
+            -- This fixture isolates camera ownership. Real ready-pose graph
+            -- calls have their own backend/intent and Update-scope fixtures.
+            ['src/ready_pose_source.lua']={new=function()error('Camera-only fixture has no authored pose graph')end},
+            ['src/ready_pose_timing.lua']={new=function()error('Camera-only fixture must not mutate animation')end},
+            ['src/held_fire.lua']={new=function()
+                return{update=function()return true end,matches=function()return false end,
+                    stop=function()return true end,is_clean=function()return true end,result=function()return{phase='off'}end}
+            end},
+            ['src/fird_person.lua']={native_animation_default=true,
+                capture=function()error('Native animation must not capture FPS poses')end,
+                new=function(_,_,_,_,_,_,_,_,_,options)
+                    assert(options.native_animation==true and options.render_driven==false and options.fov and options.native_ads)
+                    for _,key in ipairs({'source','retarget','skin','children','support','presentation','camera_frame','aim'})do
+                        assert(options[key]==nil,'Native animation loaded pose owner '..key)
+                    end
+                    manager.options=options;return manager
+                end},
+            ['src/fird_fov.lua']={new=function()return{}end},
+            ['src/fird_native_ads.lua']=dofile(root..'/src/fird_native_ads.lua')}
+    end)
+    local forbidden={}
+    for _,name in ipairs({'fird_auto','fird_warm','fird_capture_ready','fird_render','fird_camera_pose','fird_source_pose',
+        'fird_retarget','fird_aim','skinned_placement','support_hand','fird_weapon_children','fird_presentation'})do
+        forbidden['src/'..name..'.lua']=true
+    end
+    local require_module=_G.mod.require
+    _G.mod.require=function(name)
+        assert(not forbidden[name],'Native-animation runtime must not load '..name)
+        return require_module(name)
+    end
+    local function step(count)
+        for _=1,count or 1 do time=time+.1;runtime.on_update()end
+    end
+    local function restore()base_restore();stingray.Application.time_since_launch=engine_clock end
+    return b,runtime,api,manager,step,restore
+end
+test('retained native-animation API starts directly without FP capture retargeting or renderer owners',function()
+    local b,runtime,api,m,step,restore=native_animation_runtime()
+    assert(api.start_fird());assert(m.enabled and m.starts==1)
+    step(4);assert(m.updates==4 and m.refreshes>=4 and not b.frame_active)
+    equal(b.entries,0);equal(b.exits,0);equal(b.pose_preparations,nil);equal(b.render_starts,nil)
+    local _,state=api.status();assert(state.enabled and state.fird.enabled and not state.fird.pending)
+    assert(api.toggle());assert(not m.enabled and m:is_clean())
+    assert(api.start_fird());assert(m.enabled and m.starts==2);step(3)
+    equal(b.entries,0);equal(b.render_callback,nil)
+    assert(api.stop());assert(m:is_clean());assert(runtime.on_disable());restore()
+end)
+test('native-animation partial start failure drains its manager without starting FP capture',function()
+    local b,runtime,api,m,step,restore=native_animation_runtime()
+    b.native_start_partial,b.native_start_failure=true,true
+    local done,why=api.start_fird();assert(done==false);contains(why,'native animation start refused')
+    assert(not m.enabled and m:is_clean()and m.stops>0);equal(b.entries,0)
+    b.native_start_partial,b.native_start_failure=false,false
+    assert(api.start_fird());step(2);assert(m.enabled and m.starts==2)
+    equal(b.entries,0);assert(runtime.on_disable());restore()
+end)
+test('native-animation pending stop retains API and blocks all replacement owners until cleanup',function()
+    local b,runtime,api,m,step,restore=native_animation_runtime()
+    assert(api.start_fird());step(1);b.native_stop_failure=true
+    assert(not api.stop());assert(not m.enabled and not m:is_clean())
+    local starts=m.starts;assert(not api.start_fird());equal(m.starts,starts)
+    assert(not api.start());assert(not api.probe_fird(1))
+    local head_stops=b.head_stops or 0
+    assert(not runtime.on_disable());equal(_G.NativeADSCameraTest,api)
+    assert((b.head_stops or 0)>head_stops and b.entries==0 and not b.frame_active)
+    b.native_stop_failure=false;assert(runtime.on_cleanup_poll());equal(_G.NativeADSCameraTest,nil)
+    assert(m:is_clean()and not api.start_fird());restore()
+end)
+test('native-animation bounded probe stops at deadline and explicit cancellation cannot expire a later manual view',function()
+    local b,runtime,api,m,step,restore=native_animation_runtime()
+    for _,duration in ipairs({'2',0,.5,11,math.huge,0/0})do assert(not api.probe_fird(duration))end
+    equal(m.starts,0);assert(api.probe_fird(1));assert(m.enabled)
+    assert(not api.probe_fird(1));step(9);assert(m.enabled);step(2);assert(m:is_clean())
+    local starts=m.starts;step(15);equal(m.starts,starts);assert(not m.enabled)
+    assert(api.probe_fird(1));step(2);assert(api.stop());assert(api.start_fird())
+    step(20);assert(m.enabled and m.starts==starts+2)
+    equal(b.entries,0);equal(b.exits,0);assert(runtime.on_disable());restore()
+end)
+test('native-animation entry waits for previous diagnostic FP owner cleanup',function()
+    local b,runtime,api,m,step,restore=native_animation_runtime()
+    assert(api.start());step(1);equal(b.entries,1)
+    b.dof_end_failure=true;assert(not api.start_fird());equal(m.starts,0);assert(not m.enabled)
+    b.dof_end_failure=false;assert(api.start_fird());assert(m.enabled and m.starts==1)
+    equal(b.entries,1);equal(b.exits,1);equal(b.pose_preparations,1)
+    assert(runtime.on_disable());restore()
+end)
+test('separate True First Person API retains original native rig and clean view ownership',function()
+    local b,runtime,api,m,step,restore=native_animation_runtime()
+    assert(type(api.start)=='function'and type(api.start_true_first_person)=='function')
+    assert(api.start_true_first_person());step(1);equal(b.entries,1);equal(m.starts,0)
+    local _,state=api.status();equal(state.mode,'pose_offset');assert(state.enabled and not state.fird)
+    assert(not api.start_true_first_person());equal(b.entries,1)
+    assert(api.stop());assert(api.start_fird());equal(m.starts,1);equal(b.entries,1)
+    assert(not api.start_true_first_person());equal(b.entries,1)
+    b.native_stop_failure=true;assert(not api.stop());assert(not api.start_true_first_person());equal(b.entries,1)
+    b.native_stop_failure=false;assert(api.stop());assert(api.start_true_first_person());equal(b.entries,2);equal(m.starts,1)
+    assert(api.toggle());assert(not m.enabled);equal(b.exits,2)
+    assert(api.toggle());assert(not m.enabled and m.starts==1);equal(b.entries,3)
+    _,state=api.status();assert(state.enabled and state.mode=='pose_offset')
+    assert(api.stop());assert(runtime.on_disable());restore()
+end)
+test('persistent first-person intent can start inside a vehicle without forcing firearm ADS',function()
+    local _,b=mock();b.pin_first_person=true;b.no_firearm=true
+    b.current.camera_kind=12;b.current.safe=false;b.current.seated=true
+    function b:pin_player_snapshot()self.pin_reads=(self.pin_reads or 0)+1;return self:player_snapshot()end
+    local timestamp=0;local c=Controller.new(b,nil,function()return timestamp end)
+    assert(c:start(0,'pose_offset'));equal(c:is_enabled(),true);equal(c.phase,'waiting');equal(b.entries,0)
+    for _=1,20 do timestamp=timestamp+.1;assert(c:update())end
+    equal(b.entries,0);assert(b.pin_reads>0)
+    b.no_firearm=false;b.current.camera_kind=4;b.current.safe=true;b.current.seated=false
+    timestamp=timestamp+.3;assert(c:update());equal(b.entries,1);equal(c.phase,'running')
+    assert(c:stop());equal(c:is_enabled(),false)
+end)
+test('persistent eye intent survives unavailable native arms without forcing their entry',function()
+    for _,fault in ipairs({'preflight','camera'})do
+        local c,b,clock=mock();b.pin_first_person=true
+        if fault=='preflight'then b.pose_preflight_failure=true
+        else b.camera_before_entry=function()return false,'fixture camera generation settling'end end
+        assert(c:start(0,'pose_offset'));equal(c:is_enabled(),true);equal(c.phase,'waiting');equal(b.entries,0)
+        clock.value=clock.value+1;assert(c:update());equal(c:is_enabled(),true);equal(b.entries,0)
+        b.pose_preflight_failure=false;b.camera_before_entry=nil
+        clock.value=clock.value+1;assert(c:update());equal(c.phase,'running');equal(b.entries,1)
+        assert(c:stop())
+    end
+end)
+test('recoverable suspend preserves persistent intent but waits for acknowledged cleanup before fresh reentry',function()
+    local c,b,clock=mock();assert(c:start(0,'pose_offset'));local entered=b.entries
+    local player=c:result().player_identity;equal(player,b.current.player_identity)
+    b.cleanup_failures=1;assert(not c:suspend('temporary read'))
+    assert(c:is_enabled());equal(c.phase,'cleanup_pending');equal(b.entries,entered)
+    assert(c:update());equal(b.entries,entered);assert(c:is_enabled())
+    clock.value=clock.value+1;assert(c:update());equal(b.entries,entered+1);assert(c:is_enabled())
+    assert(c:stop());assert(not c:suspend('after stop'))
+    local timed=mock();assert(timed:start(1,'pose_offset'));assert(not timed:suspend('timed diagnostic'));assert(timed:stop())
 end)
 print('Native ADS controller/lifecycle fixtures: ' .. passed .. ' passed')
 

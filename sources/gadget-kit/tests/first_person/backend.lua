@@ -977,8 +977,24 @@ test('pose duration accepts manual zero and invalid bounded durations do not con
     equal(f.pose_begins,0);equal(f.entries,0)
     local done,lease=f.backend:enter_pose(f:snapshot(),token,1);assert(done,lease)
     assert(f.backend:release(lease))
-    local manual=f:enter_pose(0);equal(f.last_pose_begin.duration_ms,0)
+    local manual=f:enter_pose(0);equal(f.last_pose_begin.duration_ms,0);equal(f.last_pose_begin.steady_entry,true)
     assert(f.backend:release(manual))
+end)
+
+test('manual pose entry blending is lease-local and independent of duration',function()
+    local f=pose_fixture();local token=f:prepare_pose()
+    for _,blend in ipairs({'true',1,{}})do
+        assert(not f.backend:enter_pose(f:snapshot(),token,0,blend))
+    end
+    equal(f.pose_begins,0);equal(f.entries,0)
+    local done,lease=f.backend:enter_pose(f:snapshot(),token,0,true);assert(done,lease)
+    equal(f.last_pose_begin.duration_ms,0);equal(f.last_pose_begin.steady_entry,false)
+    equal(lease.pose_blend_entry,true)
+    assert(f.backend:release(lease))
+    local steady=f:enter_pose(0)
+    equal(f.last_pose_begin.duration_ms,0);equal(f.last_pose_begin.steady_entry,true)
+    equal(steady.pose_blend_entry,false)
+    assert(f.backend:release(steady))
 end)
 
 test('stable player identity excludes weapon and viewmodel changes but retains player generations',function()
@@ -1095,6 +1111,20 @@ test('head-camera lifecycle preparation keeps the observed vault fallback indepe
     assert(not f.backend:enter(s));equal(#f.calls,0);equal(f.entries,0)
 end)
 
+test('Fird head camera and FOV use one direct owned normal-camera frame',function()
+    local f=fixture()
+    f.backend.action_state=function(_,s)return {resource_match=true,layer_count=31,l14=36,owner=s.player_identity,body=s.body}end
+    f.backend.fird_camera_active=true;f.backend.fird_camera_offset={x=.1,y=.2,z=.03}
+    local c=assert(f.backend:camera_config())
+    equal(c.smoothing_ms,0);equal(c.blend_ms,0);equal(c.presentation_enabled,false);equal(c.kick_enabled,false)
+    equal(c.right,.1);equal(c.forward,.2);equal(c.up,.03)
+    c=assert(f.backend:fird_fov_config());equal(c.weapon,0);equal(c.camera,f.camera);equal(c.body,f.body)
+    equal(c.request,f.backend:player_snapshot().record);equal(#f.calls,0)
+    f:top(6);assert(not f.backend:fird_fov_config());f:top(4)
+    local original=f.backend.camera_config
+    f.backend.camera_config=function(self)local value=assert(original(self));value.camera=value.camera+8;return value end
+    assert(not f.backend:fird_fov_config())
+end)
 test('FOV config is read-only and only binds the current owned native pose request',function()
     local f=pose_fixture();local idle=assert(f.backend:fov_config())
     equal(idle.game,f.base);equal(idle.exe,f.executable);equal(idle.camera,f.camera)
@@ -1524,6 +1554,16 @@ test('renderer DoF observer reads fresh values with bounded unchanged-row lookup
     end
     equal(row_reads,2);equal(#f.calls,0)
 end)
+test('renderer Boolean observer keeps independent DoF and vignette lookup locations',function()
+    local f=dof_fixture();f:row(2,0x72e8f18c,4,1)
+    equal(f:observe(),false)
+    equal(f.backend:renderer_dof_value(f.get,f.set,'vignette_enabled'),true)
+    f:row(1,0x06f1d0d3,4,1);f:row(2,0x72e8f18c,4,0)
+    equal(f:observe(),true)
+    equal(f.backend:renderer_dof_value(f.get,f.set,'vignette_enabled'),false)
+    local value,why=f.backend:renderer_dof_value(f.get,f.set,'unreviewed_setting')
+    equal(value,nil);assert(type(why)=='string');equal(#f.calls,0)
+end)
 test('renderer observer rejects unsupported binding schema and key ownership without touching settings',function()
     for _,change in ipairs({function(f)f:row(1,0x06f1d0d3,1,0)end,
         function(f)f:row(1,0x06f1d0d3,4,2)end,function(f)f:row(1,0x06f1d0d4,4,0)end,
@@ -1612,4 +1652,174 @@ test('weapon resource profiles resolve only on pose acquisition',function()
     assert(f.backend:release(lease))
 end)
 
+local PRESENTATION_CAPTURE={
+    {'game',0x833440,'405641564881ec88000000488b05be1bc8014833c448894424683b1570bc60028bf24c8b1577ea4a02450fb6f04488742430'},
+    {'game',0x833513,'4869d0401200004869c0b8010000498dbab06a54004c896c24784903d24c897c24704889542458'},
+    {'game',0x833540,'4c8daac0e95300498b84ca10010000418bd68b480c488b056cdf4a0244887770894c2434418b4d004c8b481841ff9158060000'},
+    {'game',0x833763,'41ff90f8000000488b0557dd4a02488d4c24344084f68bd3490f45cd4533ff4c8b50084533c944897c2420448b01488b0d200a4b02488b0941ff92d0000000'},
+    {'game',0x110fe9e,'488b0d3b20bd0141b101450fb6c18bd70f10000f1144247ce8853572ff'},
+    {'game',0x111088b,'418b560441b1014889b424600200'},
+    {'game',0x11108e3,'e8582b72ff'},
+    {'exe',0x1fb480,'48895c24084889742410574883ec20410fb6f08bfa8bd9e80452eaff4c8b5018b8'},
+    {'exe',0x1fb4b4,'43c78411880001001500000043899c1138000100488b5c24304388b41144000100488b7424384389bc1140000100'},
+}
+local function presentation_fixture()
+    local f=fixture();f.presentation_calls={};f.presentation_mode=f.owner+0x546B20
+    for _,pin in ipairs(PRESENTATION_CAPTURE)do
+        f:write((pin[1]=='game'and f.base or f.executable)+pin[2],hex(pin[3]))
+    end
+    f:write(f.presentation_mode,'\0')
+    f.backend.io.invoke_presentation=function(s,enabled)
+        f.presentation_calls[#f.presentation_calls+1]={avatar_owner=s.avatar_owner,avatar=s.avatar,
+            enabled=enabled,identity=s.identity,weapon=s.weapon,weapon_unit=s.weapon_unit}
+        if not f.presentation_no_ack then f:write(f.presentation_mode,enabled and'\1'or'\0')end
+        if f.on_presentation then f:on_presentation(s,enabled)end
+    end
+    return f
+end
+test('native FP presentation wrapper invokes the current owner and mode without constructing a camera request',function()
+    local f=presentation_fixture();local expected=f:snapshot();local request=expected.record
+    assert(f.backend:_invoke_presentation(expected,true));equal(#f.presentation_calls,1)
+    equal(f.presentation_calls[1].avatar_owner,f.owner);equal(f.presentation_calls[1].avatar,f.avatar)
+    equal(f.presentation_calls[1].enabled,true);equal(f.backend:_u8(f.presentation_mode),1)
+    equal(f:snapshot().record,request);equal(f:snapshot().camera_kind,4);equal(f.entries,0);equal(f.exits,0)
+    -- The presentation mode is avatar-global; a saved weapon instance does
+    -- not authorize replay of its old weapon arguments during restoration.
+    expected.identity='old-weapon-instance';expected.weapon=0x991;expected.weapon_unit=0x992
+    assert(f.backend:_invoke_presentation(expected,false));equal(#f.presentation_calls,2)
+    equal(f.presentation_calls[2].enabled,false);equal(f.presentation_calls[2].weapon,f.weapon)
+    equal(f.presentation_calls[2].weapon_unit,f.weapon_unit);equal(f.backend:_u8(f.presentation_mode),0)
+end)
+test('native FP presentation refuses camera takeover foreign ownership changed player invalid mode and unsupported image before invoking',function()
+    for _,change in ipairs({
+        function(f,expected)f:top(6)end,
+        function(f,expected)f.backend.foreign_camera=function()return true end end,
+        function(f,expected)expected.player_identity='another-player'end,
+        function(f,expected)expected.viewmodel=expected.viewmodel+1 end,
+        function(f,expected)f:write(f.presentation_mode,'\3')end,
+        function(f,expected)f:u32(f.executable+0x88,1)end,
+    })do
+        local f=presentation_fixture();local expected=f:snapshot();change(f,expected)
+        assert(not pcall(f.backend._invoke_presentation,f.backend,expected,true));equal(#f.presentation_calls,0)
+    end
+    local f=presentation_fixture();assert(not pcall(f.backend._invoke_presentation,f.backend,f:snapshot(),1))
+    equal(#f.presentation_calls,0)
+end)
+test('native FP presentation rejects every captured function or caller witness drift before invoking',function()
+    for _,pin in ipairs(PRESENTATION_CAPTURE)do
+        local f=presentation_fixture();local expected=f:snapshot()
+        f:write((pin[1]=='game'and f.base or f.executable)+pin[2],'\0')
+        assert(not pcall(f.backend._invoke_presentation,f.backend,expected,true));equal(#f.presentation_calls,0)
+    end
+end)
+test('native FP presentation propagates uncertain post-call ownership mode acknowledgement and native errors for lease cleanup',function()
+    for _,change in ipairs({
+        function(f)f.on_presentation=function(self)self:top(6)end end,
+        function(f)f.presentation_no_ack=true end,
+        function(f)f.on_presentation=function()error('uncertain native presentation after queue')end end,
+    })do
+        local f=presentation_fixture();change(f)
+        assert(not pcall(f.backend._invoke_presentation,f.backend,f:snapshot(),true));equal(#f.presentation_calls,1)
+        equal(f.entries,0);equal(f.exits,0)
+    end
+end)
+
+
+local function cold_fixture()
+    local f=fixture();f.cold=true;f.cold_sites={}
+    for _,check in ipairs(Profile.checks)do
+        if check.name=='evaluator'or check.name=='root_position_call'or check.name=='root_rotation_call'or check.name=='pose_branch_position_call'then
+            f.cold_sites[f.base+check.rva]=true
+        end
+    end
+    f:write(f.base+0x110FB62,hex('0f57d2488bcbe8a3860000'))
+    f.read_failure=function(self,at)return self.cold and self.cold_sites[at]or self.cold_hot==at end
+    return f
+end
+test('cold read-only snapshots retain exact ownership while full native calls and pose preparation remain gated',function()
+    local f=cold_fixture();local s=f:snapshot();equal(s.camera_kind,4);equal(s.safe,true)
+    local ready,why=f.backend:camera_ready();equal(ready,false);contains(why,'initialization')
+    assert(not pcall(f.backend._invoke,f.backend,'allowed',s));equal(#f.calls,0)
+    local accepted,problem=f.backend:prepare_pose(s);equal(accepted,false);contains(problem,'initialization')
+    equal(f.alignment_prepares,0);equal(f.alignment_begins,0)
+end)
+test('cold warm-up leases stock native entry before invocation and releases through verified hot exit while evaluator remains packed',function()
+    local f=cold_fixture();local accepted,lease=f.backend:warm_start(f:snapshot())
+    equal(accepted,true);assert(lease and lease.bootstrap and f.backend.warm_lease==lease)
+    equal(f.entries,1);equal(f:snapshot().camera_kind,6);equal(f.backend:camera_ready(),false)
+    equal(f.alignment_prepares,0);equal(f.alignment_begins,0)
+    assert(f.backend:warm_finish(lease));equal(f.exits,1);equal(f:snapshot().camera_kind,4)
+    equal(f.backend.warm_lease,nil);assert(f.backend:warm_finish(lease));equal(f.exits,1)
+end)
+test('natural entry can initialize packed witnesses before a later full pose preflight without weakening scope caches',function()
+    local f=cold_fixture();f.backend:begin_frame();local s=f:snapshot();equal(f.backend:camera_ready(),false)
+    f.on_enter=function(self)self.cold=false end
+    local accepted,lease=f.backend:warm_start(s);equal(accepted,true);assert(not lease.cleanup_only)
+    equal(f.backend:camera_ready(),true);assert(f.backend:warm_finish(lease));f.backend:end_frame()
+end)
+test('identity and hot-entry caches cannot satisfy full validation in the same frame',function()
+    local f=cold_fixture();f.backend:begin_frame();f:snapshot();assert(f.backend:_module('entry'))
+    equal(f.backend:camera_ready(),false);assert(not pcall(f.backend._invoke,f.backend,'allowed',f:snapshot()))
+    equal(#f.calls,0);f.backend:end_frame();f.cold=false;equal(f.backend:camera_ready(),true)
+end)
+test('unreadable hot entry code wrapper call drift foreign cameras and unavailable firearms never dispatch a warm entry',function()
+    for _,change in ipairs({
+        function(f)f.cold_hot=f.base+Profile.checks[1].rva end,
+        function(f)f:write(f.base+0x110FB62,'\0')end,
+        function(f)f.allowed=false end,
+        function(f)f.backend.foreign_camera=function()return true end end,
+        function(f)f:u32(f.controller,2)end,
+    })do
+        local f=cold_fixture();local expected=f:snapshot();change(f)
+        local accepted=f.backend:warm_start(expected);equal(accepted,false);equal(f.entries,0)
+        equal(f.backend.warm_lease,nil)
+    end
+end)
+test('uncertain warm entry retains only its claimed request until ordinary or delegated cleanup succeeds',function()
+    local f=cold_fixture();f.on_enter=function()error('uncertain native warm entry')end
+    local accepted,lease=f.backend:warm_start(f:snapshot());equal(accepted,true);assert(lease.cleanup_only)
+    equal(f.entries,1);equal(f.backend:warm_start(lease.origin),false)
+    equal(f.backend:prepare_pose(lease.origin),false)
+    assert(f.backend:release(lease));equal(f.exits,1);equal(f.backend.warm_lease,nil)
+    f=cold_fixture();f.on_allowed=function(self)self:write(self.base+0x110FB62,'\0')end
+    accepted,lease=f.backend:warm_start(f:snapshot());equal(accepted,true);assert(lease.cleanup_only)
+    equal(f.entries,0);assert(f.backend:warm_finish(lease));equal(f.exits,0)
+end)
+test('warm cleanup yields to actual ADS preserves foreign cameras and never exits an outgoing weapon through new inventory',function()
+    local f=cold_fixture();local accepted,lease=f.backend:warm_start(f:snapshot());assert(accepted)
+    f:write(f.controller+4,'\1');assert(f.backend:warm_finish(lease));equal(f.exits,0);equal(f:snapshot().camera_kind,6)
+    f=cold_fixture();accepted,lease=f.backend:warm_start(f:snapshot());assert(accepted)
+    f.backend.foreign_camera=function()return true end;equal(f.backend:warm_finish(lease),false);equal(f.exits,0)
+    f.backend.foreign_camera=function()return false end;assert(f.backend:warm_finish(lease));equal(f.exits,1)
+    f=cold_fixture();accepted,lease=f.backend:warm_start(f:snapshot());assert(accepted)
+    f:u32(0x74000000,0x999);equal(f.backend:warm_finish(lease),false);equal(f.exits,0)
+    f:top(4);assert(f.backend:warm_finish(lease));equal(f.exits,0)
+end)
+test('warm cleanup refuses lost tokens and retains its lease across failed exit verification',function()
+    local f=cold_fixture();local accepted,lease=f.backend:warm_start(f:snapshot());assert(accepted)
+    equal(f.backend:warm_finish({owner=f.backend,bootstrap=true,origin=lease.origin}),false)
+    local at=f.base+Profile.checks[3].rva;local before=f:read(at,1);f:write(at,'\0')
+    equal(f.backend:warm_finish(lease),false);equal(f.exits,0);equal(f.backend.warm_lease,lease)
+    f:write(at,before);assert(f.backend:warm_finish(lease));equal(f.exits,1)
+end)
+
+test('legacy pin flags cannot admit a seated or vehicle request to the camera helper',function()
+    local f=fixture();f.backend.pin_first_person=true;f:u32(f.context+8,0x40000a)
+    f:top(12,{avatar=0x999});f:u32(f.controller,0x40);f:write(f.owner+0x53e888+14,string.char(4))
+    assert(not f.backend:snapshot());assert(not f.backend:player_snapshot())
+    local pin=assert(f.backend:pin_player_snapshot())
+    equal(pin.avatar,f.avatar);equal(pin.body,f.body);equal(pin.camera_kind,12)
+    equal(pin.pin_camera,true);equal(pin.request_local,false);equal(pin.safe,false);equal(pin.seated,true);equal(pin.camera_unit,0x40000a)
+    local config= f.backend:camera_config();equal(config,nil);equal(#f.calls,0);equal(f.entries,0)
+    assert(not f.backend:enter(pin));equal(f.entries,0)
+end)
+test('camera fallback rejects foreign cameras and mismatched local body descriptors even with a legacy pin flag',function()
+    for _,fault in ipairs({'foreign','descriptor','player'})do
+        local f=fixture();f.backend.pin_first_person=true;f:u32(f.context+8,0x40000a)
+        if fault=='foreign'then f.backend.foreign_camera=function()return true end
+        elseif fault=='descriptor'then f:u32(f.avatar_ep+12,f.body+1)
+        else f:u32(f.player+0x88,0)end
+        assert(not f.backend:camera_config());equal(f.entries,0);equal(#f.calls,0)
+    end
+end)
 print('Native ADS injected-memory backend fixtures: ' .. passed .. ' passed')

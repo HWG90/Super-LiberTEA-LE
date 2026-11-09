@@ -34,10 +34,11 @@ function F.new(memory,game,at)
             local ffi=require('ffi')
             local read=ffi.cast('int(*)(uint64_t,void *,uint32_t)',host.read_memory)
             local base=ffi.cast('uint64_t(*)(const char *)',host.module_base)
+            local buffer,capacity=nil,0
             native={module_base=function(name)local value=tonumber(base(name));return value~=0 and value or nil end,
                 read_memory=function(address,count)
                     if type(address)~='number' or type(count)~='number' or count<1 or count>4096 then return nil end
-                    local buffer=ffi.new('uint8_t[?]',count)
+                    if count>capacity then buffer=ffi.new('uint8_t[?]',count);capacity=count end
                     if read(address,buffer,count)~=1 then return nil end
                     return ffi.string(buffer,count)
                 end}
@@ -51,13 +52,31 @@ function F.new(memory,game,at)
     end
 
     local self={}
-    function self.resolve(sr)
+    local cached_descriptor,cached_lifetime,remaining
+    local function copy_descriptor(value)
+        return {font=value.font,material=value.material,atlas=value.atlas}
+    end
+    -- A view may provide an opaque GUI/world lifetime to amortize protected
+    -- descriptor reads over at most 15 frames. Resource availability is still
+    -- checked on every frame using fresh native IDs. Other callers remain eager.
+    function self.resolve(sr,lifetime)
         local ready=pcall(ensure_memory);if not ready then return nil end
 
         if not memory or type(memory.read)~='function' or type(memory.address)~='function' then return nil end
         if not sr or not sr.IdString64 or type(sr.IdString64.from_hex)~='function'
             or not sr.Application or type(sr.Application.can_get)~='function' then return nil end
         local ok,descriptor=pcall(function()
+            local I,app=sr.IdString64,sr.Application
+            local function available(value)
+                return app.can_get('font',I.from_hex(value.font))
+                    and app.can_get('texture',I.from_hex(value.atlas))
+                    and app.can_get('material',I.from_hex(value.material))
+            end
+            if lifetime~=nil and cached_lifetime==lifetime and cached_descriptor and remaining>0 then
+                remaining=remaining-1
+                if available(cached_descriptor)then return copy_descriptor(cached_descriptor)end
+            end
+            cached_descriptor,cached_lifetime,remaining=nil,nil,0
             -- Bingus memory.address converts pointers, never module names.
             -- Keep names separate so a Lua string's buffer cannot become the
             -- PE base (and silently leave the UI on the debug fallback).
@@ -80,11 +99,12 @@ function F.new(memory,game,at)
             local owner=pointer(read(0x3180C08,8))
             local material=owner and hash(read_address(owner+24,8))
             if not font or not atlas or not material then return nil end
-            local I,app=sr.IdString64,sr.Application
-            if not app.can_get('font',I.from_hex(font))
-                or not app.can_get('texture',I.from_hex(atlas))
-                or not app.can_get('material',I.from_hex(material)) then return nil end
-            return {font=font,material=material,atlas=atlas}
+            local value={font=font,material=material,atlas=atlas}
+            if not available(value)then return nil end
+            if lifetime~=nil then
+                cached_descriptor=copy_descriptor(value);cached_lifetime=lifetime;remaining=14
+            end
+            return value
         end)
         if ok then return descriptor end
         return nil

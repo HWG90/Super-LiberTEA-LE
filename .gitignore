@@ -2,3 +2,5 @@
 /*.zip
 /out/
 __pycache__/
+# Gadget Kit's native helpers ship in the release zips; their sources are under native/.
+/sources/gadget-kit/**/*.dll

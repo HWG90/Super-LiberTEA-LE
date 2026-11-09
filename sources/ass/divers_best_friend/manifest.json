@@ -1,7 +1,7 @@
 {
   "id": "divers_best_friend",
   "name": "Diver's Best Friend",
-  "version": "R46-luajit.2-26251122-le.1",
+  "version": "R46-luajit.2-26251122-le.2",
   "author": "Goose",
   "description": "ASS R46 Homecoming Update: cooldown dock and overview, Wedge Wheel, hotkeys and native timers. HUD Plus 0.2.8 / 0.2.9 cleanup contracts, custom stratagem, exhausted-state and Foliage Pass-Through compatibility. The Super LiberTEA - LE build: without DBF-HUD's weapon readout.",
   "lll": {

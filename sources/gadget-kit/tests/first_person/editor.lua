@@ -457,3 +457,17 @@ rawset(_G, 'stingray', previous_stingray)
 package.loaded['dbf.epic_lut.frontend.v1'] = previous_lut
 print('Native ADS placement editor fixtures: ' .. passed .. ' passed')
 
+
+test('Reset previews the current weapon-family baseline without saving or moving its camera',function()
+ local f=fixture();local calls=0
+ f.store.target=function()return '5663fbf6d81eee27','owned-instance'end
+ f.store.baseline=function(key,action)
+  equal(key,'5663fbf6d81eee27');equal(action,'idle');calls=calls+1
+  return {x=.12,y=0,z=-.09,yaw=0,pitch=0,roll=0}
+ end
+ f:open():arm();f:tick({x=450,y=830,click=true,wheel=0,dt=.016})
+ equal(calls,1);near(f.controller.placement.x,.12);near(f.controller.placement.z,-.09)
+ equal(f.save_calls,0);equal(f.stopped,0)
+ f.editor:cancel();near(f.controller.placement.x,.15);near(f.controller.placement.z,-.12)
+end)
+print('Weapon-family Reset remains preview-only and cancels back to saved placement')

@@ -1,0 +1,29 @@
+{
+  "target_build": "26251122",
+  "module_timestamp": "0x6ae0e5ff",
+  "capture": "Live running-game read-only LLM batches6657/6658, no native function calls or memory writes",
+  "witnesses": {
+    "heat_config": {
+      "rva": "0x516310",
+      "bytes": "4885c9745c488b059cde7c02448bc14c8b909047f10048b8898888888888888848f7e148c1ea056bc23c442bc04533c9418bc048c1e0044903c2488b10483bd174224885d2741a418bc0418d50014533c041ffc183f83b440f45c24183f93c72cf33c0c34885c074f88b48084869c1500200004805c00300004903c2c3"
+    },
+    "heat_open": {
+      "rva": "0x5167c0",
+      "bytes": "4883ec284c8bd14885c9750733c04883c428c38b41083b05f88892020f84930000004c8b1d1fb77c"
+    },
+    "heat_limit_caller": {
+      "rva": "0x15d945d",
+      "bytes": "8b475c0f57c9c745e00c000000f3480f2ac833c0488945e8488945f08bc3ffc30f1045e0486bc81c0fc6c0e1f30f10c10f28cb0fc6c0e10f1145e00f110431f20f1045f0f20f1144311089543118498bcbe89dd9f3fe4885c0740af30f1047780f2fc3772e4d85ff740bf3410f1047080f2fc377154d85f6742241837e6406751b66410f6e46680f5bc0f30f5ec4f30f594774f30f104f60f30f5ec8413bdd0f"
+    }
+  },
+  "affected_live_weapon": {
+    "resource": "27ee1ed8f6fb6356",
+    "entity": 1162,
+    "driver_flags": "0x2242",
+    "heat_component_index": 4,
+    "current_heat": 92.789604187012,
+    "native_limit": 150,
+    "normalized_percent": 61.85973612467467
+  },
+  "contract": "Identity-checked native heat component current+4 and native resource/entity-override limit+0x60; clamp current/limit to0..1. Generic gauges/charge and nonreloadable are not heat classifiers. Talon mixed-kind exception requires exact resource plus owned live heat component."
+}

@@ -8,7 +8,7 @@ local revision=0
 local input_service
 local defaults={placement={x=.15,y=0,z=-.12},motion_enabled=true,motion_scale=1,
     weapon_placements={},action_placements={},action_state_mapping={},
-    fird_head_camera={x=0,y=0,z=.04},camera_kick_enabled=true}
+    fird_head_camera={x=0,y=0,z=.04},camera_kick_enabled=true,aim_markers={}}
 function M.host(parent)
     local host=setmetatable({}, {__index=function(_,key)
         if key=='config' then return parent.config.first_person or defaults end
@@ -57,6 +57,10 @@ function M.menu_api()
             if handle and provider==real then return handle.get(PREFIX..id)end
             return defaults_by_id[id]
         end
+        function h.set(id,value)
+            if handle and provider==real and type(handle.set)=='function'then return handle.set(PREFIX..id,value)end
+            return false,'First-person menu is not attached'
+        end
         function h.unregister()
             owner.mods[NATIVE]=nil
             if spec==value then spec=nil;revision=revision+1 end
@@ -76,7 +80,7 @@ function M.attach(value)handle=value end
 function M.revision()return revision end
 function M.status()
     if last_error then return 'Unavailable: '..last_error end
-    return active and 'First person off; F11 toggles' or 'First person is initializing'
+    return active and 'True First Person ready; F11 toggles' or 'First person is initializing'
 end
 function M.pages()
     if spec then return spec.pages end
@@ -101,21 +105,25 @@ function M.enable()
 end
 function M.update()
     if not runtime then return end
-    if not active then M.shutdown();return end
+    if not active then M.poll_cleanup();return end
     local ok,why=pcall(runtime.on_update)
     if not ok then
         active=false;last_error=tostring(why)
         mod.log('First person stopped: '..last_error)
     end
-    if not active then M.shutdown()end
+    if not active then M.poll_cleanup()end
 end
-function M.shutdown()
+local function shutdown(method)
     active=false
     if not runtime then return true end
-    local ok,done,why=pcall(runtime.on_disable)
+    local callback=runtime[method]or runtime.on_disable
+    local ok,done,why=pcall(callback)
     if not ok then return false,tostring(done)end
     if done~=true then return false,why or 'First-person restoration pending'end
     runtime,handle,spec=nil,nil,nil;revision=revision+1
     return true
 end
+function M.shutdown()return shutdown('on_disable')end
+-- Called only by the kit's normal Update or loader cleanup-poll callback.
+function M.poll_cleanup()return shutdown('on_cleanup_poll')end
 return M

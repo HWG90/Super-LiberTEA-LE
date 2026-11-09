@@ -75,6 +75,7 @@ function Adapter:_load()
 end
 function Adapter:_error(operation)
     local ok,code=pcall(function()return PORT51.number(self:_load().NADSC_Error())end)
+    self.last_failure_code=ok and PORT51.kind(code)=='number'and code or nil
     return operation..' failed (native head-camera code '..tostring(ok and code or 'unavailable')..')'
 end
 function Adapter:_config(config)
@@ -224,17 +225,23 @@ function Camera.new(backend,log,helper,clock)
         return true
     end
     local function problem(message)
-        self.fault=tostring(message);log('Native head camera: '..self.fault);return false,self.fault
+        self.fault=tostring(message)
+        self.failure_native_error=helper.last_failure_code
+        self.failure_kind=self.failure_native_error==3 and'temporary_read'or(self.failure_native_error and'unsafe'or nil)
+        log('Native head camera: '..self.fault);return false,self.fault
     end
     local function collect()
         local stats,why=invoke(helper,'stats',self.handle)
         if PORT51.kind(stats)~='table'then return problem(why or 'Head-camera statistics unavailable')end
-        self.last=stats;return true
+        self.last=stats
+        if PORT51.kind(stats.error)=='number'and stats.error~=0 then helper.last_failure_code=stats.error end
+        return true
     end
     function self:is_clean()return self.handle==nil end
     function self:result()
         local result={};for k,v in pairs(self.last)do result[k]=v end
         result.phase,result.cleanup_pending=self.phase,self.phase=='cleanup_pending';result.error_message=self.fault
+        result.failure_native_error,result.failure_kind=self.failure_native_error,self.failure_kind
         return result
     end
     function self:status()
@@ -299,15 +306,16 @@ function Camera.new(backend,log,helper,clock)
         if self.handle then return false,'Head-camera cleanup is still active'end
         local config,why=invoke(backend,'camera_config')
         if PORT51.kind(config)~='table'then return false,why or 'Head-camera configuration unavailable'end
-        if config.camera_kind~=4 then return false,'Head-camera preparation requires the normal camera'end
+        if config.camera_kind~=4 and config.camera_kind~=6 then return false,'Camera preparation requires an owned on-foot gameplay view'end
         return invoke(helper,'validate',config)
     end
     function self:prepare()
+        helper.last_failure_code=nil;self.failure_native_error,self.failure_kind=nil,nil
         if self.closing then return false,'Head-camera manager is shutting down'end
         if self.phase=='cleanup_pending'then return false,'Head-camera cleanup remains pending'end
         local config,why=invoke(backend,'camera_config')
         if PORT51.kind(config)~='table'then return false,why or 'Head-camera configuration unavailable'end
-        if config.camera_kind~=4 then return false,'Head-camera preparation requires the normal camera'end
+        if config.camera_kind~=4 and config.camera_kind~=6 then return false,'Camera preparation requires an owned on-foot gameplay view'end
         if self.handle then
             local ok,why=collect();if not ok then self:stop();return false,why end
             if self.last.armed==true and same_identity(self.bound,config)then return true end
@@ -338,13 +346,15 @@ function Camera.new(backend,log,helper,clock)
     end
     self.prearm=self.prepare
     function self:update(controller)
+        helper.last_failure_code=nil;self.failure_native_error,self.failure_kind=nil,nil
         if self.phase=='cleanup_pending'then return self:stop()end
         local result=controller:result()
         if self.closing or not controller:is_enabled() or result.mode~='pose_offset'then return self:stop()end
         if not self.handle then
-            -- Normal4 pre-arm is required; no helper acquisition inside native6.
+            -- The rebuilt native6 path is exact passthrough. Fresh local
+            -- on-foot ownership permits rearming after acknowledged cleanup.
             local config,why=invoke(backend,'camera_config')
-            if PORT51.kind(config)~='table' or config.camera_kind~=4 then self.phase='waiting';return true,why end
+            if PORT51.kind(config)~='table' or(config.camera_kind~=4 and config.camera_kind~=6)then self.phase='waiting';return true,why end
             return self:prepare()
         end
         local ok,why=collect();if not ok then self:stop();return false,why end

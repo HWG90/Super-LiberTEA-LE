@@ -1,9 +1,10 @@
 -- MCM registration owns preferences; native work stays in the spawner's update.
 -- Gadget Kit LE: the full kit's mcm.lua with the Unlocks and Gameplay pages removed.
 local FirstPerson=mod.require('src/first_person.lua')
+local StratagemMenu=mod.require('src/spawner/stratagem_menu.lua')
 local M = {}
 local ID = 'goose_temporary_unlocks'
-function M.new(log, spawner)
+function M.new(log, spawner, editor)
     local self = {provider=nil, handle=nil, stopping=false}
     local elapsed, due, last_problem = 0, true, nil
     log = log or function() end
@@ -18,6 +19,7 @@ function M.new(log, spawner)
         return record and record.handle == self.handle and record or nil
     end
     local function unregister()
+        if editor then editor:reset() end
         if self.handle then
             local ok, result, why = pcall(self.handle.unregister)
             if not ok or result == false then return problem(ok and (why or 'Unregister refused') or result) end
@@ -53,13 +55,14 @@ function M.new(log, spawner)
             if not done then return false, why end
             if not supported then return problem('Waiting for DBF-MCM') end
             local pages={}
+            local stratagem_groups
             if spawner then
                 -- Buttons only queue intent; on_update performs the guarded native steps once
                 -- MCM is closed, so the button closes MCM after a request is accepted. MCM shows a
                 -- button's string result as its notice and drops a second value, so a refusal
                 -- returns its reason alone (a false, reason pair read "Action completed").
                 local function equip()
-                    if self.stopping or self.provider ~= rawget(_G, 'DBFMCM') then return 'Spawner settings are not ready' end
+                    if self.stopping or not self.handle or self.provider ~= rawget(_G, 'DBFMCM') then return 'Spawner settings are not ready' end
                     local accepted, why = spawner:queue(self.handle.get('spawner_weapon'))
                     if accepted ~= true then return why end
                     if type(self.provider.close) == 'function' then
@@ -68,9 +71,9 @@ function M.new(log, spawner)
                     end
                     return true
                 end
-                local function add_stratagem()
-                    if self.stopping or self.provider ~= rawget(_G, 'DBFMCM') then return 'Spawner settings are not ready' end
-                    local accepted, why = spawner:queue_stratagem(self.handle.get('spawner_stratagem'))
+                local function add_stratagem(id, indices)
+                    if self.stopping or not self.handle or self.provider ~= rawget(_G, 'DBFMCM') then return 'Spawner settings are not ready' end
+                    local accepted, why = spawner:queue_stratagem(indices[self.handle.get(id)])
                     if accepted ~= true then return why end
                     if type(self.provider.close) == 'function' then
                         local closed, reason = self.provider.close()
@@ -80,19 +83,22 @@ function M.new(log, spawner)
                 end
                 pages[#pages+1] = {id='spawner', name='Spawner', require_confirmation=false, controls={
                     {id='spawner_enabled', type='toggle', label='Enabled', default=false, require_confirmation=false,
-                        description='Allow support weapon requests. Local host, solo mission, normal on-foot gameplay.',
+                        description='Allow weapons and a fifth stratagem. Local host, solo mission, normal on-foot gameplay.',
                         on_change=function() due = true end},
-                    {id='spawner_weapon', type='choice', label='Support weapon', presentation='dropdown',
+                    {id='spawner_weapon', type='choice', label='Weapon', presentation='dropdown',
                         choices=spawner:choices(), default=1},
                     {id='spawner_equip', type='button', label='Equip in hands', require_confirmation=false, on_activate=equip},
-                    {type='text', label='Replaces your support weapon with the chosen one and its default attachments; the matching backpack comes too.'},
+                    {type='text', label='Equips the weapon in its own slot. Paired support weapons also equip their backpack.'},
                     {id='spawner_status', type='text', label='Status: Off'},
-                    {id='spawner_stratagem', type='choice', label='Fifth stratagem', presentation='dropdown',
-                        choices=spawner:stratagem_choices(), default=1},
-                    {id='spawner_add_stratagem', type='button', label='Add to mission', require_confirmation=false, on_activate=add_stratagem},
-                    {type='text', label='Adds one extra stratagem to this mission, called with its normal code. Once per mission; support weapons load first.'},
-                    {id='spawner_stratagem_status', type='text', label='Status: Choose a stratagem'},
                 }}
+                stratagem_groups = spawner:stratagem_groups()
+                StratagemMenu.append(pages[#pages].controls, stratagem_groups, add_stratagem)
+            end
+            if editor then
+                pages[#pages+1]=editor:page(function()
+                    return not self.stopping and self.provider==api and rawget(_G,'DBFMCM')==api
+                        and registration() and api.is_open()
+                end)
             end
             for _,page in ipairs(FirstPerson.pages())do pages[#pages+1]=page end
             local called, handle = pcall(api.register, {
@@ -105,9 +111,14 @@ function M.new(log, spawner)
                 return problem('Unsupported MCM handle')
             end
             self.provider, self.handle, due, elapsed = api, handle, true, 0
+            if stratagem_groups and type(handle.set_many) == 'function' then
+                local restored, reason = StratagemMenu.restore_choice(handle, stratagem_groups)
+                if not restored then log('Could not restore the previous stratagem selection: ' .. tostring(reason)) end
+            end
             FirstPerson.attach(handle)
             self.first_person_revision=FirstPerson.revision()
         end
+        if editor then editor:update(dt,api,registration()) end
         if not due and elapsed < 0.25 then return end
         due, elapsed = false, 0
         if spawner then
@@ -120,6 +131,7 @@ function M.new(log, spawner)
     end
     function self:begin_shutdown()
         self.stopping = true
+        if editor then editor:reset() end
         if spawner then spawner:set_enabled(false) end
         self:refresh_status()
     end

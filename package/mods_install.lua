@@ -6,7 +6,9 @@ do -- Super LiberTEA - LE @VERSION@: LLL's folder mods travel in this boot patch
  -- Backups/<id>-shim-<time> as it is, and the mod installed. A file is written through a .tmp file and read
  -- back; manifest.json is written last. SuperLiberTEA/<id>.txt records what this package wrote (size and
  -- Adler-32 per file), so a later release can tell its own files from yours: a file an earlier release wrote
- -- and this one no longer ships is removed while it is unchanged.
+ -- and this one no longer ships is removed while it is unchanged. The two DBF providers cannot run together: the
+ -- variant of this patch installs one and moves the other to Backups/<id>-superlibertea-<time> when this package
+ -- wrote its manifest; one installed another way is left alone and reported.
  -- Outcome: LLL/Helldivers2/Logs/SuperLiberTEA-files.log. A failure is reported and never stops the boot.
  if rawget(_G,'jit')==nil then
   local home=os.getenv('LOCALAPPDATA')
@@ -96,6 +98,22 @@ do -- Super LiberTEA - LE @VERSION@: LLL's folder mods travel in this boot patch
    end
    local text='release\t@VERSION@\n'..table.concat(record,'\n')..'\n'
    if slurp(base..receipt)~=text then put(receipt,text) end
+  end
+  local function retire(id)
+   local dir='Mods/'..id
+   local manifest=slurp(base..dir..'/manifest.json')
+   if manifest==nil then return end
+   local receipt='SuperLiberTEA/'..id..'.txt'
+   local size,sum=(slurp(base..receipt) or ''):match('(%d+)\t(%d+)\tmanifest%.json\n')
+   if size==nil or tonumber(size)~=#manifest or tonumber(sum)~=adler(manifest) then
+    left[#left+1]=id..' (another DBF provider is installed; set one to false in LLL.cfg)' return
+   end
+   local to='Backups/'..id..'-superlibertea-'..os.date('%Y%m%d-%H%M%S')
+   local moved=os.rename(base..dir,base..to)
+   if not moved then mkdir('Backups') moved=os.rename(base..dir,base..to) end
+   if not moved then problems[#problems+1]=id..': cannot move the other DBF choice to '..to return end
+   os.remove(base..receipt)
+   aside[#aside+1]=id..' (the other DBF choice, now '..to..')'
   end
   if base then
    local ok,why=pcall(function()

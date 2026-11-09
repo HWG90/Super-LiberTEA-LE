@@ -7,12 +7,23 @@ local function hud_plus_compat(active)
     local bindings={}
     -- Only owner-provided lifecycle methods perform cleanup. Each contract
     -- fingerprints its Lua helper closures too, including held-input release.
-    local lifecycle={prepare='0f6d0b5c',vanilla='c5fd46ff',drop='057f16e2',close='8b14074f'}
+    -- string.dump follows the VM's bytecode frame layout, so each pin holds the
+    -- same reviewed HUD+ code twice: fr1 for non-GC64 LuaJIT (the original game's)
+    -- and fr2 for GC64 (LLL's runtime). A layout without a pin never matches.
+    local lifecycle_order={'prepare','vanilla','drop','close'}
+    local lifecycle={prepare={fr1='0f6d0b5c',fr2='130b0b6c'},vanilla={fr1='c5fd46ff',fr2='d99d4712'},
+        drop={fr1='057f16e2',fr2='0caa16f1'},close={fr1='8b14074f',fr2='8d6e075b'}}
     local picker_contracts={
-        {name='immediate-picker',methods={reset='594d0655'},absent={'frame','leave'}},
-        {name='paced-picker',methods={reset='4dcd1a05',frame='ae220d38',leave='27a70348'},
-            helpers={reset={start_cell='f0e31473'},frame={unblock_aim='789b2088'}}},
+        {name='immediate-picker',methods={reset={fr1='594d0655'}},absent={'frame','leave'}},
+        {name='paced-picker',methods={reset={fr1='4dcd1a05',fr2='53e91a11'},frame={fr1='ae220d38',fr2='b2030d43'},
+            leave={fr1='27a70348',fr2='287f0350'}},
+            helpers={reset={start_cell={fr1='f0e31473',fr2='f5f41480'}},frame={unblock_aim={fr1='789b2088',fr2='82062099'}}}},
     }
+    -- A LuaJIT dump starts ESC 'L' 'J', version, flags; flag 0x08 marks FR2.
+    local ok,header=pcall(string.dump,function()end,true)
+    if ok and type(header)=='string' and header:sub(1,3)=='\27LJ' and #header>=5 then
+        self.layout=math.floor(header:byte(5)/8)%2==1 and 'fr2' or 'fr1'
+    end
     local function member(t,k)
         if type(t)~='table' then return nil end
         local v=rawget(t,k)
@@ -29,6 +40,10 @@ local function hud_plus_compat(active)
         for i=1,#bytes do a=(a+bytes:byte(i))%65521;b=(b+a)%65521 end
         return string.format('%08x',b*65536+a)
     end
+    local function pinned(fn,pin)
+        local want=self.layout and pin and pin[self.layout]
+        return want~=nil and fingerprint(fn)==want
+    end
     local function helpers_match(fn,expected)
         local found={}
         if not debug or type(debug.getupvalue)~='function' then return false end
@@ -36,7 +51,7 @@ local function hud_plus_compat(active)
             local name,value=debug.getupvalue(fn,i)
             if not name then break end
             if type(value)=='function' then
-                if not expected or expected[name]~=fingerprint(value) then return false end
+                if not expected or not pinned(value,expected[name]) then return false end
                 found[name]=true
             end
         end
@@ -50,7 +65,7 @@ local function hud_plus_compat(active)
             local matches=true
             for method,pin in pairs(contract.methods) do
                 local fn=member(pick,method)
-                if fingerprint(fn)~=pin or not helpers_match(fn,contract.helpers and contract.helpers[method]) then matches=false;break end
+                if not pinned(fn,pin) or not helpers_match(fn,contract.helpers and contract.helpers[method]) then matches=false;break end
             end
             for _,method in ipairs(contract.absent or {}) do if member(pick,method)~=nil then matches=false end end
             if matches then return contract end
@@ -61,11 +76,11 @@ local function hud_plus_compat(active)
         if not feature then return end
         if installed[feature] then self.status=installed[feature];return end
         local function unsupported(reason)
-            self.status='HUD+ stratagem adapter unsupported: '..reason
+            self.status='HUD+ stratagem adapter unsupported: '..reason..' ('..(self.layout or 'no LuaJIT')..' bytecode)'
         end
-        for method,pin in pairs(lifecycle) do
+        for _,method in ipairs(lifecycle_order) do
             local fn=member(feature,method)
-            if fingerprint(fn)~=pin or not helpers_match(fn) then unsupported('lifecycle '..method);return end
+            if not pinned(fn,lifecycle[method]) or not helpers_match(fn) then unsupported('lifecycle '..method);return end
         end
         local pick=member(feature,'pick')
         local contract=picker_contract(pick)
@@ -161,6 +176,32 @@ local function hud_plus_compat(active)
                 bind(program)
             end
         end
+    end
+    -- HUD+'s weapon line draws the game's own option cells for the first three
+    -- option slots of the held weapon's data record, the record (and the kind
+    -- numbers) the weapon strip reads. Recognized by shape, never by version:
+    -- weapon_hud.values holds each slot's sampled {axis,value,output} and
+    -- weapon_hud.line its cell nodes. A slot counts while its HUD+ option is on and
+    -- its sample is complete: HUD+ draws the cell then, and hides it only while
+    -- the weapon row is faded out. Read only; nothing of HUD+'s is changed.
+    local weapon_slots={{'functions','function_cell'},{'fire_mode','fire_cell'},{'zeroing','zero_cell'}}
+    function self.weapon_cells()
+        local cells={}
+        for _,runtime in ipairs(runtimes) do
+            local hud=member(rawget(runtime,'program'),'weapon_hud')
+            local line,values=member(hud,'line'),member(hud,'values')
+            if type(values)=='table' and member(line,'parent')~=nil then
+                for i,slot in ipairs(weapon_slots) do
+                    local sample,node=rawget(values,i),member(member(line,slot[2]),'node')
+                    local at=member(node,'at')
+                    if member(hud,slot[1])==true and type(sample)=='table' and type(rawget(sample,1))=='number'
+                        and rawget(sample,2)~=nil and rawget(sample,3)~=nil and type(at)=='number' and member(node,'live')==true then
+                        cells[#cells+1]={kind=rawget(sample,1),at=at}
+                    end
+                end
+            end
+        end
+        return cells
     end
     return self
 end

@@ -34,6 +34,7 @@ NADSC_EXPORT uint32_t NADSC_SetOffsets(uint64_t generation,float right,float for
 
 struct NADSC_FreeStats {uint32_t size,gate;uint64_t applied,ads_bypassed,remaining_ms;float yaw,pitch;uint64_t measured;double total_us,max_us;};
 static_assert(sizeof(NADSC_FreeStats)==64,"NADSC_FreeStats ABI");
+// Nonzero render-only free aim is retired; zero still acknowledges cleanup.
 NADSC_EXPORT uint32_t NADSC_FreeAim(uint64_t generation,uint32_t milliseconds);
 NADSC_EXPORT uint32_t NADSC_FreeAimStats(uint64_t generation,NADSC_FreeStats*);
 
@@ -42,10 +43,13 @@ NADSC_EXPORT uint32_t NADSC_ObserveParent(uint64_t generation,uint32_t milliseco
 NADSC_EXPORT uint32_t NADSC_ParentStats(uint64_t generation,NADSC_ParentStats45*);
 
 struct NADSC_KickStats46Data {uint64_t pulses,frames;uint32_t enabled;float angle;};
+// Nonzero camera-only kick is retired to keep the native rig coherent.
 NADSC_EXPORT uint32_t NADSC_SetKick46(uint64_t generation,uint32_t enabled);
 NADSC_EXPORT uint32_t NADSC_KickStats46(uint64_t generation,NADSC_KickStats46Data*);
 
+// Enables bounded body-relative positional handoff only; never edits native6.
 NADSC_EXPORT uint32_t NADSC_SetPresentation47(uint64_t generation);
+// Nonzero camera-only motion is unsupported; zero is a compatible cleanup.
 NADSC_EXPORT uint32_t NADSC_SetCameraMotion47(uint64_t generation,float x,float y,float z,float pitch,float yaw,float roll);
 
 struct NADSC_Profile47Data {uint32_t remaining,count;double mean_us,p99_us,max_us;};

@@ -103,7 +103,7 @@ struct Fixture {
         point(camera_local,0,0,0);point(camera_world,0,0,0);input[0]=-2;input[1]=0;input[2]=1;input[3]=0;
     }
     void begin() {normal();CHECK(begin_current(&c)==1);}
-    void sample(uint64_t elapsed=16) {fixture_time+=elapsed;invoke(reinterpret_cast<void*>(c.camera),c.camera_unit,input);}
+    void sample(double elapsed=16) {fixture_time+=elapsed;invoke(reinterpret_cast<void*>(c.camera),c.camera_unit,input);}
     void settle() {sample();sample(150);CHECK(approximately(policy.blend,1));}
     NADSC_Stats stats() {NADSC_Stats s{};s.size=sizeof s;s.abi=1;CHECK(NADSC_ReadStats(reserved.load()?active_generation:0,&s)==1);return s;}
 };
@@ -361,106 +361,138 @@ int main() {
     CloseHandle(setter_reached);CloseHandle(setter_continue);setter_reached=nullptr;setter_continue=nullptr;
     pass("End drains the actual adjusted native setter before restoring dispatch");
 
-    {
-        FreeAim::State a;FreeAim::Q out{};CHECK(a.apply(FreeAim::look(0,0),false,1,out));
-        CHECK(a.apply(FreeAim::look(.04f,.02f),false,.016f,out));float y=0,z=0;CHECK(FreeAim::angles(out,y,z));
-        CHECK(approximately(y,0)&&approximately(z,0));
-        for(unsigned i=0;i<100;++i)CHECK(a.apply(FreeAim::look(.04f,.02f),false,.016f,out));
-        CHECK(FreeAim::angles(out,y,z)&&approximately(y,0)&&approximately(z,0));
-        CHECK(a.apply(FreeAim::look(.2f,.1f),false,.016f,out));CHECK(FreeAim::angles(out,y,z));
-        CHECK(approximately(.2f-y,5*FreeAim::PI/180)&&approximately(.1f-z,3*FreeAim::PI/180));
-        for(unsigned i=0;i<10;++i)CHECK(a.apply(FreeAim::look(.2f,.1f),true,.016f,out));
-        CHECK(std::fabs(a.offset_yaw)<=1.101f*FreeAim::PI/180&&std::fabs(a.offset_pitch)<=.661f*FreeAim::PI/180);
-        a.reset();CHECK(a.apply(FreeAim::look(.2f,.1f),false,1,out));CHECK(FreeAim::angles(out,y,z)&&approximately(y,.2f)&&approximately(z,.1f));
-        CHECK(!a.apply({0,0,0,0},false,.016f,out));
-        a.reset();CHECK(a.apply(FreeAim::look(3.13f,0),false,1,out));CHECK(a.apply(FreeAim::look(-3.13f,0),false,.016f,out));
-        CHECK(std::fabs(a.offset_yaw)<.03f);
-        const float matrix[16]{0,1,0,0,-1,0,0,0,0,0,1,0,0,0,0,1};FreeAim::Q mq{};
-        CHECK(FreeAim::matrix_q(matrix,mq)&&FreeAim::angles(mq,y,z)&&approximately(y,FreeAim::PI/2));
-        pass("free aim dead zone holds still, caps yaw/pitch, tightens aim, wraps yaw and rejects invalid poses");
-    }
-    f.normal();f.begin();f.top(6);f.controls();CHECK(owner(policy,false));
     const uint64_t fps=allocate(0x1000),fps_world=allocate(63*64),fps_hashes=allocate(63*4),fps_links=allocate(63*4);
     put<uint64_t>(f.units+5*8,fps);put<uint8_t>(f.generations+5,1);put<uint32_t>(f.c.avatar_owner+0x53e9c0,0x400005);
-    put<uint64_t>(f.camera_object+0x1D0,fps);put<uint64_t>(f.camera_object+0x78,fps_world);put<uint32_t>(f.links,0x00320002);
-    put<uint64_t>(f.camera_object+0x98,f.links);put<uint32_t>(fps+0x70,63);put<uint64_t>(fps+0x88,fps_world);
-    put<uint64_t>(fps+0xA0,fps_hashes);put<uint64_t>(fps+0x98,fps_links);put<uint32_t>(fps_hashes+50*4,0x60ED8C39);put<uint32_t>(fps_links+50*4,0x40001);
-    float frame[20]{};frame[19]=1;const auto before_frame=frame[0];
-    const float local_identity[16]{1,0,0,0,1,0,0,0,1,0,0,0,1,1,1,0};
+    put<uint32_t>(fps+0x70,63);put<uint64_t>(fps+0x88,fps_world);put<uint64_t>(fps+0xA0,fps_hashes);put<uint64_t>(fps+0x98,fps_links);
+    put<uint32_t>(fps_hashes+50*4,0x60ED8C39);put<uint32_t>(fps_links+50*4,0x40001);
     const float world_identity[16]{1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1};
-    put(f.camera_locals,local_identity);put(f.camera_worlds,world_identity);put(fps_world+50*64,world_identity);
-    literal(f.c.game+0x110be87,"4c8d45c08b5308488b0b4c8b482041ff5120488b052856bd014c8d45008b5308488b0b4c8b482041ff5128");
-    CHECK(NADSC_FreeAim(active_generation,30001)==0);
-    CHECK(NADSC_FreeAim(active_generation,30000)==1);
-    NADSC_FreeStats fs{};CHECK(NADSC_FreeAimStats(active_generation,&fs)==1&&fs.remaining_ms==30000);
-    CHECK(NADSC_FreeAimStats(active_generation-1,&fs)==0);
-    free_aim_camera(policy,frame,0,fixture_time);CHECK(policy.free_gate==0&&policy.free_applied==1);
-    auto native_q=FreeAim::look(.04f,.02f);std::memcpy(frame+16,&native_q,16);
-    fixture_time+=16;free_aim_camera(policy,frame,0,fixture_time);FreeAim::Q output_q{};std::memcpy(&output_q,frame+16,16);
-    float camera_yaw=0,camera_pitch=0;CHECK(FreeAim::angles(output_q,camera_yaw,camera_pitch));
-    CHECK(approximately(camera_yaw,0)&&approximately(camera_pitch,0)&&frame[0]==before_frame);
-    policy.full_ads=true;std::memcpy(frame+16,&native_q,16);free_aim_camera(policy,frame,0,fixture_time+16);
-    CHECK(std::memcmp(frame+16,&native_q,16)==0&&policy.free_ads==1&&!policy.free_aim.tracking);
-    policy.full_ads=false;policy.free_aim.reset();policy.free_previous=0;
-    const float parent_matrix[16]{0,1,0,0,-1,0,0,0,0,0,1,0,0,0,0,1};put(fps_world+50*64,parent_matrix); // Camera-world deliberately remains stale.
-    native_q=FreeAim::look(0,0);std::memcpy(frame+16,&native_q,16);free_aim_camera(policy,frame,0,fixture_time+32);
-    native_q=FreeAim::look(.04f,0);std::memcpy(frame+16,&native_q,16);free_aim_camera(policy,frame,0,fixture_time+48);
-    std::memcpy(&output_q,frame+16,16);CHECK(FreeAim::angles(output_q,camera_yaw,camera_pitch)&&approximately(camera_yaw,0));
-    CHECK(NADSC_FreeAim(active_generation,0)==1);
-    CHECK(NADSC_ObserveParent(active_generation,3000)==1);observe_camera_parent(policy,fixture_time);
-    NADSC_ParentStats45 ps{};CHECK(NADSC_ParentStats(active_generation,&ps)==1&&ps.samples==1&&ps.max_degrees>89);
-    CHECK(NADSC_ObserveParent(active_generation,3001)==0&&NADSC_ObserveParent(active_generation-1,100)==0);
-    FreeAim::Q guarded{};put<uint32_t>(fps_hashes+50*4,0);CHECK(!direct_camera_parent(policy,guarded));put<uint32_t>(fps_hashes+50*4,0x60ED8C39);
-    put<uint8_t>(f.generations+5,2);CHECK(!direct_camera_parent(policy,guarded));put<uint8_t>(f.generations+5,1);
-    pass("direct parent ignores stale camera-world readback; diagnostic is bounded/read-only and foreign generation/hash fail closed");
-    policy.full_ads=false;policy.free_until=fixture_time;free_aim_camera(policy,frame,0,fixture_time);CHECK(policy.free_until==0);
-    CHECK(NADSC_FreeAim(active_generation-1,0)==0&&NADSC_FreeAim(active_generation,0)==1);
-    CHECK(NADSC_SetKick46(active_generation,1)==1);
-    CHECK(NADSC_SetKick46(active_generation-1,1)==0);
-    const uint64_t measured_before=policy.free_measured;
-    policy.free_until=0;put<uint8_t>(f.c.avatar_owner+0x53e894,64);CHECK(owner(policy,false));
-    native_q=FreeAim::look(.04f,0);std::memcpy(frame+16,&native_q,16);
-    free_aim_camera(policy,frame,0,fixture_time+64);CHECK(policy.kick_pulses==1&&policy.kick_angle>0);
-    free_aim_camera(policy,frame,0,fixture_time+80);CHECK(policy.kick_pulses==1);
-    put<uint8_t>(f.c.avatar_owner+0x53e894,0);CHECK(owner(policy,false));free_aim_camera(policy,frame,0,fixture_time+96);
-    put<uint8_t>(f.c.avatar_owner+0x53e894,64);CHECK(owner(policy,false));free_aim_camera(policy,frame,0,fixture_time+112);CHECK(policy.kick_pulses==2);
-    CHECK(policy.free_measured==measured_before); // No indefinite timing outside the bounded free-aim test.
-    f.controls(0,true);CHECK(owner(policy,false));std::memcpy(frame+16,&native_q,16);free_aim_camera(policy,frame,0,fixture_time+128);
-    CHECK(std::memcmp(frame+16,&native_q,16)==0&&policy.kick_angle==0);
-    f.controls();put<uint8_t>(f.c.avatar_owner+0x53e894,0);CHECK(owner(policy,false));
-    for(unsigned n=0;n<100;++n)free_aim_camera(policy,frame,0,fixture_time+144+n*16);
-    CHECK(policy.kick_angle==0);NADSC_KickStats46Data ks{};CHECK(NADSC_KickStats46(active_generation,&ks)==1&&ks.pulses==2&&ks.enabled==1);
-    CHECK(NADSC_SetKick46(active_generation,0)==1);
-    pass("shot pulses kick once per edge, held firing does not fabricate shots, ADS is exact and settled kick does no pose/timing work");
+    FreeAim::Q native_q{};
+    // The old optional render-only features must never affect a native6 frame.
+    f.normal();f.begin();f.top(6);put<uint64_t>(f.camera_object+0x1D0,fps);
+    put<uint64_t>(f.camera_object+0x78,fps_world);put<uint64_t>(f.camera_object+0x98,f.links);put<uint32_t>(f.links,0x00320002);
+    put(fps_world+50*64,world_identity);put<uint32_t>(f.c.avatar_owner+0x53e9c0,0x400005);
+    CHECK(NADSC_FreeAim(active_generation,1000)==0 && NADSC_Error()==INVALID_CONFIG);
+    CHECK(NADSC_SetKick46(active_generation,1)==0 && NADSC_Error()==INVALID_CONFIG);
+    CHECK(NADSC_SetCameraMotion47(active_generation,.01f,0,0,0,0,0)==0 && NADSC_Error()==INVALID_CONFIG);
+    CHECK(NADSC_FreeAim(active_generation,0)==1 && NADSC_SetKick46(active_generation,0)==1);
+    CHECK(NADSC_SetCameraMotion47(active_generation,0,0,0,0,0,0)==1);
+    pass("legacy render-only activation rejects honestly while zero cleanup remains ABI compatible");
+    // Set directly to prove even already-active legacy requests cannot mutate.
+    policy.presentation_enabled=true;policy.free_until=fixture_time+3000;policy.kick_enabled=true;
+    for(unsigned a=0;a<6;++a)policy.motion[a]=.02f;
+    float native_frame[20]{.12f,.04f,1.38f};native_frame[3]=-.0f;
+    native_q=FreeAim::look(2.4f,-.8f);std::memcpy(native_frame+16,&native_q,16);
+    uint8_t frame_copy[80]{};std::memcpy(frame_copy,native_frame,80);
+    for(bool ads:{false,true}) {
+        f.controls(0,ads);fixture_time+=16;f.invoke(reinterpret_cast<void*>(f.c.camera),f.c.camera_unit,native_frame);
+        CHECK(records[calls-1].input==native_frame && std::memcmp(frame_copy,native_frame,80)==0);
+        CHECK(std::memcmp(records[calls-1].bits,native_frame,16)==0 && policy.free_applied==0 && policy.kick_frames==0);
+    }
+    pass("native6 hip and full ADS position quaternion padding remain exact despite active legacy motion free-aim and kick requests");
+    put<uint64_t>(f.camera_object+0x1D0,0x1234);f.controls(0,true);fixture_time+=16;
+    f.invoke(reinterpret_cast<void*>(f.c.camera),f.c.camera_unit,native_frame);
+    CHECK(records[calls-1].input==native_frame && std::memcmp(frame_copy,native_frame,80)==0 && !policy.correction.active);
+    pass("unavailable optional FPS parent history never changes or blocks exact native6 ADS");
     CHECK(end_current()==1);
-    pass("free aim edits only caller camera scratch, bypasses exact native ADS, expires and rejects stale tokens");
 
-    {
-     CameraTransition::State t;CameraTransition::Pose start{},desired{},out{};start.q=FreeAim::look(.4f,0);start.p[0]=1;
-     t.apply(start,6,true,10,1000,out);CHECK(out.p[0]==1);
-     desired.q=FreeAim::look(1.0f,0);desired.p[0]=1.27f;t.apply(desired,4,false,10,1010,out);float y=0,pitch=0;
-     CHECK(approximately(out.p[0],1)&&FreeAim::angles(out.q,y,pitch)&&approximately(y,.4f));
-     desired.q=FreeAim::look(.6f,0);desired.p[0]=.8f;t.apply(desired,6,false,10,1040,out);CHECK(approximately(out.p[0],1));
-     t.apply(desired,6,false,10,1115,out);CHECK(out.p[0]>.8f&&out.p[0]<1);
-     t.apply(desired,6,false,10,1190,out);CHECK(approximately(out.p[0],.8f)&&!t.active);
-     desired.q=FreeAim::look(.7f,.1f);t.apply(desired,6,false,10,1200,out);CHECK(out.q.z==desired.q.z); // No settled input lag.
-     desired.p[0]=1.5f;t.apply(desired,6,false,11,1210,out);CHECK(approximately(out.p[0],.8f));
-     desired.p[0]=1.6f;t.apply(desired,6,true,11,1220,out);CHECK(out.p[0]==desired.p[0]&&out.q.z==desired.q.z&&!t.active);
-     desired.p[0]=10;t.apply(desired,6,false,12,1230,out);CHECK(out.p[0]==10&&!t.active);
-     pass("ADS release and 6-4-6/support swaps keep pose continuity, settle in 150ms, never delay steady look/native ADS or blend a teleport");
+    // Rebuild the qualified parent and use the actual native6->4 callback path.
+    f.normal();f.begin();f.top(6);put<uint64_t>(f.camera_object+0x1D0,fps);
+    put<uint64_t>(f.camera_object+0x78,fps_world);put(fps_world+50*64,world_identity);
+    policy.presentation_enabled=true;std::memcpy(native_frame,frame_copy,80);
+    fixture_time+=16;f.invoke(reinterpret_cast<void*>(f.c.camera),f.c.camera_unit,native_frame);
+    CHECK(records[calls-1].input==native_frame);
+    f.top(4);put<uint64_t>(f.camera_object+0x1D0,0);f.sample();
+    CHECK(policy.correction.active && approximately(last(0),native_frame[0]) && approximately(last(1),native_frame[1]) && approximately(last(2),native_frame[2]));
+    // A late normal4 origin jump must not contaminate the eye correction.
+    f.input[0]=-3;f.input[1]=.6f;f.input[2]=.7f;f.body(10,20,3);f.body_yaw(1.5707963268f);
+    f.input[0]+=10;f.input[1]+=20;f.input[2]+=3;f.sample(75);
+    CHECK(policy.correction.active && approximately(last(0),9.98f) && approximately(last(1),20.15f) && approximately(last(2),4.46f));
+    // Caller quaternion follows its fresh native recoil/look without filtering.
+    native_q=FreeAim::look(-1.1f,.7f);std::memcpy(native_frame+16,&native_q,16);
+    std::memcpy(native_frame,f.input,16);fixture_time+=75;
+    f.invoke(reinterpret_cast<void*>(f.c.camera),f.c.camera_unit,native_frame);
+    CHECK(!policy.correction.active && std::memcmp(native_frame+16,&native_q,16)==0);
+    CHECK(approximately(last(0),10) && approximately(last(1),20.18f) && approximately(last(2),4.54f));
+    pass("ADS exit corrects only eye-relative displacement; fresh body travel rotation native recoil and late normal4 origins stay authoritative");
+    CHECK(end_current()==1);
+
+
+    // Matrix-space mapping is checked against an independent rotated parent.
+    f.normal();f.begin();f.top(6);put<uint64_t>(f.camera_object+0x1D0,fps);
+    put<uint64_t>(f.camera_object+0x78,fps_world);policy.presentation_enabled=true;
+    native_frame[0]=.12f;native_frame[1]=.04f;native_frame[2]=1.38f;
+    const float turned_parent[16]{0,1,0,0,-1,0,0,0,0,0,1,0,.1f,.3f,.1f,1};
+    put(fps_world+50*64,turned_parent);fixture_time+=16;f.invoke(reinterpret_cast<void*>(f.c.camera),f.c.camera_unit,native_frame);
+    f.top(4);put<uint64_t>(f.camera_object+0x1D0,0);f.sample();
+    CHECK(policy.correction.active && approximately(last(0),.06f) && approximately(last(1),.42f) && approximately(last(2),1.48f));
+    CHECK(end_current()==1);pass("current FPS matrix basis maps native local position independently of stale camera world and native quaternion");
+
+    for(unsigned fps_rate:{30u,60u,144u,240u}) {
+        f.normal();f.begin();f.top(6);put<uint64_t>(f.camera_object+0x1D0,fps);
+        put<uint64_t>(f.camera_object+0x78,fps_world);put(fps_world+50*64,world_identity);
+        policy.presentation_enabled=true;native_frame[0]=.12f;native_frame[1]=.04f;native_frame[2]=1.38f;
+        fixture_time+=.125;f.invoke(reinterpret_cast<void*>(f.c.camera),f.c.camera_unit,native_frame);
+        f.top(4);put<uint64_t>(f.camera_object+0x1D0,0);f.sample(.125);const double started=fixture_time;
+        CHECK(policy.correction.active && approximately(last(0),.12f));
+        const double frame_ms=1000.0/fps_rate;
+        f.sample(frame_ms);CHECK(policy.correction.progress>0 && std::fabs(policy.correction.progress-frame_ms/150)<1e-5);
+        for(unsigned frame=2;frame*frame_ms<150;++frame)f.sample(frame_ms);
+        f.sample(150.001-(fixture_time-started));
+        CHECK(!policy.correction.active && approximately(last(0),0) && approximately(last(1),.18f) && approximately(last(2),1.54f));
+        CHECK(NADSC_SetOffsets(active_generation,.1f,.18f,.08f)==1);const float previous_x=last(0);f.sample(.125);
+        CHECK(policy.correction.active && approximately(last(0),previous_x));f.sample(150);
+        CHECK(!policy.correction.active && approximately(last(0),.1f) && approximately(last(2),1.58f));
+        CHECK(end_current()==1);
     }
-    {
-     CameraTransition::State t;CameraTransition::Pose a{},b{},out{};
-     t.apply(a,6,true,10,1000,out);
-     b.p[0]=.3f;t.apply(b,6,false,10,1010,out);CHECK(approximately(out.p[0],0));
-     t.apply(b,6,false,10,1020,out);const float presented_before=out.p[0];
-     b.p[0]=-.3f;b.q=FreeAim::look(.6f,0);t.apply(b,6,false,10,1030,out);
-     float yaw=0,pitch=0;CHECK(std::fabs(out.p[0]-presented_before)<.03f);
-     CHECK(FreeAim::angles(out.q,yaw,pitch)&&std::fabs(yaw)<.06f);
-     t.apply(b,6,false,10,1160,out);CHECK(approximately(out.p[0],-.3f)&&!t.active);
-     t.apply(a,6,false,10,1170,out);CHECK(approximately(out.p[0],0));
-     pass("late incoming-rig solve is blended too, with exact steady look after handoff");
+    pass("production callback uses fractional30 60 144 240Hz phase and finite offset handoff without timer quantization");
+
+    for(unsigned mutation=0;mutation<7;++mutation) {
+        f.normal();f.begin();f.top(6);put<uint64_t>(f.camera_object+0x1D0,fps);
+        put<uint64_t>(f.camera_object+0x78,fps_world);put(fps_world+50*64,world_identity);policy.presentation_enabled=true;
+        uint64_t at=mutation==0?f.generations+5:mutation==1?f.request+8:mutation==2?f.request:mutation==3?fps_hashes+50*4
+            :mutation==4?f.camera_object+0x1D0:mutation==5?f.generations+3:f.controller+4;
+        uint32_t saved=0;CHECK(value(at,saved));fixture_before_history_mutation=at;fixture_before_history_value=saved+1;
+        fixture_time+=16;f.invoke(reinterpret_cast<void*>(f.c.camera),f.c.camera_unit,native_frame);
+        CHECK(fixture_before_history_mutation==0 && records[calls-1].input==native_frame);put<uint32_t>(at,saved);
+        if(mutation==5) {CHECK(!armed.load() && NADSC_Error()==OWNER_MISMATCH);CHECK(end_current()==1);continue;}
+        f.top(4);put<uint64_t>(f.camera_object+0x1D0,0);f.sample();
+        CHECK(!policy.correction.active && approximately(last(0),0) && approximately(last(2),1.54f));
+        CHECK(end_current()==1);
     }
+    pass("late native history owner weapon request parent generation hash and ADS changes retire mixed-epoch history while native6 remains exact");
+    // New mutable checks occur after sampling, directly before fallback use.
+    for(unsigned mode=0;mode<6;++mode) {
+        f.begin();f.settle();const auto replaced_before=replaced.load();uint64_t at=0;uint32_t original_value=0;
+        if(mode==0){at=f.generations+3;original_value=1;fixture_before_commit_value=2;}
+        if(mode==1){at=f.request+4;original_value=f.c.avatar;fixture_before_commit_value=f.c.avatar+1;}
+        if(mode==2){at=f.hashes+90*4;original_value=0x8C5570C9;fixture_before_commit_value=0;}
+        if(mode==3){at=f.camera_object+0x1D0;original_value=0;fixture_before_commit_value=0x1234;}
+        if(mode==4){at=f.controller;original_value=0;fixture_before_commit_value=1;}
+        if(mode==5){at=f.anim_current+13*8;original_value=static_cast<uint32_t>(f.anim_definition+0x1000+36*16);fixture_before_commit_value=static_cast<uint32_t>(f.anim_definition+0x1000+103*16);}
+        CHECK(value(at,original_value));fixture_before_commit_mutation=at;f.sample();
+        CHECK(records[calls-1].input==f.input && replaced.load()==replaced_before && NADSC_Error()==OWNER_MISMATCH);
+        put<uint32_t>(at,original_value);CHECK(end_current()==1);
+    }
+    pass("late generation request graph parent controller and native action-state changes cannot commit a sampled fallback");
+
+    for(uint32_t kind:{4u,6u})for(uint64_t field:{0x88ULL,0x98ULL,0xA0ULL}) {
+        f.begin();f.top(kind);uint32_t original_header=0;const uint64_t at=f.registry+field;CHECK(value(at,original_header));
+        fixture_registry_close_mutation=at;fixture_registry_close_value=original_header+1;f.sample();
+        CHECK(fixture_registry_close_mutation==0 && records[calls-1].input==f.input && !armed.load() && NADSC_Error()==OWNER_MISMATCH);
+        put<uint32_t>(at,original_header);CHECK(end_current()==1);
+    }
+    pass("batched registry capacity and table headers close after both generation-object proofs before admission");
+
+    f.begin();f.settle();
+    fixture_before_policy_reached=CreateEventW(nullptr,TRUE,FALSE,nullptr);fixture_continue_policy=CreateEventW(nullptr,TRUE,FALSE,nullptr);
+    std::thread old_callback([&]{f.sample();});CHECK(WaitForSingleObject(fixture_before_policy_reached,1000)==WAIT_OBJECT_0);
+    const auto old_generation=active_generation;CHECK(end_current()==1);f.normal();f.body(0,0,0,1.8f);CHECK(begin_current(&f.c)==1);
+    CHECK(active_generation!=old_generation && armed.load());const auto new_display_sequence=display_sequence.load();
+    const auto new_replaced=replaced.load();SetEvent(fixture_continue_policy);old_callback.join();
+    CHECK(records[calls-1].input==f.input && replaced.load()==new_replaced && display_sequence.load()==new_display_sequence);
+    CloseHandle(fixture_before_policy_reached);CloseHandle(fixture_continue_policy);fixture_before_policy_reached=nullptr;fixture_continue_policy=nullptr;
+    CHECK(end_current()==1);
+    pass("callback queued under retired generation forwards unchanged after same-identity replacement fully arms");
     std::printf("Native camera fixture PASS: %llu cases\n",static_cast<unsigned long long>(cases));return 0;
 }
 

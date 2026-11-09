@@ -1,6 +1,6 @@
-"""Cross-compile the five current-build helpers and run their independent fixtures."""
+"""Cross-compile the five current-build first-person helpers and run their independent fixtures."""
 from pathlib import Path
-import subprocess,concurrent.futures,hashlib,json,os
+import subprocess,concurrent.futures,hashlib,json,os,sys
 ROOT=Path(__file__).resolve().parents[1];NATIVE=ROOT/'native/first_person';OUT=ROOT/'dist/first-person';OUT.mkdir(parents=True,exist_ok=True)
 ZIG=Path('/home/goose/Documents/Codex/2026-10-22/a-2/work/ffi-comparison/toolchain/zig-x86_64-linux-0.14.1/zig')
 PAIRS=[('alignment','fixture'),('editor','editor_fixture'),('fov','fov_fixture'),('camera','camera_fixture'),('blur','blur_fixture')]

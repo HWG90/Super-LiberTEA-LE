@@ -2421,11 +2421,9 @@ return M
 
 end)(text)
 local panel = (function(...)
--- Forecast panel: a gold-framed box hanging below the native planet,
--- operation or briefing panel (sharing its bottom stroke). It may cover the
--- squad list while a mission is highlighted, so it draws on a high layer; it
--- stops above the bottom prompt row. Beside the native panel is the last
--- resort when even that height is too short. GUI objects are retained:
+-- Forecast panel below the native planet, operation or briefing panel.
+-- Keep a gap above the forecast and leave room for the bottom prompt row.
+-- The renderer keeps its GUI objects between frames:
 -- nothing is measured or redrawn unless the report, geometry or font changes,
 -- except one text update per frame while a long headline scrolls. Text is
 -- UTF-8 in any script: it is measured, wrapped and scrolled by character,
@@ -2453,7 +2451,8 @@ M.PENDING = {
 local PENDING = M.PENDING
 
 -- UI units at scale 1; the native frame is 533 wide.
-M.BOTTOM = 56             -- keep the Esc / Back prompt row visible
+M.FRAME_GAP = 12          -- space below the last visible native frame
+M.BOTTOM = 206            -- keep the local player card and bottom prompts clear
 -- Native frame geometry: a 3-unit gold outline, a 4-unit dark gap, then the
 -- opaque body 7 units from the outer edge. Text starts 22 units in, in line
 -- with the native panel text above.
@@ -2635,32 +2634,10 @@ end
 -- Chrome around the content: border, inset and inner padding on each side.
 local function chrome(s) return 2 * (M.BORDER + M.INSET + M.EDGE) * s end
 
--- Below the native panel when the content fits above the bottom prompt row,
--- otherwise beside it with the full screen height.
-function M.place(anchor, width, height, plan_below, plan_side)
-    local s = anchor.scale
-    if plan_below then
-        local h = plan_below.height + chrome(s)
-        return {side=false, x=anchor.x, y=anchor.y + M.BORDER * s - h, w=anchor.w, h=h}, plan_below
-    end
-    local plan = plan_side
-    if not plan then error(PENDING.viewport) end
-    local h = plan.height + chrome(s)
-    local x = anchor.x + anchor.w + 12 * s
-    if x + anchor.w > width - 12 * s then x = anchor.x - anchor.w - 12 * s end
-    local y = math.min(height - 12 * s, anchor.y + anchor.h) - h
-    if x < 0 or y < 0 then error(PENDING.viewport) end
-    return {side=true, x=x, y=y, w=anchor.w, h=h}, plan
-end
-
+-- Both screens keep the forecast in the mission column. Use the same top
+-- edge for the fit and the final position, including the native frame gap.
 function M.below_limit(anchor)
-    local s = anchor.scale
-    return anchor.y + M.BORDER * s - M.BOTTOM * s - chrome(s)
-end
-
-function M.side_limit(anchor, height)
-    local s = anchor.scale
-    return math.min(height - 12 * s, anchor.y + anchor.h) - 12 * s - chrome(s)
+    return anchor.y - (M.FRAME_GAP + M.BOTTOM) * anchor.scale - chrome(anchor.scale)
 end
 
 function M.new(engine)
@@ -2885,9 +2862,10 @@ function M.new(engine)
         local font_id = engine.IdString64.from_hex(anchor.font)
         local material_id = engine.IdString64.from_hex(anchor.material)
         local content_w = anchor.w - 2 * M.PAD * s
-        local below = planned(model, font_id, content_w, M.below_limit(anchor), s, false)
-        local side = not below and planned(model, font_id, content_w, M.side_limit(anchor, height), s, true)
-        local place, plan = M.place(anchor, width, height, below, side)
+        local plan = planned(model, font_id, content_w, M.below_limit(anchor), s, true)
+        if not plan then error(PENDING.viewport) end
+        local box_height = plan.height + chrome(s)
+        local place = {x=anchor.x, y=anchor.y - M.FRAME_GAP * s - box_height, w=anchor.w, h=box_height}
         draw(plan, place, anchor, font_id, material_id)
         self.model, self.signature = model, model.signature
         self.geometry = {ax=anchor.x, ay=anchor.y, aw=anchor.w, ah=anchor.h, as=anchor.scale,
@@ -3394,8 +3372,14 @@ function M.new(api,game)
     end
     local font_hash,material_hash,atlas_hash = hash_reader(),hash_reader(),hash_reader()
     -- The widget's solved rectangle into box, when it is fully visible.
-    local function rectangle(owner,offset,box)
-        local widget = read(owner+offset,164,widget_bytes)
+    local function rectangle(owner,offset,box,optional)
+        local widget
+        if optional then
+            if not api.read(owner+offset,164,widget_bytes,0) then return false end
+            widget = widget_bytes.data
+        else
+            widget = read(owner+offset,164,widget_bytes)
+        end
         -- +84 is inherited opacity, including the pod entry animation. +68
         -- alone is local opacity and can remain one while its parent is hidden.
         local opacity = real(widget,84)
@@ -3413,10 +3397,21 @@ function M.new(api,game)
     -- remote hover. The planet frame stays fixed while joinable cards move and
     -- fade between hovers. Card activity is a fallback for local previews.
     -- Remote hover activity comes from mission selection.
+    local bonus = {}
     local function frame(owner,screen,box)
         box.client,box.active = nil,nil
-        if rectangle(owner,screen == 'map' and 349072 or 31232,box) then return true end
-        if screen ~= 'map' or not rectangle(owner,280528,box) then return false end
+        if screen == 'briefing' then return rectangle(owner,31296,box) end
+        if rectangle(owner,349072,box) then
+            -- Missions Completed Bonus is a separate child of the operation card.
+            -- Keep its solved lower edge clear even as the card resizes.
+            if rectangle(owner,383184,bonus,true) and bonus.x < box.x + box.w
+                and box.x < bonus.x + bonus.w and bonus.y < box.y then
+                box.h = box.h + box.y - bonus.y
+                box.y = bonus.y
+            end
+            return true
+        end
+        if not rectangle(owner,280528,box) then return false end
         local preview = read(owner+526048,88,preview_bytes)
         local opacity = real(preview,84)
         box.client = true
@@ -3885,4 +3880,4 @@ return {
 }
 
 end)()
-install({create_api=create_api,mission=mission,resolve=resolve,roster=roster,roster_data=roster_data,model=model,panel=panel,presentation=presentation,text=text,locales=locales,runtime=runtime,runtime_memory=runtime_memory,build={revision='v4.1.1',game_sha256='61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF',exe_sha256='257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D'}})
+install({create_api=create_api,mission=mission,resolve=resolve,roster=roster,roster_data=roster_data,model=model,panel=panel,presentation=presentation,text=text,locales=locales,runtime=runtime,runtime_memory=runtime_memory,build={revision='v4.1.1-le.1',game_sha256='61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF',exe_sha256='257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D'}})

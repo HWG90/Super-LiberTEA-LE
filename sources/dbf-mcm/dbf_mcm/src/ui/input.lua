@@ -3,6 +3,28 @@ local MODULE={}
 function MODULE.install(context)
     local self,api,console,state=context.self,context.api,context.console,context.state
     local active,selectable,change,saved_notice=context.helpers.active,context.helpers.selectable,context.helpers.change,context.helpers.saved_notice
+    local navigation_keys,navigation_toggle,polled_editor
+    local function browsing_keys()
+        local toggle=api.menu_toggle_key or 46
+        if navigation_toggle~=toggle then
+            navigation_toggle=toggle;navigation_keys={9,13,27,33,34,37,38,39,40}
+            local found=false
+            for _,code in ipairs(navigation_keys)do if code==toggle then found=true;break end end
+            if not found then navigation_keys[#navigation_keys+1]=toggle;table.sort(navigation_keys)end
+        end
+        return navigation_keys
+    end
+    local function sync_editor(input)
+        local editor=self.capture or self.text_edit
+        if editor==polled_editor then return false end
+        polled_editor=editor
+        if not editor then return false end
+        -- Browsing deliberately does not sample character/binding keys. Seed
+        -- their edges at activation, not on the following frame: a held key
+        -- must not become a character or binding when its editor takes focus.
+        for code=1,255 do state.held[code]=input.down(code)end
+        return true
+    end
     function self.finish_text_field(blur)
         local e=self.text_edit
         if not e or e.color_channel then return true end
@@ -237,6 +259,7 @@ function MODULE.install(context)
         end
         if self.suspended then
             for code=1,255 do state.held[code]=input.down(code)end
+            polled_editor=self.capture or self.text_edit
             self.mouse_held=input.down(1);self.right_held=input.down(2);self.suspended=false
             return false -- Do not replay keys/clicks held in another application.
         end
@@ -257,11 +280,20 @@ function MODULE.install(context)
 
             local key=api.menu_toggle_key or 46
             local down=input.down(key);if down and not state.held[key] then self.key(key)end;state.held[key]=down
+            polled_editor=nil
+            if self.visible then
+                -- The closed menu polls only the shortcut. Drain navigation/clicks
+                -- already held while closed before the newly opened menu acts.
+                for _,code in ipairs(browsing_keys())do state.held[code]=input.down(code)end
+                self.mouse_held=input.down(1);self.right_held=input.down(2)
+                sync_editor(input)
+            end
 
             return
 
         end
 
+        sync_editor(input)
         -- Capture owns the entire input frame. Never let a captured click also
         -- activate a control, or a captured wheel pulse scroll the page.
         if self.capture then
@@ -275,12 +307,29 @@ function MODULE.install(context)
             if not pressed and delta~=0 then pressed=delta>0 and 256 or 257 end
             self.mouse_held=input.down(1);self.right_held=input.down(2)
             if pressed then self.key(pressed,input.down(17),input.down(16))end
+            sync_editor(input)
             return
         end
 
         if not self.color_picker and not state.drag and not state.window_drag and not state.window_resize and not self.text_edit and input.wheel and input.mouse then local delta=input.wheel();local x,y=input.mouse();self.wheel(delta,x,y)end
 
-        for code=1,255 do local down=input.down(code);if down and not state.held[code] and code~=1 and code~=2 then self.key(code,input.down(17),input.down(16))end;state.held[code]=down end
+        -- Text and binding capture retain the complete input range. Ordinary
+        -- browsing needs only navigation and the configurable menu shortcut.
+        local keys=not self.text_edit and browsing_keys()
+        for index=1,keys and #keys or 255 do
+            local code=keys and keys[index]or index
+            local down=input.down(code)
+            local pressed=down and not state.held[code] and code~=1 and code~=2
+            state.held[code]=down
+            if pressed then
+                self.key(code,input.down(17),input.down(16))
+                if sync_editor(input)then
+                    -- The activation frame belongs to the new editor too.
+                    self.mouse_held=input.down(1);self.right_held=input.down(2)
+                    return
+                end
+            end
+        end
 
         if self.visible and input.mouse then
 
@@ -406,6 +455,7 @@ function MODULE.install(context)
 
         else self.mouse_held=input.down(1);self.right_held=input.down(2)end
 
+        sync_editor(input)
     end
 
 end

@@ -38,12 +38,28 @@ local function fixture()
     f.manager=Camera.new(f.backend,nil,f.helper)
     return f
 end
-test('read-only normal4 preflight; no arm while disabled native mode or native6',function()
+test('read-only preflight and no arm while disabled or in comparison mode',function()
     local f=fixture();assert(f.manager:preflight());equal(f.validations,1);equal(f.begins,0)
     f.controller.enabled=false;assert(f.manager:update(f.controller));equal(f.begins,0)
     f.controller.enabled=true;f.controller.mode='native';assert(f.manager:update(f.controller));equal(f.begins,0)
-    f.controller.mode='pose_offset';f.config.camera_kind=6;assert(f.manager:update(f.controller));equal(f.begins,0)
+    f.controller.mode='pose_offset';f.config.camera_kind=12;assert(f.manager:update(f.controller));equal(f.begins,0)
     assert(not f.manager:preflight());assert(not f.manager:prepare());equal(f.begins,0)
+end)
+test('native6 can rearm the exact-forward helper after old cleanup is acknowledged',function()
+    local f=fixture();assert(f.manager:prepare());f.config.camera_kind=6
+    f.pending=true;assert(not f.manager:stop());assert(not f.manager:update(f.controller));equal(f.begins,1)
+    f.pending=false;assert(f.manager:update(f.controller));assert(f.manager:is_clean())
+    assert(f.manager:preflight());equal(f.validations,1)
+    assert(f.manager:update(f.controller));equal(f.begins,2);assert(not f.manager:is_clean())
+    f.config_failure=true;assert(not f.manager:prepare());equal(f.begins,2)
+end)
+test('typed failure evidence is fresh and never inferred from the error text',function()
+    local f=fixture();f.helper.begin=function(self)self.last_failure_code=3;return false,'read unavailable'end
+    assert(not f.manager:prepare());local r=f.manager:result()
+    equal(r.failure_native_error,3);equal(r.failure_kind,'temporary_read')
+    f.helper.begin=function()return false,'read unavailable (native code 3)'end
+    assert(not f.manager:prepare());r=f.manager:result()
+    equal(r.failure_native_error,nil);equal(r.failure_kind,nil)
 end)
 test('prearm before entry stays independent across waits and native6',function()
     local f=fixture();assert(f.manager:prearm());equal(f.begins,1);local handle=f.manager.handle
@@ -85,11 +101,12 @@ test('transient pose space graph gates retain arm and manual intent',function()
         equal(f.manager:result().error,code);equal(f.ends,0);assert(f.controller.enabled)
     end
 end)
-test('native owner loss cleans then waits; fresh normal4 rearms without clearing intent',function()
+test('native owner loss cleans and waits for fresh configuration before native6 rearm',function()
     local f=fixture();assert(f.manager:prepare());f.config.camera_kind=6;f.disarmed=true
     assert(f.manager:update(f.controller));equal(f.ends,1);assert(f.manager:is_clean());assert(f.controller.enabled)
-    equal(f.manager:result().phase,'waiting');assert(f.manager:update(f.controller));equal(f.begins,1)
-    f.config.camera_kind=4;f.config.body=77;f.disarmed=false
+    equal(f.manager:result().phase,'waiting');f.config_failure=true
+    assert(f.manager:update(f.controller));equal(f.begins,1)
+    f.config_failure=false;f.config.body=77;f.disarmed=false
     assert(f.manager:update(f.controller));equal(f.begins,2);assert(f.controller.enabled)
 end)
 test('read failures and shutdown still retry independent owned cleanup',function()

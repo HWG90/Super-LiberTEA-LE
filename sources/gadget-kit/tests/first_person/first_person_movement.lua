@@ -30,13 +30,19 @@ local function fixture()
     f:put(f.buckets,num(s.avatar)..num(0));f:ptr(f.pool+0x38,f.descriptors);f:ptr(f.descriptors,f.descriptor)
     f:ptr(f.owner+0x110,f.descriptor);f:put(f.descriptor,s.avatar_descriptor);f:ptr(f.pool+0x50,f.rows)
     for _,anchor in ipairs(anchors)do f:put(f.base+anchor[1],(anchor[2]:gsub('%x%x',function(v)return string.char(tonumber(v,16))end)))end
-    local b={}
+    local b={};f.backend=b
     function b:_read(at,n)assert(n<=1024);return f:read(at,n)end
     function b:_u32(at)local bytes=self:_read(at,4);local a,c,d,e=bytes:byte(1,4);return a+c*256+d*65536+e*16777216 end
     function b:_ptr(at)return self:_u32(at)+self:_u32(at+4)*4294967296 end
     function b:player_snapshot()
         f.snapshots=f.snapshots+1;if f.on_snapshot then f:on_snapshot()end
         if f.missing then return nil,'fixture missing player'end
+        return f.snapshot
+    end
+    function b:pin_player_snapshot()
+        f.pin_snapshots=(f.pin_snapshots or 0)+1
+        if f.on_pin_snapshot then f:on_pin_snapshot()end
+        if f.pin_missing then return nil,'fixture pinned body unavailable'end
         return f.snapshot
     end
     function b:_windows()error('Movement fixtures cannot access native memory')end
@@ -49,10 +55,15 @@ local function fixture()
     end
     b.foreign_camera=function()return f.foreign or false end
     local sr={Keyboard={button_index=function(name)equal(name,'s');return 83 end,
-        button=function(index)equal(index,83);return f.held and 1 or 0 end},
+        button=function(index)f.key_reads=(f.key_reads or 0)+1;equal(index,83);return f.held and 1 or 0 end},
         Window={mouse_focus=function()return not f.focus_lost end,show_cursor=function()return f.cursor or false end}}
     local c={enabled=true};function c:is_enabled()return self.enabled end
     function c:result()return {mode='pose_offset',phase='running'}end
+    function c:focus_owned(current)
+        f.focus_checks=(f.focus_checks or 0)+1
+        if f.focus_error then error('Focused camera owner unavailable')end
+        return f.fird_owner==true and current.player_identity=='player-generation'
+    end
     local deps={fallback_ready=function()return f.fallback==true end,
         writable=function(at)equal(at,f.address);return f.writable end,
         write=function(at,value)
@@ -108,6 +119,48 @@ test('unreadable owner retains cleanup and shutdown until restoration is proven'
     assert(not m:stop());equal(m:result().cleanup_pending,true);assert(not m:is_clean());equal(#f.writes,1)
     assert(not m:shutdown());f.missing=false;assert(m:shutdown());equal(f:read(f.address,1),'\0')
     assert(m:is_clean());assert(m:update(c));equal(#f.writes,2)
+end)
+
+test('pin mode restores owned movement through a vehicle request without authorizing vehicle movement',function()
+    local m,c,f=fixture();f.held=true;assert(m:update(c));equal(#f.writes,1)
+    f.backend.pin_first_person=true;f.missing=true;f.snapshot.safe=false;f.snapshot.seated=true;f.snapshot.camera_kind=9
+    assert(m:update(c));assert(m:is_clean());equal(#f.writes,2);equal(f:read(f.address,1),'\0')
+    for _=1,10 do assert(m:update(c))end;equal(#f.writes,2);assert(f.pin_snapshots>=3)
+end)
+
+test('pin snapshots preserve all unsafe seated camera and on-foot acquisition gates',function()
+    for _,kind in ipairs({'unsafe','seated','camera','dead'})do
+        local m,c,f=fixture();f.backend.pin_first_person=true;f.missing=true;f.held=true
+        if kind=='unsafe'then f.snapshot.safe=false elseif kind=='seated'then f.snapshot.seated=true
+        elseif kind=='camera'then f.snapshot.camera_kind=9
+        else f.action={resource_match=true,layer_count=31,l14=103}end
+        assert(m:update(c));assert(m:is_clean());equal(#f.writes,0);assert(f.pin_snapshots>=1)
+    end
+end)
+
+test('pin movement cleanup keeps unreadable claims and retires changed bodies without stale writes',function()
+    for _,kind in ipairs({'missing','body','pin-off'})do
+        local m,c,f=fixture();f.held=true;assert(m:update(c));f.backend.pin_first_person=true;f.missing=true
+        if kind=='missing'then
+            f.pin_missing=true;assert(not m:stop());assert(not m:is_clean());equal(#f.writes,1)
+            f.pin_missing=false;assert(m:stop());assert(m:is_clean());equal(#f.writes,2)
+        elseif kind=='body'then
+            f.snapshot.body=f.snapshot.body+1;assert(m:stop());assert(m:is_clean());equal(#f.writes,1)
+        else
+            f.backend.pin_first_person=false;assert(not m:stop());equal(f.pin_snapshots,nil);equal(#f.writes,1)
+        end
+    end
+end)
+
+test('unsafe pin transitions before or during acquisition cannot retain a movement write',function()
+    for _,nth in ipairs({2,3})do
+        local m,c,f=fixture();f.backend.pin_first_person=true;f.missing=true;f.held=true
+        f.on_pin_snapshot=function(self)if self.pin_snapshots==nth then
+            self.snapshot.safe=false;self.snapshot.seated=true;self.snapshot.camera_kind=9
+        end end
+        assert(m:update(c));assert(m:is_clean());equal(f:read(f.address,1),'\0')
+        equal(#f.writes,nth==2 and 0 or 2)
+    end
 end)
 test('new player or relocated pool retires without writing a stale slot',function()
     for _,kind in ipairs({'player','rows'})do
@@ -166,5 +219,71 @@ test('bridge movement delegates fresh combat permission for native and confirmed
         f.bridge_permission=true;assert(m:update(c));equal(#f.writes,1);assert(f.eligibility_calls>=2)
         f.bridge_permission=false;assert(m:update(c));equal(#f.writes,2);assert(m:is_clean())
     end
+end)
+test('natural Fird focus is continuous without any physical key or pose writes',function()
+    local m,c,f,sr=fixture();f.snapshot.camera_kind=4;f.fallback=true;f.fird_owner=true
+    sr.Keyboard=nil
+    assert(m:update_fird(c));equal(#f.writes,1);equal(f:read(f.address,1),'\1')
+    for _=1,100 do assert(m:update_fird(c))end
+    equal(#f.writes,1);equal(f.key_reads,nil);assert(f.focus_checks>=103)
+    -- Reload/firing and authored animation states remain native; only focus
+    -- steering is leased and the release restores the exact original byte.
+    f.snapshot.reloading=true;f.snapshot.shoulder_aim=true;assert(m:update_fird(c));equal(#f.writes,1)
+    assert(m:stop());equal(#f.writes,2);equal(f:read(f.address,1),'\0');assert(m:is_clean())
+end)
+test('natural focus needs both its bound Fird owner and armed eye camera',function()
+    for _,kind in ipairs({'unowned','camera','native6','controller','identity','predicate_error'})do
+        local m,c,f=fixture();f.snapshot.camera_kind=4;f.fallback=true;f.fird_owner=true
+        if kind=='unowned'then f.fird_owner=false elseif kind=='camera'then f.fallback=false
+        elseif kind=='native6'then f.snapshot.camera_kind=6 elseif kind=='controller'then f.snapshot.controller_active=true
+        elseif kind=='identity'then f.snapshot.player_identity='other-camera'else f.focus_error=true end
+        assert(m:update_fird(c));equal(#f.writes,0);assert(m:is_clean())
+    end
+end)
+test('every natural camera and input handoff restores only owned focus',function()
+    for _,kind in ipairs({'off','skip','foreign','unsafe','seated','dead','unknown','focus','cursor','native6','controller','camera','owner'})do
+        local m,c,f=fixture();f.snapshot.camera_kind=4;f.fallback=true;f.fird_owner=true;assert(m:update_fird(c))
+        if kind=='off'then c.enabled=false elseif kind=='foreign'then f.foreign=true
+        elseif kind=='unsafe'then f.snapshot.safe=false elseif kind=='seated'then f.snapshot.seated=true
+        elseif kind=='dead'then f.action={resource_match=true,layer_count=31,l14=103}
+        elseif kind=='unknown'then f.action={resource_match=false,layer_count=31,l14=36}
+        elseif kind=='focus'then f.focus_lost=true elseif kind=='cursor'then f.cursor=true
+        elseif kind=='native6'then f.snapshot.camera_kind=6 elseif kind=='controller'then f.snapshot.controller_active=true
+        elseif kind=='camera'then f.fallback=false elseif kind=='owner'then f.fird_owner=false end
+        assert(m:update_fird(c,kind=='skip'));equal(#f.writes,2);equal(f:read(f.address,1),'\0');assert(m:is_clean())
+    end
+end)
+test('already native natural focus is borrowed without a restoration write',function()
+    local m,c,f=fixture();f.snapshot.camera_kind=4;f.fallback=true;f.fird_owner=true;f:put(f.address,'\1')
+    assert(m:update_fird(c));equal(#f.writes,0);assert(m:is_clean())
+    assert(m:stop());equal(f:read(f.address,1),'\1');equal(#f.writes,0)
+end)
+test('foreign natural focus is preserved without a repeated write fight',function()
+    for _,value in ipairs({'\0','\2'})do
+        local m,c,f=fixture();f.snapshot.camera_kind=4;f.fallback=true;f.fird_owner=true;assert(m:update_fird(c))
+        f:put(f.address,value);assert(m:update_fird(c));assert(m:is_clean())
+        for _=1,20 do assert(m:update_fird(c))end;equal(#f.writes,1);equal(f:read(f.address,1),value)
+        assert(m:stop());f:put(f.address,'\0');assert(m:update_fird(c));equal(#f.writes,2)
+    end
+end)
+test('natural owner is checked again immediately before and after acquisition',function()
+    for _,nth in ipairs({2,3})do
+        local m,c,f=fixture();f.snapshot.camera_kind=4;f.fallback=true;f.fird_owner=true
+        f.on_snapshot=function(self)if self.snapshots==nth then self.fird_owner=false end end
+        assert(m:update_fird(c));assert(m:is_clean());equal(f:read(f.address,1),'\0')
+        equal(#f.writes,nth==2 and 0 or 2)
+    end
+end)
+test('natural focus partial writes retain exact cleanup and shutdown authority',function()
+    local m,c,f=fixture();f.snapshot.camera_kind=4;f.fallback=true;f.fird_owner=true
+    f.unreadable_after_write=true;assert(not m:update_fird(c));assert(not m:is_clean())
+    f.unreadable=false;f.unreadable_after_write=false;assert(m:shutdown());equal(f:read(f.address,1),'\0')
+    assert(m:update_fird(c));equal(#f.writes,2);assert(m:is_clean())
+end)
+test('natural focus keeps bridge on-foot qualification separate from camera ownership',function()
+    local m,c,f=fixture();f.snapshot.camera_kind=4;f.fallback=true;f.fird_owner=true
+    f.action={resource_match=true,layer_count=31,l14=3};assert(m:update_fird(c));equal(#f.writes,0)
+    f.bridge_permission=true;assert(m:update_fird(c));equal(#f.writes,1)
+    f.bridge_permission=false;assert(m:update_fird(c));equal(#f.writes,2);assert(m:is_clean())
 end)
 print('Native ADS first-person movement fixtures: '..passed..' passed')

@@ -34,6 +34,9 @@ local function fixture()
         end,
         NADSE_Error=function()return 13 end,
     }
+    a.library.NADSE_BeginSteady=function(...)
+        f.steady=(f.steady or 0)+1;return a.library.NADSE_Begin(...)
+    end
     f.adapter,f.config=a,c
     function f:begin()
         local ok,prepared=a:prepare(c);assert(ok,prepared)
@@ -48,6 +51,13 @@ test('cold preparation and nil-handle statistics stay fully fresh and use one bu
     equal(first.weapon_updates,1);equal(second.weapon_updates,2);equal(first.armed,false)
     local h=f:begin();assert(h.generation[0]~=0);equal(ffi.sizeof('NADSE_Config'),104);equal(ffi.sizeof('NADSE_Stats'),80)
     equal(a:stats().armed,true);assert(a:finish(h))
+end)
+test('persistent entry uses steady placement with the same retained cleanup contract',function()
+    local f=fixture();f.config.steady_entry=true;local h=f:begin()
+    equal(f.steady,1);equal(f.adapter:owned_handle(),h)
+    f.pending=true;assert(not f.adapter:finish(h));equal(f.adapter:owned_handle(),h)
+    f.pending=false;assert(f.adapter:finish(h))
+    f.config.steady_entry=false;h=f:begin();equal(f.steady,1);assert(f.adapter:finish(h))
 end)
 test('all native polls refresh health while only counters are converted at10Hz',function()
     local f=fixture();local h=f:begin();local a=f.adapter;local start=f.reads
@@ -125,5 +135,19 @@ test('depth diagnostics are lazy generation-owned optional and isolated from ord
     f.depth_refuse=true;assert(not a:depth_stats(h));f.depth_refuse=false
     a.library.NADSE_ReadDepthStats=nil;assert(not a:depth_stats(h));assert(a:stats(h).armed)
     assert(a:finish(h));assert(not a:depth_stats(h))
+end)
+test('zoom policy suppression requires the current live generation and a Boolean state',function()
+    local f=fixture();local a=f.adapter;local h=f:begin();local calls=0
+    a.library.NADSE_SetZoomPolicy=function(token,active)
+        calls=calls+1;equal(tonumber(token),f.token);equal(active,f.expected)
+        return f.zoom_refuse and 0 or 1
+    end
+    f.expected=1;assert(a:set_zoom_policy(h,true));equal(calls,1)
+    f.expected=0;assert(a:set_zoom_policy(h,false));equal(calls,2)
+    for _,invalid in ipairs({0,1,'true',{}})do assert(not a:set_zoom_policy(h,invalid))end
+    assert(not a:set_zoom_policy(h,nil));equal(calls,2)
+    assert(not a:set_zoom_policy({owner=a,generation=h.generation},true));equal(calls,2)
+    f.zoom_refuse=true;f.expected=1;assert(not a:set_zoom_policy(h,true));equal(calls,3)
+    f.zoom_refuse=false;assert(a:finish(h));assert(not a:set_zoom_policy(h,true));equal(calls,3)
 end)
 print('Native ADS pose adapter/diagnostics fixtures: '..passed..' passed')

@@ -1,8 +1,6 @@
-Goose Gadget Kit 0.5.10-cffi-26251122. Ported from 26088801 to Steam build 26251122 on 2026-10-29.
-game.dll 6AE0E5FF: code and data unchanged; 9 witnesses rederived for the shifted .rdata.
-helldivers2.exe 6AE0964A: 41 addresses remapped, 26 witnesses rederived; all checked against the live capture.
-Five Native ADS helpers rebuilt (fixtures pass), guarded_reads rebuilt, nativeinfo = LLL 8d03e036.
-23 Lua 5.1/CFFI first-person suites and 12 kit suites pass. In-game acceptance pending.
-F11 toggles first person; F8 edits placement. Saved settings live in LLL Settings, not in this folder.
-Gameplay > Complete all objectives (0.5.9): local host in a mission.
-First Person > Near clip distance (0.5.10): geometry closer to the first-person camera is not drawn; full ADS keeps the game's distance.
+Goose Gadget Kit 0.5.38-cffi-26251122
+First Person Lua hot-path correction on the visually accepted native-camera baseline.
+Steady visibility observation skips redundant model snapshots and alignment walks only when complete current fingerprints match; it never authorizes an SDK mutation.
+Shared transition publication sends bounded private scalars once per matching owned Update; native callbacks and actual motion writes retain fresh ownership guards.
+Native helpers, camera, animations, F11/F8 and personal settings are unchanged. No new hook, pin, input integration or ABI change.
+Offline checks do not establish live FPS improvement. The combined Kit remains retained until game exit, so a clean restart is required.

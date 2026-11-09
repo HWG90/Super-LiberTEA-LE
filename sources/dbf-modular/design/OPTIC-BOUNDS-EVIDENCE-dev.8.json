@@ -1,0 +1,49 @@
+{
+  "target_build": "26251122",
+  "purpose": "Conservative owned weapon and attached optic clearance; no mesh silhouette claim",
+  "engine_api": "UnitCApi.box slot1912 (current table, not older SDK offset)",
+  "ctype": "uintptr_t (*)(float *out, uint32_t unit, uint32_t ignore_invisible_meshes)",
+  "output": {
+    "bytes": 76,
+    "matrix_floats": 16,
+    "half_extent_floats": 3,
+    "column_major": true
+  },
+  "proof": {
+    "native_audit": "Independent static read-only ABI and complete function boundaries approved",
+    "fresh_capture": "dist/LIVE-OPTIC-BOX-BODY-dev.8.decoded.txt",
+    "converter_capture": "dist/LIVE-OPTIC-BOX-CONVERTER-dev.8.decoded.txt"
+  },
+  "witnesses": [
+    {
+      "name": "box",
+      "rva": "0x1fb7a0",
+      "bytes": 246,
+      "sha256": "a7256d236d7cbd6cb0b69f3aef2671108fc00e52e4e293de49df9652fc16e5d3"
+    },
+    {
+      "name": "converter",
+      "rva": "0x1f11a0",
+      "bytes": 464,
+      "sha256": "5957891db7c74e13367359fd89d156afe6fe46ed87a39f5d1ed7c22d4ecd936d"
+    },
+    {
+      "name": "registry",
+      "rva": "0xa06a0",
+      "bytes": 116,
+      "sha256": "19b1ac4c8573a8cc86404c39330c9ae9298262c199358061571ab5a802bfcce6"
+    },
+    {
+      "name": "children",
+      "rva": "0x28e650",
+      "bytes": 135,
+      "sha256": "e6e429d0c8572d37e99498966bfb0b30a36157f94d068b852d27cedd46b822c3"
+    }
+  ],
+  "sources": [
+    "https://help.autodesk.com/cloudhelp/ENU/Stingray-SDK-Help/engine_c/c__api__unit_8h.html",
+    "https://help.autodesk.com/cloudhelp/ENU/Stingray-SDK-Help/engine_c/c__api__types_8h.html",
+    "/home/goose/Projects/Super-LiberTEA-LE/sources/war-journalist-proton/freecam/subject_backend.lua"
+  ],
+  "live_geometry_accepted": false
+}

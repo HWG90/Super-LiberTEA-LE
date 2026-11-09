@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/HWG90/Super-LiberTEA-LE",
+  "ref": "v1.0.3",
+  "commit": "33baf36bc136bfe8759de087864fa67ed37afd1d",
+  "resource": "mods/hd2_hud/hd2_hud_plus",
+  "bundle": "lua/56e46a6dc1df0a13.lua",
+  "sha256": "36a837dcdaed00e944961982fff380876c83ca383f2919fd69f6b6dbc04cbf49",
+  "modules": 76
+}

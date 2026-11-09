@@ -34,6 +34,11 @@ static uint32_t begin_current(const NADSF_Config* c) {
     if(result==0)CHECK(token==0);else {CHECK((result==1 || result==2) && token && token!=active_generation);active_generation=token;}
     return result;
 }
+static uint32_t begin_fird(const NADSF_Config* c,float lens) {
+    uint64_t token=UINT64_MAX;const uint32_t result=NADSF_BeginFird(c,lens,&token);
+    if(result==0)CHECK(token==0);else {CHECK((result==1 || result==2) && token && token!=active_generation);active_generation=token;}
+    return result;
+}
 static uint32_t end_current() {return NADSF_End(active_generation);}
 static float last() {float f=0;std::memcpy(&f,&records[calls-1].bits,4);return f;}
 static bool approximately(float a,float b) {return std::fabs(a-b)<.00001f;}
@@ -67,6 +72,14 @@ struct Fixture {
         // sub rsp,28; mov rdx,API; call [rdx+80]; add rsp,28; ret.
         const uint64_t site=c.game+0x110be7a;literal(site-14,"4883ec2848ba");put<uint64_t>(site-8,api);
         literal(site,"ff92800000004883c428c3");CHECK(FlushInstructionCache(GetCurrentProcess(),reinterpret_cast<void*>(site-14),25));
+        // Independent current-build normal4 capture: dispatch, late3C write,
+        // first-kind4 input selection and radians/live-TP sensitivity ratio.
+        literal(c.game+0x110b37b,"e8e0fc0000");
+        literal(c.game+0x111e26e,"f3450f119c24c4000000f3450f115c243c");
+        literal(c.game+0x111b8fe,"f3410f1044243c");
+        literal(c.game+0x111b910,"448bc14969c0e8000000664283bc300002000004740bffc183e11f3bca75e1eb11");
+        literal(c.game+0x111b931,"4969c0e8000000f3420f1084303c020000");
+        literal(c.game+0x111b942,"f30f590556b61201488d55a0488b05b35bbc01f30f5e8088c40a00f30f59d8f30f59d0f30f59c8");
         invoke=reinterpret_cast<Setter>(site-14);normal();
     }
     void degrees(float f) {put<float>(settings+0xac488,f);}
@@ -79,6 +92,7 @@ struct Fixture {
         put<uint32_t>(c.context+0x1F8,0);put<uint32_t>(c.context+0x1FC,tail);
         c.request=c.context+0x200+((tail+31)%32)*0xE8;
         put<uint32_t>(c.request,kind);put<uint32_t>(c.request+4,c.avatar);put<uint32_t>(c.request+8,weapon);put<uint32_t>(c.request+12,c.body);
+        put<float>(c.request+0x3C,90*RAD_PER_DEG);
     }
     void fp() {normal();top(6,2,c.weapon);}
     void begin() {fp();CHECK(begin_current(&c)==1);}
@@ -311,6 +325,215 @@ int main() {
     std::thread ending([&]{CHECK(end_current()==1);ended.store(1);});while(armed.load())SwitchToThread();CHECK(ended.load()==0);
     SetEvent(setter_continue);in_flight.join();ending.join();CloseHandle(setter_reached);CloseHandle(setter_continue);setter_reached=nullptr;setter_continue=nullptr;
     CHECK(ended.load()==1);pass("End drains in-flight overridden setter before restoring owned slot");
+    const uint32_t saved_weapon=f.c.weapon;f.c.weapon=0;f.normal();fixture_cas_calls=0;
+    CHECK(NADSF_ValidateFird(&f.c)==1 && fixture_cas_calls==0);
+    const float captured=72*RAD_PER_DEG;start=calls;
+    CHECK(begin_fird(&f.c,captured)==1 && calls==start+1 && last()==captured && armed.load()==1);
+    f.shoulder(true);f.degrees(115);fixture_now=100;f.sample(.111f);CHECK(last()==captured);
+    CHECK(approximately(f.stats().source_degrees,72) && f.stats().replaced==1);
+    float untouched_setting=0;CHECK(value(f.settings+0xac488,untouched_setting) && untouched_setting==115);
+    pass("Fird normal4 uses the exact captured projection immediately, without weapon ownership, shoulder scaling or setting edits");
+    const uint64_t fird_token=active_generation;f.top(4,3,0);put<uint32_t>(f.c.request+4,f.c.avatar+1);
+    f.sample(.222f);CHECK(last()==.222f && armed.load()==1);start=calls;
+    CHECK(NADSF_BindFird(fird_token,f.c.request)==0 && calls==start);
+    put<uint32_t>(f.c.request+4,f.c.avatar);CHECK(NADSF_BindFird(fird_token,f.c.request)==1 && last()==captured);
+    f.invoke(reinterpret_cast<void*>(f.c.camera+8),.223f);CHECK(last()==.223f);
+    reinterpret_cast<Setter>(callback())(reinterpret_cast<void*>(f.c.camera),.224f);CHECK(last()==.224f);
+    pass("Fird unrelated avatar request, foreign camera and foreign caller forward without projection edits");
+    f.top(6,4,saved_weapon);f.controls();start=calls;f.sample(.31f);
+    CHECK(last()==.31f && calls==start+1 && f.stats().ads_forwarded==1 && armed.load()==1);
+    CHECK(NADSF_BindFird(fird_token,f.c.request)==0);f.controls(0,true);f.sample(.32f);
+    CHECK(last()==.32f && f.stats().ads_forwarded==2 && armed.load()==1);
+    f.normal();f.top(4,5,0);f.sample(.33f);CHECK(last()==.33f);
+    start=calls;CHECK(NADSF_BindFird(fird_token,f.c.request)==1 && calls==start+1 && last()==captured);
+    CHECK(NADSF_Bind(fird_token,f.c.request,saved_weapon)==0);
+    CHECK(NADSF_BindFird(fird_token,f.c.request)==1);f.sample(.34f);CHECK(last()==captured);
+    CHECK(end_current()==1);
+    pass("Fird camera6 forwards before and after the ADS bit; normal4 rebind immediately restores the same captured lens");
+    for(float invalid:{9*RAD_PER_DEG,171*RAD_PER_DEG,INFINITY,NAN}) {
+        f.normal();fixture_cas_calls=0;CHECK(begin_fird(&f.c,invalid)==0 && fixture_cas_calls==0 && reserved.load()==0);
+    }
+    for(float valid:{10*RAD_PER_DEG,170*RAD_PER_DEG}) {f.normal();CHECK(begin_fird(&f.c,valid)==1 && last()==valid && end_current()==1);}
+    f.fp();CHECK(NADSF_ValidateFird(&f.c)==0 && begin_fird(&f.c,captured)==0);
+    f.normal();f.controls(0,true);CHECK(begin_fird(&f.c,captured)==0);f.controls();
+    pass("Fird rejects nonfinite or out-of-range captured lenses and camera6/full-ADS entry before installing a slot");
+    f.normal();CHECK(begin_fird(&f.c,captured)==1);put<uint8_t>(f.generations+3,2);f.sample(.4f);
+    CHECK(last()==.4f && armed.load()==0 && end_current()==1);put<uint8_t>(f.generations+3,1);
+    pass("Fird body generation loss disarms and forwards immediately");
+    f.normal();mutation_address=f.c.request+4;mutation_value=f.c.avatar+1;fixture_cas_calls=0;fixture_cas_fail_at=2;
+    CHECK(begin_fird(&f.c,captured)==2 && reserved.load()==1 && armed.load()==0);
+    mutation_address=0;fixture_cas_fail_at=0;put<uint32_t>(f.c.request+4,f.c.avatar);fixture_slot_unreadable=true;
+    CHECK(end_current()==0 && reserved.load()==1);fixture_slot_unreadable=false;start=calls;
+    CHECK(end_current()==1 && calls==start);
+    f.normal();CHECK(begin_fird(&f.c,captured)==1);put<uint64_t>(f.api+0x80,reinterpret_cast<uint64_t>(foreign_setter));
+    CHECK(end_current()==1);CHECK(value(f.api+0x80,actual) && actual==reinterpret_cast<uint64_t>(foreign_setter));
+    put<uint64_t>(f.api+0x80,reinterpret_cast<uint64_t>(synthetic_setter));f.c.weapon=saved_weapon;f.degrees(90);
+    pass("Fird partial Begin retains cleanup ownership and End preserves foreign pointer replacements without FOV replay");
+    f.normal();const uint64_t normal_input=f.c.request;put<uint8_t>(f.c.avatar_owner+0x53e88e,1);
+    CHECK(begin_fird(&f.c,captured)==1);float input_lens=0;
+    CHECK(value(normal_input+0x3C,input_lens) && input_lens==captured);
+    for(float zoom_lens:{30*RAD_PER_DEG,12*RAD_PER_DEG,3*RAD_PER_DEG}) {
+        // Input precedes the next native evaluation and therefore sees the
+        // previous callback's fixed request lens even with legacy48 enabled.
+        CHECK(value(normal_input+0x3C,input_lens) && approximately(input_lens/RAD_PER_DEG/90,72.0f/90));
+        put<float>(normal_input+0x3C,zoom_lens);f.sample(zoom_lens);
+        CHECK(value(normal_input+0x3C,input_lens) && input_lens==captured && last()==captured);
+    }
+    CHECK(end_current()==1);CHECK(value(normal_input+0x3C,input_lens) && input_lens==3*RAD_PER_DEG);
+    pass("Fird legacy48 and changing zoom lenses retain one input ratio; End restores the freshest native3C");
+
+    f.normal();put<float>(f.c.request+0x3C,.6f);CHECK(begin_fird(&f.c,captured)==1);
+    put<float>(f.c.request+0x3C,captured);f.sample(captured);
+    CHECK(NADSF_BindFird(active_generation,f.c.request)==1 && end_current()==1);
+    CHECK(value(f.c.request+0x3C,input_lens) && input_lens==captured);
+    pass("Fird post-evaluation native3C equal to our fixed lens replaces an older restoration value; immediate Bind preserves it");
+
+    f.normal();const uint64_t first=f.c.request;put<float>(first+0x3C,.4f);
+    f.top(4,2,saved_weapon);const uint64_t top=f.c.request;put<float>(top+0x3C,.8f);
+    CHECK(begin_fird(&f.c,captured)==1);
+    CHECK(value(first+0x3C,input_lens) && input_lens==captured);
+    CHECK(value(top+0x3C,input_lens) && input_lens==.8f);
+    // A newly active earlier normal4 becomes the exact input source while
+    // the former source is still a live owned queue row, so retire it first.
+    const uint64_t earlier=f.c.context+0x200+31*0xE8;
+    put<uint32_t>(earlier,4);put<uint32_t>(earlier+4,f.c.avatar);put<float>(earlier+0x3C,.6f);
+    put<uint32_t>(f.c.context+0x1F8,31);CHECK(NADSF_BindFird(active_generation,top)==1);
+    CHECK(value(first+0x3C,input_lens) && input_lens==.4f);
+    CHECK(value(earlier+0x3C,input_lens) && input_lens==captured && armed.load()==1);
+    CHECK(value(top+0x3C,input_lens) && input_lens==.8f);
+    CHECK(end_current()==1);CHECK(value(earlier+0x3C,input_lens) && input_lens==.6f);
+    pass("Fird immediate normal4 fade handoff normalizes the first input row and restores a still-active former input row");
+
+    f.normal();const uint64_t equal_former=f.c.request;put<float>(equal_former+0x3C,.4f);
+    f.top(4,2,saved_weapon);CHECK(begin_fird(&f.c,captured)==1);
+    put<uint32_t>(earlier,4);put<uint32_t>(earlier+4,f.c.avatar);put<float>(earlier+0x3C,.6f);
+    put<uint32_t>(f.c.context+0x1F8,31);
+    // Both rows have just been evaluated. The former source's new native
+    // result happens to equal our previous fixed value, so do not replay .4.
+    put<float>(equal_former+0x3C,captured);f.sample(.6f);
+    CHECK(value(equal_former+0x3C,input_lens) && input_lens==captured);
+    CHECK(value(earlier+0x3C,input_lens) && input_lens==captured && armed.load()==1);
+    CHECK(end_current()==1);CHECK(value(earlier+0x3C,input_lens) && input_lens==.6f);
+    pass("Fird post-evaluation fade retirement preserves a fresh native result equal to the previously authored lens");
+
+    f.normal();const uint64_t lost=f.c.request;put<float>(lost+0x3C,.45f);CHECK(begin_fird(&f.c,captured)==1);
+    f.top(4,2,saved_weapon);put<uint32_t>(f.c.context+0x1F8,1);
+    CHECK(end_current()==1);CHECK(value(lost+0x3C,input_lens) && input_lens==captured);
+    f.normal();put<float>(f.c.request+0x3C,.5f);CHECK(begin_fird(&f.c,captured)==1);
+    put<float>(f.c.request+0x3C,.63f);CHECK(end_current()==1);
+    CHECK(value(f.c.request+0x3C,input_lens) && input_lens==.63f);
+    pass("Fird End never writes a retired request or overwrites a native/foreign replacement");
+
+    f.normal();const uint64_t ads_base=f.c.request;put<float>(ads_base+0x3C,.7f);CHECK(begin_fird(&f.c,captured)==1);
+    f.top(6,2,saved_weapon);const uint64_t ads_request=f.c.request;
+    put<float>(ads_request+0x3C,.18f);put<float>(ads_request+0x84,.29f);
+    put<float>(ads_base+0x3C,.7f);f.controls(0,true);f.sample(.29f);
+    CHECK(value(ads_request+0x3C,input_lens) && input_lens==.18f);
+    CHECK(value(ads_request+0x84,input_lens) && input_lens==.29f && last()==.29f);
+    CHECK(!policy.input_lens.active);
+    CHECK(end_current()==1);CHECK(value(ads_base+0x3C,input_lens) && input_lens==.7f);
+    CHECK(value(ads_request+0x84,input_lens) && input_lens==.29f);
+    pass("Fird camera6 request3C/84 remain untouched and its underlying normal4 ledger retires without stale replay");
+
+    for(uint64_t offset:{8ULL,12ULL}) {
+        f.normal();const uint64_t recycled=f.c.request;put<float>(recycled+0x3C,.61f);
+        CHECK(begin_fird(&f.c,captured)==1);uint32_t old=0;CHECK(value(recycled+offset,old));
+        put<uint32_t>(recycled+offset,old+1);CHECK(end_current()==1);
+        CHECK(value(recycled+0x3C,input_lens) && input_lens==captured);
+    }
+    pass("Fird same-avatar/kind request replacement at header8 or12 is never restored from a prior ledger");
+
+    f.normal();put<float>(f.c.request+0x3C,.55f);CHECK(begin_fird(&f.c,captured)==1);
+    DWORD previous_protection=0;CHECK(VirtualProtect(reinterpret_cast<void*>(f.c.context),0x3000,PAGE_READONLY,&previous_protection));
+    CHECK(end_current()==0 && reserved.load()==1 && armed.load()==0 && policy.input_lens.active);
+    DWORD ignored_protection=0;CHECK(VirtualProtect(reinterpret_cast<void*>(f.c.context),0x3000,previous_protection,&ignored_protection));
+    CHECK(end_current()==1);CHECK(value(f.c.request+0x3C,input_lens) && input_lens==.55f);
+    pass("Fird unreadable/nonwritable cleanup retains the generation and retries its input field before restoring the dispatch slot");
+
+    f.normal();put<float>(f.c.request+0x3C,NAN);fixture_cas_calls=0;
+    CHECK(NADSF_ValidateFird(&f.c)==0 && begin_fird(&f.c,captured)==0 && fixture_cas_calls==0);
+    put<float>(f.c.request+0x3C,.7f);
+    for(uint64_t address:{f.c.game+0x110b37b,f.c.game+0x111e278,f.c.game+0x111b8fe,f.c.game+0x111b91a,f.c.game+0x111b931,f.c.game+0x111b955}) {
+        uint8_t old=0;CHECK(value(address,old));put<uint8_t>(address,old^1);fixture_cas_calls=0;
+        CHECK(NADSF_ValidateFird(&f.c)==0 && begin_fird(&f.c,captured)==0 && fixture_cas_calls==0);
+        put<uint8_t>(address,old);
+    }
+    f.normal();const uint64_t foreign_first=f.c.request;f.top(4,2,saved_weapon);
+    put<uint32_t>(foreign_first+4,f.c.avatar+1);fixture_cas_calls=0;
+    CHECK(begin_fird(&f.c,captured)==0 && fixture_cas_calls==0);
+    put<uint32_t>(foreign_first+4,f.c.avatar);f.normal();
+    pass("Fird input lenses, first-row avatar ownership and dispatch/write/input-ratio code pins reject drift before any install");
+    f.fp();f.c.reserved=180;fixture_now=100;
+    CHECK(begin_current(&f.c)==1);const float hip180=last();
+    f.controls(0,true);f.top(6,3,f.c.weapon);f.sample(.3f);CHECK(approximately(last(),hip180));
+    fixture_now=100.09;f.sample(.3f);CHECK(last()>.3f && last()<hip180);
+    fixture_now=100.18;f.sample(.3f);CHECK(last()==.3f);
+    f.sample(.25f);CHECK(last()==.25f);
+    pass("opt-in native ADS on a new owned request eases from hip and settles to fresh exact native zoom");
+    f.controls();f.top(4,4,f.c.weapon);f.sample(hip180);CHECK(approximately(last(),.25f));
+    fixture_now=100.27;f.sample(hip180);const float halfway=last();CHECK(halfway>.25f && halfway<hip180);
+    f.top(6,5,f.c.weapon);f.sample(.7f);CHECK(approximately(last(),halfway));
+    CHECK(NADSF_Bind(active_generation,f.c.request,f.c.weapon)==1);CHECK(approximately(last(),halfway));
+    fixture_now=100.37;f.sample(.7f);CHECK(last()==hip180);CHECK(end_current()==1);
+    pass("native ADS exit preserves lens continuity across normal4 fallback and manual6 rebind without delaying settled hip");
+    f.fp();fixture_now=200;CHECK(begin_current(&f.c)==1);f.controls(0,true);f.sample(.3f);
+    fixture_now=200.06;f.sample(.3f);const float before_reverse=last();
+    f.controls();f.sample(.7f);CHECK(approximately(last(),before_reverse));fixture_now=200.25;f.sample(.7f);CHECK(last()==hip180);
+    f.controls(0,true);f.sample(.3f);fixture_clock_ok=false;f.sample(.3f);CHECK(last()==.3f);fixture_clock_ok=true;
+    CHECK(end_current()==1);pass("reversing ADS starts at the current lens; unavailable transition clock forwards native safely");
+    f.fp();fixture_now=300;CHECK(begin_current(&f.c)==1);f.controls(0,true);f.top(6,6,f.c.weapon+1);f.sample(.4f);CHECK(last()==.4f);
+    f.top(6,7,f.c.weapon);f.controls(32);f.sample(.45f);CHECK(last()==.45f);CHECK(end_current()==1);
+    f.c.reserved=0;pass("unrelated weapons and unsupported actions never receive handoff smoothing");
+    f.fp();f.c.reserved=180;fixture_now=400;CHECK(begin_current(&f.c)==1);
+    const float shared_hip=last();
+    CHECK(NADSF_SetTransition(active_generation,10,1,0)==1);
+    f.sample(.7f);CHECK(last()==shared_hip);
+    CHECK(NADSF_SetTransition(active_generation,11,0,1)==1);
+    f.controls(0,true);f.top(6,2,f.c.weapon);f.sample(.3f);CHECK(last()==shared_hip);
+    f.sample(.2f);CHECK(last()==shared_hip);
+    CHECK(NADSF_SetTransition(active_generation,11,.5f,1)==1);f.sample(.2f);
+    const float shared_half=last();CHECK(shared_half>.2f && shared_half<shared_hip);
+    f.sample(.1f);CHECK(last()==shared_half);
+    CHECK(NADSF_SetTransition(active_generation,11,.75f,1)==1);f.sample(.1f);
+    CHECK(last()>.1f && last()<shared_half);
+    CHECK(NADSF_SetTransition(active_generation,11,1,1)==1);f.sample(.12f);CHECK(last()==.12f);
+    f.sample(.15f);CHECK(last()==.15f);
+    pass("shared phase owns focal handoff, coalesces repeated phases, follows late native targets and settles exactly");
+    CHECK(NADSF_SetTransition(active_generation,12,0,0)==1);f.controls();f.top(4,3,f.c.weapon);f.sample(shared_hip);
+    CHECK(last()==.15f);CHECK(NADSF_SetTransition(active_generation,12,.5f,0)==1);f.sample(shared_hip);
+    const float shared_exit=last();CHECK(shared_exit>.15f && shared_exit<shared_hip);
+    CHECK(NADSF_SetTransition(active_generation,13,0,1)==1);f.controls(0,true);f.top(6,4,f.c.weapon);f.sample(.2f);
+    CHECK(last()==shared_exit);CHECK(NADSF_SetTransition(active_generation,13,1,1)==1);f.sample(.2f);CHECK(last()==.2f);
+    pass("shared ADS reversal and request rebind start from the lens actually presented without older-lens replay");
+    const auto before_bad_phase=calls;
+    CHECK(NADSF_SetTransition(active_generation,12,1,0)==0);
+    CHECK(NADSF_SetTransition(active_generation,13,.5f,1)==0);
+    CHECK(NADSF_SetTransition(active_generation,13,1,0)==0);
+    CHECK(NADSF_SetTransition(active_generation,14,NAN,1)==0);
+    CHECK(NADSF_SetTransition(active_generation,14,-.1f,1)==0);
+    CHECK(NADSF_SetTransition(active_generation,14,1.1f,1)==0);
+    CHECK(NADSF_SetTransition(active_generation,14,.5f,2)==0);
+    CHECK(NADSF_SetTransition(active_generation+1,14,.5f,1)==0);
+    CHECK(calls==before_bad_phase && armed.load()==1);
+    CHECK(NADSF_SetTransition(active_generation,14,.5f,1)==1);f.sample(.3f);
+    pass("shared phase rejects stale epochs, regression, mode mutation, malformed progress and foreign generation without setter calls");
+    f.controls();f.top(4,5,f.c.weapon);f.sample(shared_hip);CHECK(last()==shared_hip);
+    CHECK(NADSF_SetTransition(active_generation,15,0,0)==1);f.sample(shared_hip);CHECK(last()==shared_hip);
+    f.top(6,6,f.c.weapon);CHECK(NADSF_Bind(active_generation,f.c.request,f.c.weapon)==1);
+    f.shoulder(true);CHECK(NADSF_SetTransition(active_generation,16,0,0)==1);f.sample(.7f);CHECK(last()==shared_hip);
+    CHECK(NADSF_SetTransition(active_generation,16,.5f,0)==1);f.sample(.7f);
+    const float shared_shoulder=last();CHECK(shared_shoulder<shared_hip && shared_shoulder>lens(90,1.05));
+    CHECK(NADSF_SetTransition(active_generation,16,1,0)==1);f.sample(.7f);CHECK(approximately(last(),lens(90,1.05)));
+    pass("native mode wins an old token and normal-shoulder lens consumes the same phase without a stacked120ms tween");
+    CHECK(NADSF_SetTransition(active_generation,17,0,0)==1);fixture_now=400.251;
+    f.controls(0,true);f.sample(.23f);CHECK(last()==.23f && !policy.shared_phase);
+    CHECK(NADSF_SetTransition(active_generation,18,0,1)==1);fixture_clock_ok=false;f.sample(.21f);
+    CHECK(last()==.21f && !policy.shared_phase);fixture_clock_ok=true;
+    CHECK(end_current()==1);CHECK(NADSF_SetTransition(active_generation,19,0,0)==0);
+    pass("expired or unavailable phase clocks return exact native view, and retired generations cannot publish a phase");
+    f.normal();f.c.reserved=0;CHECK(begin_fird(&f.c,captured)==1);CHECK(NADSF_SetTransition(active_generation,20,.5f,0)==0);
+    CHECK(end_current()==1);f.c.reserved=0;
+    pass("Fird captured projection rejects the TrueFP shared-phase control");
     uint8_t code_after[64]{};CHECK(read(reinterpret_cast<uint64_t>(synthetic_setter),code_after,64));CHECK(std::memcmp(code_before,code_after,64)==0);
     pass("setter executable bytes unchanged");std::printf("Native FOV fixture PASS: %llu cases\n",static_cast<unsigned long long>(cases));return 0;
 }

@@ -197,6 +197,7 @@ test('runtime stop and shutdown attempt FOV cleanup despite editor and camera fa
     local modules={['src/action_placement.lua']=dofile(root..'/src/action_placement.lua'),['src/backend.lua']={new=function()return frame_backend end},
         ['src/controller.lua']={new=function()return c end},['src/menu.lua']={new=function()return menu end},
         ['src/placement_editor.lua']={new=function()return editor end},['src/fov.lua']={new=function()return policy end},
+        ['src/zoom.lua']={attach=function(fov)return fov end},
         ['src/blur.lua']={new=function()return blur end},['src/dof.lua']={new=function()return auxiliary('dof')end},
         ['src/camera.lua']={new=function()return head end},['src/motion_runtime.lua']={new=function()return motion end},
         ['src/camera_compat.lua']={new=function()return compat end},
@@ -204,7 +205,7 @@ test('runtime stop and shutdown attempt FOV cleanup despite editor and camera fa
         ['src/first_person_movement.lua']={new=function()return movement end},
         ['src/near_clip.lua']={new=function()return auxiliary('near')end}}
     local previous_mod,previous_api=_G.mod,_G.NativeADSCameraTest
-    _G.mod={require=function(name)return assert(modules[name] or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')))end,log=function()end}
+    _G.mod={require=function(name)return assert(modules[name] or((name=='src/model_shadow_source.lua'or name=='src/vignette.lua'or name=='src/native_ads_option.lua')and dofile(root..'/'..name))or(name=='src/head_placement.lua'and dofile(root..'/src/head_placement.lua')) or(name=='src/aim_markers.lua'and dofile(root..'/src/aim_markers.lua')))end,log=function()end}
     _G.NativeADSCameraTest=nil
     local runtime=dofile(root..'/main.lua');runtime.on_enable();local api=assert(_G.NativeADSCameraTest)
     state.enter_from_editor=true;runtime.on_update();assert(c.enabled and policy.active)
@@ -397,4 +398,92 @@ test('an exact phase timestamp never repeats full conversion without clock progr
     equal(state.reads,10);assert(adapter:finish(handle))
 end)
 
+test('shared presentation phase is published to first, retained and rebound generations',function()
+    local f=fixture();local phase={epoch=1,progress=0,ads=false};local published={}
+    f.backend.presentation_transition=function()return phase end
+    f.helper.transition=function(_,handle,value)
+        equal(handle,f.handle);f.phase_epoch=value.epoch;published[#published+1]={epoch=value.epoch,progress=value.progress,ads=value.ads};return true
+    end
+    assert(f.manager:update(f.controller));equal(#published,1);equal(published[1].epoch,1)
+    local handle=f.manager.handle;phase={epoch=2,progress=.5,ads=true}
+    assert(f.manager:update(f.controller));equal(f.manager.handle,handle);equal(#published,2);equal(published[2].ads,true)
+    f.controller.phase='waiting';f.controller.lease=nil;phase={epoch=2,progress=.75,ads=true}
+    assert(f.manager:update(f.controller));equal(#published,3);equal(f.manager.handle,handle)
+    f.controller.phase='running';f.controller.lease={request=200,weapon=11};phase={epoch=3,progress=0,ads=false}
+    local bind=f.helper.bind;f.helper.bind=function(...)equal(f.phase_epoch,3);return bind(...)end
+    assert(f.manager:update(f.controller));equal(f.binds,1);equal(#published,4);equal(f.manager.handle,handle)
+    equal(f.manager:result().presentation_epoch,3);equal(f.manager:result().presentation_progress,0)
+    equal(f.manager:result().transition_epoch,3);equal(f.manager:result().transition_progress,0)
+    assert(f.manager:stop());assert(f.manager:result().presentation_epoch==nil);assert(f.manager:result().transition_epoch==nil)
+end)
+test('shared phase refusal retains required cleanup and never installs another generation over it',function()
+    local f=fixture();f.backend.presentation_transition=function()return {epoch=1,progress=0,ads=false}end
+    f.helper.transition=function()return false,'fixture phase rejected'end;f.end_failure=true
+    assert(not f.manager:update(f.controller));equal(f.begins,1);equal(f.ends,1);assert(not f.manager:is_clean())
+    assert(not f.manager:update(f.controller));equal(f.begins,1);equal(f.ends,2)
+    f.end_failure=false;assert(f.manager:stop());assert(f.manager:is_clean())
+    f=fixture();f.backend.presentation_transition=function()return false end
+    assert(not f.manager:update(f.controller));equal(f.ends,1);assert(f.manager:is_clean())
+end)
+test('shared phase is optional and nil provider leaves legacy helpers untouched',function()
+    local f=fixture();f.backend.presentation_transition=function()return nil end
+    assert(f.manager:update(f.controller));equal(f.begins,1);assert(f.manager:update(f.controller));equal(f.ends,0)
+end)
+test('adapter shared phase validates identity and copied scalar tokens before native calls',function()
+    local adapter=Fov.Adapter.new({abi=1,library='fixture'})
+    local calls=0;local generation=ffi.new('uint64_t',1234)
+    adapter.library={NADSF_SetTransition=function(g,epoch,progress,ads)
+        equal(g,generation);equal(epoch,42);equal(progress,.5);equal(ads,1);calls=calls+1;return 1
+    end}
+    local handle={owner=adapter,disarmed=false,generation=ffi.new('uint64_t[1]',generation)};adapter.owned=handle
+    assert(adapter:transition(handle,{epoch=42,progress=.5,ads=true}));equal(calls,1)
+    for _,token in ipairs({{}, {epoch=0,progress=0,ads=false},{epoch=42,progress=-.1,ads=true},
+        {epoch=42,progress=1.1,ads=true},{epoch=42,progress=0/0,ads=true},{epoch=42,progress=.5,ads=1},
+        {epoch=9007199254740992,progress=.5,ads=true}})do assert(not adapter:transition(handle,token))end
+    local other=Fov.Adapter.new({abi=1});assert(not other:transition(handle,{epoch=42,progress=.5,ads=true}))
+    handle.disarmed=true;assert(not adapter:transition(handle,{epoch=42,progress=.5,ads=true}));equal(calls,1)
+end)
+test('typed native read failure survives cleanup and never comes from diagnostic text',function()
+    local f=fixture()
+    f.helper.begin=function()f.helper.last_failure_code=3;f.handle={};return false,'fixture native read refused'end
+    f.helper.finish=function()f.helper.last_failure_code=nil;f.handle=nil;return true,{}end
+    assert(not f.manager:update(f.controller))
+    equal(f.manager:result().failure_native_error,3);equal(f.manager:result().failure_kind,'temporary_read')
+    f.helper.begin=function()f.handle={};return true,f.handle end
+    assert(f.manager:update(f.controller));equal(f.manager:result().failure_native_error,nil);equal(f.manager:result().failure_kind,nil)
+    f.controller.lease={request=200,weapon=11}
+    f.helper.bind=function()return false,'native read code3 in untrusted text'end
+    assert(not f.manager:update(f.controller));equal(f.manager:result().failure_native_error,nil)
+    equal(f.manager:result().failure_kind,nil)
+end)
+test('fresh native health failures are unsafe except explicit read code3',function()
+    for _,code in ipairs({3,7,8,13})do
+        local f=fixture();assert(f.manager:update(f.controller));f.native_error=code
+        local finish=f.helper.finish
+        f.helper.finish=function(...)local done,stats=finish(...);f.helper.last_failure_code=nil;return done,stats end
+        assert(not f.manager:update(f.controller))
+        equal(f.manager:result().failure_native_error,code)
+        equal(f.manager:result().failure_kind,code==3 and'temporary_read'or'unsafe')
+        f.native_error=0;assert(f.manager:update(f.controller))
+        equal(f.manager:result().failure_native_error,nil);equal(f.manager:result().failure_kind,nil)
+    end
+end)
+test('preflight resets old typed failures and records fresh validation refusal',function()
+    local f=fixture();f.helper.last_failure_code=7
+    assert(f.manager:preflight());equal(f.manager:result().failure_native_error,nil)
+    f.helper.validate=function()f.helper.last_failure_code=3;return false,'fixture current read fault'end
+    assert(not f.manager:preflight());equal(f.manager:result().failure_native_error,3)
+    equal(f.manager:result().failure_kind,'temporary_read')
+    f.helper.validate=function()return true end
+    assert(f.manager:preflight());equal(f.manager:result().failure_native_error,nil)
+end)
+test('adapter captures fresh numeric native failure codes and clears zero or unavailable errors',function()
+    local adapter=Fov.Adapter.new({abi=1,library='fixture'});local code=3
+    adapter.library={NADSF_Error=function()return code end}
+    adapter:_error('test');equal(adapter.last_failure_code,3)
+    code=7;adapter:_error('test');equal(adapter.last_failure_code,7)
+    code=0;adapter:_error('test');equal(adapter.last_failure_code,nil)
+    adapter.library.NADSF_Error=function()error('native error query unavailable')end
+    adapter:_error('test');equal(adapter.last_failure_code,nil)
+end)
 print('Native ADS FOV manager/ABI fixtures: '..passed..' passed')

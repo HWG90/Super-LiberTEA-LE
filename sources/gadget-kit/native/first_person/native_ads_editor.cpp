@@ -9,6 +9,7 @@
 #include <cstring>
 #include <cmath>
 #include "native_ads_editor.h"
+#include "presentation_phase.h"
 using Setter=void (*)(uint32_t,uint32_t,const float*);
 using Getter=const float* (*)(uint32_t,uint32_t);
 static SRWLOCK control_lock=SRWLOCK_INIT,policy_lock=SRWLOCK_INIT;
@@ -35,6 +36,7 @@ static uint64_t fixture_foreign_value=0;
 static bool fixture_slot_unreadable=false,fixture_slot_readonly=false,fixture_fail_rollback=false;
 static uint64_t fixture_unreadable_slot=0;
 static HANDLE fixture_before_arm_reached=nullptr,fixture_continue_arm=nullptr;
+static HANDLE fixture_rotation_before_policy_reached=nullptr,fixture_rotation_continue_policy=nullptr;
 static uint64_t* fixture_output_to_check=nullptr;
 static bool fixture_generation_published=true;
 static uint64_t fixture_reads=0;
@@ -80,6 +82,7 @@ struct Policy {
     uint8_t descriptor_bytes[20]{},weapon_bytes[20]{};
     uint64_t graph_vtable=0,graph_links=0,graph_hashes=0;
     bool native_aiming=false,shoulder_aiming=false,full_ads=false,rig_shifted=false,rotation_shifted=false,carrier_shifted=false;
+    bool zoom_policy_active=false;
     float baseline[4]{},rotation_baseline[4]{};
     float carrier_baseline[4]{},carrier_written[3]{};uint64_t carrier_poses=0;
     bool carrier_checked=false,carrier_code_ok=false;
@@ -87,7 +90,7 @@ struct Policy {
     float ads_placement[3]{};
     bool authored_ads_rotation=false;
     float rotation[4]{0,0,0,1};
-    float weight=0,target=1,start_weight=0;uint64_t blend_start=0;
+    PresentationPhase::State shared{};float weight=0,target=1,start_weight=0;uint64_t blend_start=0;
     DepthState depth;
     DepthObservation observation;
     CarrierPending carrier;
@@ -354,7 +357,7 @@ static bool depth_data_valid(const Policy& p,const DepthData& d) {
         || !read(d.parameters,bytes_,16) || std::memcmp(bytes_,d.parameter_bytes,16)
         || !read(d.data+0x74,bytes_,sizeof d.data_bytes) || std::memcmp(bytes_,d.data_bytes,sizeof d.data_bytes)
         || !value(settings+0xac488,degrees) || degrees!=d.degrees)return false;
-    if(d.resource_row && (!pointer(world+0xf14110,table) || table!=d.resource_table
+    if(d.resource_row && (!pointer(world+0xf146a0,table) || table!=d.resource_table
         || !read(d.resource_row,bytes_,16) || std::memcmp(bytes_,d.resource_bytes,16)))return false;
     return true;
 }
@@ -370,18 +373,18 @@ static bool depth_data(const Policy& p,DepthData& d,uint32_t& selected) {
     if(di!=UINT32_MAX) {
         const uint64_t data=field<uint64_t>(d.pool_bytes,0x80);
         if(!address(data) || di>=4096)return false;
-        d.data=data+static_cast<uint64_t>(di)*0x4D0;
+        d.data=data+static_cast<uint64_t>(di)*0x4D8;
     } else {
         uint64_t resource=0;std::memcpy(&resource,p.weapon_bytes,8);
-        if(!resource || !pointer(d.world+0xf14110,d.resource_table))return false;
-        const uint32_t bucket=static_cast<uint32_t>(resource%730);
-        for(uint32_t n=0;n<730;) {
-            const uint32_t at=(bucket+n)%730;uint32_t count=730-at;if(count>16)count=16;if(count>730-n)count=730-n;
+        if(!resource || !pointer(d.world+0xf146a0,d.resource_table))return false;
+        const uint32_t bucket=static_cast<uint32_t>(resource%746);
+        for(uint32_t n=0;n<746;) {
+            const uint32_t at=(bucket+n)%746;uint32_t count=746-at;if(count>16)count=16;if(count>746-n)count=746-n;
             uint8_t rows[256]{};if(!read(d.resource_table+static_cast<uint64_t>(at)*16,rows,count*16))return false;
             for(uint32_t i=0;i<count;++i,++n) {
                 const uint64_t key=field<uint64_t>(rows,i*16);if(!key)return false;
                 if(key==resource) {
-                    di=field<uint32_t>(rows,i*16+8);if(di>=730)return false;
+                    di=field<uint32_t>(rows,i*16+8);if(di>=746)return false;
                     d.resource_row=d.resource_table+static_cast<uint64_t>(at+i)*16;
                     std::memcpy(d.resource_bytes,rows+i*16,16);break;
                 }
@@ -389,7 +392,7 @@ static bool depth_data(const Policy& p,DepthData& d,uint32_t& selected) {
             if(d.resource_row)break;
         }
         if(!d.resource_row)return false;
-        d.data=d.resource_table+0x2DA0+static_cast<uint64_t>(di)*0x4D0;
+        d.data=d.resource_table+0x2EA0+static_cast<uint64_t>(di)*0x4D8;
     }
     const uint64_t parameters=field<uint64_t>(d.pool_bytes,0x28),packed=field<uint64_t>(d.pool_bytes,0x30);
     if(!address(parameters) || !address(packed))return false;
@@ -410,7 +413,13 @@ static bool depth_data(const Policy& p,DepthData& d,uint32_t& selected) {
     return depth_data_valid(p,d);
 }
 static bool depth_code(const NADSE_Config& c) {
-    return bytes(c.game+0x1119293,"f30f1044245cf30f1015ef251301")
+    // Current-build weapon overrides and resource rows use 0x4D8 records.
+    // Pin the owning getters as well as the evaluator frame we consume.
+    return bytes(c.game+0x5120b2,"4869c0d8040000490383b00000004883c428c3")
+        && bytes(c.game+0x511b3f,"4c8b90a046f10048b80fdf6f49a121b3af48f7e148c1ea09")
+        && bytes(c.game+0x511b57,"69c2ea020000442bc0")
+        && bytes(c.game+0x511bb1,"4869c1d80400004805a02e00004903c2c3")
+        && bytes(c.game+0x1119293,"f30f1044245cf30f1015ef251301")
         && bytes(c.game+0x11192b9,"f30f5c4424600f54c2f30f5ec1")
         && bytes(c.game+0x1119971,"f3450f58fb")
         && bytes(c.game+0x1119a23,"f30f59faf3410f59cff3")
@@ -418,13 +427,16 @@ static bool depth_code(const NADSE_Config& c) {
 }
 static bool depth_reference(const DepthData& d,uint32_t selected,float distance,float& reference) {
     constexpr float rad=.01745329238474369f;
-    const float angle=((d.degrees/d.zoom[selected])*rad)*.5f,base=((d.degrees/d.zoom[0])*rad)*.5f;
-    if(angle<.0001f || angle>1.48f || base<.0001f || base>1.48f || !std::isfinite(distance) || distance<0 || distance>4)return false;
-    if(selected==0) {reference=distance;return true;}
-    const float denominator=std::tan(base)*d.coefficient[0],current=std::tan(angle)*d.coefficient[selected];
+    // Authored zoom arrays are not ordered: the captured 3.5/2.5/1 optic
+    // puts its widest lens last. Keep that lens as the presentation reference.
+    unsigned widest=0;for(unsigned i=1;i<3;++i)if(d.zoom[i]<d.zoom[widest])widest=i;
+    const float angle=((d.degrees/d.zoom[selected])*rad)*.5f,base=((d.degrees/d.zoom[widest])*rad)*.5f;
+    if(angle<.0001f || angle>1.48f || base<.0001f || base>1.48f || !std::isfinite(distance) || std::fabs(distance)>4)return false;
+    if(selected==widest) {reference=distance;return true;}
+    const float denominator=std::tan(base)*d.coefficient[widest],current=std::tan(angle)*d.coefficient[selected];
     const float u=(d.degrees-45.0f)/45.0f,base_term=(1-u)*d.near_term[0]+u*d.near_term[1];
     reference=base_term+(distance-base_term)*(current/denominator);
-    return std::isfinite(reference) && reference>=0 && reference<=4;
+    return std::isfinite(reference) && std::fabs(reference)<=4;
 }
 // The exact native caller owns these stack locals. Reading its target/current
 // lens avoids replicating camera-profile/stance logic or modifying a request.
@@ -440,6 +452,13 @@ static float depth_delta(Policy& p,const DepthObservation& observation,uint64_t 
 #endif
     if(!native_stack)return 0;
     DepthState& s=p.depth;
+    // The selection policy supplies the authored zoom reference to native
+    // lens/depth calculations. Applying the old selected-distance inverse as
+    // well would interpret that reference as a magnified distance twice.
+    if(p.zoom_policy_active) {
+        s.observed.supported=0;s.observed.reason=10;s.observed.correction=0;
+        return 0;
+    }
     if(p.full_ads)return depth_pass(s,1);
     if(!observation.ready || observation.native_stack!=native_stack || observation.request!=p.c.request
         || observation.generation!=active_generation.load(std::memory_order_relaxed)
@@ -456,7 +475,7 @@ static float depth_delta(Policy& p,const DepthObservation& observation,uint64_t 
     if(field<uint32_t>(request,4)!=field<uint32_t>(frame,0x1C)
         || !std::isfinite(target) || target<.0002f || target>2.96f || !std::isfinite(lens) || lens<.0002f || lens>2.96f
         || !std::isfinite(prior) || prior<0 || prior>2.96f || !std::isfinite(current) || !std::isfinite(previous)
-        || current<0 || current>4 || previous<0 || previous>4 || (request[0xD] && (!std::isfinite(mix) || mix<0 || mix>1)))return depth_pass(s,5);
+        || std::fabs(current)>4 || std::fabs(previous)>4 || (request[0xD] && (!std::isfinite(mix) || mix<0 || mix>1)))return depth_pass(s,5);
     const float span=std::fabs(target-prior);
     float t=span>1.1920928955078125e-7f?std::fabs(target-lens)/span:0;
     if(t>1)t=1;
@@ -475,9 +494,9 @@ static float depth_delta(Policy& p,const DepthObservation& observation,uint64_t 
         if(fixture_depth_mutation)std::memcpy(reinterpret_cast<void*>(fixture_depth_mutation),&fixture_depth_mutation_byte,1);
 #endif
         s.observed.zoom_index=selected;s.observed.zoom=data.zoom[selected];
-        if(previous==0) {s.previous_reference=0;s.previous_known=true;}
-        else if(old_valid && previous==old_current) {s.previous_reference=old_reference;s.previous_known=true;}
+        if(old_valid && previous==old_current) {s.previous_reference=old_reference;s.previous_known=true;}
         else if(old_valid && old_previous_known && previous==old_previous) {s.previous_reference=old_previous_reference;s.previous_known=true;}
+        else if(previous==0) {s.previous_reference=0;s.previous_known=true;}
         // A missing previous event cannot be reconstructed from prior lens:
         // it may be an intermediate lens or belong to another definition.
         s.data=data;s.next_check=now+500;s.valid=true;
@@ -667,13 +686,18 @@ static void position_call(uint64_t caller,uint32_t unit,uint32_t node,const floa
         if(failure!=OK)error(failure);else expired.store(1,std::memory_order_release);
         forward_position(unit,node,pose);return;
     }
-    const float u=static_cast<float>(now-policy.blend_start)/static_cast<float>(policy.c.blend_ms);
-    const float t=u<0?0:(u>1?1:u),eased=t*t*(3-2*t);
-    policy.weight=policy.start_weight+(policy.target-policy.start_weight)*eased;
-    // Normal aim retains saved placement. Only the native FPV
-    // controller owns full ADS and receives the original, unshifted pose.
+    // A shared phase changes only our common rig modifier. Every callback
+    // still consumes the current native arm/weapon animation without filtering.
     const float target=policy.full_ads?0.0f:1.0f;
-    if(target!=policy.target) {policy.start_weight=policy.weight;policy.target=target;policy.blend_start=now;}
+    if(policy.shared.matches(policy.full_ads,now)){
+        policy.weight+=(target-policy.weight)*policy.shared.step(policy.full_ads);
+        policy.target=target;policy.start_weight=policy.weight;policy.blend_start=now;
+    }else{
+        const float u=static_cast<float>(now-policy.blend_start)/static_cast<float>(policy.c.blend_ms);
+        const float t=u<0?0:(u>1?1:u),eased=t*t*(3-2*t);
+        policy.weight=policy.start_weight+(policy.target-policy.start_weight)*eased;
+        if(target!=policy.target) {policy.start_weight=policy.weight;policy.target=target;policy.blend_start=now;}
+    }
     alignas(16) float shifted[4];std::memcpy(shifted,native,16);
     if(policy.weight!=0) {
         shifted[0]+=(policy.c.offset_x+policy.motion[0])*policy.weight;
@@ -735,10 +759,26 @@ static bool quaternion(const float (&q)[4],float tolerance) {
 }
 static bool identity(const float (&q)[4]) {return q[0]==0 && q[1]==0 && q[2]==0 && q[3]==1;}
 static void branch_rotation_call(uint64_t caller,uint32_t unit,uint32_t node,const float* pose) {
-    if(!armed.load(std::memory_order_acquire)) {forward_branch_rotation(unit,node,pose);return;}
+    // This API is used by every actor/bone. Unrelated work must not serialize
+    // behind the FPS rig's lock, including while its original setter runs.
+    // Keep a matching owned node from a different caller on the locked path:
+    // that writer must retire our cached rotation before it is forwarded.
+    const uint64_t generation=active_generation.load(std::memory_order_acquire);
+    if(!armed.load(std::memory_order_acquire) || !generation
+        || unit!=watched_viewmodel.load(std::memory_order_relaxed) || node!=RIG_NODE) {
+        forward_branch_rotation(unit,node,pose);return;
+    }
+#if defined(NADSE_FIXTURE)
+    if(fixture_rotation_before_policy_reached) {
+        SetEvent(fixture_rotation_before_policy_reached);WaitForSingleObject(fixture_rotation_continue_policy,INFINITE);
+    }
+#endif
     AcquireSRWLockExclusive(&policy_lock);
     struct Unlock {~Unlock(){ReleaseSRWLockExclusive(&policy_lock);}} unlock;
-    if(!armed.load(std::memory_order_acquire) || unit!=policy.c.viewmodel || node!=RIG_NODE) {
+    // End and a complete re-arm may finish while this invocation waits. It
+    // must never apply the replacement generation's delta to an older solve.
+    if(!armed.load(std::memory_order_acquire) || generation!=active_generation.load(std::memory_order_acquire)
+        || unit!=policy.c.viewmodel || node!=RIG_NODE) {
         forward_branch_rotation(unit,node,pose);return;
     }
     if(caller!=rotation_return.load(std::memory_order_relaxed)) {
@@ -859,7 +899,7 @@ NADSE_EXPORT uint32_t NADSE_Validate(const NADSE_Config* input) {
     if(!graph(checked,false))return reject(GRAPH_MISMATCH);
     error(OK);return 1;
 }
-NADSE_EXPORT uint32_t NADSE_Begin(const NADSE_Config* input,uint64_t* output) {
+static uint32_t begin_pose(const NADSE_Config* input,uint64_t* output,bool steady) {
     AcquireSRWLockExclusive(&control_lock);
     struct Unlock {~Unlock(){ReleaseSRWLockExclusive(&control_lock);}} unlock;
     if(!write_generation(output,0))return reject(INVALID_CONFIG);
@@ -897,6 +937,10 @@ NADSE_EXPORT uint32_t NADSE_Begin(const NADSE_Config* input,uint64_t* output) {
 #if defined(NADSE_FIXTURE)
     if(fixture_before_arm_reached) {SetEvent(fixture_before_arm_reached);WaitForSingleObject(fixture_continue_arm,INFINITE);}
 #endif
+    // Persistent first person applies saved placement to the first fresh pose
+    // of the incoming gun. Its native draw animation supplies the transition;
+    // replaying an extra zero-to-offset ramp makes every weapon swap slide.
+    if(steady)next.weight=next.start_weight=next.target=1;
     AcquireSRWLockExclusive(&policy_lock);policy=next;
     policy.deadline=c.duration_ms?tick()+c.duration_ms:0;policy.blend_start=tick();
     stats_deadline=policy.deadline;publish_diagnostics(policy);
@@ -908,6 +952,15 @@ NADSE_EXPORT uint32_t NADSE_Begin(const NADSE_Config* input,uint64_t* output) {
     carrier_return.store(c.game+CALLS[0]+4,std::memory_order_relaxed);watched_viewmodel.store(c.viewmodel,std::memory_order_relaxed);
     active_generation.store(owned_generation,std::memory_order_relaxed);
     expired.store(0,std::memory_order_release);armed.store(1,std::memory_order_release);ReleaseSRWLockExclusive(&policy_lock);
+    error(OK);return 1;
+}
+NADSE_EXPORT uint32_t NADSE_Begin(const NADSE_Config* input,uint64_t* output) {return begin_pose(input,output,false);}
+NADSE_EXPORT uint32_t NADSE_BeginSteady(const NADSE_Config* input,uint64_t* output) {return begin_pose(input,output,true);}
+NADSE_EXPORT uint32_t NADSE_SetTransition(uint64_t generation,uint64_t epoch,float progress,uint32_t ads) {
+    AcquireSRWLockExclusive(&control_lock);struct UnlockControl{~UnlockControl(){ReleaseSRWLockExclusive(&control_lock);}}control;
+    if(!generation||!reserved.load(std::memory_order_acquire)||generation!=owned_generation)return reject(TOKEN_MISMATCH);
+    AcquireSRWLockExclusive(&policy_lock);struct UnlockPolicy{~UnlockPolicy(){ReleaseSRWLockExclusive(&policy_lock);}}lock;
+    if(!armed.load(std::memory_order_acquire)||!policy.shared.publish(epoch,progress,ads,tick()))return reject(INVALID_CONFIG);
     error(OK);return 1;
 }
 static uint32_t set_offsets(uint64_t generation,float x,float y,float z,bool motion,const float* rotation=nullptr,bool ads=false,bool authored_ads=false) {
@@ -965,6 +1018,37 @@ NADSE_EXPORT uint32_t NADSE_SetTransform(uint64_t generation,float dx,float dy,f
 }
 NADSE_EXPORT uint32_t NADSE_SetAuthoredTransform(uint64_t generation,float dx,float dy,float dz,float qx,float qy,float qz,float qw) {
     const float rotation[4]={qx,qy,qz,qw};return set_offsets(generation,dx,dy,dz,true,rotation,false,true);
+}
+NADSE_EXPORT uint32_t NADSE_SetZoomPolicy(uint64_t generation,uint32_t active) {
+    if(active>1)return reject(INVALID_CONFIG);
+    AcquireSRWLockExclusive(&control_lock);
+    struct UnlockControl {~UnlockControl(){ReleaseSRWLockExclusive(&control_lock);}} unlock_control;
+    if(!generation || !reserved.load(std::memory_order_acquire) || generation!=owned_generation)return reject(TOKEN_MISMATCH);
+    AcquireSRWLockExclusive(&policy_lock);
+    struct UnlockPolicy {~UnlockPolicy(){ReleaseSRWLockExclusive(&policy_lock);}} unlock_policy;
+    if(!armed.load(std::memory_order_acquire))return reject(expired.load()?DEADLINE_EXPIRED:OWNER_MISMATCH);
+    if(policy.deadline!=0 && tick()>=policy.deadline) {
+        restore_rig_if_owned();armed.store(0,std::memory_order_release);expired.store(1,std::memory_order_release);
+        return reject(DEADLINE_EXPIRED);
+    }
+    uint32_t failure=OK,sight=0;
+    if(!ownership(policy,false))failure=OWNER_MISMATCH;
+    else if(!graph(policy,false))failure=GRAPH_MISMATCH;
+    else if(!dispatch_owned(policy.c))failure=API_MISMATCH;
+    else if(!value(policy.c.request+0x18,sight) || sight==0)failure=SIGHT_NODE_UNAVAILABLE;
+    if(failure!=OK) {
+        if(failure!=OWNER_MISMATCH && failure!=GRAPH_MISMATCH)restore_rig_if_owned();
+        policy.rig_shifted=false;policy.rotation_shifted=false;armed.store(0,std::memory_order_release);return reject(failure);
+    }
+    if(policy.zoom_policy_active!=(active!=0)) {
+        policy.zoom_policy_active=active!=0;
+        policy.depth.valid=false;policy.depth.signature_set=false;policy.depth.previous_known=false;
+        policy.depth.retry_at=0;policy.depth.next_check=0;
+        policy.observation.ready=false;policy.carrier.ready=false;
+        // Keep all saved/native baselines: End must still restore a previous
+        // modified pose if no fresh native setter runs before cleanup.
+    }
+    error(OK);return 1;
 }
 NADSE_EXPORT uint32_t NADSE_End(uint64_t generation) {
     AcquireSRWLockExclusive(&control_lock);

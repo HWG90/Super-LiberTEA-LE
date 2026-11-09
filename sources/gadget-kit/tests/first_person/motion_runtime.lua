@@ -14,7 +14,7 @@ local function fixture()
         equal(owned,f.backend.alignment_lease)
         f.attempts=f.attempts+1
         if f.refuse then return false,'fixture changed pose owner'end
-        f.writes[#f.writes+1]={dx=value.dx,dy=value.dy,dz=value.dz,qx=value.qx,qy=value.qy,qz=value.qz,qw=value.qw};return true
+        f.writes[#f.writes+1]={dx=value.dx,dy=value.dy,dz=value.dz,qx=value.qx,qy=value.qy,qz=value.qz,qw=value.qw,authored_ads=value.authored_ads==true};return true
     end}
     function f.backend:player_snapshot()
         f.hints=f.hints+1
@@ -45,6 +45,7 @@ local function fixture()
     function f:step(y,dt)self.time=self.time+(dt or 1/60);self.y=y or self.y;return self.runtime:update()end
     return f
 end
+local function same(a,b)for _,axis in ipairs({'dx','dy','dz','qx','qy','qz','qw'})do equal(a[axis],b[axis])end end
 local function neutral(value)
     equal(value.dx,0);equal(value.dy,0);equal(value.dz,0)
     equal(value.qx,0);equal(value.qy,0);equal(value.qz,0);equal(value.qw,1)
@@ -68,13 +69,14 @@ test('repeated clock ticks retain the last pose and do not reset or advance moti
     f.time=f.time-.01;assert(f.runtime:update());neutral(f.writes[#f.writes])
     equal(f.runtime:result().phase,'neutral')
 end)
-test('sprint quaternion is atomic with translation; shoulder eases and full ADS wins on a held tick',function()
+test('sprint quaternion is atomic and a held-tick ADS edge preserves the submitted modifier',function()
     local f=fixture();f:step();f.sprint=true
     for i=1,90 do assert(f:step(i*.1))end
     local previous=f.writes[#f.writes];equal(previous.qx,0);equal(previous.qz,0);equal(previous.qw,1)
     f.shoulder=true;assert(f:step(f.y+.02));local shoulder=f.writes[#f.writes]
     equal(shoulder.qx,0)
-    f.ads=true;assert(f.runtime:update());neutral(f.writes[#f.writes])
+    f.ads=true;local before=f.writes[#f.writes];assert(f.runtime:update());same(f.writes[#f.writes],before)
+        for _=1,10 do assert(f:step())end;neutral(f.writes[#f.writes])
     f.ads=false;f.shoulder=false;f.bad_rotation=true;assert(f:step(f.y+.02));neutral(f.writes[#f.writes])
     equal(f.runtime:result().phase,'neutral')
 end)
@@ -102,7 +104,8 @@ test('shoulder stance stays visible with sway off or zero strength and disabled 
         local out=f.writes[#f.writes]
         equal(out.dx,-.04);equal(out.dy,-.06);equal(out.dz,0);equal(out.qw,1)
         equal(f.runtime:result().shoulder_weight,1)
-        f.ads=true;assert(f.runtime:update());neutral(f.writes[#f.writes])
+        f.ads=true;local before=f.writes[#f.writes];assert(f.runtime:update());same(f.writes[#f.writes],before)
+        for _=1,10 do assert(f:step())end;neutral(f.writes[#f.writes])
         f.ads=false;f.shoulder=false;assert(f:step());neutral(f.writes[#f.writes])
         f.shoulder=true;for _=1,120 do assert(f:step())end
         f.shoulder=false;for _=1,120 do assert(f:step())end
@@ -131,7 +134,8 @@ test('disabled idle reads the separate shoulder signal instead of legacy48',func
     for _=1,120 do assert(f:step())end
     equal(f.runtime:result().shoulder_weight,1);local out=f.writes[#f.writes]
     equal(out.dx,-.04);equal(out.dy,-.06)
-    f.ads=true;assert(f:step());neutral(f.writes[#f.writes])
+    f.ads=true;local before=f.writes[#f.writes];assert(f:step());same(f.writes[#f.writes],before)
+    for _=1,10 do assert(f:step())end;neutral(f.writes[#f.writes])
     f.ads=false;f.shoulder=false;assert(f:step());neutral(f.writes[#f.writes])
 end)
 test('read conversion and write failures stay neutral and never disable first person',function()
@@ -180,9 +184,10 @@ test('a refused submission cannot populate the coalescing cache or suppress its 
     f.refuse=false;assert(f:step());equal(f.attempts,attempts+2);equal(#f.writes,2)
     assert(f:step());equal(f.attempts,attempts+2)
 end)
-test('ADS sends exact neutral presentation while preserving the active session',function()
+test('ADS settles to exact neutral presentation while preserving the active session',function()
     local f=fixture();f:step();f:step(.05);f.ads=true;f.sprint=true
-    assert(f:step(.1));neutral(f.writes[#f.writes]);equal(f.controller.enabled,true)
+    local before=f.writes[#f.writes];assert(f:step(.1));same(f.writes[#f.writes],before)
+    for _=1,10 do assert(f:step())end;neutral(f.writes[#f.writes]);equal(f.controller.enabled,true)
     f.ads=false;assert(f:step(.15));equal(f.runtime:result().reset,false)
 end)
 test('action profiles settle without writes and ADS configuration is lease-scoped',function()
@@ -208,5 +213,104 @@ test('editor yaw pitch preview coalesces unchanged rotation',function()
     local before=#f.writes;assert(f:step());equal(#f.writes,before)
     yaw=16;assert(f:step());equal(#f.writes,before+1)
     f.editing=false;assert(f:step());neutral(f.writes[#f.writes])
+end)
+test('automatic capture retains saved idle transform and removes presentation motion',function()
+    local f=fixture();f:step();f.sprint=true
+    for i=1,20 do assert(f:step(i*.1))end
+    local saved={x=.12,y=.03,z=-.08,yaw=14,pitch=-7,roll=3}
+    function f.controller:get_placement()return saved end
+    function f.controller:set_placement(value)f.capture_placement=value;return true end
+    f.backend.action_placement=function(_,action)equal(action,'idle');return saved end
+    assert(f.runtime:capture_neutral())
+    local state=f.runtime:result();equal(state.phase,'capture');equal(state.capture_ready,true)
+    local applied=f.writes[#f.writes];equal(applied.dx,0);equal(applied.dy,0);equal(applied.dz,0)
+    assert(math.abs(applied.qx)+math.abs(applied.qy)+math.abs(applied.qz)>.01)
+    equal(f.options.enabled,true);equal(f.options.scale,1);equal(saved.yaw,14)
+    equal(f.capture_placement,saved);assert(f.runtime:capture_neutral(true));for _,axis in ipairs({'x','y','z','yaw','pitch','roll'})do equal(f.capture_placement[axis],0)end
+    neutral(f.writes[#f.writes]);equal(f.runtime:result().capture_native_ads,true);equal(saved.x,.12);equal(saved.yaw,14)
+    f.refuse=true;assert(not f.runtime:capture_neutral());equal(f.runtime:result().capture_ready,false)
+end)
+local function near(a,b)assert(math.abs(a-b)<.0000001,tostring(a)..' !~= '..tostring(b))end
+local function profile_fixture()
+    local f=fixture();f.placement={x=.12,y=0,z=-.03,yaw=0,pitch=0,roll=0};f.ads_writes={}
+    f.backend.placement_weapon_key='1234567890abcdef'
+    f.backend.action_placement=function(_,action)
+        return {x=action=='aim' and 0 or .12,y=0,z=action=='aim' and 0 or -.03,yaw=0,pitch=0,roll=0}
+    end
+    f.backend.set_ads_placement=function(_,owned,value)
+        equal(owned,f.controller.lease);f.ads_writes[#f.ads_writes+1]=value;return true
+    end
+    f.controller.get_placement=function()
+        local p={};for k,v in pairs(f.placement)do p[k]=v end;return p
+    end
+    f.controller.set_placement=function(_,p)f.placement=p;return true end
+    return f
+end
+test('ADS keeps the reached aim placement instead of reversing toward idle',function()
+    local f=profile_fixture();f:step();f.shoulder=true
+    for _=1,120 do assert(f:step())end
+    equal(f.placement.x,0);equal(f.placement.z,0)
+    f.ads=true
+    for _=1,30 do assert(f:step());equal(f.placement.x,0);equal(f.placement.z,0)end
+    equal(f.controller.enabled,true)
+    f.ads=false;f.shoulder=false
+    for _=1,120 do assert(f:step())end
+    equal(f.placement.x,.12);equal(f.placement.z,-.03)
+end)
+test('custom rotation is eligible before ADS and settles continuously to exact native sights',function()
+    local f=fixture();f.rotation_only=.4;assert(f:step())
+    local prior=f.writes[#f.writes];equal(prior.authored_ads,true)
+    f.rotation_only=nil;f.ads=true;assert(f.runtime:update())
+    same(f.writes[#f.writes],prior);equal(f.writes[#f.writes].authored_ads,true)
+    assert(f:step(nil,.075));local mid=f.writes[#f.writes]
+    assert(mid.qx>0 and mid.qx<prior.qx);near(mid.qx^2+mid.qw^2,1)
+    assert(f:step(nil,.076));neutral(f.writes[#f.writes]);equal(f.writes[#f.writes].authored_ads,false)
+end)
+test('rapid ADS reversal starts from the last submitted modifier without restarting at an endpoint',function()
+    local f=fixture();f.rotation_only=.6;f:step();f.rotation_only=nil;f.ads=true;f:step()
+    f:step(nil,.06);local partial=f.writes[#f.writes]
+    assert(partial.qx>0 and partial.qx<math.sin(.3))
+    f.ads=false;f.rotation_only=.6;assert(f.runtime:update());same(f.writes[#f.writes],partial)
+    f:step(nil,.075);assert(f.writes[#f.writes].qx>partial.qx)
+    f:step(nil,.076);near(f.writes[#f.writes].qx,math.sin(.3))
+end)
+test('ADS return blends rotation from identity and a new weapon cannot inherit it',function()
+    local f=fixture();f.rotation_only=.4
+    local lease={request=200,pose_blend_entry=true};f.controller.lease=lease;f.backend.alignment_lease=lease
+    assert(f:step());neutral(f.writes[#f.writes])
+    f:step(nil,.075);local mid=f.writes[#f.writes];assert(mid.qx>0 and mid.qx<math.sin(.2))
+    f:step(nil,.076);near(f.writes[#f.writes].qx,math.sin(.2))
+    lease={request=300};f.controller.lease=lease;f.backend.alignment_lease=lease;f.rotation_only=-.3
+    assert(f:step());near(f.writes[#f.writes].qx,math.sin(-.15))
+end)
+test('an interrupted ADS fade cannot survive a read failure or long clock gap',function()
+    for _,fault in ipairs({'read_failure','time_gap'})do
+        local f=fixture();f.rotation_only=.4;f:step();f.ads=true;f.rotation_only=nil;f:step();f:step(nil,.04)
+        assert(f.writes[#f.writes].qx>0)
+        if fault=='read_failure'then f.read_failure=true;f:step();f.read_failure=false;f:step()
+        else f:step(nil,.4)end
+        neutral(f.writes[#f.writes])
+    end
+end)
+test('shared phase controls presentation handoff independently of renderer elapsed time',function()
+    local f=fixture();f.rotation_only=.4;f:step();local prior=f.writes[#f.writes]
+    local packet={epoch=1,progress=0,ads=true}
+    f.backend.presentation_transition=function()return packet end
+    f.rotation_only=nil;f.ads=true;assert(f:step());same(f.writes[#f.writes],prior)
+    packet.progress=.5;assert(f:step(nil,.01));local mid=f.writes[#f.writes];assert(mid.qx>0 and mid.qx<prior.qx)
+    assert(f:step(nil,.01));same(f.writes[#f.writes],mid)
+    packet.progress=1;assert(f:step(nil,.01));neutral(f.writes[#f.writes])
+end)
+test('same-identity cleanup carries only bounded presentation scalars while a different weapon drops them',function()
+    for _,same_owner in ipairs{true,false}do
+        local f=fixture();f.controller.lease.origin={identity='body/weapon1',player_identity='body'}
+        f.rotation_only=.4;f:step();local prior=f.writes[#f.writes]
+        f.controller.phase='waiting';assert(f:step(nil,.01));local reads=f.reads
+        local origin={identity=same_owner and'body/weapon1'or'body/weapon2',player_identity='body'}
+        local lease={request=201,origin=origin};f.controller.lease=lease;f.backend.alignment_lease=lease;f.controller.phase='running';f.rotation_only=-.2
+        assert(f:step(nil,.01));assert(f.reads>reads)
+        if same_owner then same(f.writes[#f.writes],prior);f:step(nil,.16);near(f.writes[#f.writes].qx,math.sin(-.1))
+        else near(f.writes[#f.writes].qx,math.sin(-.1))end
+    end
 end)
 print('Native ADS motion runtime fixtures: '..passed..' passed')

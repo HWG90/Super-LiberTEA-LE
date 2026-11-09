@@ -1,6 +1,6 @@
 local PORT51=mod.require('src/first_person/compat51.lua')
--- The original FPV mod's S-only focused-locomotion data override. It never
--- changes aim flags, keyboard input, animation state, or movement instructions.
+-- Native focused locomotion: S-only for manual FPV, or view-aligned carry
+-- for an independently owned natural Fird camera. No input, aim or bone writes.
 local M={}
 local U32=4294967296
 local capacities={}
@@ -106,7 +106,14 @@ function M.new(backend,log,sr,deps)
         assert(accepted==true and backend:_read(address,1)==value,'Focused locomotion byte write/readback failed')
     end
     local function snapshot()
-        local s,why=backend:player_snapshot();assert(s,why or 'Local locomotion player unavailable');return s
+        local s,why
+        -- Pin mode can prove the original body independently of a vehicle's
+        -- camera request. Keep its unsafe/seated fields intact: this permits
+        -- exact cleanup, never movement acquisition in that camera.
+        if backend.pin_first_person==true and PORT51.kind(backend.pin_player_snapshot)=='function'then
+            s,why=backend:pin_player_snapshot()
+        else s,why=backend:player_snapshot()end
+        assert(s,why or 'Local locomotion player unavailable');return s
     end
     function self:is_clean()return owned==nil end
     function self:result()
@@ -114,8 +121,9 @@ function M.new(backend,log,sr,deps)
         result.owned=owned~=nil;result.cleanup_pending=state.phase=='cleanup_pending';result.closing=closing
         return result
     end
-    function self:status()return state.phase..'; focused S writes='..state.writes..'; restores='..state.restores end
+    function self:status()return state.phase..'; focused writes='..state.writes..'; restores='..state.restores end
     function self:stop()
+        if state.scope=='fird'then draining=false;state.scope=nil end
         if not owned then report('idle');return true end
         local r=owned
         local ok,why=pcall(function()
@@ -139,6 +147,14 @@ function M.new(backend,log,sr,deps)
         report('idle');return true
     end
     function self:shutdown()closing=true;return self:stop()end
+    local function input_focus()
+        local window=sr.Window
+        if PORT51.kind(window)=='table'then
+            if PORT51.kind(window.mouse_focus)=='function'and window.mouse_focus()~=true then return false end
+            if PORT51.kind(window.show_cursor)=='function'and window.show_cursor()~=false then return false end
+        end
+        return true
+    end
     local function backward()
         local input=sr.Keyboard
         assert(PORT51.kind(input)=='table' and PORT51.kind(input.button)=='function','Game keyboard input unavailable')
@@ -148,37 +164,45 @@ function M.new(backend,log,sr,deps)
             assert(PORT51.kind(find)=='function','Game S binding lookup unavailable');key=find('s')
         end
         assert(PORT51.kind(key)=='number' and key==math.floor(key) and key>=0 and key<512,'Game S binding unavailable')
-        local window=sr.Window
-        if PORT51.kind(window)=='table'then
-            if PORT51.kind(window.mouse_focus)=='function' and window.mouse_focus()~=true then return false end
-            if PORT51.kind(window.show_cursor)=='function' and window.show_cursor()~=false then return false end
-        end
+        if not input_focus()then return false end
         local value=input.button(key)
         assert(value==0 or value==1,'Game S input state unavailable')
         return value==1
     end
-    function self:update(controller,skip)
+    local function update(controller,skip,focused)
         if closing or skip then return self:stop()end
         if owned and state.phase=='cleanup_pending'then return self:stop()end
         local ok,why=pcall(function()
             assert(PORT51.kind(controller)=='table' and PORT51.kind(controller.is_enabled)=='function','Movement controller unavailable')
             if not controller:is_enabled() or controller:result().mode~='pose_offset' then return self:stop()end
+            state.scope=focused and'fird'or'manual'
             if backend.foreign_camera then
                 local foreign=backend.foreign_camera()
                 assert(PORT51.kind(foreign)=='boolean','Camera ownership unavailable')
                 if foreign then return self:stop()end
             end
-            -- With no S input and no owned byte, there is no native work to do.
-            -- An existing lease still goes through stop's exact-owner restore.
-            if not backward()then draining=false;return self:stop()end
-            if draining then report('foreign','Focused locomotion changed externally; release S before retrying');return end
+            -- Manual FPV retains its original S-only behavior. Natural Fird
+            -- owns a separate, continuous focus interval, without key queries.
+            if focused then
+                if PORT51.kind(controller.focus_owned)~='function'or not input_focus()then return self:stop()end
+            elseif not backward()then draining=false;return self:stop()end
+            if draining then
+                report('foreign',focused and'Focused locomotion changed externally; switch Fird Person off before retrying'
+                    or'Focused locomotion changed externally; release S before retrying');return
+            end
             local s=snapshot()
             if not s.safe or s.seated or (s.camera_kind~=4 and s.camera_kind~=6)then return self:stop()end
+            local function focused_owner(current)
+                return not focused or current.safe==true and current.camera_kind==4 and not current.controller_active
+                    and input_focus()and controller:focus_owned(current)==true and PORT51.kind(deps.fallback_ready)=='function'
+                    and deps.fallback_ready(current)==true
+            end
+            if not focused_owner(s)then return self:stop()end
             local action=backend:action_state(s)
             if backend:on_foot(s,action)~=true then
                 return self:stop()
             end
-            if s.camera_kind==4 and (PORT51.kind(deps.fallback_ready)~='function' or deps.fallback_ready(s)~=true)then
+            if not focused and s.camera_kind==4 and (PORT51.kind(deps.fallback_ready)~='function' or deps.fallback_ready(s)~=true)then
                 return self:stop()
             end
             local current=location(s)
@@ -197,11 +221,15 @@ function M.new(backend,log,sr,deps)
                 return
             end
             if value=='\1'then report('native','Focused locomotion is already native');return end
-            assert(same(location(snapshot()),current),'Locomotion owner changed before acquisition')
+            local before=snapshot()
+            assert(before.safe and not before.seated and(before.camera_kind==4 or before.camera_kind==6)
+                and focused_owner(before)and same(location(before),current),'Locomotion owner changed before acquisition')
             assert(backend:_read(current.address,1)=='\0','Focused locomotion changed before acquisition')
             current.before=value;owned=current
             store(current.address,'\1')
-            assert(same(location(snapshot()),current),'Locomotion owner changed during acquisition')
+            local after=snapshot()
+            assert(after.safe and not after.seated and(after.camera_kind==4 or after.camera_kind==6)
+                and focused_owner(after)and same(location(after),current),'Locomotion owner changed during acquisition')
             state.writes=state.writes+1;report('active')
         end)
         if not ok then
@@ -213,6 +241,8 @@ function M.new(backend,log,sr,deps)
         if owned and state.phase=='cleanup_pending'then return false,state.reason end
         return true
     end
+    function self:update(controller,skip)return update(controller,skip,false)end
+    function self:update_fird(controller,skip)return update(controller,skip,true)end
     return self
 end
 return M

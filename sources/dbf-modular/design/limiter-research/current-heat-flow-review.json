@@ -1,0 +1,70 @@
+{
+  "authority": "current-live-captured-text-static-analysis",
+  "target_build": 26251122,
+  "artifact": "/home/goose/Projects/HellForge/Backports/DBF-Modular/dist/limiter-current-text.bin",
+  "file_offset_zero_rva": "0x1000",
+  "artifact_sha256": "363e95039eaf075e02f630f03fccd77c3e1ae2ac68942f25246e1b0b19b54a77",
+  "observations": [
+    {
+      "at": [
+        "0x76e272",
+        "0x76e277",
+        "0x76e27e"
+      ],
+      "behavior": "config+0x74 added directly to accumulated-heat runtime+4 inside function76dc40",
+      "callers": [
+        "0x620791",
+        "0x84cba6"
+      ],
+      "gate_requirement": "before actual projectile/beam emission, not by skipping this post-emission heat update"
+    },
+    {
+      "at": [
+        "0x76e383",
+        "0x76e388",
+        "0x76e38f"
+      ],
+      "behavior": "second heat-row function76e2d0 adds config+0x74 to accumulated heat; direct-call scan found no E8 caller in captured text"
+    },
+    {
+      "at": [
+        "0x76e460",
+        "0x76e476",
+        "0x76e47b",
+        "0x76e482"
+      ],
+      "behavior": "function76e3f0 uses charge runtime50+index72+0xc >= positive config+0x94 to add input XMM2 * config+0x78, clamped to config+0x60; cooling branch only when charge equals zero",
+      "caller": "heat manager loop76fe00 calls at76fe5b with XMM2 copied from its delta-time XMM1"
+    },
+    {
+      "at": [
+        "0x76fe5b",
+        "0x76ff94"
+      ],
+      "behavior": "same loop performs continuous heat update before later can_fire query; can_fire is not directly consulted by heat update"
+    },
+    {
+      "at": [
+        "0x84b289",
+        "0x84b370",
+        "0x84b852",
+        "0x84b875",
+        "0x84b996"
+      ],
+      "behavior": "beam per-row update initial false can_fire clears local activity, but runtime byte+1 and existing byte+0 continuation can restore active until runtime+0x64 timer expires"
+    },
+    {
+      "at": [
+        "0x84c467",
+        "0x751640"
+      ],
+      "behavior": "beam tail call751640 enumerates Unit mesh/material parameters; it is not heat accumulation"
+    }
+  ],
+  "limitations": [
+    "Captured text has unreadable-page zero fills; only explicitly disassembled nonzero ranges were used.",
+    "Static callsite E8 search gives candidates, not complete indirect call graph.",
+    "No live calls, hooks, writes, process stops, or production edits.",
+    "A universal no-overheat guarantee still requires actual fire/beam gate timing, burst quantum and residual-charge/timer bounds."
+  ]
+}

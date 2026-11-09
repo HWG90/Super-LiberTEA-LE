@@ -1,0 +1,37 @@
+{
+  "target": "Steam HD2 build26251122 / Linux-Proton",
+  "sources": {
+    "installed_fpv_backend": "Mods/goose_temporary_unlocks/src/first_person/backend.lua:174; _top camera queue",
+    "historical_attachment": "native-work/fp-rig-trace/fp-rig-trace-ads.live.log:155-156",
+    "controller_offset": "0x10c0",
+    "semantic_attachment_hash": "0x4FDD3337"
+  },
+  "live_calibrated_probe": {
+    "path": "dist/LIVE-FPS-CALIBRATED-dev.6.decoded.txt",
+    "actor": 796,
+    "weapon": 799,
+    "body_engine": 12587720,
+    "fps_unit": 8390808,
+    "semantic_node": 8,
+    "request_kind": 6,
+    "request_owners_match": true,
+    "raw_native_fp": true,
+    "aiming": true,
+    "offset": {
+      "x": 0,
+      "y": 0.5,
+      "z": 0
+    },
+    "screen_point": [
+      1919.2805175781,
+      565.18591308594
+    ],
+    "clip": 0.77800822257996,
+    "viewport": [
+      3840,
+      2160
+    ]
+  },
+  "scope": "Read-only attachment point; no silhouette claim, render/camera writes or native input changes.",
+  "raw_origin_offscreen": "Preserved in earlier probe receipts; source pivot can lie behind/below visible mesh."
+}

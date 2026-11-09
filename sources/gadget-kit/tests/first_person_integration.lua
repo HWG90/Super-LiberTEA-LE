@@ -12,6 +12,7 @@ runtime={on_enable=function()
 end,on_update=function()updates=(updates or 0)+1;if runtime.fail then error('fixture update failure')end end,
 on_disable=function()stops=(stops or 0)+1;if pending then return false,'Pending camera restoration'end;virtual.unregister();return true end}
 function host.require(name)
+    if name=='src/spawner/stratagem_menu.lua' then return dofile(name) end
     if name=='src/first_person.lua'then return FP end
     assert(name=='src/first_person/runtime.lua');return runtime
 end
@@ -24,6 +25,11 @@ function DBFMCM.register(spec)
         if c.id then controls[c.id]=c;values[c.id]=c.default end
     end end
     function h.get(id)return values[id]end
+    function h.set(id,value)
+        assert(controls[id],'Unregistered control');values[id]=value
+        if controls[id].on_change then controls[id].on_change(value)end
+        return true
+    end
     function h.unregister()DBFMCM.mods[spec.id]=nil;return true end
     DBFMCM.mods[spec.id]={handle=h,pages=spec.pages,controls=controls}
     return h
@@ -32,6 +38,9 @@ local child=FP.host(host)
 assert(child.config.motion_scale==.5)
 assert(child.set('placement',{x=.1,y=0,z=0}))
 assert(host.config.enabled==false and host.config.first_person.motion_scale==.5)
+assert(child.set('aim_markers',{['0011223344556677']=true}))
+assert(host.config.first_person.aim_markers['0011223344556677']==true)
+assert(host.config.enabled==false and host.config.first_person.motion_scale==.5 and host.config.first_person.placement.x==.1)
 assert(FP.enable())
 assert(next(DBFMCM.mods)==nil,'Camera must not create a second MCM registration')
 local controller={}
@@ -51,6 +60,8 @@ assert(record.controls.first_person_start_test)
 record.controls.first_person_start_test.on_activate();assert(starts==1)
 record.controls.first_person_motion_strength.on_change();assert(changed==1)
 assert(virtual.get('motion_strength')==100)
+assert(virtual.set('motion_strength',75)and virtual.get('motion_strength')==75)
+assert(record.handle.get('first_person_motion_strength')==75)
 assert(not controller.categories.first_person_motion_strength)
 FP.update();assert(updates==1)
 pending=true;assert(FP.shutdown()==false)

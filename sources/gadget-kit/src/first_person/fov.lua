@@ -29,6 +29,7 @@ function Adapter:_load()
         uint32_t NADSF_Validate(const NADSF_Config *);
         uint32_t NADSF_Begin(const NADSF_Config *,uint64_t *);
         uint32_t NADSF_Bind(uint64_t,uint64_t,uint32_t);
+        uint32_t NADSF_SetTransition(uint64_t,uint64_t,float,uint32_t);
         uint32_t NADSF_End(uint64_t);
         uint32_t NADSF_ReadStats(uint64_t,NADSF_Stats *);
         uint32_t NADSF_Error(void);
@@ -46,11 +47,12 @@ function Adapter:_load()
 end
 function Adapter:_error(operation)
     local ok,code=pcall(function()return PORT51.number(self:_load().NADSF_Error())end)
+    self.last_failure_code=ok and PORT51.kind(code)=='number' and code~=0 and code or nil
     return operation..' failed (native FOV code '..tostring(ok and code or 'unavailable')..')'
 end
 function Adapter:_config(config)
     self:_load();assert(PORT51.kind(config)=='table','FOV configuration unavailable')
-    local c=self.ffi.new('NADSF_Config');c.size=80;c.abi=self.profile.abi;c.reserved=0
+    local c=self.ffi.new('NADSF_Config');c.size=80;c.abi=self.profile.abi;c.reserved=self.profile.ads_blend_ms or 0
     for _,name in ipairs({'game','exe','context','camera','avatar_owner','request','avatar_index','avatar','body','weapon'}) do
         c[name]=assert(config[name],name..' unavailable')
     end
@@ -123,6 +125,21 @@ function Adapter:bind(handle,config)
     end
     return true
 end
+function Adapter:transition(handle,token)
+    if PORT51.kind(handle)~='table' or handle.owner~=self or self.owned~=handle or handle.disarmed then
+        return false,'FOV transition handle is not owned'
+    end
+    if PORT51.kind(token)~='table' or PORT51.kind(token.epoch)~='number' or token.epoch<1
+        or token.epoch>=9007199254740992 or token.epoch%1~=0
+        or PORT51.kind(token.progress)~='number' or token.progress~=token.progress
+        or token.progress<0 or token.progress>1 or PORT51.kind(token.ads)~='boolean' then
+        return false,'FOV shared presentation phase is invalid'
+    end
+    if self:_load().NADSF_SetTransition(handle.generation[0],token.epoch,token.progress,token.ads and 1 or 0)~=1 then
+        return false,self:_error('FOV shared presentation phase')
+    end
+    return true
+end
 function Adapter:owned_handle() return self.owned end
 function Adapter:finish(handle)
     if PORT51.kind(handle)~='table' or handle.owner~=self then return false,'FOV cleanup handle is not owned' end
@@ -152,7 +169,10 @@ function Fov.new(backend,log,helper,clock)
     local self={handle=nil,bound=nil,closing=false,fault=nil,last={},phase='idle'}
     log=log or function()end
     local function problem(message)
-        self.fault=tostring(message);log('Native FOV: '..self.fault)
+        self.fault=tostring(message)
+        self.failure_native_error=helper.last_failure_code
+        self.failure_kind=self.failure_native_error==3 and'temporary_read'or(self.failure_native_error and'unsafe'or nil)
+        log('Native FOV: '..self.fault)
         return false,self.fault
     end
     local function collect()
@@ -160,6 +180,17 @@ function Fov.new(backend,log,helper,clock)
         local stats,why=invoke(helper,'stats',self.handle)
         if PORT51.kind(stats)~='table' then return problem(why or 'FOV statistics unavailable') end
         self.last=stats
+        if PORT51.kind(stats.error)=='number' and stats.error~=0 then helper.last_failure_code=stats.error end
+        return true
+    end
+    local function present()
+        if not self.handle or PORT51.kind(backend.presentation_transition)~='function' then return true end
+        local token,why=invoke(backend,'presentation_transition')
+        if token==nil then return true end
+        if PORT51.kind(token)~='table' then return problem(why or 'Shared presentation phase unavailable') end
+        local done,reason=invoke(helper,'transition',self.handle,token)
+        if done~=true then return problem(reason or 'FOV shared presentation phase was refused') end
+        self.presentation_epoch,self.presentation_progress=token.epoch,token.progress
         return true
     end
     function self:is_clean() return self.handle==nil end
@@ -167,6 +198,11 @@ function Fov.new(backend,log,helper,clock)
         local result={};for k,v in pairs(self.last)do result[k]=v end
         result.phase,result.cleanup_pending=self.phase,self.phase=='cleanup_pending'
         result.error_message=self.fault
+        result.failure_native_error,result.failure_kind=self.failure_native_error,self.failure_kind
+        result.presentation_epoch,result.presentation_progress=self.presentation_epoch,self.presentation_progress
+        -- Acknowledged publication only; diagnostics must not infer that all
+        -- native consumers rendered this phase atomically in one callback.
+        result.transition_epoch,result.transition_progress=self.presentation_epoch,self.presentation_progress
         return result
     end
     function self:status()
@@ -175,22 +211,26 @@ function Fov.new(backend,log,helper,clock)
             ..'; overrides='..tostring(self.last.replaced or 0)..'; ADS forwarded='..tostring(self.last.ads_forwarded or 0)
     end
     function self:stop()
-        if not self.handle then self.bound,self.bound_request,self.bound_weapon,self.bound_player=nil,nil,nil,nil;self.phase='idle';return true end
+        if not self.handle then self.bound,self.bound_request,self.bound_weapon,self.bound_player=nil,nil,nil,nil;self.presentation_epoch,self.presentation_progress=nil,nil;self.phase='idle';return true end
         self.phase='cleanup_pending'
         local done,stats=invoke(helper,'finish',self.handle)
         if done~=true then return problem(stats or 'FOV cleanup remains pending') end
         if PORT51.kind(stats)=='table' then self.last=stats end
-        self.handle,self.bound,self.bound_request,self.bound_weapon,self.bound_player=nil,nil,nil,nil,nil;self.phase='idle'
+        self.handle,self.bound,self.bound_request,self.bound_weapon,self.bound_player=nil,nil,nil,nil,nil;self.presentation_epoch,self.presentation_progress=nil,nil;self.phase='idle'
         return true
     end
     function self:shutdown() self.closing=true;return self:stop() end
     function self:preflight()
+        helper.last_failure_code=nil;self.failure_native_error,self.failure_kind=nil,nil
         if self.handle then return false,'FOV cleanup is still active' end
         local config,why=invoke(backend,'fov_config')
         if PORT51.kind(config)~='table' then return false,why or 'FOV configuration unavailable' end
-        return invoke(helper,'validate',config)
+        local done,reason=invoke(helper,'validate',config)
+        if done~=true then return problem(reason or 'FOV validation refused') end
+        return true
     end
     function self:update(controller)
+        helper.last_failure_code=nil;self.failure_native_error,self.failure_kind=nil,nil
         if self.phase=='cleanup_pending' then return self:stop() end
         local result=controller:result()
         if self.closing or not controller:is_enabled() or result.mode~='pose_offset' then return self:stop() end
@@ -198,6 +238,7 @@ function Fov.new(backend,log,helper,clock)
         if not lease or result.phase~='running' then
             -- The camera policy survives helper suspension and weapon gaps.
             if self.handle then
+                local ready,why=present();if not ready then self:stop();return false,why end
                 local ok,why=collect();if not ok then return false,why end
                 -- Death/respawn and other owner changes can retire the stable
                 -- lens generation while manual FPV intent waits for gameplay.
@@ -211,14 +252,21 @@ function Fov.new(backend,log,helper,clock)
         end
         local weapon=lease.origin and lease.origin.weapon or lease.weapon
         if self.handle and self.bound==lease and self.bound_request==lease.request and self.bound_weapon==weapon then
+            local ready,why=present();if not ready then self:stop();return false,why end
             local ok,why=collect();if not ok then self:stop();return false,why end
             if self.last.armed~=true or (self.last.error and self.last.error~=0) then
-                local why='Native FOV policy disarmed or rejected ownership';self:stop();return problem(why)
+                local why='Native FOV policy disarmed or rejected ownership';problem(why);local done,issue=self:stop();return false,done==true and why or issue
             end
             return true
         end
         local config,why=invoke(backend,'fov_config',lease)
         if PORT51.kind(config)~='table' then return problem(why or 'Owned FOV camera is unavailable') end
+        local had_handle=self.handle~=nil
+        if had_handle then
+            -- Bind can immediately submit a lens. Publish the current phase
+            -- first so a same-body request handoff cannot use the old phase.
+            local ready,reason=present();if not ready then self:stop();return false,reason end
+        end
         local done,value
         if self.handle then
             if self.bound_request==config.request and self.bound_weapon==config.weapon then done=true
@@ -233,14 +281,17 @@ function Fov.new(backend,log,helper,clock)
         end
         if done~=true or not self.handle then
             local why=value or 'Native FOV policy was not accepted'
-            self:stop();return problem(why)
+            problem(why);local stopped,issue=self:stop();return false,stopped==true and why or issue
         end
         self.bound,self.phase,self.fault=lease,'active',nil
         self.bound_request,self.bound_weapon=config.request,config.weapon
         self.bound_player=player
+        if not had_handle then
+            local ready,why=present();if not ready then self:stop();return false,why end
+        end
         local ok,why=collect();if not ok then self:stop();return false,why end
         if self.last.armed~=true or (self.last.error and self.last.error~=0) then
-            self:stop();return problem('Native FOV policy did not remain armed')
+            local why='Native FOV policy did not remain armed';problem(why);local stopped,issue=self:stop();return false,stopped==true and why or issue
         end
         return true
     end

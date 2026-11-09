@@ -28,15 +28,15 @@ end
 function Backend.new(log, io, alignment, pose)
     return setmetatable({log=log or function() end,io=io,alignment=alignment or (io and io.alignment),
         pose=pose or (io and io.pose),frame_epoch=0,frame_active=false,
-        frame_executable_checks={},frame_executable_bases={}}, Backend)
+        frame_executable_checks={},frame_executable_bases={},frame_game_checks={}}, Backend)
 end
 -- Share only immutable image/code validation within one host update. Epochs
 -- reuse these records without allocating tables each frame; ownership reads
 -- remain fresh. Outside the frame every call performs the original checks.
 function Backend:begin_frame()
-    self.frame_epoch=self.frame_epoch+1;self.frame_active=true
+    self.frame_epoch=self.frame_epoch+1;self.frame_active=true;self.pose_phase_publication=nil
 end
-function Backend:end_frame()self.frame_active=false end
+function Backend:end_frame()self.frame_active=false;self.pose_phase_publication=nil end
 function Backend:_invalidate_frame_checks()
     if self.frame_active then self.frame_epoch=self.frame_epoch+1 end
 end
@@ -80,9 +80,12 @@ function Backend:_u32(at) return uint(self:_read(at,4)) end
 function Backend:_u8(at) return self:_read(at,1):byte() end
 function Backend:_ptr(at)
     local b=self:_read(at,8); local value=uint(b)+uint(b,4)*U32
-    assert(value>=LOW and value<HIGH,'Pointer unavailable'); return value
+    assert(value>=LOW and value<HIGH,string.format('Pointer unavailable at0x%x (value0x%x)',at,value)); return value
 end
-function Backend:_module()
+local FP_COLD_CHECK={evaluator=true,root_position_call=true,root_rotation_call=true,pose_branch_position_call=true}
+function Backend:_module(scope)
+    scope=scope or 'full'
+    assert(scope=='full'or scope=='identity'or scope=='entry','Unknown game validation scope')
     local base
     if self.io then base=self.io.module()
     else local w=self:_windows();base=PORT51.number(w.ffi.cast('uintptr_t',w.k.NativeADS_Module('game.dll'))) end
@@ -92,7 +95,8 @@ function Backend:_module()
         self.frame_module_base=observed
     end
     assert(base and base>=LOW,'game.dll unavailable')
-    if self.frame_active and self.frame_game_base==base and self.frame_game_epoch==self.frame_epoch then return base end
+    local cached=self.frame_game_checks and self.frame_game_checks[scope]
+    if self.frame_active and cached and cached.base==base and cached.epoch==self.frame_epoch then return base end
     assert(self:_read(base,2)=='MZ','Invalid game module')
     local pe=self:_u32(base+0x3c)
     assert(pe>=0x40 and pe<=0x1000,'Invalid PE header')
@@ -103,11 +107,27 @@ function Backend:_module()
     for _,check in ipairs(Profile.checks) do
         local bytes=unpack_hex(check.hex)
         local readable,actual=pcall(self._read,self,base+check.rva,#bytes)
-        assert(readable,'Waiting for native ADS camera initialization: enter normal aim-down-sights once, then press F11 ('..tostring(check.name)..')')
-        assert(actual==bytes,'Native ADS fingerprint mismatch: '..tostring(check.name))
+        -- Read-only ownership may be observed before packed FP pages have run.
+        -- Every readable witness still matches exactly. Native entry requires
+        -- all of its hot callers; helper preparation requires the entire set.
+        local required=scope=='full'or scope=='entry'and not FP_COLD_CHECK[check.name]
+        assert(readable or not required,'Waiting for native ADS camera initialization ('..tostring(check.name)..')')
+        if readable then assert(actual==bytes,'Native ADS fingerprint mismatch: '..tostring(check.name))end
     end
-    if self.frame_active then self.frame_game_base,self.frame_game_epoch=base,self.frame_epoch end
+    if scope=='entry'then
+        assert(self:_read(base+0x110FB62,11)==unpack_hex('0f57d2488bcbe8a3860000'),
+            'Native ADS warm entry evaluator call changed')
+    end
+    if self.frame_active then
+        self.frame_game_checks=self.frame_game_checks or {}
+        self.frame_game_checks[scope]={base=base,epoch=self.frame_epoch}
+        if scope=='full'then self.frame_game_base,self.frame_game_epoch=base,self.frame_epoch end
+    end
     return base
+end
+function Backend:camera_ready()
+    local ok,why=pcall(self._module,self,'full')
+    return ok,ok and nil or tostring(why)
 end
 function Backend:_map(at,id,limit)
     assert(valid_id(id),'Invalid entity')
@@ -144,8 +164,8 @@ function Backend:_top(base)
     return {base=base,context=ctx,camera=self:_ptr(ctx),record=at,head=head,tail=tail,
         camera_kind=b:byte(1)+b:byte(2)*256,request_avatar=uint(b,4),request_weapon=uint(b,8)}
 end
-function Backend:_snapshot(player_only,retiring)
-    local s=self:_top(self:_module());local g=Profile.globals
+function Backend:_snapshot(player_only,retiring,pin_player)
+    local s=self:_top(self:_module('identity'));local g=Profile.globals
     s.world=self:_ptr(s.base+g.world)
     s.controller=self:_ptr(s.base+g.controller)
     s.controller_bytes=self:_read(s.controller,6)
@@ -158,7 +178,9 @@ function Backend:_snapshot(player_only,retiring)
     local d=self:_read(s.world+0xf349e0+index*24,24)
     assert(uint(d,16)==light and d:byte(21)%2==1,'Local player generation unavailable')
     s.avatar=uint(d,8);s.avatar_descriptor=d:sub(1,20)
-    assert(valid_id(s.avatar) and s.request_avatar==s.avatar,'Camera is not owned by local player')
+    assert(valid_id(s.avatar),'Local avatar unavailable')
+    s.request_local=s.request_avatar==s.avatar
+    if not pin_player then assert(s.request_local,'Camera is not owned by local player')end
     local owner=self:_ptr(s.base+g.avatar)
     local ai=self:_map(owner+0xf8,s.avatar,8)
     s.avatar_owner,s.avatar_index=owner,ai
@@ -190,7 +212,7 @@ function Backend:_snapshot(player_only,retiring)
         player_identity[#player_identity+1]=string.format('%.0f',value)
     end
     s.player_identity=table.concat(player_identity,':')..':'..s.avatar_descriptor
-    s.safe=(s.camera_kind==4 or s.camera_kind==6) and not s.seated and not s.blocked
+    s.safe=s.request_local and(s.camera_kind==4 or s.camera_kind==6) and not s.seated and not s.blocked
     -- Live weapon swaps briefly set this exact native camera inhibit mask.
     -- This annotation permits retaining manual intent, never native entry or
     -- offsets: safe remains false until the native controller clears it.
@@ -200,7 +222,16 @@ function Backend:_snapshot(player_only,retiring)
     -- fallback. Native firearm-camera entry still requires safe=true.
     s.head_camera_transition=s.camera_kind==4 and not s.seated
         and uint(s.controller_bytes)==0x20 and s.controller_bytes:byte(6)==0
-    if player_only then s.identity=s.player_identity;return s end
+    if player_only then
+        if pin_player then
+            s.pin_camera=true;s.camera_unit=self:_u32(s.context+8)
+            assert(valid_id(s.camera_unit),'Local render camera unavailable')
+            if self.foreign_camera and self.foreign_camera()~=false then
+                s.safe=false;s.foreign_camera=true;s.reason='Photo Mode or another camera owns the view'
+            end
+        end
+        s.identity=s.player_identity;return s
+    end
     if retiring then
         -- Cleanup follows our exact camera request, not the newly equipped
         -- firearm. Native exit resolves the request's weapon independently.
@@ -301,6 +332,14 @@ function Backend:player_snapshot()
     if not ok then return nil,tostring(s) end
     return s
 end
+-- Rendering intent is independent of the game's current action/vehicle
+-- camera request. Local player/body identity still comes from the world and
+-- avatar descriptors; this path never authorizes native firearm camera entry.
+function Backend:pin_player_snapshot()
+    local ok,s=pcall(self._snapshot,self,true,nil,true)
+    if not ok then return nil,tostring(s)end
+    return s
+end
 local SUPPORT_LAYERS={1,3,10,11,14}
 function Backend:action_state(snapshot)
     if not self.actions then
@@ -334,21 +373,23 @@ function Backend:on_foot(s,action)
 end
 function Backend:camera_config()
     local ok,value=pcall(function()
-        local s,why=self:player_snapshot();assert(s,why)
+        local direct=self.fird_camera_active==true
+        -- The removed pin flag cannot widen camera admission. Only the
+        -- game's current local on-foot view may own this fallback helper.
+        local s,why=self:player_snapshot()
+        assert(s,why)
+        assert(not s.foreign_camera,'Photo Mode or another camera owns the view')
         assert((s.camera_kind==4 or s.camera_kind==6) and not s.seated,'No supported local gameplay camera')
-        -- Player-only snapshots intentionally survive firearm gaps. They do
-        -- not carry the full snapshot's lifecycle gate, so prove that gate
-        -- explicitly before preparing the independent head-camera helper.
         local action,problem=self:action_state(s)
         assert(self:on_foot(s,action) and action.owner==s.player_identity and action.body==s.body,
-            problem or 'Head camera requires the verified current on-foot lifecycle')
-        local p=assert(Profile.camera,'Head-camera profile unavailable')
+            problem or'Head camera requires the verified current on-foot lifecycle')
+        local p=assert(Profile.camera)
         local offset=self.fird_camera_active and self.fird_camera_offset or nil
         return {game=s.base,exe=self:_alignment_executable(p),context=s.context,camera=s.camera,
             avatar_owner=s.avatar_owner,avatar_index=s.avatar_index,avatar=s.avatar,body=s.body,
-            presentation_enabled=true,kick_enabled=(Host.config or {}).camera_kick_enabled~=false,
+            pin_view=false,pin_look=false,presentation_enabled=not direct,kick_enabled=false,
             camera_unit=self:_u32(s.context+8),camera_kind=s.camera_kind,forward=offset and offset.y or p.forward,up=offset and offset.z or p.up,right=offset and offset.x or nil,
-            smoothing_ms=p.smoothing_ms,blend_ms=p.blend_ms,max_gap_ms=p.max_gap_ms}
+            smoothing_ms=direct and 0 or p.smoothing_ms,blend_ms=direct and 0 or p.blend_ms,max_gap_ms=p.max_gap_ms}
     end)
     if not ok then return nil,tostring(value)end
     return value
@@ -381,10 +422,23 @@ function Backend:blur_config(lease)
     -- helper resolves its current optic profiles; this does not invoke FOV APIs.
     return self:fov_config(lease)
 end
-function Backend:_invoke(name,s)
+
+function Backend:fird_fov_config()
+    local s,why=self:player_snapshot();if not s then return nil,why end
+    if not s.safe or s.camera_kind~=4 or s.controller_active then
+        return nil,'Fird Person requires the current normal gameplay camera'
+    end
+    local c,problem=self:camera_config();if not c then return nil,problem end
+    if c.context~=s.context or c.camera~=s.camera or c.body~=s.body or c.avatar~=s.avatar then
+        return nil,'Fird Person camera changed during FOV validation'
+    end
+    return {game=c.game,exe=c.exe,context=c.context,camera=c.camera,avatar_owner=c.avatar_owner,
+        request=s.record,avatar_index=c.avatar_index,avatar=c.avatar,body=c.body,weapon=0}
+end
+function Backend:_invoke(name,s,scope)
     -- Revalidate all fingerprints immediately before every engine call.
     self:_invalidate_frame_checks()
-    assert(self:_module()==s.base,'Game module changed')
+    assert(self:_module(scope=='entry'and'entry'or'full')==s.base,'Game module changed')
     if self.io then return self.io.invoke(name,s) end
     local w=self:_windows();local address=s.base+assert(Profile.functions[name])
     local r=w.region
@@ -401,7 +455,116 @@ function Backend:_invoke(name,s)
         w.ffi.cast('void (*)(void *)',address)(w.ffi.cast('void *',s.context))
     else error('Unknown native call') end
 end
-function Backend:_enter(expected,alignment_token,kind,remaining_ms)
+-- A cold bootstrap owns a stock native camera request, with no pose/alignment
+-- helper installed. The verified game's entry wrapper itself calls its packed
+-- evaluator at dt=0. Only that natural native call may initialize the FP page.
+function Backend:warm_start(expected)
+    if self.warm_lease and not self.warm_lease.done then return false,'Native FP initialization cleanup is pending'end
+    if self.alignment_lease and not self.alignment_lease.done then return false,'A pose helper already owns the camera'end
+    local current,why=self:snapshot()
+    if not current or not expected or current.identity~=expected.identity then return false,why or 'Warm camera owner changed'end
+    if not current.safe or current.camera_kind~=4 or current.aiming or current.controller_active then return false,'Warm entry requires the safe released normal camera'end
+    if self.foreign_camera and self.foreign_camera()~=false then return false,'Another camera owns initialization'end
+    local ok,allowed=pcall(self._invoke,self,'allowed',current,'entry')
+    if not ok or allowed~=true then return false,ok and 'Weapon does not support native FPV'or tostring(allowed)end
+    local fresh,problem=self:snapshot()
+    if not fresh or fresh.identity~=current.identity or fresh.record~=current.record or fresh.tail~=current.tail
+        or not fresh.safe or fresh.camera_kind~=4 or fresh.aiming or fresh.controller_active then return false,problem or 'Warm owner changed before entry'end
+    local lease={owner=self,bootstrap=true,origin=fresh,request=fresh.context+0x200+fresh.tail*0xE8}
+    -- A failed call can have appended its request; claim cleanup first.
+    self.warm_lease=lease
+    local called,err=pcall(self._invoke,self,'enter',fresh,'entry')
+    local after=self:snapshot()
+    if after and after.identity==fresh.identity then
+        lease.entry_aim_changed=after.aiming~=fresh.aiming
+        lease.entry_controller_changed=after.controller_bytes~=fresh.controller_bytes
+    end
+    if not called then lease.cleanup_only=true;lease.error=tostring(err)
+    elseif not after or after.identity~=fresh.identity or after.camera_kind~=6 or after.record~=lease.request then
+        lease.cleanup_only=true;lease.error='Native FP initialization entry acknowledgement is pending'
+    end
+    return true,lease
+end
+function Backend:warm_finish(lease)
+    if PORT51.kind(lease)~='table'or lease.owner~=self or lease.bootstrap~=true then return false,'Initialization lease is not owned'end
+    if lease.done then return true end
+    if self.warm_lease~=lease then return false,'Initialization generation changed'end
+    local function finish(why)lease.done=true;self.warm_lease=nil;return true,why end
+    local origin=lease.origin
+    local ok,top=pcall(function()return self:_top(self:_module('identity'))end)
+    if not ok then return false,'Waiting to verify initialization cleanup: '..tostring(top)end
+    if top.base~=origin.base or top.context~=origin.context or top.camera~=origin.camera then return finish('Engine replaced initialization camera')end
+    if top.camera_kind~=6 or top.record~=lease.request or top.request_avatar~=origin.avatar or top.request_weapon~=origin.weapon then
+        return finish('Native initialization request retired')
+    end
+    local current,why=self:snapshot()
+    -- Never run native exit for an outgoing weapon against new inventory.
+    if not current or current.identity~=origin.identity then return false,why or 'Waiting for outgoing initialization request retirement'end
+    if (current.aiming or current.controller_active)and not lease.entry_aim_changed and not lease.entry_controller_changed then
+        return finish('Player aiming took ownership')
+    end
+    if not current.safe or(self.foreign_camera and self.foreign_camera()~=false)then return false,'Another action or camera owns initialization cleanup'end
+    local called,problem=pcall(self._invoke,self,'exit',current,'entry')
+    if not called then return false,'Native initialization exit pending: '..tostring(problem)end
+    local read_ok,after=pcall(function()return self:_top(self:_module('identity'))end)
+    if not read_ok then return false,'Initialization exit readback pending'end
+    if after.context==origin.context and after.camera_kind==6 and after.record==lease.request
+        and after.request_avatar==origin.avatar and after.request_weapon==origin.weapon then return false,'Native initialization request is still present'end
+    return finish('Native FP initialization camera exited')
+end
+-- Invoke the game's existing local presentation switch, independently of
+-- the camera queue. The presentation owner reserves cleanup before this call.
+function Backend:_invoke_presentation(expected,enabled)
+    assert(PORT51.kind(enabled)=='boolean','FP presentation requires a Boolean mode')
+    self:_invalidate_frame_checks()
+    local current=assert(self:snapshot(),'Presentation player unavailable')
+    for _,key in ipairs({'player_identity','base','context','camera','avatar_owner','avatar_index','avatar','body','viewmodel'})do
+        assert(expected and current[key]==expected[key],'Presentation owner changed before invocation')
+    end
+    assert(current.safe and current.camera_kind==4 and not current.controller_active,
+        'Presentation requires the current normal gameplay camera')
+    assert(not self.foreign_camera or self.foreign_camera()==false,'Another camera owns presentation')
+    local game=self:_module();assert(game==current.base,'Presentation game module changed')
+    local exe=self:_alignment_executable(Profile.pose)
+    for _,check in ipairs({
+        {game,0x833440,'405641564881ec88000000488b05be1bc8014833c448894424683b1570bc60028bf24c8b1577ea4a02450fb6f04488742430'},
+        {game,0x833513,'4869d0401200004869c0b8010000498dbab06a54004c896c24784903d24c897c24704889542458'},
+        {game,0x833540,'4c8daac0e95300498b84ca10010000418bd68b480c488b056cdf4a0244887770894c2434418b4d004c8b481841ff9158060000'},
+        {game,0x833763,'41ff90f8000000488b0557dd4a02488d4c24344084f68bd3490f45cd4533ff4c8b50084533c944897c2420448b01488b0d200a4b02488b0941ff92d0000000'},
+        {game,0x110fe9e,'488b0d3b20bd0141b101450fb6c18bd70f10000f1144247ce8853572ff'},
+        {game,0x111088b,'418b560441b1014889b424600200'},
+        {game,0x11108e3,'e8582b72ff'},
+        {exe,0x1fb480,'48895c24084889742410574883ec20410fb6f08bfa8bd9e80452eaff4c8b5018b8'},
+        {exe,0x1fb4b4,'43c78411880001001500000043899c1138000100488b5c24304388b41144000100488b7424384389bc1140000100'},
+    })do
+        local wanted=unpack_hex(check[3]);assert(self:_read(check[1]+check[2],#wanted)==wanted,
+            'FP presentation function contract changed')
+    end
+    local mode=current.avatar_owner+0x546B20+current.avatar_index*0x1B8
+    local before=self:_u8(mode);assert(before==0 or before==1,'Presentation mode is unavailable')
+    -- Match native entry/exit callers: owner, avatar ID, enabled, marker1.
+    if self.io then
+        assert(PORT51.kind(self.io.invoke_presentation)=='function','Presentation fixture invocation unavailable')
+        self.io.invoke_presentation(current,enabled)
+    else
+        local w=self:_windows();local address=game+0x833440;local r=w.region
+        assert(PORT51.number(w.k.NativeADS_Query(w.ffi.cast('const void *',address),r,w.ffi.sizeof(r)))==w.ffi.sizeof(r)
+            and r.state==0x1000 and(r.kind==0x1000000 or(r.kind==0x40000 and w.wine
+                and PORT51.number(r.allocation)==game))
+            and(r.protect==0x20 or r.protect==0x40 or r.protect==0x80),'Presentation function is not an executable image page')
+        w.ffi.cast('void (*)(void *,uint32_t,uint8_t,uint8_t)',address)(
+            w.ffi.cast('void *',current.avatar_owner),current.avatar,enabled and 1 or 0,1)
+    end
+    self:_invalidate_frame_checks()
+    local after=assert(self:snapshot(),'Presentation invocation result is uncertain')
+    assert(after.player_identity==current.player_identity and after.context==current.context
+        and after.camera_kind==4 and after.body==current.body and after.viewmodel==current.viewmodel,
+        'Presentation owner changed during invocation')
+    assert(self:_u8(mode)==(enabled and 1 or 0),'Presentation mode acknowledgement is pending')
+    return true
+end
+
+function Backend:_enter(expected,alignment_token,kind,remaining_ms,blend_entry)
     local s,why=self:snapshot()
     if not s then return false,why end
     if not expected or expected.identity~=s.identity then return false,'Owner changed before entry' end
@@ -424,6 +587,7 @@ function Backend:_enter(expected,alignment_token,kind,remaining_ms)
     -- The constructor appends at the old tail. Claim that slot before calling,
     -- including when an interrupted readback prevents observing the new record.
     local lease={origin=current,request=current.context+0x200+current.tail*0xe8}
+    if kind=='pose' then lease.pose_blend_entry=blend_entry==true end
     if prepared then
         local context_method=kind=='pose' and self._pose_context or self._alignment_context
         local same_method=kind=='pose' and self._same_pose_context or self._same_alignment_context
@@ -438,7 +602,7 @@ function Backend:_enter(expected,alignment_token,kind,remaining_ms)
         -- Claim cleanup ownership before Begin: an exception may follow a
         -- successful arm. This lease is returned even when entry is skipped.
         local armed,accepted,handle=pcall(prepared.helper.begin,prepared.helper,
-            config_method(self,current,lease.request,context,remaining_ms),prepared.native)
+            config_method(self,current,lease.request,context,remaining_ms,blend_entry),prepared.native)
         if armed and accepted==true then
             lease.alignment.handle=handle
             self.alignment_lease=lease
@@ -498,17 +662,20 @@ function Backend:enter(expected,alignment_token)
     return self:_enter(expected,alignment_token,'alignment')
 end
 
-function Backend:enter_pose(expected,token,remaining_ms)
+function Backend:enter_pose(expected,token,remaining_ms,blend_entry)
     if PORT51.kind(remaining_ms)~='number' or remaining_ms~=math.floor(remaining_ms)
         or remaining_ms<0 or remaining_ms>Profile.pose.duration_ms then
         return false,'Pose duration must be an integer from 0 to '..Profile.pose.duration_ms..' milliseconds'
+    end
+    if blend_entry~=nil and PORT51.kind(blend_entry)~='boolean' then
+        return false,'Pose entry blend must be boolean'
     end
     if token==nil then return false,'Pose preparation token unavailable' end
     if self.camera_before_entry then
         local called,ready,why=pcall(self.camera_before_entry)
         if not called or ready~=true then return false,tostring(called and why or ready)end
     end
-    return self:_enter(expected,token,'pose',remaining_ms)
+    return self:_enter(expected,token,'pose',remaining_ms,blend_entry)
 end
 
 function Backend:_alignment_helper()
@@ -561,8 +728,10 @@ end
 -- That SDK getter first fences the renderer queue, so this read must never
 -- acknowledge our setting commands or establish ownership. It is sufficient
 -- for monitoring an already acknowledged reservation without a render stall.
-function Backend:renderer_dof_value(getter,setter)
+function Backend:renderer_dof_value(getter,setter,setting)
+    local keys={dof_enabled=0x06f1d0d3,vignette_enabled=0x72e8f18c}
     local ok,value=pcall(function()
+        local key=assert(keys[setting or 'dof_enabled'],'Unsupported renderer Boolean setting')
         assert(PORT51.kind(getter)=='function' and PORT51.kind(setter)=='function','Renderer setting bindings unavailable')
         local address=self.io and self.io.function_address
         if not address then local util=PORT51.jit_util ;address=function(fn)return util.funcinfo(fn).addr end end
@@ -582,30 +751,32 @@ function Backend:renderer_dof_value(getter,setter)
         local header=self:_read(table_pointer,16);local count=uint(header)
         local rows=uint(header,8)+uint(header,12)*U32
         assert(count>0 and count<=4096 and rows>=LOW and rows+count*24<HIGH,'Renderer setting table unavailable')
-        local index=contract.table_pointer==table_pointer and contract.header==header and contract.index or nil
+        if contract.table_pointer~=table_pointer or contract.header~=header then contract.indices={}end
+        contract.indices=contract.indices or {}
+        local index=contract.indices[key]
         local row
         if index then row=self:_read(rows+index*24,24)
         else
             local low,high=0,count-1
             while low<=high do
                 local middle=math.floor((low+high)/2);local candidate=self:_read(rows+middle*24,24)
-                local key=uint(candidate,16)
-                if key==0x06f1d0d3 then index,row=middle,candidate;break
-                elseif key<0x06f1d0d3 then low=middle+1 else high=middle-1 end
+                local candidate_key=uint(candidate,16)
+                if candidate_key==key then index,row=middle,candidate;break
+                elseif candidate_key<key then low=middle+1 else high=middle-1 end
             end
         end
-        assert(index and index>=0 and index<count and uint(row,16)==0x06f1d0d3 and uint(row)==4,
-            'Renderer DoF row changed')
+        assert(index and index>=0 and index<count and uint(row,16)==key and uint(row)==4,
+            'Renderer Boolean row changed')
         local boolean=row:byte(9);assert(boolean==0 or boolean==1,'Renderer DoF Boolean unavailable')
         assert(self:_read(rows+index*24,24)==row and self:_read(table_pointer,16)==header
             and self:_ptr(base+0x1ab78c0)==table_pointer,'Renderer DoF table changed during observation')
         -- Cache only the lookup location. Every value, key, type and table
         -- identity is reread before and after each observation.
-        contract.table_pointer,contract.header,contract.index=table_pointer,header,index
+        contract.table_pointer,contract.header,contract.indices[key]=table_pointer,header,index
         return boolean==1
     end)
     if ok then return value end
-    if self.renderer_dof_contract then self.renderer_dof_contract.index=nil end
+    if self.renderer_dof_contract then self.renderer_dof_contract.indices=nil end
     return nil,tostring(value)
 end
 
@@ -665,7 +836,7 @@ function Backend:_same_pose_context(a,b)
     return true
 end
 
-function Backend:_pose_config(s,request,context,remaining_ms)
+function Backend:_pose_config(s,request,context,remaining_ms,blend_entry)
     local value=self:_alignment_config(s,request,context)
     value.duration_ms=remaining_ms or Profile.pose.duration_ms
     value.weapon_descriptor=context.weapon_descriptor;value.weapon_unit=context.weapon_unit
@@ -679,6 +850,9 @@ function Backend:_pose_config(s,request,context,remaining_ms)
     self.pose_placement={x=placement.x,y=placement.y,z=placement.z,yaw=placement.yaw or 0,pitch=placement.pitch or 0,roll=placement.roll or 0}
     self.placement_weapon_key=key
     value.blend_ms=Profile.pose.blend_ms
+    -- Lifetime and entry interpolation are independent. A manual ADS return
+    -- fades saved placement back in using the existing persistent Begin path.
+    value.steady_entry=remaining_ms==0 and blend_entry~=true
     value.offset_x=placement.x;value.offset_y=placement.y;value.offset_z=placement.z
     return value
 end
@@ -728,6 +902,18 @@ function Backend:set_pose_placement(lease,placement)
     return true
 end
 
+function Backend:set_pose_zoom_policy(lease,active)
+    if PORT51.kind(active)~='boolean'or PORT51.kind(lease)~='table'or lease~=self.alignment_lease
+        or lease.done or lease.cleanup_only or not lease.alignment or lease.alignment.ended
+        or lease.alignment.kind~='pose'then return false,'Zoom pose lease is not active or owned'end
+    local s,problem=self:snapshot()
+    if not s or s.identity~=lease.origin.identity or not s.safe or s.camera_kind~=6 or s.record~=lease.request then
+        return false,problem or 'Zoom pose owner changed'
+    end
+    local helper=lease.alignment.helper
+    return helper:set_zoom_policy(lease.alignment.handle,active)
+end
+
 -- Procedural motion has a separate native channel. It never becomes an editor
 -- baseline, saved placement or the defaults used for the next weapon.
 function Backend:set_ads_placement(lease,value)
@@ -740,6 +926,58 @@ function Backend:set_ads_placement(lease,value)
     end
     local helper=lease.alignment.helper
     return helper:set_ads_placement(lease.alignment.handle,copy.x,copy.y,copy.z)
+end
+
+-- This publishes bounded scalars into our generation-owned helper. It is not
+-- an observation of the current game, a health poll, or Unit-write authority.
+-- Native callbacks still prove their fresh owner/graph/dispatch before use;
+-- motion/placement commits retain their own current-owner checks below.
+local PHASE_FIELDS={'epoch','progress','ads','identity','player_identity','reason','action','started','duration','continuous'}
+function Backend:set_pose_transition(lease,token)
+    if token==nil then return true end
+    if self.frame_active~=true then return false,'Transition publication requires the qualified Update'end
+    if PORT51.kind(lease)~='table'or lease~=self.alignment_lease or lease.done or lease.cleanup_only
+        or PORT51.kind(lease.origin)~='table'or PORT51.kind(lease.alignment)~='table'
+        or lease.alignment.kind~='pose'or lease.alignment.ended then return false,'Transition pose lease is not owned'end
+    local alignment=lease.alignment
+    local helper,handle=alignment.helper,alignment.handle
+    if PORT51.kind(helper)~='table'or PORT51.kind(handle)~='table'or handle.owner~=helper or handle.disarmed==true
+        or PORT51.kind(helper.owned_handle)~='function'or PORT51.kind(helper.transition)~='function'then
+        return false,'Shared pose transition handle is not owned'
+    end
+    local current,owned=pcall(helper.owned_handle,helper)
+    if not current or owned~=handle then return false,'Shared pose transition handle is not owned'end
+    if PORT51.kind(token)~='table'or PORT51.kind(token.epoch)~='number'or token.epoch~=token.epoch
+        or token.epoch<1 or token.epoch>9007199254740991 or token.epoch%1~=0
+        or PORT51.kind(token.progress)~='number'or token.progress~=token.progress or token.progress<0 or token.progress>1
+        or PORT51.kind(token.ads)~='boolean'or PORT51.kind(token.identity)~='string'or token.identity==''
+        or PORT51.kind(token.player_identity)~='string'or token.player_identity==''then
+        return false,'Invalid shared presentation phase'
+    end
+    -- An old scalar packet may finish its own Update while cleanup retires a
+    -- rig. It must not follow a different lease/player, even as private state.
+    if token.identity~=lease.origin.identity or token.player_identity~=lease.origin.player_identity then return true end
+    local publication=self.pose_phase_publication
+    if publication and publication.frame==self.frame_epoch and publication.lease==lease
+        and publication.alignment==alignment and publication.helper==helper and publication.handle==handle then
+        local identical=true
+        for _,field in ipairs(PHASE_FIELDS)do if publication[field]~=token[field]then identical=false;break end end
+        if identical then return true end
+    end
+    -- A refused or throwing call may have an uncertain native outcome. An
+    -- earlier acknowledgement must not hide the next reassertion either.
+    self.pose_phase_publication=nil
+    local called,done,reason=pcall(helper.transition,helper,handle,token)
+    if not called or done~=true then return false,tostring(called and reason or done)end
+    -- Cache only successful publication, only within this owned Update. The
+    -- next Update always refreshes the helper's expiring phase heartbeat.
+    publication=publication or{}
+    publication.frame,publication.lease,publication.alignment=self.frame_epoch,lease,alignment
+    publication.helper,publication.handle=helper,handle
+    for _,field in ipairs(PHASE_FIELDS)do publication[field]=token[field]end
+    self.pose_phase_publication=publication
+    self.presentation_pose_lease,self.presentation_pose_epoch=lease,token.epoch
+    return true
 end
 
 function Backend:set_pose_motion(lease,value)
@@ -771,6 +1009,11 @@ function Backend:set_pose_motion(lease,value)
     if not valid or not self:_same_pose_context(current,lease.alignment.context) then
         return false,'Motion weapon or viewmodel generation changed'
     end
+    if PORT51.kind(self.presentation_transition)=='function'then
+        local token=self.presentation_transition()
+        local synchronized,reason=self:set_pose_transition(lease,token)
+        if synchronized~=true then return false,reason end
+    end
     local helper=lease.alignment.helper
     local called,accepted,problem=pcall(helper.set_motion,helper,lease.alignment.handle,value.dx,value.dy,value.dz,q[1],q[2],q[3],q[4],value.authored_ads==true)
     if not called or accepted~=true then return false,tostring(called and problem or accepted) end
@@ -778,6 +1021,7 @@ function Backend:set_pose_motion(lease,value)
 end
 
 function Backend:prepare_pose(expected)
+    if self.warm_lease and not self.warm_lease.done then return false,'Native FP initialization cleanup is pending'end
     if self.alignment_lease and not self.alignment_lease.done then
         return false,'Previous native helper lease has not completed cleanup'
     end
@@ -791,6 +1035,7 @@ function Backend:prepare_pose(expected)
         return s
     end
     local s,why=normal();if not s then return false,why end
+    local verified,problem=pcall(self._module,self,'full');if not verified then return false,tostring(problem)end
     local checked,context=pcall(self._pose_context,self,s)
     if not checked then return false,tostring(context) end
     local loaded,helper=pcall(self._pose_helper,self)
@@ -1087,6 +1332,7 @@ function Backend:release_body_pose(lease,token)
 end
 
 function Backend:release(lease)
+    if PORT51.kind(lease)=='table'and lease.bootstrap then return self:warm_finish(lease)end
     if PORT51.kind(lease)~='table' or PORT51.kind(lease.origin)~='table' then return false,'Invalid camera lease' end
     -- Always disarm first, even when the engine/player has taken the camera,
     -- the executable is unreadable, or normal camera cleanup must retry.

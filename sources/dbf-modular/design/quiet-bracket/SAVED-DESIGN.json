@@ -1,0 +1,13 @@
+{
+  "name": "Quiet Bracket",
+  "selected_variant": "Quiet",
+  "saved_date": "2026-11-06",
+  "status": "Saved design baseline; runtime not implemented",
+  "visibility": "Ammo visible; health while injured; stamina while depleted; supplies when relevant; details and cooldowns on demand; persistent critical warnings",
+  "preview_state": {
+    "scene": "combat",
+    "rounds": 45,
+    "details": false
+  },
+  "source_fragment_sha256": "48f2bfed853bc7f0c1a9c6f184ca10bd722e428de8c1bd2a0b7799f25762914c"
+}

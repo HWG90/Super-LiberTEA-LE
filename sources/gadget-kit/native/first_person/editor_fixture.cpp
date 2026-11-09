@@ -17,13 +17,16 @@ static uint32_t read_current(NADSE_Stats* output) {return NADSE_ReadStats(reserv
 struct Record {uint32_t unit,node,kind,bits[4];const float* pointer;};
 static Record records[4096]{};static uint64_t actual_calls=0,cases=0;
 static HANDLE setter_reached=nullptr,setter_continue=nullptr;
+static uint32_t setter_block_unit=0,setter_block_node=UINT32_MAX;
 static HANDLE getter_reached=nullptr,getter_continue=nullptr;
 static uint64_t getter_calls=0;static uint32_t getter_unit=0,getter_node=0;
 static float getter_result[3]={.125f,-.25f,.5f};
 static void record(uint32_t unit,uint32_t node,const float* pose,uint32_t kind) {
     CHECK(actual_calls<4096);auto& r=records[actual_calls++];r.unit=unit;r.node=node;r.kind=kind;r.pointer=pose;
     std::memcpy(r.bits,pose,16);
-    if(setter_reached) {SetEvent(setter_reached);WaitForSingleObject(setter_continue,INFINITE);}
+    if(setter_reached && (!setter_block_unit || unit==setter_block_unit) && (setter_block_node==UINT32_MAX || node==setter_block_node)) {
+        SetEvent(setter_reached);WaitForSingleObject(setter_continue,INFINITE);
+    }
 }
 __declspec(noinline) static void synthetic_position(uint32_t unit,uint32_t node,const float* pose) {record(unit,node,pose,1);}
 __declspec(noinline) static void synthetic_rotation(uint32_t unit,uint32_t node,const float* pose) {record(unit,node,pose,2);}
@@ -131,10 +134,14 @@ struct DepthFixture {
         put<uint64_t>(pool+0x48,descriptors);put<uint64_t>(descriptors,f.c.weapon_descriptor);
         put<uint64_t>(pool+0x58,runtime);put<uint64_t>(pool+0x60,packed);put<uint64_t>(pool+0xB0,data);
         put<uint32_t>(runtime+0x350,1);put<uint64_t>(f.c.weapon_descriptor,UINT64_C(0xFFFFFFFFFFFFFFFE));
-        put<uint64_t>(world+0xf14110,table);
-        const uint32_t bucket=static_cast<uint32_t>(UINT64_C(0xFFFFFFFFFFFFFFFE)%730);
+        put<uint64_t>(world+0xf146a0,table);
+        const uint32_t bucket=static_cast<uint32_t>(UINT64_C(0xFFFFFFFFFFFFFFFE)%746);
         put<uint64_t>(table+bucket*16,UINT64_C(0xFFFFFFFFFFFFFFFE));put<uint32_t>(table+bucket*16+8,0);
-        properties(data);properties(table+0x2DA0);
+        properties(data);properties(table+0x2EA0);
+        literal(f.c.game+0x5120b2,"4869c0d8040000490383b00000004883c428c3");
+        literal(f.c.game+0x511b3f,"4c8b90a046f10048b80fdf6f49a121b3af48f7e148c1ea09");
+        literal(f.c.game+0x511b57,"69c2ea020000442bc0");
+        literal(f.c.game+0x511bb1,"4869c1d80400004805a02e00004903c2c3");
         literal(f.c.game+0x1119293,"f30f1044245cf30f1015ef251301");
         literal(f.c.game+0x11192b9,"f30f5c4424600f54c2f30f5ec1");
         literal(f.c.game+0x1119971,"f3450f58fb");literal(f.c.game+0x1119a23,"f30f59faf3410f59cff3");
@@ -623,10 +630,10 @@ int main() {
     std::printf("PERF depth steady getter+setter reads=45 (four beyond22), metadata_refreshes=%llu\n",static_cast<unsigned long long>(refreshes));
     fixture_now=204600;depth.frame_at(0);f.match();CHECK(policy.depth.checks==1 && policy.depth.refreshes==refreshes);
     CHECK(approximately(component(1),2+fixed));
-    put<float>(depth.table+0x2DA0+0x140,.7f);fixture_now=205100;depth.frame_at(0);start=actual_calls;f.match();
+    put<float>(depth.table+0x2EA0+0x140,.7f);fixture_now=205100;depth.frame_at(0);start=actual_calls;f.match();
     exact(start,f.c.viewmodel,5,f.source(),f.source());CHECK(policy.depth.observed.reason==9 && !policy.depth.valid);
     depth.frame_at(0);f.match();CHECK(policy.depth.refreshes==refreshes);
-    put<float>(depth.table+0x2DA0+0x140,.6f);depth.end();
+    put<float>(depth.table+0x2EA0+0x140,.6f);depth.end();
     pass("unchanged depth has no registry scans or tangent calls; two-Hz metadata validation rejects a changed definition without stale reuse");
     depth.begin(206000);f.match();depth.event(2);depth.frame_at(0);f.match();
     CHECK(policy.depth.data.resource_row!=0);
@@ -894,6 +901,155 @@ int main() {
     CHECK(NADSE_SetTransform(fixture_generation,0,0,0,.70710678f,0,0,.70710678f)==1);
     CHECK(NADSE_SetTransform(fixture_generation,0,0,0,.9396926f,0,0,.3420201f)==0);
     CHECK(end_current()==1);pass("90 degree authored rotation accepted; above120 combined rotation still rejects");
+    depth.begin(316000);fixture_now=316150;
+    CHECK(NADSE_SetPlacement(fixture_generation,.15f,.02f,-.12f)==1);
+    depth.event(2);effective=depth.frame_at(0);f.match();depth.root(effective,root_identity);depth.settle_root();
+    CHECK(policy.rig_shifted && policy.carrier_shifted && policy.depth.valid);
+    const uint64_t zoom_token=fixture_generation;
+    CHECK(NADSE_SetZoomPolicy(zoom_token+1,1)==0 && NADSE_Error()==TOKEN_MISMATCH);
+    CHECK(NADSE_SetZoomPolicy(zoom_token,2)==0 && NADSE_Error()==INVALID_CONFIG && !policy.zoom_policy_active);
+    CHECK(NADSE_SetZoomPolicy(zoom_token,1)==1 && policy.zoom_policy_active && !policy.depth.valid
+        && !policy.depth.signature_set && !policy.observation.ready && !policy.carrier.ready);
+    CHECK(policy.rig_shifted && policy.carrier_shifted);
+    effective=depth.frame_at(0);CHECK(policy.observation.ready);
+    CHECK(NADSE_SetZoomPolicy(zoom_token,1)==1 && policy.observation.ready);
+    f.match();CHECK(approximately(component(0),f.source()[0]+.15f)
+        && approximately(component(1),f.source()[1]+.02f) && approximately(component(2),f.source()[2]-.12f));
+    CHECK(policy.depth.observed.reason==10 && !policy.carrier.ready);
+    start=actual_calls;depth.root(effective,root_identity);exact(start,f.c.viewmodel,0,depth.root_source(),depth.root_source());
+    CHECK(NADSE_SetZoomPolicy(zoom_token,0)==1 && !policy.zoom_policy_active);
+    depth.frame_at(0);f.match();CHECK(approximately(component(1),2+fixed+.02f) && policy.depth.valid);
+    CHECK(NADSE_SetZoomPolicy(zoom_token,1)==1);const uint64_t zoom_cleanup=actual_calls;depth.end();
+    CHECK(actual_calls==zoom_cleanup+1);
+    exact(zoom_cleanup,f.c.viewmodel,5,records[zoom_cleanup].pointer,f.source());
+    CHECK(NADSE_SetZoomPolicy(zoom_token,0)==0 && NADSE_Error()==TOKEN_MISMATCH);
+    pass("selection policy suppresses legacy depth once, keeps authored placement and cleanup baselines, and preserves token/state guards");
+    depth.begin(318000);CHECK(!policy.zoom_policy_active);
+    put<uint8_t>(f.gens+3,2);CHECK(NADSE_SetZoomPolicy(fixture_generation,1)==0 && NADSE_Error()==OWNER_MISMATCH);
+    CHECK(armed.load()==0 && !policy.zoom_policy_active);put<uint8_t>(f.gens+3,1);depth.end();
+    pass("new generations reset depth suppression and changed ownership refuses policy switching");
+    const uint64_t resource_bucket=UINT64_C(0xFFFFFFFFFFFFFFFE)%746;
+    put<uint32_t>(depth.table+resource_bucket*16+8,7);
+    DepthFixture::properties(depth.table+0x2EA0+7*0x4D8);
+    depth.begin(320000,2);f.match();
+    CHECK(policy.depth.valid && policy.depth.data.resource_row==depth.table+resource_bucket*16
+        && policy.depth.data.data==depth.table+0x2EA0+7*0x4D8 && approximately(component(1),2+fixed));
+    depth.end();put<uint32_t>(depth.table+resource_bucket*16+8,0);
+    pass("current-build resource getter uses world F146A0, modulus746, rows2EA0 and nonzero 4D8 record stride");
+    put<uint64_t>(depth.overrides+(f.c.weapon%8)*8,static_cast<uint64_t>(f.c.weapon)|(UINT64_C(3)<<32));
+    DepthFixture::properties(depth.data+3*0x4D8);
+    depth.begin(322000,2);f.match();
+    CHECK(policy.depth.valid && policy.depth.data.resource_row==0 && policy.depth.data.data==depth.data+3*0x4D8
+        && approximately(component(1),2+fixed));
+    depth.end();put<uint64_t>(depth.overrides+(f.c.weapon%8)*8,UINT32_MAX);
+    pass("current-build entity override uses nonzero 4D8 record stride without shared resource writes");
+    // Captured live optic: zoom order3.5/2.5/1, negative widest-lens distance,
+    // native near terms-.1, and unequal authored coefficients. Earlier code
+    // declined the negative endpoint, then jumped to a different reference.
+    const float captured_zoom[3]={3.5f,2.5f,1.0f};
+    const float captured_coefficient[3]={.33193913102149963f,.32928299903869629f,.41360974311828613f};
+    const float captured_distance[3]={.34765321016311646f,.21699553728103638f,-.0179896280169487f};
+    f.c.offset_x=f.c.offset_y=f.c.offset_z=0;
+    for(uint64_t at:{depth.data,depth.table+0x2EA0}) {
+        for(unsigned i=0;i<3;++i){put<float>(at+0x74+i*4,captured_zoom[i]);put<float>(at+0x13C+i*4,captured_coefficient[i]);}
+        put<float>(at+0x148,-.1f);put<float>(at+0x14C,-.1f);
+    }
+    depth.begin(324000,2);depth.target=1.5707963705062866f;
+    put<float>(f.c.request+0x90,captured_distance[2]);put<float>(f.c.request+0x9C,0);put<float>(f.c.request+0xA0,depth.target);
+    depth.frame_at(0);f.match();CHECK(policy.depth.observed.supported && policy.depth.observed.reason==0);
+    CHECK(approximately(component(1),2+captured_distance[2]));
+    for(unsigned index:{0U,1U,2U,0U,2U}) {
+        float old=0,prior=0;CHECK(value(f.c.request+0x90,old)&&value(f.c.request+0x84,prior));
+        put<float>(f.c.request+0x9C,old);put<float>(f.c.request+0xA0,prior);put<float>(f.c.request+0x90,captured_distance[index]);
+        put<uint32_t>(depth.packed+4,64|(index<<4));depth.target=(90.0f/captured_zoom[index])*.01745329238474369f;
+        for(float t:{1.0f,.75f,.25f,0.0f}) {
+            fixture_now+=16;depth.frame_at(t);f.match();
+            CHECK(policy.depth.observed.supported && policy.depth.observed.reason==0);
+            CHECK(std::fabs(component(1)-(2+captured_distance[2]))<.00004f);
+        }
+    }
+    pass("captured reverse-order optic keeps one signed widest-lens reference throughout zoom cycles");
+    put<uint8_t>(f.controller+4,1);depth.frame_at(0);start=actual_calls;f.match();
+    exact(start,f.c.viewmodel,5,f.source(),f.source());CHECK(policy.depth.observed.reason==1);
+    put<uint8_t>(f.controller+4,0);depth.end();
+    pass("captured signed optic still forwards native ADS and retains ordinary cleanup");
+    f.normal();fixture_now=325000;f.c.offset_x=.15f;f.c.offset_z=-.12f;
+    uint64_t steady=0;start=actual_calls;CHECK(NADSE_BeginSteady(&f.c,&steady)==1 && steady!=0);fixture_generation=steady;
+    CHECK(actual_calls==start && policy.weight==1 && policy.target==1);f.fpv();f.sole();f.match();
+    CHECK(approximately(component(0),1.15f)&&approximately(component(2),2.88f));
+    put<uint8_t>(f.controller+4,1);f.match();fixture_now+=150;f.match();
+    CHECK(policy.weight==0 && approximately(component(0),1) && approximately(component(2),3));
+    put<uint8_t>(f.controller+4,0);f.match();fixture_now+=150;f.match();
+    CHECK(policy.weight==1 && approximately(component(0),1.15f));CHECK(end_current()==1);
+    pass("steady entry applies saved placement on the first fresh gun pose without changing ADS blending");
+    f.normal();f.c.duration_ms=0;fixture_now=330000;CHECK(NADSE_BeginSteady(&f.c,&steady)==1);fixture_generation=steady;f.fpv();f.sole();
+    CHECK(NADSE_SetTransition(steady,1,1,0)==1);f.match();CHECK(approximately(policy.weight,1));
+    put<uint8_t>(f.controller+4,1);CHECK(NADSE_SetTransition(steady,2,0,1)==1);fixture_now+=100;f.match();
+    CHECK(approximately(policy.weight,1));
+    CHECK(NADSE_SetTransition(steady,2,.5f,1)==1);f.match();CHECK(approximately(policy.weight,.5f));
+    f.pose(2,3,4);fixture_now+=100;f.match();CHECK(approximately(policy.weight,.5f)&&approximately(component(0),2.075f));
+    CHECK(NADSE_SetTransition(steady,2,.4f,1)==0);CHECK(NADSE_SetTransition(steady,1,1,0)==0);
+    CHECK(NADSE_SetTransition(steady,3,0,0)==1);put<uint8_t>(f.controller+4,0);f.match();CHECK(approximately(policy.weight,.5f));
+    CHECK(NADSE_SetTransition(steady,3,.5f,0)==1);f.match();CHECK(approximately(policy.weight,.75f));
+    CHECK(NADSE_SetTransition(steady,3,1,0)==1);f.match();CHECK(approximately(policy.weight,1));
+    CHECK(NADSE_SetTransition(steady,3,NAN,0)==0);CHECK(NADSE_SetTransition(steady,4,0,2)==0);
+    CHECK(NADSE_SetTransition(steady+1,4,0,0)==0);CHECK(end_current()==1);CHECK(NADSE_SetTransition(steady,4,0,0)==0);
+    pass("shared Update phase coordinates rig modifier through reversal, changing fresh native animation and render-time hitches; stale invalid and retired tokens refused");
+    // A stalled FPS setter must not stall unrelated world animation. The
+    // recording stub blocks only its positively selected owned unit/node.
+    f.c.duration_ms=0;f.begin_at(500000);f.sole();
+    CHECK(NADSE_SetTransform(fixture_generation,0,0,0,sx,0,0,cx)==1);
+    setter_reached=CreateEventW(nullptr,TRUE,FALSE,nullptr);setter_continue=CreateEventW(nullptr,TRUE,FALSE,nullptr);
+    HANDLE foreign_done=CreateEventW(nullptr,TRUE,FALSE,nullptr);CHECK(setter_reached&&setter_continue&&foreign_done);
+    setter_block_unit=f.c.viewmodel;setter_block_node=RIG_NODE;ended.store(0);start=actual_calls;
+    std::thread blocked_rotation([&]{f.branch(f.c.viewmodel,RIG_NODE,base_q);});
+    CHECK(WaitForSingleObject(setter_reached,3000)==WAIT_OBJECT_0);
+    const uint64_t blocked_reads=fixture_reads;
+    std::thread foreign_unit([&]{branch_rotation_call(rotation_return.load(),f.c.viewmodel+10,RIG_NODE,base_q);SetEvent(foreign_done);});
+    CHECK(WaitForSingleObject(foreign_done,3000)==WAIT_OBJECT_0);foreign_unit.join();
+    exact(start+1,f.c.viewmodel+10,RIG_NODE,base_q,base_bits);CHECK(fixture_reads==blocked_reads);
+    ResetEvent(foreign_done);
+    std::thread foreign_node([&]{branch_rotation_call(rotation_return.load(),f.c.viewmodel,RIG_NODE+1,base_q);SetEvent(foreign_done);});
+    CHECK(WaitForSingleObject(foreign_done,3000)==WAIT_OBJECT_0);foreign_node.join();
+    exact(start+2,f.c.viewmodel,RIG_NODE+1,base_q,base_bits);CHECK(fixture_reads==blocked_reads);
+    std::thread draining_rotation([&]{CHECK(end_current()==1);ended.store(1);});
+    while(armed.load(std::memory_order_acquire))SwitchToThread();CHECK(ended.load()==0);
+    SetEvent(setter_continue);blocked_rotation.join();draining_rotation.join();CHECK(ended.load()==1);
+    CloseHandle(setter_reached);CloseHandle(setter_continue);CloseHandle(foreign_done);
+    setter_reached=nullptr;setter_continue=nullptr;setter_block_unit=0;setter_block_node=UINT32_MAX;
+    pass("unrelated unit and node rotations forward with zero reads while an owned native setter is blocked; End still drains the owned setter");
+
+    f.begin_at(501000);f.sole();CHECK(NADSE_SetTransform(fixture_generation,0,0,0,sx,0,0,cx)==1);
+    f.branch(f.c.viewmodel,RIG_NODE,base_q);CHECK(policy.rotation_shifted);
+    start=actual_calls;fixture_reads=0;
+    branch_rotation_call(rotation_return.load()+1,f.c.viewmodel,RIG_NODE,base_q);
+    CHECK(!policy.rotation_shifted&&fixture_reads==0);exact(start,f.c.viewmodel,RIG_NODE,base_q,base_bits);
+    CHECK(NADSE_SetTransform(fixture_generation,0,0,0,0,0,0,1)==1);fixture_reads=0;start=actual_calls;
+    f.branch(f.c.viewmodel,RIG_NODE,base_q);CHECK(fixture_reads==0);exact(start,f.c.viewmodel,RIG_NODE,base_q,base_bits);
+    CHECK(NADSE_SetTransform(fixture_generation,0,0,0,sx,0,0,cx)==1);f.branch(f.c.viewmodel,RIG_NODE,base_q);
+    CHECK(policy.rotation_shifted&&records[actual_calls-1].bits[0]!=base_bits[0]);CHECK(end_current()==1);
+    pass("owned-node foreign writers still invalidate cached rotation; identity and nonidentity owned deltas retain their original behavior");
+
+    // Reproduce a complete End/Begin ABA after an old invocation captured its
+    // token but before it obtained policy_lock. Reusing the same unit handle
+    // must not make that older solve consume the new session's transform.
+    f.begin_at(502000);f.sole();const uint64_t queued_generation=fixture_generation;
+    fixture_rotation_before_policy_reached=CreateEventW(nullptr,TRUE,FALSE,nullptr);
+    fixture_rotation_continue_policy=CreateEventW(nullptr,TRUE,FALSE,nullptr);
+    CHECK(fixture_rotation_before_policy_reached&&fixture_rotation_continue_policy);
+    std::thread queued_rotation([&]{f.branch(f.c.viewmodel,RIG_NODE,base_q);});
+    CHECK(WaitForSingleObject(fixture_rotation_before_policy_reached,3000)==WAIT_OBJECT_0);
+    CHECK(end_current()==1);f.begin_at(503000);f.sole();CHECK(fixture_generation!=queued_generation);
+    CHECK(NADSE_SetTransform(fixture_generation,0,0,0,sx,0,0,cx)==1);
+    // Disable the entry pause for the new generation's proving invocation.
+    HANDLE queue_reached=fixture_rotation_before_policy_reached,queue_continue=fixture_rotation_continue_policy;
+    fixture_rotation_before_policy_reached=nullptr;
+    f.branch(f.c.viewmodel,RIG_NODE,base_q);CHECK(policy.rotation_shifted);start=actual_calls;
+    SetEvent(queue_continue);queued_rotation.join();
+    CHECK(actual_calls==start+1&&policy.rotation_shifted&&armed.load()==1);
+    exact(start,f.c.viewmodel,RIG_NODE,base_q,base_bits);
+    fixture_rotation_continue_policy=nullptr;CloseHandle(queue_reached);CloseHandle(queue_continue);CHECK(end_current()==1);
+    pass("an invocation queued before a complete End and re-arm cannot consume or invalidate the replacement generation's rotation");
     for(uint64_t i=0;i<actual_calls;++i)CHECK(records[i].unit!=f.c.weapon_unit);
     uint8_t after[2][64]{};CHECK(read(reinterpret_cast<uint64_t>(synthetic_position),after[0],64));CHECK(read(reinterpret_cast<uint64_t>(synthetic_rotation),after[1],64));
     CHECK(std::memcmp(before,after,sizeof before)==0);pass("no weapon root writes anywhere; executable bytes unchanged");

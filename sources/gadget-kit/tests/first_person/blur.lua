@@ -344,4 +344,16 @@ test('an exact phase timestamp never repeats full conversion without clock progr
     equal(state.reads,10);assert(adapter:finish(handle))
 end)
 
+test('typed read failures are fresh and distinct from unsafe or unknown faults',function()
+    local f=fixture();assert(f.manager:update(f.controller))
+    f.disarmed=true;f.native_error=3
+    assert(not f.manager:update(f.controller));assert(f.manager:is_clean())
+    equal(f.manager:result().failure_native_error,3);equal(f.manager:result().failure_kind,'temporary_read')
+    f.disarmed=false;f.native_error=0;assert(f.manager:update(f.controller))
+    f.disarmed=true;f.native_error=5;assert(not f.manager:update(f.controller))
+    equal(f.manager:result().failure_kind,'unsafe')
+    f.config_failure=true;assert(not f.manager:update(f.controller))
+    equal(f.manager:result().failure_native_error,nil);equal(f.manager:result().failure_kind,nil)
+end)
+
 print('Native scoped blur policy and adapter: '..passed..' passed')

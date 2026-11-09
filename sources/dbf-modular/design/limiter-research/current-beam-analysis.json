@@ -1,0 +1,260 @@
+{
+  "artifact": {
+    "path": "/home/goose/Projects/HellForge/Backports/DBF-Modular/dist/limiter-beam-current.bin",
+    "format": "raw-binary",
+    "kind": "executable",
+    "sha256": "6235a1c80ac7c87d2fd7b3382ccd13a6de92ff6f3aa658da0c14059459cd0135",
+    "architecture": "x86_64",
+    "entry_point": "0x84b0d0"
+  },
+  "evidence_id": "ev_85451cf3b5c9670db2f5f789e7d5f4380b9b8838c51dc7ce70adff8d22315091",
+  "procedure": {
+    "address": "0x84b0d0",
+    "name": "entry",
+    "classification": {
+      "external": false,
+      "thunk": false,
+      "thunk_target": null,
+      "provenance": "ghidra-function-manager"
+    },
+    "body": {
+      "available": true,
+      "provenance": "ghidra-function-body-address-set",
+      "ranges": [
+        {
+          "start": "0x84b0d0",
+          "end": "0x84c4a6"
+        }
+      ],
+      "total_bytes": 5079,
+      "span_bytes": 5079,
+      "non_contiguous": false,
+      "contains_entry": true
+    },
+    "signature": "undefined entry()",
+    "locals": [
+      {
+        "description": "undefined local_148 @ Stack[-0x148]:1",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined4 local_150 @ Stack[-0x150]:4",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_158 @ Stack[-0x158]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined4 local_160 @ Stack[-0x160]:4",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_168 @ Stack[-0x168]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined4 local_170 @ Stack[-0x170]:4",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_178 @ Stack[-0x178]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined4 local_180 @ Stack[-0x180]:4",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_188 @ Stack[-0x188]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_190 @ Stack[-0x190]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_198 @ Stack[-0x198]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_1a0 @ Stack[-0x1a0]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_1a8 @ Stack[-0x1a8]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_1b0 @ Stack[-0x1b0]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_1b8 @ Stack[-0x1b8]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined4 local_1c0 @ Stack[-0x1c0]:4",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_1c8 @ Stack[-0x1c8]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_1d8 @ Stack[-0x1d8]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_1e0 @ Stack[-0x1e0]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined4 local_1e4 @ Stack[-0x1e4]:4",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined1 local_1e8 @ Stack[-0x1e8]:1",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_1f0 @ Stack[-0x1f0]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined4 local_1f4 @ Stack[-0x1f4]:4",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined1 local_1f8 @ Stack[-0x1f8]:1",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_200 @ Stack[-0x200]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_208 @ Stack[-0x208]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined4 local_210 @ Stack[-0x210]:4",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_218 @ Stack[-0x218]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_220 @ Stack[-0x220]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_228 @ Stack[-0x228]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined local_30 @ Stack[-0x30]:1",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_38 @ Stack[-0x38]:8",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined1[16] local_48 @ Stack[-0x48]:16",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined1[16] local_58 @ Stack[-0x58]:16",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined1[16] local_68 @ Stack[-0x68]:16",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined1[16] local_78 @ Stack[-0x78]:16",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined1[16] local_88 @ Stack[-0x88]:16",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined1[16] local_98 @ Stack[-0x98]:16",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined1[16] local_a8 @ Stack[-0xa8]:16",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined1[16] local_b8 @ Stack[-0xb8]:16",
+        "provenance": "ghidra-function-database"
+      },
+      {
+        "description": "undefined8 local_c8 @ Stack[-0xc8]:8",
+        "provenance": "ghidra-function-database"
+      }
+    ]
+  },
+  "callees": [
+    {
+      "address": "0x84c860",
+      "name": "FUN_0084c860",
+      "classification": {
+        "external": false,
+        "thunk": false,
+        "thunk_target": null,
+        "provenance": "ghidra-function-manager"
+      },
+      "body": {
+        "available": true,
+        "provenance": "ghidra-function-body-address-set",
+        "ranges": [
+          {
+            "start": "0x84c860",
+            "end": "0x84cbda"
+          }
+        ],
+        "total_bytes": 891,
+        "span_bytes": 891,
+        "non_contiguous": false,
+        "contains_entry": true
+      }
+    }
+  ],
+  "pseudocode": "\n/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */\n\nvoid entry(undefined8 param_1,undefined8 param_2,float param_3,undefined8 param_4,undefined8 param_5\n          ,uint param_6,long param_7)\n\n{\n  undefined4 uVar1;\n  undefined4 uVar2;\n  code *pcVar3;\n  bool bVar4;\n  char cVar5;\n  int iVar6;\n  uint uVar7;\n  undefined4 uVar8;\n  long lVar9;\n  float *pfVar10;\n  long lVar11;\n  ulong *puVar12;\n  int *piVar13;\n  uint uVar14;\n  uint uVar15;\n  ulong uVar16;\n  ulong uVar17;\n  ulong uVar18;\n  long lVar19;\n  ulong uVar20;\n  long lVar21;\n  long lVar22;\n  float fVar23;\n  float fVar24;\n  float fVar25;\n  undefined4 in_XMM6_Da;\n  float fVar26;\n  float fVar27;\n  float fVar28;\n  undefined4 in_XMM7_Da;\n  float fVar29;\n  float fVar30;\n  float fVar31;\n  undefined8 uStack0000000000000018;\n  undefined1 auStack_248 [32];\n  ulong local_228;\n  ulong local_220;\n  ulong *local_218;\n  undefined4 local_210;\n  ulong local_208;\n  long local_200;\n  char local_1f8;\n  uint local_1f4;\n  long local_1f0;\n  char local_1e8;\n  float local_1e4;\n  long local_1e0;\n  long local_1d8;\n  ulong local_1c8;\n  float local_1c0;\n  long local_1b8;\n  ulong local_1b0;\n  long local_1a8;\n  long local_1a0;\n  long local_198;\n  long local_190;\n  ulong local_188;\n  float local_180;\n  undefined8 local_178;\n  float local_170;\n  undefined8 local_168;\n  float local_160;\n  ulong local_158;\n  float local_150;\n  ulong local_c8;\n  undefined4 local_58;\n  undefined4 local_48;\n  \n  local_c8 = _DAT_024b5010 ^ (ulong)auStack_248;\n  lVar21 = *(long *)(param_7 + 0x60);\n  local_188 = (ulong)param_6;\n  lVar22 = local_188 * 0x70;\n  lVar11 = *(long *)(*(long *)(param_7 + 0x58) + local_188 * 8);\n  uStack0000000000000018 = param_5;\n  local_1f0 = lVar11;\n  local_1d8 = lVar21;\n  local_1a8 = param_7;\n  local_190 = lVar22;\n  local_1e0 = func_0x00517290();\n  fVar23 = *(float *)(lVar11 + 8);\n  uVar20 = 0;\n  if (fVar23 != _DAT_02e3f0d0) {\n    uVar7 = *(uint *)(_DAT_02ce1ea0 + 0x38);\n    if (uVar7 != 0) {\n      uVar16 = uVar20;\n      do {\n        uVar17 = (ulong)((int)uVar16 + *(int *)(_DAT_02ce1ea0 + 0x40) * (int)fVar23 & uVar7 - 1);\n        fVar31 = *(float *)(*(long *)(_DAT_02ce1ea0 + 0x30) + uVar17 * 8);\n        if (fVar31 == *(float *)(_DAT_02ce1ea0 + 0x3c)) {\n          if (fVar31 == fVar23) {\nLAB_0084b2c0:\n            uVar16 = (ulong)*(uint *)(*(long *)(_DAT_02ce1ea0 + 0x30) + 4 + uVar17 * 8);\n            goto LAB_0084b1b9;\n          }\n          break;\n        }\n        if (fVar31 == fVar23) goto LAB_0084b2c0;\n        uVar14 = (int)uVar16 + 1;\n        uVar16 = (ulong)uVar14;\n      } while (uVar14 < uVar7);\n    }\n  }\n  uVar16 = 0xffffffff;\nLAB_0084b1b9:\n  local_1a0 = uVar16 * 0x3f0 + *(long *)(_DAT_02ce1ea0 + 0x58);\n  lVar11 = local_1f0;\n  lVar9 = func_0x00512010();\n  local_198 = lVar9;\n  pfVar10 = (float *)func_0x0050d8b0();\n  if (fVar23 != _DAT_02e3f0e4) {\n    uVar7 = *(uint *)(_DAT_02ce1de8 + 0x28);\n    lVar11 = local_1f0;\n    if (uVar7 != 0) {\n      uVar16 = uVar20;\n      do {\n        uVar17 = (ulong)((int)uVar16 + *(int *)(_DAT_02ce1de8 + 0x30) * (int)fVar23 & uVar7 - 1);\n        fVar31 = *(float *)(*(long *)(_DAT_02ce1de8 + 0x20) + uVar17 * 8);\n        if (fVar31 == *(float *)(_DAT_02ce1de8 + 0x2c)) {\n          if (fVar31 == fVar23) {\nLAB_0084b2ce:\n            uVar7 = *(uint *)(*(long *)(_DAT_02ce1de8 + 0x20) + 4 + uVar17 * 8);\n          }\n          else {\n            uVar7 = 0xffffffff;\n          }\n          goto LAB_0084b24f;\n        }\n        if (fVar31 == fVar23) goto LAB_0084b2ce;\n        uVar14 = (int)uVar16 + 1;\n        uVar16 = (ulong)uVar14;\n      } while (uVar14 < uVar7);\n    }\n  }\n  uVar7 = 0xffffffff;\nLAB_0084b24f:\n  if (*(char *)(lVar9 + 0x130) == '\\0') {\n    iVar6 = func_0x00761ea0();\n    local_1e8 = '\\0';\n    if (iVar6 == 4) goto LAB_0084b26a;\n  }\n  else {\nLAB_0084b26a:\n    local_1e8 = '\\x01';\n  }\n  func_0x00592460();\n  local_1f8 = func_0x00750030();\n  if (uVar7 == 0xffffffff) {\n    bVar4 = true;\n  }\n  else {\n    bVar4 = *pfVar10 <= *(float *)(*(long *)(_DAT_02ce1de8 + 0x40) + 4 + (ulong)uVar7 * 0x28);\n  }\n  if ((local_1f8 == '\\0') || (!bVar4)) {\nLAB_0084b370:\n    local_1f4 = (uint)local_1f4._1_3_ << 8;\n    *(undefined4 *)(lVar21 + 8 + lVar22) = 0;\n  }\n  else {\n    fVar23 = *(float *)(lVar11 + 8);\n    if (fVar23 != _DAT_02e3f0d0) {\n      uVar7 = *(uint *)(_DAT_02ce1810 + 0x30);\n      if (uVar7 != 0) {\n        uVar16 = uVar20;\n        do {\n          uVar17 = (ulong)((int)uVar16 + *(int *)(_DAT_02ce1810 + 0x38) * (int)fVar23 & uVar7 - 1);\n          fVar31 = *(float *)(*(long *)(_DAT_02ce1810 + 0x28) + uVar17 * 8);\n          if (fVar31 == *(float *)(_DAT_02ce1810 + 0x34)) {\n            if (fVar31 == fVar23) {\nLAB_0084b369:\n              uVar7 = *(uint *)(*(long *)(_DAT_02ce1810 + 0x28) + 4 + uVar17 * 8);\n              goto LAB_0084b352;\n            }\n            break;\n          }\n          if (fVar31 == fVar23) goto LAB_0084b369;\n          uVar14 = (int)uVar16 + 1;\n          uVar16 = (ulong)uVar14;\n        } while (uVar14 < uVar7);\n      }\n    }\n    uVar7 = 0xffffffff;\nLAB_0084b352:\n    if (*(char *)((ulong)uVar7 + *(long *)(_DAT_02ce1810 + 0x58)) == '\\0') goto LAB_0084b370;\n    local_1f4 = CONCAT31(local_1f4._1_3_,1);\n  }\n  local_1b0 = *(undefined8 *)(*(long *)(local_1a8 + 0x18) + 8);\n  if ((*(int *)(local_1e0 + 0x4c) != 0) &&\n     (cVar5 = (**(code **)(*(long *)(_DAT_02ce14c8 + 0x18) + 0x6d0))(0), cVar5 != '\\0')) {\n    (**(code **)(*(long *)(_DAT_02ce14c8 + 0x18) + 0x6d8))();\n  }\n  pcVar3 = (code *)_DAT_02ce14d8[0x55];\n  (**(code **)(*(long *)(_DAT_02ce14c8 + 0x18) + 0x748))();\n  lVar9 = (*pcVar3)();\n  lVar11 = local_1f0;\n  local_1b8 = lVar9;\n  if ((char)local_1f4 != '\\0') {\n    func_0x0075e490();\n  }\n  fVar31 = 0.0;\n  fVar23 = _DAT_022465b4;\n  local_48 = in_XMM6_Da;\n  if (lVar9 != *_DAT_02ce14d8) {\n    fVar28 = *(float *)(lVar11 + 8);\n    if (fVar28 != _DAT_02e3f0d0) {\n      uVar7 = *(uint *)(_DAT_02ce1810 + 0x30);\n      if (uVar7 != 0) {\n        uVar16 = uVar20;\n        do {\n          uVar17 = (ulong)(*(int *)(_DAT_02ce1810 + 0x38) * (int)fVar28 + (int)uVar16 & uVar7 - 1);\n          fVar26 = *(float *)(*(long *)(_DAT_02ce1810 + 0x28) + uVar17 * 8);\n          if (fVar26 == *(float *)(_DAT_02ce1810 + 0x34)) {\n            if (fVar26 == fVar28) {\nLAB_0084b534:\n              uVar7 = *(uint *)(*(long *)(_DAT_02ce1810 + 0x28) + 4 + uVar17 * 8);\n              goto LAB_0084b4aa;\n            }\n            break;\n          }\n          if (fVar26 == fVar28) goto LAB_0084b534;\n          uVar14 = (int)uVar16 + 1;\n          uVar16 = (ulong)uVar14;\n        } while (uVar14 < uVar7);\n      }\n    }\n    uVar7 = 0xffffffff;\nLAB_0084b4aa:\n    lVar11 = *(long *)(_DAT_02ce1810 + 0x50);\n    uVar16 = (ulong)uVar7;\n    func_0x007f5930();\n    func_0x008d28c0();\n    fVar28 = local_1e4;\n    if (local_1e4 != 0.0) {\n      uVar7 = func_0x00845e70();\n      fVar26 = (float)uVar7;\n      if (fVar26 == fVar31) {\n        if (*(int *)(_DAT_02ce1618 + 0x88) == 0) {\n          local_1e4 = _DAT_02e3f0e4;\n          pfVar10 = &local_1e4;\n        }\n        else {\n          pfVar10 = (float *)func_0x00e69b40();\n        }\n        if ((*pfVar10 != fVar28) && (fVar28 != _DAT_02e3f0d0)) {\n          uVar7 = *(uint *)(_DAT_02ce1e78 + 0x12058);\n          lVar21 = local_1d8;\n          if (uVar7 != 0) {\n            uVar17 = uVar20;\n            do {\n              uVar18 = (ulong)(*(int *)(_DAT_02ce1e78 + 0x12060) * (int)fVar28 + (int)uVar17 &\n                              uVar7 - 1);\n              fVar24 = *(float *)(*(long *)(_DAT_02ce1e78 + 0x12050) + uVar18 * 8);\n              if (fVar24 == *(float *)(_DAT_02ce1e78 + 0x1205c)) {\n                if (fVar24 == fVar28) {\nLAB_0084b604:\n                  if ((*(int *)(*(long *)(_DAT_02ce1e78 + 0x12050) + 4 + uVar18 * 8) != -1) &&\n                     (cVar5 = func_0x008e54c0(), lVar21 = local_1d8, cVar5 != '\\0')) {\n                    fVar26 = fVar23;\n                  }\n                }\n                break;\n              }\n              if (fVar24 == fVar28) goto LAB_0084b604;\n              uVar14 = (int)uVar17 + 1;\n              uVar17 = (ulong)uVar14;\n            } while (uVar14 < uVar7);\n          }\n        }\n      }\n      if ((fVar26 != *(float *)(lVar21 + 0x5c + lVar22)) &&\n         (lVar9 = (*(code *)_DAT_02ce14d8[0xb])(), lVar9 != 0)) {\n        (*(code *)_DAT_02ce14d8[0x70])();\n        *(float *)(lVar21 + 0x5c + lVar22) = fVar26;\n      }\n    }\n    if (*(char *)(lVar11 + 0x1e + uVar16 * 0x28) != '\\0') {\n      (*(code *)_DAT_02ce14d8[0x3a])();\n      *(undefined1 *)(lVar11 + 0x1e + uVar16 * 0x28) = 0;\n    }\n    if (*(char *)(lVar11 + 0x1f + uVar16 * 0x28) != '\\0') {\n      (*(code *)_DAT_02ce14d8[0x70])();\n      *(undefined1 *)(lVar11 + 0x1f + uVar16 * 0x28) = 0;\n    }\n  }\n  uVar16 = local_178 & 0xffffffff;\n  if (((float)local_178 != _DAT_02e3f0fc) && ((float)local_178 != _DAT_02e3f0d0)) {\n    uVar7 = *(uint *)(_DAT_02ce1fd0 + 0x38);\n    if (uVar7 != 0) {\n      lVar11 = *(long *)(_DAT_02ce1fd0 + 0x30);\n      uVar17 = uVar20;\n      do {\n        uVar18 = (ulong)((int)uVar17 + *(int *)(_DAT_02ce1fd0 + 0x40) * (int)(float)local_178 &\n                        uVar7 - 1);\n        fVar28 = *(float *)(lVar11 + uVar18 * 8);\n        if (fVar28 == *(float *)(_DAT_02ce1fd0 + 0x3c)) {\n          if (fVar28 == (float)local_178) {\nLAB_0084b6fa:\n            uVar14 = *(uint *)(lVar11 + 4 + uVar18 * 8);\n            if ((uVar14 != 0xffffffff) &&\n               ((*(byte *)(*(long *)(*(long *)(_DAT_02ce1fd0 + 0x48) + (ulong)uVar14 * 8) + 0x14) &\n                1) != 0)) {\n              uVar14 = 0;\n              if (uVar7 == 0) goto LAB_0084b74d;\n              goto LAB_0084b730;\n            }\n          }\n          break;\n        }\n        if (fVar28 == (float)local_178) goto LAB_0084b6fa;\n        uVar14 = (int)uVar17 + 1;\n        uVar17 = (ulong)uVar14;\n      } while (uVar14 < uVar7);\n    }\n  }\n  goto LAB_0084b827;\n  while( true ) {\n    if (fVar28 == (float)local_178) goto LAB_0084b77a;\n    uVar14 = uVar14 + 1;\n    if (uVar7 <= uVar14) break;\nLAB_0084b730:\n    uVar17 = (ulong)(*(int *)(_DAT_02ce1fd0 + 0x40) * (int)(float)local_178 + uVar14 & uVar7 - 1);\n    fVar28 = *(float *)(lVar11 + uVar17 * 8);\n    if (fVar28 == *(float *)(_DAT_02ce1fd0 + 0x3c)) {\n      if (fVar28 == (float)local_178) {\nLAB_0084b77a:\n        uVar7 = *(uint *)(lVar11 + 4 + uVar17 * 8);\n        goto LAB_0084b752;\n      }\n      break;\n    }\n  }\nLAB_0084b74d:\n  uVar7 = 0xffffffff;\nLAB_0084b752:\n  uVar17 = uVar20;\n  do {\n    if (*(char *)(uVar17 + (ulong)uVar7 * 0x20 + *(long *)(_DAT_02ce1fd0 + 0x58)) != '\\0') {\n      cVar5 = '\\x01';\n      goto LAB_0084b783;\n    }\n    uVar14 = (int)uVar17 + 1;\n    uVar17 = (ulong)uVar14;\n  } while (uVar14 < 5);\n  cVar5 = '\\0';\nLAB_0084b783:\n  if (((local_1f8 == '\\0') && (cVar5 != '\\0')) && (*(char *)(lVar21 + 3 + lVar22) == '\\0')) {\n    if (((*(byte *)(*(long *)(*(long *)(local_1a8 + 0x58) + local_188 * 8) + 0x14) & 1) != 0) &&\n       (*(int *)(local_1e0 + 0x58) != 0)) {\n      local_208 = local_208 & 0xffffffff00000000;\n      local_210 = 0;\n      local_220 = 0;\n      local_228 = CONCAT71(local_228._1_7_,1);\n      func_0x012366d0();\n    }\n    lVar11 = 0x54;\n    if (*(char *)(lVar21 + 4 + lVar22) == '\\0') {\n      lVar11 = 0x50;\n    }\n    if (*(int *)(lVar11 + local_1e0) != 0) {\n      func_0x0119cd60();\n    }\n    *(undefined1 *)(lVar21 + 4 + lVar22) = 1;\n  }\n  *(char *)(lVar21 + 3 + lVar22) = cVar5;\nLAB_0084b827:\n  lVar11 = local_1f0;\n  func_0x00760270();\n  local_1b0 = (**(code **)(*(long *)(_DAT_02ce14c8 + 0x18) + 0x90))();\n  fVar28 = (float)uVar16;\n  if (*(char *)(lVar21 + 1 + lVar22) != '\\0') {\n    if (((char)local_1f4 == '\\0') && (*(char *)(lVar21 + lVar22) == '\\0')) {\n      local_1f4 = (int)(local_1b0 >> 8) << 8;\n    }\n    else {\n      local_1f4 = (uint)CONCAT71((int7)(local_1b0 >> 8),1);\n      if (fVar28 != _DAT_02e3f0d0) {\n        uVar7 = *(uint *)(_DAT_02ce1ee0 + 0x100);\n        if (uVar7 != 0) {\n          uVar17 = uVar20;\n          do {\n            uVar18 = (ulong)(*(int *)(_DAT_02ce1ee0 + 0x108) * (int)fVar28 + (int)uVar17 & uVar7 - 1\n                            );\n            fVar26 = *(float *)(*(long *)(_DAT_02ce1ee0 + 0xf8) + uVar18 * 8);\n            if (fVar26 == *(float *)(_DAT_02ce1ee0 + 0x104)) {\n              if (fVar26 == fVar28) {\nLAB_0084b8e2:\n                uVar7 = *(uint *)(*(long *)(_DAT_02ce1ee0 + 0xf8) + 4 + uVar18 * 8);\n                if ((uVar7 != 0xffffffff) &&\n                   ((*(ulong *)((ulong)uVar7 * 0x78 + 0x547880 + _DAT_02ce1ee0) >> 0x24 & 1) != 0))\n                {\n                  *(float *)(lVar21 + 100 + lVar22) = *(float *)(lVar21 + 100 + lVar22) - param_3;\n                }\n              }\n              break;\n            }\n            if (fVar26 == fVar28) goto LAB_0084b8e2;\n            uVar14 = (int)uVar17 + 1;\n            uVar17 = (ulong)uVar14;\n          } while (uVar14 < uVar7);\n        }\n      }\n    }\n    fVar24 = *(float *)(lVar21 + 100 + lVar22) - param_3;\n    fVar26 = *(float *)(lVar21 + 0x60 + lVar22) - param_3;\n    *(float *)(lVar21 + 100 + lVar22) = fVar24;\n    *(float *)(lVar21 + 0x60 + lVar22) = fVar26;\n    if ((*(char *)(lVar21 + 2 + lVar22) == '\\0') && ((char)local_1f4 != '\\0')) {\n      if (fVar31 < fVar26) {\n        local_1f4 = local_1f4 & 0xffffff00;\n      }\n      else if (*(int *)(local_1e0 + 0x68) < 1) {\n        *(float *)(lVar21 + 0x60 + lVar22) = fVar31;\n        *(undefined4 *)(lVar21 + 100 + lVar22) = *(undefined4 *)(local_1e0 + 0x70);\n      }\n      else {\n        *(float *)(lVar21 + 0x60 + lVar22) = _DAT_02246fb0 / (float)*(int *)(local_1e0 + 0x68);\n        *(undefined4 *)(lVar21 + 100 + lVar22) = *(undefined4 *)(local_1e0 + 0x70);\n      }\n    }\n    else {\n      local_1f4 = local_1f4 & 0xff;\n      if (fVar24 <= fVar31) {\n        local_1f4 = 0;\n      }\n    }\n  }\n  if (fVar28 != _DAT_02e3f0d0) {\n    uVar7 = *(uint *)(_DAT_02ce16f0 + 0x28);\n    if (uVar7 != 0) {\n      uVar17 = uVar20;\n      do {\n        uVar18 = (ulong)(*(int *)(_DAT_02ce16f0 + 0x30) * (int)fVar28 + (int)uVar17 & uVar7 - 1);\n        fVar26 = *(float *)(*(long *)(_DAT_02ce16f0 + 0x20) + uVar18 * 8);\n        if (fVar26 == *(float *)(_DAT_02ce16f0 + 0x2c)) {\n          if (fVar26 == fVar28) {\nLAB_0084ba02:\n            if (*(int *)(*(long *)(_DAT_02ce16f0 + 0x20) + 4 + uVar18 * 8) != -1) {\n              func_0x0072bc80();\n            }\n          }\n          break;\n        }\n        if (fVar26 == fVar28) goto LAB_0084ba02;\n        uVar14 = (int)uVar17 + 1;\n        uVar17 = (ulong)uVar14;\n      } while (uVar14 < uVar7);\n    }\n  }\n  lVar9 = local_1e0;\n  fVar28 = (float)uVar16;\n  if ((char)local_1f4 == '\\0') {\n    if (*(char *)(lVar21 + 2 + lVar22) != '\\0') {\n      func_0x0084d3f0();\n      func_0x0124f1d0();\n      *(undefined1 *)(lVar21 + lVar22) = 0;\n      if ((*(int *)(lVar9 + 0x60) != 0) && (fVar28 != _DAT_02e3f0d0)) {\n        uVar7 = *(uint *)(_DAT_02ce1fd0 + 0x38);\n        if (uVar7 != 0) {\n          do {\n            uVar16 = (ulong)(*(int *)(_DAT_02ce1fd0 + 0x40) * (int)fVar28 + (int)uVar20 & uVar7 - 1)\n            ;\n            fVar23 = *(float *)(*(long *)(_DAT_02ce1fd0 + 0x30) + uVar16 * 8);\n            if (fVar23 == *(float *)(_DAT_02ce1fd0 + 0x3c)) {\n              if (fVar23 == fVar28) {\nLAB_0084c3b5:\n                if (*(int *)(*(long *)(_DAT_02ce1fd0 + 0x30) + 4 + uVar16 * 8) != -1) {\n                  func_0x00793870();\n                }\n              }\n              break;\n            }\n            if (fVar23 == fVar28) goto LAB_0084c3b5;\n            uVar14 = (int)uVar20 + 1;\n            uVar20 = (ulong)uVar14;\n          } while (uVar14 < uVar7);\n        }\n      }\n    }\n    fVar23 = *(float *)(lVar21 + 0x10 + lVar22);\n  }\n  else {\n    fVar28 = *(float *)(lVar11 + 8);\n    if (fVar28 != _DAT_02e3f0d0) {\n      uVar7 = *(uint *)(_DAT_02ce1ea0 + 0x38);\n      lVar11 = local_1f0;\n      if (uVar7 != 0) {\n        uVar17 = uVar20;\n        do {\n          uVar18 = (ulong)(*(int *)(_DAT_02ce1ea0 + 0x40) * (int)fVar28 + (int)uVar17 & uVar7 - 1);\n          fVar26 = *(float *)(*(long *)(_DAT_02ce1ea0 + 0x30) + uVar18 * 8);\n          if (fVar26 == *(float *)(_DAT_02ce1ea0 + 0x3c)) {\n            if (fVar26 == fVar28) {\nLAB_0084bb13:\n              uVar7 = *(uint *)(*(long *)(_DAT_02ce1ea0 + 0x30) + 4 + uVar18 * 8);\n            }\n            else {\n              uVar7 = 0xffffffff;\n            }\n            goto LAB_0084baa7;\n          }\n          if (fVar26 == fVar28) goto LAB_0084bb13;\n          uVar14 = (int)uVar17 + 1;\n          uVar17 = (ulong)uVar14;\n        } while (uVar14 < uVar7);\n      }\n    }\n    uVar7 = 0xffffffff;\nLAB_0084baa7:\n    pfVar10 = (float *)((ulong)uVar7 * 0x3f0 + *(long *)(_DAT_02ce1ea0 + 0x58));\n    fVar29 = *pfVar10 - *(float *)(local_1b0 + 0x30);\n    fVar30 = pfVar10[1] - *(float *)(local_1b0 + 0x34);\n    fVar27 = pfVar10[2] - *(float *)(local_1b0 + 0x38);\n    fVar25 = fVar30 * fVar30 + fVar29 * fVar29 + fVar27 * fVar27;\n    fVar28 = fVar31;\n    fVar26 = fVar31;\n    fVar24 = fVar31;\n    local_58 = in_XMM7_Da;\n    if (fVar25 != fVar31) {\n      if (fVar25 < 0.0) {\n        fVar25 = (float)func_0x01f946f4();\n      }\n      else {\n        fVar25 = SQRT(fVar25);\n      }\n      fVar28 = fVar31;\n      fVar26 = fVar31;\n      fVar24 = fVar31;\n      if (_DAT_02245da4 <= fVar25) {\n        fVar28 = fVar27 / fVar25;\n        fVar26 = fVar29 / fVar25;\n        fVar24 = fVar30 / fVar25;\n      }\n    }\n    local_178 = CONCAT44(fVar24,fVar26);\n    if (*(char *)(lVar21 + 0x18 + lVar22) == '\\0') {\n      fVar25 = *(float *)(lVar21 + 0x14 + lVar22);\n      local_170 = fVar28;\n      if (fVar31 < fVar25) {\n        local_168 = *(ulong *)(local_1b0 + 0x10);\n        fVar27 = (float)local_168;\n        local_160 = *(float *)(local_1b0 + 0x18);\n        uVar7 = func_0x01f8d6e8();\n        if (fVar25 < (float)(uVar7 & _DAT_0224b890)) {\n          fVar25 = fVar25 / (float)(uVar7 & _DAT_0224b890);\n          fVar29 = fVar31;\n          if ((fVar31 <= fVar25) && (fVar29 = fVar23, fVar25 <= fVar23)) {\n            fVar29 = fVar25;\n          }\n          fVar25 = fVar23 - fVar29;\n          fVar30 = fVar25 * local_168._4_4_ + fVar24 * fVar29;\n          fVar26 = fVar25 * fVar27 + fVar26 * fVar29;\n          fVar28 = fVar25 * local_160 + fVar28 * fVar29;\n          local_178 = CONCAT44(fVar30,fVar26);\n          fVar24 = fVar26;\n          local_170 = fVar28;\n          goto LAB_0084bcb7;\n        }\n      }\n      fVar24 = (float)local_178;\n      fVar30 = (float)(local_178 >> 0x20);\n    }\n    else {\n      local_178 = *(ulong *)(local_1b0 + 0x10);\n      fVar26 = (float)local_178;\n      fVar30 = (float)(local_178 >> 0x20);\n      fVar28 = *(float *)(local_1b0 + 0x18);\n      fVar24 = fVar26;\n      local_170 = fVar28;\n    }\nLAB_0084bcb7:\n    fVar25 = (float)uVar16;\n    lVar9 = local_1e0;\n    local_1e4 = local_170;\n    if (*(char *)(lVar21 + 2 + lVar22) == '\\0') {\n      *(undefined1 *)(lVar21 + 4 + lVar22) = 0;\n      func_0x0084ce20();\n      fVar25 = *(float *)(lVar11 + 8);\n      if (fVar25 != _DAT_02e3f0e4) {\n        uVar7 = *(uint *)(_DAT_02ce1bf8 + 0x280);\n        lVar11 = local_1f0;\n        if (uVar7 != 0) {\n          uVar17 = uVar20;\n          do {\n            uVar18 = (ulong)((int)uVar17 + *(int *)(_DAT_02ce1bf8 + 0x288) * (int)fVar25 & uVar7 - 1\n                            );\n            fVar27 = *(float *)(*(long *)(_DAT_02ce1bf8 + 0x278) + uVar18 * 8);\n            if (fVar27 == *(float *)(_DAT_02ce1bf8 + 0x284)) {\n              if (fVar27 == fVar25) {\nLAB_0084bd43:\n                if (*(int *)(*(long *)(_DAT_02ce1bf8 + 0x278) + 4 + uVar18 * 8) != -1) {\n                  func_0x00517720();\n                  (*(code *)_DAT_02ce14d8[0x3b])();\n                  lVar11 = local_1f0;\n                }\n              }\n              break;\n            }\n            if (fVar27 == fVar25) goto LAB_0084bd43;\n            uVar14 = (int)uVar17 + 1;\n            uVar17 = (ulong)uVar14;\n          } while (uVar14 < uVar7);\n        }\n      }\n      lVar9 = _DAT_02ce1ea0;\n      fVar26 = fVar26 * _DAT_02247060;\n      local_168 = *(ulong *)(local_1b0 + 0x30);\n      local_160 = *(float *)(local_1b0 + 0x38);\n      local_150 = local_1e4;\n      local_158 = CONCAT44(fVar30,fVar24);\n      if (_DAT_02247750 <= fVar26) {\n        fVar26 = fVar26 - _DAT_02247750;\n      }\n      fVar28 = fVar28 * _DAT_022476e4;\n      lVar19 = 0;\n      if ((_DAT_02247750 <= fVar28) && (fVar28 = fVar28 - _DAT_02247750, fVar28 < _DAT_02247750)) {\n        lVar19 = -0x8000000000000000;\n      }\n      uVar17 = local_1a0 + 0x58;\n      *(ulong *)(lVar21 + 0x68 + lVar22) =\n           (((ulong)*(uint *)(lVar11 + 0x10) << 0xf | local_188) << 0xb | (long)fVar26) << 0x18 |\n           (long)fVar28 + lVar19;\n      fVar28 = *(float *)(local_1f0 + 8);\n      if (fVar28 != _DAT_02e3f0d0) {\n        uVar7 = *(uint *)(lVar9 + 0x38);\n        if (uVar7 != 0) {\n          do {\n            uVar18 = (ulong)(*(int *)(lVar9 + 0x40) * (int)fVar28 + (int)uVar20 & uVar7 - 1);\n            fVar26 = *(float *)(*(long *)(lVar9 + 0x30) + uVar18 * 8);\n            if (fVar26 == *(float *)(lVar9 + 0x3c)) {\n              if (fVar26 == fVar28) {\nLAB_0084bf42:\n                uVar7 = *(uint *)(*(long *)(lVar9 + 0x30) + 4 + uVar18 * 8);\n              }\n              else {\n                uVar7 = 0xffffffff;\n              }\n              goto LAB_0084be8e;\n            }\n            if (fVar26 == fVar28) goto LAB_0084bf42;\n            uVar14 = (int)uVar20 + 1;\n            uVar20 = (ulong)uVar14;\n          } while (uVar14 < uVar7);\n        }\n      }\n      uVar7 = 0xffffffff;\nLAB_0084be8e:\n      local_1f8 = '\\x01';\n      iVar6 = *(int *)((ulong)uVar7 * 0x3f0 + 0xd8 + *(long *)(lVar9 + 0x58)) *\n              *(int *)(local_1e0 + 0x6c);\n      lVar21 = local_1d8;\n      local_178 = uVar17;\n      do {\n        puVar12 = (ulong *)func_0x0112e570();\n        lVar11 = local_1f0;\n        if (*(char *)(lVar21 + 1 + lVar22) == '\\0') {\n          uVar8 = func_0x007603d0();\n          uVar1 = *(undefined4 *)(local_1a0 + 0xf8);\n          uVar2 = *(undefined4 *)(local_1f0 + 8);\n          func_0x0084cbe0();\n          local_200 = CONCAT44(local_200._4_4_,uVar8);\n          local_208 = local_1a0 + 0xe8;\n          local_220 = CONCAT44(local_220._4_4_,(int)uVar16);\n          local_228 = CONCAT44(local_228._4_4_,uVar2);\n          local_218 = puVar12;\n          local_210 = uVar1;\n          func_0x0124f420();\n          *(undefined1 *)(local_1d8 + lVar22) = 1;\n          lVar21 = local_1d8;\n          lVar11 = local_1f0;\n          uVar17 = local_178;\n        }\n        else {\n          local_180 = local_160;\n          local_1c0 = local_150;\n          local_200 = local_1b8;\n          local_218 = &local_188;\n          local_210 = (undefined4)uVar16;\n          local_188 = local_168;\n          local_228 = local_1b0;\n          local_1c8 = local_158;\n          local_220 = uVar17;\n          FUN_0084c860();\n          local_1f8 = '\\0';\n        }\n        fVar28 = local_1e4;\n        fVar25 = (float)uVar16;\n      } while ((local_1e8 != '\\0') && (iVar6 = iVar6 + -1, iVar6 != 0));\n      if (fVar25 != _DAT_02e3f0d0) {\n        uVar14 = 0;\n        uVar7 = *(uint *)(_DAT_02ce1fd0 + 0x38);\n        if (uVar7 != 0) {\n          do {\n            uVar20 = (ulong)(uVar14 + *(int *)(_DAT_02ce1fd0 + 0x40) * (int)fVar25 & uVar7 - 1);\n            fVar26 = *(float *)(*(long *)(_DAT_02ce1fd0 + 0x30) + uVar20 * 8);\n            if (fVar26 == *(float *)(_DAT_02ce1fd0 + 0x3c)) {\n              if (fVar26 == fVar25) {\nLAB_0084c063:\n                if ((*(int *)(*(long *)(_DAT_02ce1fd0 + 0x30) + 4 + uVar20 * 8) != -1) &&\n                   (*(int *)(local_1e0 + 100) == 6)) {\n                  uVar7 = 0;\n                  do {\n                    local_228 = CONCAT71(local_228._1_7_,1);\n                    piVar13 = (int *)func_0x00791fa0();\n                    if (*piVar13 == *(int *)(lVar11 + 8)) {\n                      local_1c8 = CONCAT44(fVar30,fVar24);\n                      local_1c0 = fVar28;\n                      func_0x0078fbf0();\n                      func_0x007934b0();\n                    }\n                    fVar25 = (float)uVar16;\n                    uVar7 = uVar7 + 1;\n                  } while (uVar7 < 5);\n                }\n              }\n              break;\n            }\n            if (fVar26 == fVar25) goto LAB_0084c063;\n            uVar14 = uVar14 + 1;\n          } while (uVar14 < uVar7);\n        }\n      }\n      uVar7 = 0;\n      local_1c0 = local_160;\n      local_218 = (ulong *)CONCAT44(local_218._4_4_,_DAT_02e3f0fc);\n      local_220 = CONCAT44(local_220._4_4_,fVar23);\n      local_1c8 = local_168;\n      local_228 = local_228 & 0xffffffff00000000;\n      func_0x00653e00();\n      lVar22 = local_190;\n      lVar21 = local_1d8;\n      lVar9 = local_1e0;\n      *(undefined4 *)(local_1d8 + 0x1c + local_190) = *(undefined4 *)(local_1e0 + 0x48);\n      if ((*(int *)(local_1e0 + 0x5c) != 0) && (fVar25 != _DAT_02e3f0d0)) {\n        uVar14 = *(uint *)(_DAT_02ce1fd0 + 0x38);\n        if (uVar14 != 0) {\n          do {\n            uVar20 = (ulong)(*(int *)(_DAT_02ce1fd0 + 0x40) * (int)fVar25 + uVar7 & uVar14 - 1);\n            fVar28 = *(float *)(*(long *)(_DAT_02ce1fd0 + 0x30) + uVar20 * 8);\n            if (fVar28 == *(float *)(_DAT_02ce1fd0 + 0x3c)) {\n              if (fVar28 == fVar25) {\nLAB_0084c183:\n                if (*(int *)(*(long *)(_DAT_02ce1fd0 + 0x30) + 4 + uVar20 * 8) != -1) {\n                  func_0x00793870();\n                }\n              }\n              break;\n            }\n            if (fVar28 == fVar25) goto LAB_0084c183;\n            uVar7 = uVar7 + 1;\n          } while (uVar7 < uVar14);\n        }\n      }\n    }\n    lVar19 = _DAT_02ce1fd0;\n    uVar7 = 0;\n    fVar28 = *(float *)(lVar21 + 0x1c + lVar22) - param_3;\n    *(float *)(lVar21 + 0x1c + lVar22) = fVar28;\n    if (fVar28 <= fVar31) {\n      local_1c8 = *(ulong *)(local_1b0 + 0x30);\n      local_1c0 = *(float *)(local_1b0 + 0x38);\n      local_218 = (ulong *)CONCAT44(local_218._4_4_,_DAT_02e3f0fc);\n      local_220 = CONCAT44(local_220._4_4_,fVar23);\n      local_228 = local_228 & 0xffffffff00000000;\n      func_0x00653e00();\n      lVar19 = _DAT_02ce1fd0;\n      *(undefined4 *)(lVar21 + 0x1c + lVar22) = *(undefined4 *)(lVar9 + 0x48);\n    }\n    fVar23 = local_1e4;\n    lVar11 = local_1f0;\n    if (fVar25 != _DAT_02e3f0d0) {\n      uVar14 = *(uint *)(lVar19 + 0x38);\n      if (uVar14 != 0) {\n        uVar15 = uVar7;\n        do {\n          uVar20 = (ulong)(uVar15 + *(int *)(lVar19 + 0x40) * (int)fVar25 & uVar14 - 1);\n          fVar28 = *(float *)(*(long *)(lVar19 + 0x30) + uVar20 * 8);\n          if (fVar28 == *(float *)(lVar19 + 0x3c)) {\n            if (fVar28 == fVar25) {\nLAB_0084c2ad:\n              if ((*(int *)(*(long *)(lVar19 + 0x30) + 4 + uVar20 * 8) != -1) &&\n                 (*(int *)(lVar9 + 100) != 6)) {\n                do {\n                  local_228 = CONCAT71(local_228._1_7_,1);\n                  piVar13 = (int *)func_0x00791fa0();\n                  if (*piVar13 == *(int *)(lVar11 + 8)) {\n                    local_1c8 = CONCAT44(fVar30,fVar24);\n                    local_1c0 = fVar23;\n                    func_0x0078fbf0();\n                    func_0x007934b0();\n                  }\n                  uVar7 = uVar7 + 1;\n                  lVar22 = local_190;\n                } while (uVar7 < 5);\n              }\n            }\n            break;\n          }\n          if (fVar28 == fVar25) goto LAB_0084c2ad;\n          uVar15 = uVar15 + 1;\n        } while (uVar15 < uVar14);\n      }\n    }\n    fVar23 = *(float *)(local_1e0 + 0x10) + *(float *)(lVar21 + 0xc + lVar22);\n    *(float *)(lVar21 + 0xc + lVar22) = fVar23;\n    if (*(float *)(local_1e0 + 0x14) <= fVar23) {\n      fVar23 = *(float *)(local_1e0 + 0x14);\n    }\n    *(float *)(lVar21 + 0xc + lVar22) = fVar23;\n    fVar23 = *(float *)(local_1e0 + 0x1c);\n    lVar9 = local_1e0;\n  }\n  fVar28 = fVar23 - param_3;\n  if (fVar23 - param_3 <= fVar31) {\n    fVar28 = fVar31;\n  }\n  *(float *)(lVar21 + 0x10 + lVar22) = fVar28;\n  if ((fVar31 < fVar28) || (fVar23 = *(float *)(lVar21 + 0xc + lVar22), fVar23 <= fVar31)) {\n    uVar20 = (ulong)local_1f4;\n    if ((char)local_1f4 == '\\0') goto LAB_0084c46c;\n  }\n  else {\n    fVar23 = fVar23 - param_3 * *(float *)(lVar9 + 0x18);\n    if (fVar23 <= fVar31) {\n      fVar23 = fVar31;\n    }\n    *(float *)(lVar21 + 0xc + lVar22) = fVar23;\n  }\n  uVar20 = (ulong)local_1f4;\n  if (*(int *)(lVar9 + 0x74) != 0) {\n    func_0x00751640(uVar20,uStack0000000000000018,*(undefined4 *)(lVar11 + 8));\n  }\nLAB_0084c46c:\n  *(char *)(lVar21 + 2 + lVar22) = (char)uVar20;\n  func_0x01f0fd50();\n  return;\n}\n\n",
+  "findings": [
+    {
+      "status": "observed-current-static",
+      "summary": "can_fire false initializes local activity false, but active native continuation can set it true again until runtime+0x64 timer expires",
+      "addresses": [
+        "0x84b289",
+        "0x84b370",
+        "0x84b852",
+        "0x84b875",
+        "0x84b996",
+        "0x84b9a1"
+      ]
+    },
+    {
+      "status": "observed-current-static",
+      "summary": "Tail call751640 is a Unit mesh/material parameter update, not accumulated heat; it does not establish residual heating",
+      "addresses": [
+        "0x84c431",
+        "0x84c467",
+        "0x751640",
+        "0x7516d1",
+        "0x751700",
+        "0x75175d"
+      ]
+    }
+  ],
+  "limitations": [
+    "Static current-build function slice; no runtime hooks/calls or semantic field names assumed.",
+    "Decompiler prototype/register parameter identities are inferred and require assembly crosscheck.",
+    "Callee bodies outside slice are absent; accumulated heat effects and exact continuation time bound not proven."
+  ]
+}

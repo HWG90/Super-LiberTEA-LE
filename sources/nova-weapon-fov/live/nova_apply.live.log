@@ -1,0 +1,10 @@
+12:55:59 batch 6107: 1 commands
+12:55:59 > eval local f=assert(io.open('Z:/home/goose/Projects/Linux HD2 Mods/.claude/worktrees/transmog-armor-equip-bug-c59577/builds/26251122/mods/nova-weapon-fov/live/nova_apply.lua','rb'));local s=f:read('*a');f:close();local c=assert(loadstring(s,'@nova_apply.lua'));setfenv(c,getfenv(1));return c()
+12:55:59 F 90
+12:55:59 ENTITY 745 row 2 Z 3.5/2.5/1 C 0.6/0.6/0.6 N 0.1 highest Z 3.5 -> C 0.42742 N 0
+12:55:59   write ok readback C 0.42742/0.42742/0.42742 N 0/0
+12:55:59 rows written 1
+12:55:59 = 1
+12:55:59 < 2.00 ms of work over 1 frame
+12:55:59 batch 6107 done
+

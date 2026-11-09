@@ -1,6 +1,6 @@
 {
   "id": "goose_temporary_unlocks",
-  "version": "0.5.8-cffi-26251122",
+  "version": "0.5.38-cffi-26251122",
   "upstream_first_person": "Native ADS Camera Test 0.1.49-test",
   "steam_build": 26251122,
   "ported_from": 26088801,
@@ -20,11 +20,13 @@
   "live_activation_verified": false,
   "visual_acceptance_pending": true,
   "helpers": {
-    "alignment": "e241b30e759a9d2300863e50df2f48e1287501a77d0ed0ea43a55ecf4d91cebf",
-    "editor": "3e5fd1f1a9b1377f7b7774d72b93b9ed6e49ba73b072daf71e04124253f673d5",
-    "fov": "a6b1c2df53378a4063884b7e95a2f0340bb75085b28c487e9a1c4ef9a8a1d793",
-    "camera": "41b0d285dda35767417f300bdf9c68f7030764091a983650f05344c07b619254",
-    "blur": "7373b5c581b8d45b29f76b745b112f2f68ade98f805a1f49d36a84339af20ba6"
+    "alignment": "90f80106133ff9029662a1e363e6bd059b723e5ebd8efbf18b527025ed0e1da9",
+    "editor": "22b7cee1b21cae8f8e4bb2b4f903a1f992bd0517c35cbb38bd8367a29395bf54",
+    "fov": "43252d9d03e1e10b6e737e38da4eaa5d58d180de2192dafde02c28c3b51e8110",
+    "blur": "cf184cc46ffbca44dfcbf3e4c38dd3b2087833eae975bed3b2d57c43f585b2fe",
+    "near": "459421f3eb79d7da6e0592f837005e247f20b8d923d5caac81ae1a4404abf778",
+    "heldfire": "b660a68dfd81c7ff5cfda06fca731bd65a4a681a31dd95a86971672ca89aa142",
+    "camera": "13175a39b9d5b7bbcf14435ea9b784974c33c3116f37676bd0b6aba7d68b2c5f"
   },
   "guarded_reads": {
     "guarded_reads_fb18682bc3515a7a.dll": "fb18682bc3515a7ab3484f5437498fef538086c1f8ccdf74c16f394b442a9e98"
@@ -32,5 +34,144 @@
   "nativeinfo": {
     "port51/hd2_nativeinfo_8d03e036881e4ddc.dll": "LLL 26251122 hd2_nativeinfo (same source as the 26088801 f6d34659, new exe SHA and Lua API map)"
   },
-  "hotkey_input": "engine keyboard and token-owned shared input adapter"
+  "hotkey_input": "engine keyboard and token-owned shared input adapter",
+  "prior_version_live_activation": "0.5.32 loaded; native ADS entry user accepted; exit remained jarring in weapon and whole view",
+  "candidate_features": {
+    "environment_vignette": "live user-confirmed;9 profiles restored",
+    "first_person_shadows": "58 masks suppressed/restored with exact roundtrip",
+    "native_ads_option": "native activation confirmed;180ms lens blend loaded; placement handoff candidate pending restart",
+    "persistent_first_person_camera": "retired in0.5.35; native game action and vehicle views allowed",
+    "owned_first_person_look": "removed in0.5.35; native input and quaternion remain authoritative"
+  },
+  "controls": {
+    "f11": "True First Person",
+    "fird_menu_options": "commented out",
+    "fird_head_camera_shortcut": "commented out",
+    "native_helpers_changed": true,
+    "changed_helpers": [
+      "camera",
+      "editor",
+      "fov"
+    ]
+  },
+  "ads_position_handoff": {
+    "native_helpers_changed": true,
+    "new_interception_points": false,
+    "native_animation_smoothing": false,
+    "entry": "keep reached placement rather than retargeting idle;150ms modifier handoff",
+    "return": "same-player/same-firearm observed native ADS return uses ordinary persistent Begin, initial/weapon-swap uses BeginSteady",
+    "live_acceptance": "current0.5.35 pending; earlier0.5.32 entry accepted and exit reported jarring",
+    "custom_ads_xyz": "existing authored ADS XYZ behavior unchanged"
+  },
+  "persistent_camera": {
+    "library": "native_ads_camera_26251122_c877f1d86b08.dll",
+    "sha256": "8f22409b1c3928732311e4fc498e1a4ccf9affa66048bd8df29ed08da19db68f",
+    "new_interception_points": false,
+    "executable_writes": false,
+    "legacy_mode_retained": true,
+    "activation": "unavailable; historical0.5.33/34 record only",
+    "native_ads": "exact native input once the actual FPS parent is proved",
+    "ownership": "actual local player/body descriptors, current camera and Unit generations; typed root or registered same-world parent",
+    "position": "body-relative eye handoff preserves fresh player/vehicle movement",
+    "look": "owned raw-input yaw/pitch once per qualified Update; native ADS exact and reseeds heading",
+    "controls": "off/Photo Mode cleanup retained",
+    "live_acceptance": "0.5.33 position lock user-confirmed including vehicles;0.5.34 rotation/pitch changes pending restart",
+    "status": "retired; old pin library and independent raw look are not selected"
+  },
+  "aim_markers": {
+    "explicit_false": "hide fixed crosshair and moving circle only while aiming; hip restores native visibility",
+    "pinned_action_and_vehicle_views": false,
+    "legacy_weapon_preferences_preserved": true,
+    "cold_start": "build identity plus exact HUD witnesses; independent of packed firearm camera pages"
+  },
+  "true_first_person_seamless_0_5_35": {
+    "baseline": "0.5.34-cffi-26251122",
+    "target_build": 26251122,
+    "native_helpers": {
+      "editor": {
+        "file": "native_ads_editor_26251122_6f9f23756486.dll",
+        "sha256": "7ebf92704e19eeefcba24a2fd3ed71944d80b078bc769a369425680cc2551072"
+      },
+      "fov": {
+        "file": "native_ads_fov_26251122_60bbecd29508.dll",
+        "sha256": "43252d9d03e1e10b6e737e38da4eaa5d58d180de2192dafde02c28c3b51e8110"
+      },
+      "camera": {
+        "file": "native_ads_camera_26251122_c329263b5e79.dll",
+        "sha256": "13175a39b9d5b7bbcf14435ea9b784974c33c3116f37676bd0b6aba7d68b2c5f"
+      }
+    },
+    "new_hooks": false,
+    "structure_abis_unchanged": true,
+    "native_fp_animation_preserved": true,
+    "settings_migration_required": false,
+    "live_acceptance": "pending",
+    "camera_pin_removed": true,
+    "native_camera_authoritative": true,
+    "independent_raw_look": false,
+    "zoom_sensitivity": "unresolved native zoom-dependent scaling",
+    "camera_helper": "rebuilt pre-pin on-foot fallback; native6 exact"
+  },
+  "true_first_person_performance_0_5_36": {
+    "baseline": "0.5.35-cffi-26251122",
+    "editor": {
+      "file": "native_ads_editor_26251122_7fd176073730.dll",
+      "sha256": "22b7cee1b21cae8f8e4bb2b4f903a1f992bd0517c35cbb38bd8367a29395bf54"
+    },
+    "camera_unchanged": true,
+    "native_animation_unchanged": true,
+    "healthy_recovery_snapshots_per_frame": {
+      "before": 8,
+      "after": 1,
+      "scope": "real orchestrator including presentation observer"
+    },
+    "all_policy_and_controller_updates_preserved": true,
+    "global_foreign_rotation_lock_acquisitions": {
+      "before": 400000,
+      "after": 0,
+      "scope": "matched8worker synthetic benchmark"
+    },
+    "head_masks": "constant-time byte operations; all256 hide/restore masks checked",
+    "new_hook": false,
+    "settings_migration": false,
+    "live_performance_acceptance": "pending"
+  },
+  "true_first_person_performance_0_5_38": {
+    "baseline": "0.5.36-cffi-26251122",
+    "reported_live_fps": {
+      "off": 107,
+      "on": 85,
+      "profiling_removed": true
+    },
+    "scope": "Lua only; unchanged native helpers, camera, animation, hooks, settings and input bindings",
+    "head_100_steady_fixture_frames": {
+      "baseline": {
+        "full_snapshots": 200,
+        "alignment_context_calls": 1200,
+        "SDK_writes": 0,
+        "player_plus_full_snapshot_calls": 300,
+        "direct_fixture_read_callbacks": 7900
+      },
+      "candidate": {
+        "full_snapshots": 0,
+        "alignment_context_calls": 0,
+        "SDK_writes": 0,
+        "player_plus_full_snapshot_calls": 200,
+        "direct_fixture_read_callbacks": 10800
+      },
+      "important_limit": "Old full snapshots, alignment_context and scalar getters are fake in this byte-backed fixture, so direct_read_callbacks omit their production read chains. Compare call counts; no timing or FPS claim."
+    },
+    "phase_matched_fixture_path": {
+      "full_snapshots_before": 3,
+      "after": 1,
+      "alignment_walks_before": 3,
+      "after_alignment": 1,
+      "protected_reads_before": 187,
+      "after_reads": 77,
+      "native_phase_calls_before": 2,
+      "after_calls": 1
+    },
+    "writes": "Original fresh mutation, foreign-mask, cleanup and native owner guards retained",
+    "live_performance_acceptance": "pending"
+  }
 }

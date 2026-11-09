@@ -29,6 +29,9 @@ static_assert(sizeof(NADSE_DepthStats)==104,"NADSE_DepthStats ABI");
 NADSE_EXPORT uint32_t NADSE_Validate(const NADSE_Config*);
 // Begin: 0 rejected/no owned lease; 1 armed; 2 owned cleanup required.
 NADSE_EXPORT uint32_t NADSE_Begin(const NADSE_Config*,uint64_t* generation);
+// Same ownership/cleanup contract. Saved placement is fully applied on the
+// first fresh pose; native ADS still uses the ordinary 150ms release blend.
+NADSE_EXPORT uint32_t NADSE_BeginSteady(const NADSE_Config*,uint64_t* generation);
 NADSE_EXPORT uint32_t NADSE_SetPlacement(uint64_t generation,float x,float y,float z);
 // Presentation delta is separate from saved placement; all axes are metres.
 NADSE_EXPORT uint32_t NADSE_SetADSPlacement(uint64_t generation,float x,float y,float z);
@@ -39,6 +42,9 @@ NADSE_EXPORT uint32_t NADSE_SetTransform(uint64_t generation,float dx,float dy,f
     float qx,float qy,float qz,float qw);
 // Explicit authored ADS rotation only; the ordinary motion API still yields.
 NADSE_EXPORT uint32_t NADSE_SetAuthoredTransform(uint64_t generation,float dx,float dy,float dz,float qx,float qy,float qz,float qw);
+// Suppress legacy depth inversion while the generation-owned zoom-selection
+// policy supplies native baseline lens/depth inputs. active must be 0 or 1.
+NADSE_EXPORT uint32_t NADSE_SetZoomPolicy(uint64_t generation,uint32_t active);
 NADSE_EXPORT uint32_t NADSE_End(uint64_t generation);
 // Generation 0 is accepted only when no lease is reserved.
 // Health/counters stay atomic and fresh. Display values use one bounded
@@ -46,3 +52,6 @@ NADSE_EXPORT uint32_t NADSE_End(uint64_t generation);
 NADSE_EXPORT uint32_t NADSE_ReadStats(uint64_t generation,NADSE_Stats*);
 NADSE_EXPORT uint32_t NADSE_ReadDepthStats(uint64_t generation,NADSE_DepthStats*);
 NADSE_EXPORT uint32_t NADSE_Error(void);
+
+// Optional Update-owned presentation phase; Config/Stats ABI2 is unchanged.
+NADSE_EXPORT uint32_t NADSE_SetTransition(uint64_t generation,uint64_t epoch,float progress,uint32_t ads);

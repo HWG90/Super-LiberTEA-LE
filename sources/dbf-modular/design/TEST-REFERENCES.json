@@ -1,0 +1,10 @@
+{
+  "lll_source": "/home/goose/Projects/Super-LiberTEA-LE/sources/live-lua-loader/src",
+  "purpose": "Exact read-only test fixtures, not runtime dependencies or installed copies",
+  "sha256": {
+    "reference/lll/commands.lua": "8e4bca9b18ffe38c2de4319c316cd2ee4e92c7d99b5fbce6876f0304b41ac22e",
+    "reference/lll/config.lua": "52453180d419987d3486edd71f819c580feecac99f61f955598a2f84a4d6370e",
+    "reference/lll/metadata.lua": "51a371a377c8f0de5727357f4332c08f7cea6ba779d8d7cee59a9ec2c0b8b1dd",
+    "reference/lll/project.lua": "dca90d41ea15d5545f159da3c9cde6e7f7252b7110fd6b8864bb23fca69470eb"
+  }
+}
