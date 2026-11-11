@@ -15,7 +15,12 @@ local Schema = {
 local PREFIX = "native_stratagem_radial."
 local groups = {}
 local function group(id, name, keys)
-    Schema.categories[#Schema.categories + 1] = { id = id, name = name, collapsed = id == "exclusions" }
+    Schema.categories[#Schema.categories + 1] = {
+        id = id,
+        name = name,
+        style = id ~= "exclusions" and "page" or nil,
+        collapsed = id == "exclusions",
+    }
     if id ~= "exclusions" then
         Schema.pages[#Schema.pages + 1] = { id = id, name = name, category = id }
     end

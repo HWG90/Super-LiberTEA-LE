@@ -246,7 +246,7 @@ static int application_build(lua_State *L) {
     lua_pushstring(L,name);return 1;
 }
 static int application_platform(lua_State *L) {
-    /* Build 26088801 wrapper at 0x3cfeb0 pushes the five-byte constant at
+    /* Build 26088801 wrapper at 0x3cff90 pushes the five-byte constant at
      * 0x17026f8. This is the Windows game platform, including under Proton. */
     lua_pushliteral(L,"win32");return 1;
 }
@@ -580,30 +580,40 @@ int hd2env_require(HD2Environment *e,const char *name) {
 }
 int hd2env_register_vector2(HD2Environment *e,const HD2VectorHost *host,uintptr_t native_environment) {
     if(!enter(e))return 0;
-    if(e->vector2_ready||(e->frame_native&&(uintptr_t)e->frame_native!=native_environment)||
-       !hd2env_probe_vector2_host(host)||!hd2vector2_pool_valid(host,native_environment)) {
-        snprintf(e->error,sizeof(e->error),"Vector2 binding already installed, image differs or native pool unavailable");e->busy=0;return 0;
+    /* The probe's reason names the witness and page (2026-11-04, --use-d3d11). */
+    const char *why=e->vector2_ready?"already installed":
+        e->frame_native&&(uintptr_t)e->frame_native!=native_environment?"another native environment owns the frames":
+        !hd2env_probe_vector2_host(host)?hd2vector_probe_error():
+        !hd2vector2_pool_valid(host,native_environment)?"native pool unavailable":NULL;
+    if(why) {
+        snprintf(e->error,sizeof(e->error),"Vector2 binding already installed, image differs or native pool unavailable: %s",why);e->busy=0;return 0;
     }
     e->vector_host=*host;e->vector_environment=native_environment;e->operation=13;return dispatch(e);
 }
 int hd2env_register_vector3(HD2Environment *e) {
     if(!enter(e))return 0;
-    if(!e->vector2_ready||e->vector3_ready||!hd2env_probe_vector3_host(&e->vector_host)) {
-        snprintf(e->error,sizeof(e->error),"Vector3 requires the Vector2 host, matching witnesses and a fresh binding");e->busy=0;return 0;
+    const char *why=!e->vector2_ready?"no Vector2 host":e->vector3_ready?"already installed":
+        !hd2env_probe_vector3_host(&e->vector_host)?hd2vector_probe_error():NULL;
+    if(why) {
+        snprintf(e->error,sizeof(e->error),"Vector3 requires the Vector2 host, matching witnesses and a fresh binding: %s",why);e->busy=0;return 0;
     }
     e->operation=14;return dispatch(e);
 }
 int hd2env_register_vector3box(HD2Environment *e) {
     if(!enter(e))return 0;
-    if(!e->vector3_ready||e->vector3box_ready||!hd2env_probe_vector3box_host(&e->vector_host)) {
-        snprintf(e->error,sizeof(e->error),"Vector3Box requires Vector3, matching witnesses and a fresh binding");e->busy=0;return 0;
+    const char *why=!e->vector3_ready?"no Vector3":e->vector3box_ready?"already installed":
+        !hd2env_probe_vector3box_host(&e->vector_host)?hd2vector_probe_error():NULL;
+    if(why) {
+        snprintf(e->error,sizeof(e->error),"Vector3Box requires Vector3, matching witnesses and a fresh binding: %s",why);e->busy=0;return 0;
     }
     e->operation=15;return dispatch(e);
 }
 int hd2env_register_vector4(HD2Environment *e) {
     if(!enter(e))return 0;
-    if(!e->vector3_ready||e->vector4_ready||!hd2env_probe_vector4_host(&e->vector_host)) {
-        snprintf(e->error,sizeof(e->error),"Vector4 requires Vector3, matching witnesses and a fresh binding");e->busy=0;return 0;
+    const char *why=!e->vector3_ready?"no Vector3":e->vector4_ready?"already installed":
+        !hd2env_probe_vector4_host(&e->vector_host)?hd2vector_probe_error():NULL;
+    if(why) {
+        snprintf(e->error,sizeof(e->error),"Vector4 requires Vector3, matching witnesses and a fresh binding: %s",why);e->busy=0;return 0;
     }
     e->operation=16;return dispatch(e);
 }

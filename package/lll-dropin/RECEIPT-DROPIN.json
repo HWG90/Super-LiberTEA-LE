@@ -1,0 +1,25 @@
+{
+ "release": "R38-26568081-luajit.1",
+ "purpose": "Arsenal drop-in: the plain boot patch (36a1c1facca8e7cc) with the native files in front",
+ "release_label": "R38-26251122-luajit.1",
+ "install_block_sha256": "f2dc27f1474dbbc0ab9c9f83aa2df79b0a55c73c31da15a9f9678beea24fdbca",
+ "prologue_sha256": "3aad53105c0c383524bc898956de5e2eb41213d178388e6f3acf2ef9eecae376",
+ "lll_source_sha256": "6be284a830612486be9c4ac5680cc7c7af2858b0db77724159cee707ca45e6ea",
+ "boot_chunk_sha256": "356e35d8bc3ee8733df8030f2e0064af2bfdccf0a926f76d00df67d47df6c4d8",
+ "patch_sha256": "425edeb2d65a904c75f1a8e4daa969dd306a97df00f220cfca8a3bcb0eff68b9",
+ "patch_bytes": 4873760,
+ "files": {
+  "Native/hd2_cffi_35ee9bb9bedfeaf9.dll": "35ee9bb9bedfeaf92bfd52ccdd855a2ae5713096c6aa39a6d3bf71ea6d3e3917",
+  "Native/hd2_luajit_runtime_d6c1aec33706b30e.dll": "d6c1aec33706b30ead9d335f0ae759219141af1322770a383e09c6d32b28b309",
+  "Native/hd2_nativeinfo_f375fc4798c33ad5.dll": "f375fc4798c33ad560a5ef0dd7bb2c51c6299e27518377394184625a489b2fef",
+  "Service/lll_steam_launcher_aa4e9d2ad66fc88a.exe": "aa4e9d2ad66fc88a75417f889030e1b2edd3339099745accffd17e8bbbd40fe8",
+  "Service/lll_steam_service_a0263f613a8cc031.exe": "a0263f613a8cc03189a4818908342fda1cecd48819ba924c1a272730043a3ce3"
+ },
+ "marker": "hd2_luajit_runtime_d6c1aec33706b30e.dll",
+ "runtime_source": "../runtime/out/hd2_lua_environment.d6c1aec3.dll",
+ "same_lll_and_prologue_as": "36a1c1facca8e7ccc034ff04f453860ae22f385d6b89a6376e7a99385a143a18",
+ "upgrade": {
+  "from_release": "R38-26251122-luajit.2",
+  "from_marker": "hd2_luajit_runtime_9a596e2f766ff92c.dll"
+ }
+}

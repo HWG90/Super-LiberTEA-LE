@@ -1,3 +1,41 @@
+# LAS-22 Shear in the Armory — 0.5.42 shear 1
+
+Lua only. With **Unlocks → Enabled** and **Weapons** on, the LAS-22 Shear now has parts to choose in the ship Armory's weapon customization screen: the five laser-rifle optics that fit its mount (2x Tube Red Dot, 1.5x Tube Red Dot, 4x Combat Scope, Holographic Sight, Reflex Sight Mk2) and its three heatsinks. Underbarrel, muzzle and paint pattern stay on the gun's own single part. Close the Armory and reopen it after switching Weapons on.
+
+The Armory lists a weapon's parts from owned part rows stored directly under the weapon's own row; the game ships none for the Shear on build 26251122. The kit now registers them together with the weapon row and removes them the same way when Weapons is switched off. The part list is the one the mission Loadout Editor already uses. Offline: the fixture and a replay over a live catalogue dump pass. Live acceptance of the Armory screen is pending.
+
+# True First Person smoothing — 0.5.41 smooth 3
+
+Lua plus one rebuilt helper (near clip); every other native helper is the 0.5.40 test 1 build. A full game exit is required before installing smooth 2. The game still animates the arms, weapon and camera, and none of that is filtered. The changes are to the mod's own additions on top: the weapon offset (bob, sway, aim and sprint pose), saved placement blends, and the shared transition clock that the rig, lens and camera handoff follow.
+
+- **Pop guard (corrected in smooth 3).** A live recording showed the guard firing 29 times in two minutes on ordinary sprint and placement rotation blends, which peak above its speed limit at their midpoint. It no longer starts while a handoff is already crossfading.
+- **Pop guard.** If the weapon offset is about to move further in one frame than any authored motion does (over 1 m/s or 360°/s), it crossfades over 120 ms instead. This covers a failed read, opening or closing F8, and anything not foreseen. `NativeADSCameraTest.diagnostics()` motion state counts these as `softened`.
+- **Hitches stretch, not skip.** One slow frame spends at most a third of a transition, so a stutter during an ADS or stance change no longer lands the blend in a single frame. Gaps over 250 ms still retire the transition as before.
+- **One gesture, one blend.** Stance, action and zoom changes that arrive in the first half of a running blend join it. Before, each one restarted the rig, lens and placement from a standstill.
+- **Aim press and release.** Walking bob and sway now fade against the aim flag over about 100 ms. They used to switch off and on in one frame.
+- **After a stutter, teleport or launch.** The aim and sprint pose are kept and the remaining bob eases out. Before, everything dropped to zero and built back up. Gaps over one second still start clean.
+- **Late placement changes** (after a transition has already finished) ease in. A new weapon's first placement still lands at once.
+
+- **Near clip (smooth 2).** The clip distance used to switch in one frame between hip, normal aim and full ADS, so clipped arm and weapon geometry popped. It now eases (about 150 ms, same at any frame rate) and lands exactly; full ADS still ends on the game's own distance. For the first tenth of a second of an ADS entry the custom clip is therefore still fading out.
+
+Not changed: native ADS entry and exit, the FOV blend and the normal-camera correction keep their existing timing.
+
+# SDK-only First Person input candidate — 0.5.40 test 1
+
+Zoom normalization is **disabled by default** in this experimental combined build. An explicitly requested timed trial selects the extra SDK pointer callback. It uses private camera look gains, with no inline patch, camera pin, independent look integrator, or changes to saved sensitivity/placement. Native camera, lens and animations remain authoritative.
+
+Offline checks cover the native pointer lifecycle, actual Windows calling convention, protected atomic cleanup, captured game math and private preset copies. Nonzero-steering ordering, abnormal incomplete cleanup, in-game motion and FPS remain unqualified. This is a trial candidate, not an accepted replacement for the 0.5.38/39 baseline. See `docs/first-person-zoom-input.md` and `docs/first-person-zoom-input-validation.json`.
+
+A full game exit is required before installation. Ordinary F11 uses the legacy four-slot path until the opt-in is selected. UI appearance and personal settings are unchanged by this candidate.
+
+# First Person polish correction — 0.5.39
+
+Restores the original non-HellForge F8 appearance while retaining the working arms/gun placement, cancel and family-default behavior. The0.5.35 visual restyle was outside this mod's UI scope. The restored draw commands match the actual pre-restyle editor at three resolutions; original colours now come from scoped tokens.
+
+Qualified temporary native owner-data read failures now reach the bounded recovery policy. Camera/FOV/blur cleanup must acknowledge retirement before a paced retry, with fresh same-player/on-foot/foreign-camera proof. Invalid pages, semantic mismatches, signatures and unknown faults remain unsafe. A separate visibility fix preserves foreign-mask history when a weapon attachment changes.
+
+The native camera and animations remain authoritative. The accepted0.5.38 performance changes, placement and settings are retained; healthy camera read counts are unchanged. Native helpers change, so a full game exit is required. Live39 appearance, motion and FPS acceptance remain pending. See `docs/first-person-native-read-recovery.md` and `docs/first-person-editor-appearance-restore.md`.
+
 # First Person performance follow-up — 0.5.38
 
 The reported 107 FPS with F11 off and 85 with it on persists after profiling is removed. This update reduces repeated Lua work while preserving the natural native camera and animation baseline. It adds a guarded, read-only steady visibility observation and coalesces identical shared transition packets within one Update. Any observed renderer or ownership change immediately uses the original full checks; all writes retain their existing guards.
@@ -34,7 +72,7 @@ This is an LLL Lua/CFFI build, not a HellForge plugin. A restart is required to 
 
 **Hidden weapons on build 26251122 (0.5.25).** LAS-22 Shear and SG-8F Punisher Fire of Liberty use Primary. P-41 Ombudsman uses Secondary. Choose them by name in the mission Loadout Editor, or use **Spawner → Weapon → Equip in hands** in a solo hosted mission. On the ship, turn on **Unlocks → Enabled** and **Weapons**, close the Armory, then reopen it. The kit registers missing native weapon entries and initializes missing presets from each gun's own defaults. To disable while using one, equip another primary or sidearm first and close the Armory.
 
-Steam build 26251122; game.dll 6AE0E5FF, helldivers2.exe 6AE0964A; Lua 5.1/CFFI and DBF-MCM. (Ported from 26088801 on 2026-10-29: game.dll code and data did not move; exe addresses and witnesses remapped. Evidence: Linux HD2 Mods builds/26251122/maps/gadget-kit.)
+Steam build 26568081; game.dll 6AF322C1, helldivers2.exe 6AF2D5E6; Lua 5.1/CFFI and DBF-MCM. (Ported from 26251122 on 2026-11-11: game.dll code above 0x988000 moved +0x30/+0x160, exe code +0x30..+0xE0; addresses and witnesses remapped. Evidence: Linux HD2 Mods builds/26568081/maps/gadget-kit.) Earlier: (Ported from 26088801 on 2026-10-29: game.dll code and data did not move; exe addresses and witnesses remapped. Evidence: Linux HD2 Mods builds/26251122/maps/gadget-kit.)
 
 **Unlocks** contains local equipment access and category switches. **Gameplay** includes **Passive AI**, which toggles the local Player no aggro flag (bit 25), plus independent mission timer, health, loaded-ammunition and reserve-ammunition holds. These controls default off and require local host ownership. Health holds do not prevent instant death or limb damage. Empty weapons need reloading before loaded rounds can be held. Switching off releases owned changes without writing stale values into recycled records.
 

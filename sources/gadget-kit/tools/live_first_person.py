@@ -1,7 +1,7 @@
 """Submit explicit diagnostic commands to the installed local LLM addon."""
 from pathlib import Path
 import importlib.util,os,re,sys
-os.environ['LLM_FOLDER']='/mnt/WORMHOLE/SteamLibrary/steamapps/compatdata/553850/pfx/drive_c/users/steamuser/AppData/Local/LinksLinkToMemory'
+os.environ['LLM_FOLDER']='/home/goose/.local/share/Steam/steamapps/compatdata/553850/pfx/drive_c/users/steamuser/AppData/Local/LinksLinkToMemory'
 spec=importlib.util.spec_from_file_location('llm','/home/goose/.config/hd2arsenal/mods/Links-Link-to-Memory-0.5.1-CFFI-26088801/Tools/llm.py')
 llm=importlib.util.module_from_spec(spec);spec.loader.exec_module(llm)
 if __name__=='__main__':

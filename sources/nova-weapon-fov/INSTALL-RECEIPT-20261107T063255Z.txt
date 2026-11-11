@@ -1,2 +1,0 @@
-goose_nova_weapon_fov: installed from /home/goose/Projects/Linux HD2 Mods/.claude/worktrees/transmog-armor-equip-bug-c59577/builds/26251122/mods/nova-weapon-fov/stage/goose_nova_weapon_fov
-done 20261107T063255Z

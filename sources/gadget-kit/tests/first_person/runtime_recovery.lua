@@ -51,6 +51,7 @@ local function fixture()
  set('compat',{update=function()return true end});set('editor',{is_active=function()return false end,update=function()end})
  set('motion',{update=function()return true end});set('menu',{update=function()end})
  set('aim_markers',nil);set('fird',nil);set('fird_entry',nil);set('fird_warm',nil)
+ function f:replace_manager(name,value)self.managers[name]=value;set(name,value)end
  function f:read(key)
   local fn,i=locate(entry.on_update,key);assert(fn,'Missing real runtime upvalue '..key)
   local _,value=debug.getupvalue(fn,i);return value
@@ -74,6 +75,34 @@ test('typed core read fault suspends then resumes only after paced fresh proof',
  f:update(0);assert(f.c.enabled and not f.c.lease and f.suspends==1 and f.stops==0)
  local before=f.updates;f:update(.1);assert(f.updates==before and m.calls==1)
  m.fail=false;f:update(.25);assert(f.updates==before+1 and m.calls==2 and f.c.enabled)
+end)
+test('real Camera manager callback read health uses cleanup paced retry and fresh proof',function()
+ local f=fixture();local Camera=dofile(root..'/src/first_person/camera.lua')
+ local native={armed=true,error=0,owned=nil,begins=0,ends=0,pending=false}
+ local helper={}
+ function helper:begin(config)native.begins=native.begins+1;native.armed=true;native.owned={body=config.body};return true,native.owned end
+ function helper:owned_handle()return native.owned end
+ function helper:stats(handle)assert(handle==native.owned);return {armed=native.armed,error=native.error}end
+ function helper:finish(handle)
+  assert(handle==native.owned);native.ends=native.ends+1
+  if native.pending then self.last_failure_code=13;return false,'Native cleanup pending'end
+  native.owned=nil;native.error=0;return true,{armed=false,error=0}
+ end
+ function f.b:camera_config()
+  if f.foreign or not f.safe then return nil,'Current camera is not eligible'end
+  return {camera_kind=6,game=1,exe=2,context=3,camera=4,avatar_owner=5,avatar_index=0,avatar=6,body=f.body,camera_unit=8}
+ end
+ local camera=Camera.new(f.b,nil,helper);f:replace_manager('camera',camera)
+ f:update(0);assert(native.begins==1 and camera:result().phase=='active')
+ native.error=3;native.armed=false;native.pending=true;f:update(.01)
+ assert(f.c.enabled and f.suspends==1 and not f.c.lease and native.begins==1)
+ local row=f.recovery:snapshot().policies.camera;assert(row.phase=='cleanup'and row.pending_classification=='retry')
+ local before=f.updates;f:update(.5);assert(f.updates==before and native.begins==1)
+ native.pending=false;f:update(.6);assert(camera:is_clean());assert(f.recovery:snapshot().policies.camera.phase=='waiting')
+ f:update(.7);assert(native.begins==1 and f.updates==before)
+ f.safe=false;f:update(.85);assert(native.begins==1 and f.updates==before)
+ f.safe=true;f:update(1.1);assert(native.begins==2 and f.c.enabled and camera:result().phase=='active')
+ assert(f.stops==0 and camera:result().failure_kind==nil)
 end)
 test('cleanup refusal blocks all reacquisition until acknowledgement plus backoff',function()
  local f=fixture();local m=f.managers.fov;m.fail=true;m.cleanup_failures=2

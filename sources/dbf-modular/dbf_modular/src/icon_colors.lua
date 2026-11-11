@@ -6,9 +6,9 @@ local function configure_stratagem_icon(b,icon,info,cooling)
     local calls=icon_native_calls[b]
     if not calls then
         calls={
-            texture=b.fn('void (*)(uintptr_t, uint64_t, uint64_t, uint8_t)',0x12e7f40),
-            material=b.fn('uintptr_t (*)(uintptr_t)',0x12e73f0),
-            parameter=b.fn('void (*)(uintptr_t, uint32_t, const float *)',0x12e15d0),
+            texture=b.fn('void (*)(uintptr_t, uint64_t, uint64_t, uint8_t)',0x12e80a0),
+            material=b.fn('uintptr_t (*)(uintptr_t)',0x12e7550),
+            parameter=b.fn('void (*)(uintptr_t, uint32_t, const float *)',0x12e1730),
         }
         icon_native_calls[b]=calls
     end

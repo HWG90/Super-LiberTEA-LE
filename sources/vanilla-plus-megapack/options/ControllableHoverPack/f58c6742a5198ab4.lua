@@ -1501,4 +1501,4 @@ end
 
 end)()
 patch.policy=policy;patch.settings=settings
-install(function()return create_api(runtime,runtime_write.extend(runtime_memory.new(runtime)))end,patch,{revision='v1.8.1-26251122',game_sha256='61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF',exe_sha256='257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D'},runtime)
+install(function()return create_api(runtime,runtime_write.extend(runtime_memory.new(runtime)))end,patch,{revision='v1.8.1-26568081',game_sha256='08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F',exe_sha256='B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB'},runtime)

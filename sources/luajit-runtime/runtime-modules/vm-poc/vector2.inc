@@ -95,7 +95,7 @@ static int vector2_global_tostring(lua_State *L) {
     lua_pushvalue(L,lua_upvalueindex(1));lua_pushvalue(L,1);lua_call(L,1,1);return 1;
 }
 static int vector2_meta_component(lua_State *L) {
-    /* Live helper 0x419c30 examines only the first string byte. Numeric keys
+    /* Live helper 0x419d10 examines only the first string byte. Numeric keys
      * use x86 truncation followed by the low 32 bits; other keys are absent. */
     if(lua_type(L,2)==LUA_TSTRING) {
         const char *s=lua_tostring(L,2);return s[0]=='x'?1:s[0]=='y'?2:0;

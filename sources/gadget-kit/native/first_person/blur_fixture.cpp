@@ -10,10 +10,15 @@ struct Record {void* provider;uint64_t packed;uint32_t hash;const void* input;ui
 static Record records[4096]{};
 static HANDLE setter_reached=nullptr,setter_continue=nullptr;
 static uint64_t mutation_address=0;static uint32_t mutation_value=0;
+static uint64_t fail_owner_after_original=0;
 __declspec(noinline) static void synthetic_setter(void* object,uint64_t packed,uint32_t hash,const void* input) {
     CHECK(calls<4096);auto& r=records[calls++];r.provider=object;r.packed=packed;r.hash=hash;r.input=input;
     std::memcpy(r.bytes,input,24);
     if(mutation_address)std::memcpy(reinterpret_cast<void*>(mutation_address),&mutation_value,4);
+    if(fail_owner_after_original) {
+        fixture_rpm_failure_at=fail_owner_after_original;fixture_rpm_failure_remaining=1;
+        fixture_rpm_restore_readable=true;fail_owner_after_original=0;
+    }
     if(setter_reached) {SetEvent(setter_reached);WaitForSingleObject(setter_continue,INFINITE);}
 }
 __declspec(noinline) static void foreign_setter(void*,uint64_t,uint32_t,const void*) {}
@@ -39,19 +44,36 @@ static uint32_t begin_current(const NADSB_Config* c) {
 static uint32_t end_current() {return NADSB_End(active_generation);}
 static float last() {float f=0;std::memcpy(&f,records[calls-1].bytes+8,4);return f;}
 static void pass(const char* name) {++cases;std::printf("PASS %s\n",name);}
+
+// Real private VirtualAlloc pages only; production RPM executes unchanged.
+static void fail_rpm_once(uint64_t at,bool restore_readable=true) {
+    CHECK(fixture_rpm_failure_remaining==0);fixture_rpm_failure_at=at;
+    fixture_rpm_failure_remaining=1;fixture_rpm_restore_readable=restore_readable;
+}
+static void clear_rpm_failure() {
+    fixture_rpm_failure_at=0;fixture_rpm_failure_remaining=0;fixture_rpm_restore_readable=true;
+}
+static void recovery_event(const char* stage,uint32_t result,uint32_t native_error,uint64_t token,
+                           uint64_t cas_changes,bool exact_native=false,const NADSB_Stats* stats=nullptr) {
+    std::printf("RECOVERY_EVENT {\"stage\":\"%s\",\"result\":%u,\"native_error\":%u,\"token\":%llu,"
+        "\"cas_changes\":%llu,\"rpm_failures\":%llu,\"exact_native\":%s,\"armed\":%u,\"installed\":%u,\"reserved\":%u}\n",
+        stage,result,native_error,static_cast<unsigned long long>(token),static_cast<unsigned long long>(cas_changes),
+        static_cast<unsigned long long>(fixture_rpm_failures),exact_native?"true":"false",
+        stats?stats->armed:armed.load(),stats?stats->installed:installed.load(),reserved.load());
+}
 struct Fixture {
     NADSB_Config c{};uint64_t controller=0,descriptor=0,registry=0,units=0,generations=0,body_object=0;
     uint64_t system=0,object=0,table=0,pool=0,param_descriptor=0,param_rows=0,buckets=0,ids=0,classes=0,chains=0,blobs=0,blob=0,other_blob=0;
     uint64_t packed=0;Setter invoke=nullptr;uint8_t input[24]{};
     Fixture() {
         c.size=sizeof c;c.abi=1;c.game=allocate(0x3382000,PAGE_EXECUTE_READWRITE);c.exe=allocate(0x29fe000);
-        fake_image(c.game,0x6ae0e5ff,0x3382000);fake_image(c.exe,0x6ae0964a,0x29fe000);
+        fake_image(c.game,0x6af322c1,0x3382000);fake_image(c.exe,0x6af2d5e6,0x29fe000);
         // Literal current captures, independently transcribed from batches2033/2058/2059.
-        literal(c.exe+0x2df690,"48895c24084889742410574883ec404c8b11498bd94c8bca418bf8448bc249c1e920488d542460488bf141ff5238");
-        literal(c.exe+0x2df600,"418bc048c1e0208bca480bc1c3");
-        literal(c.exe+0x66a090,"405383b9a8000000004c8bda48897c2418488bd9c744241000000000");
-        literal(c.exe+0x2df780,"e91b9c3800");
-        literal(c.exe+0x6693a0,"48895c2408574883ec200fb60133ff488bd984c0743e3c2e752f8bd34533c02bd1e8dabcfaff48c1e82069c895e9d15b");
+        literal(c.exe+0x2df740,"48895c24084889742410574883ec404c8b11498bd94c8bca418bf8448bc249c1e920488d542460488bf141ff5238");
+        literal(c.exe+0x2df6b0,"418bc048c1e0208bca480bc1c3");
+        literal(c.exe+0x66a170,"405383b9a8000000004c8bda48897c2418488bd9c744241000000000");
+        literal(c.exe+0x2df830,"e94b9c3800");
+        literal(c.exe+0x669480,"48895c2408574883ec200fb60133ff488bd984c0743e3c2e752f8bd34533c02bd1e89abcfaff48c1e82069c895e9d15b");
         c.context=allocate(0x3000);c.camera=allocate(0x1000);c.avatar_owner=allocate(0x540000);
         c.avatar=0x333;c.body=0x400003;c.weapon=0x444;
         controller=allocate(0x1000);descriptor=allocate(0x1000);registry=allocate(0x1000);units=allocate(0x1000);
@@ -65,12 +87,12 @@ struct Fixture {
         put<uint8_t>(generations+3,1);put<uint64_t>(units+3*8,body_object);
         system=allocate(0x32000);object=allocate(0x1000);const uint64_t root=allocate(0x1000),apis=allocate(0x1000),hash_api=allocate(0x1000);
         put<uint64_t>(c.game+0x2ce1618,root);put<uint64_t>(root+0x18,system);put<uint64_t>(system+0xDC8,object);
-        put<uint64_t>(c.game+0x2ce14c8,apis);put<uint64_t>(apis+0xC0,hash_api);put<uint64_t>(hash_api+0x28,c.exe+0x2df780);
-        put<uint64_t>(object,c.exe+0x1715bb8);put<uint64_t>(c.exe+0x1715bb8+0x38,c.exe+0x66a090);
-        put<uint64_t>(c.exe+0x1715bb8+0x28,c.exe+0x2ad280);
-        put<uint64_t>(system+0xDD8,c.exe+0x2873ad0);put<uint64_t>(c.exe+0x2873ad0+0x28,c.exe+0x2df600);
-        table=c.exe+0x2873b28;put<uint64_t>(system+0xDE8,table);put<uint64_t>(table,reinterpret_cast<uint64_t>(synthetic_setter));
-        put<uint64_t>(table+8,c.exe+0x2df700);fixture_target=synthetic_setter;
+        put<uint64_t>(c.game+0x2ce14c8,apis);put<uint64_t>(apis+0xC0,hash_api);put<uint64_t>(hash_api+0x28,c.exe+0x2df830);
+        put<uint64_t>(object,c.exe+0x1715c40);put<uint64_t>(c.exe+0x1715c40+0x38,c.exe+0x66a170);
+        put<uint64_t>(c.exe+0x1715c40+0x28,c.exe+0x2ad330);
+        put<uint64_t>(system+0xDD8,c.exe+0x2873ac0);put<uint64_t>(c.exe+0x2873ac0+0x28,c.exe+0x2df6b0);
+        table=c.exe+0x2873b18;put<uint64_t>(system+0xDE8,table);put<uint64_t>(table,reinterpret_cast<uint64_t>(synthetic_setter));
+        put<uint64_t>(table+8,c.exe+0x2df7b0);fixture_target=synthetic_setter;
         pool=allocate(0x1000);const uint64_t param_buckets=allocate(0x1000),param_descriptors=allocate(0x1000);
         param_descriptor=allocate(0x1000);param_rows=allocate(0x1000);
         put<uint64_t>(c.game+0x2ce1bf8,pool);put<uint64_t>(pool+0x278,param_buckets);put<uint32_t>(pool+0x280,8);
@@ -103,7 +125,7 @@ struct Fixture {
         }
         packed=0xF7A3101F0000006CULL;
         // sub rsp,28; mov r11,table; call [r11]; add rsp,28; ret.
-        const uint64_t site=c.game+0xe9aaeb;literal(site-14,"4883ec2849bb");put<uint64_t>(site-8,table);
+        const uint64_t site=c.game+0xe9ac4b;literal(site-14,"4883ec2849bb");put<uint64_t>(site-8,table);
         literal(site,"41ff134883c428c3");CHECK(FlushInstructionCache(GetCurrentProcess(),reinterpret_cast<void*>(site-14),22));
         invoke=reinterpret_cast<Setter>(site-14);normal();
     }
@@ -121,6 +143,93 @@ struct Fixture {
     void sample(uint32_t hash=0xF07FC12E) {invoke(reinterpret_cast<void*>(object),packed,hash,input);}
     NADSB_Stats stats() {NADSB_Stats s{};s.size=sizeof s;s.abi=1;CHECK(NADSB_ReadStats(reserved.load()?active_generation:0,&s)==1);return s;}
 };
+
+static void owner_read_failures(Fixture& f) {
+    f.normal();const uint64_t initial_cas=fixture_cas_calls,initial_failures=fixture_rpm_failures;
+    const uint64_t native_slot=*reinterpret_cast<const uint64_t*>(f.table);
+    fail_rpm_once(f.controller);
+    const auto validated=NADSB_Validate(&f.c),validate_error=NADSB_Error();
+    CHECK(validated==0 && validate_error==READ_FAILED && fixture_rpm_failure_remaining==0);
+    CHECK(fixture_rpm_failures==initial_failures+1 && fixture_failure_queries>0 && !reserved.load() && fixture_cas_calls==initial_cas);
+    CHECK(*reinterpret_cast<const uint64_t*>(f.table)==native_slot);
+    recovery_event("validate_read_failed",validated,validate_error,0,fixture_cas_calls-initial_cas);
+    clear_rpm_failure();CHECK(NADSB_Validate(&f.c)==1 && NADSB_Error()==OK);
+    f.normal();f.top();
+    fail_rpm_once(f.controller);uint64_t token=UINT64_MAX;
+    const auto began=NADSB_Begin(&f.c,&token),begin_error=NADSB_Error();
+    CHECK(began==0 && token==0 && begin_error==READ_FAILED && !reserved.load() && fixture_cas_calls==initial_cas);
+    recovery_event("begin_read_failed",began,begin_error,token,fixture_cas_calls-initial_cas);
+    clear_rpm_failure();pass("real owner RPM faults in Validate and Begin report3 without a token or dispatch change; later healthy validation clears the error");
+
+    for(uint64_t at:{f.controller,f.descriptor,f.generations+3}) {
+        f.begin();const uint64_t prior_queries=fixture_failure_queries,prior_failures=fixture_rpm_failures,prior_cas=fixture_cas_calls;
+        fail_rpm_once(at);f.sample();
+        const auto stats=f.stats();const bool exact=records[calls-1].input==f.input && last()==1.5f;
+        CHECK(exact && stats.error==READ_FAILED && stats.armed==0 && stats.installed==1 && reserved.load()==1);
+        CHECK(fixture_rpm_failure_remaining==0 && fixture_rpm_failures==prior_failures+1 && fixture_failure_queries>prior_queries);
+        CHECK(fixture_cas_calls==prior_cas);
+        if(at==f.controller)recovery_event("callback_read_failed",1,stats.error,active_generation,fixture_cas_calls-prior_cas,exact,&stats);
+        clear_rpm_failure();f.sample();
+        CHECK(fixture_failure_queries>prior_queries && fixture_cas_calls==prior_cas);
+        CHECK(end_current()==1 && !reserved.load() && NADSB_Error()==OK);
+    }
+    pass("callback owner faults pass the native value exactly and retain only cleanup; controller descriptor and Unit generation scopes are retryable");
+
+    f.begin();const auto healthy_queries=fixture_failure_queries;
+    for(unsigned i=0;i<10;++i){f.sample();}
+    CHECK(fixture_failure_queries==healthy_queries);CHECK(end_current()==1);
+    pass("healthy owner reads perform no failure-classification VirtualQuery");
+
+    f.normal();fail_rpm_once(f.controller,false);
+    CHECK(NADSB_Validate(&f.c)==0 && NADSB_Error()==OWNER_MISMATCH && fixture_rpm_failure_remaining==0);
+    DWORD discarded=0;CHECK(VirtualProtect(reinterpret_cast<void*>(f.controller),0x1000,PAGE_READWRITE,&discarded));clear_rpm_failure();
+    const auto unsafe_queries=fixture_failure_queries;
+    put<uint64_t>(f.c.game+0x2e381a8,1);CHECK(NADSB_Validate(&f.c)==0 && NADSB_Error()==OWNER_MISMATCH);
+    const uint64_t gone=allocate(0x1000);CHECK(VirtualFree(reinterpret_cast<void*>(gone),0,MEM_RELEASE));
+    put<uint64_t>(f.c.game+0x2e381a8,gone);CHECK(NADSB_Validate(&f.c)==0 && NADSB_Error()==OWNER_MISMATCH);
+    put<uint64_t>(f.c.game+0x2e381a8,f.controller);
+    put<uint32_t>(f.c.avatar_owner+0x6C,9);const auto semantic_queries=fixture_failure_queries;
+    CHECK(NADSB_Validate(&f.c)==0 && NADSB_Error()==OWNER_MISMATCH && fixture_failure_queries==semantic_queries);
+    put<uint32_t>(f.c.avatar_owner+0x6C,1);CHECK(fixture_failure_queries>=unsafe_queries);
+    CHECK(NADSB_Validate(&f.c)==1 && NADSB_Error()==OK);
+    pass("inaccessible unmapped invalid-numeric and readable semantic owners remain unsafe; no previous read fault can taint a later guard");
+
+    SYSTEM_INFO info{};GetSystemInfo(&info);const size_t page=info.dwPageSize;
+    const uint64_t split=allocate(page*2),crossing=split+page-12;
+    std::memcpy(reinterpret_cast<void*>(crossing),reinterpret_cast<void*>(f.descriptor),20);
+    put<uint64_t>(f.c.avatar_owner+0x110,crossing);f.begin();
+    CHECK(VirtualProtect(reinterpret_cast<void*>(split+page),page,PAGE_NOACCESS,&discarded));
+    const auto cross_queries=fixture_failure_queries;f.sample();
+    CHECK(f.stats().error==OWNER_MISMATCH && !armed.load() && fixture_failure_queries>=cross_queries+2);
+    CHECK(VirtualProtect(reinterpret_cast<void*>(split+page),page,PAGE_READWRITE,&discarded));
+    put<uint64_t>(f.c.avatar_owner+0x110,f.descriptor);CHECK(end_current()==1);
+    CHECK(VirtualFree(reinterpret_cast<void*>(split),0,MEM_RELEASE));
+    pass("a readable first page never certifies an attempted owner span crossing into an unreadable page");
+
+    f.normal();const auto nonowner_queries=fixture_failure_queries;
+    const uint64_t copy=allocate(0x1000);put(copy,f.c);fail_rpm_once(copy);
+    CHECK(NADSB_Validate(reinterpret_cast<const NADSB_Config*>(copy))==0 && NADSB_Error()==INVALID_CONFIG);
+    CHECK(fixture_rpm_failure_remaining==0 && fixture_failure_queries==nonowner_queries);clear_rpm_failure();
+    fail_rpm_once(f.c.exe+0x2df740);CHECK(NADSB_Validate(&f.c)==0 && NADSB_Error()==CODE_MISMATCH);
+    CHECK(fixture_failure_queries==nonowner_queries);clear_rpm_failure();
+    fail_rpm_once(f.param_descriptor);CHECK(NADSB_Validate(&f.c)==0 && NADSB_Error()==SOURCE_INVALID);
+    CHECK(fixture_failure_queries==nonowner_queries);clear_rpm_failure();
+    CHECK(VirtualFree(reinterpret_cast<void*>(copy),0,MEM_RELEASE));
+    f.begin();fail_rpm_once(f.table);f.sample();
+    CHECK(f.stats().error==API_MISMATCH && !armed.load() && fixture_failure_queries==nonowner_queries);
+    clear_rpm_failure();CHECK(NADSB_End(active_generation+1)==0 && NADSB_Error()==TOKEN_MISMATCH);
+    CHECK(end_current()==1);
+    pass("actual RPM failures in config code source and dispatch and invalid tokens never become retryable owner3");
+
+    f.normal();f.top();
+    fail_owner_after_original=f.controller;token=UINT64_MAX;const auto after_cas=fixture_cas_calls;
+    const auto after_result=NADSB_Begin(&f.c,&token),after_error=NADSB_Error();
+    CHECK(after_result==0 && token==0 && after_error==READ_FAILED && !reserved.load() && !armed.load());
+    CHECK(fixture_rpm_failure_remaining==0 && fixture_cas_calls==after_cas+2);
+    recovery_event("post_call_begin_read_failed",after_result,after_error,token,fixture_cas_calls-after_cas);
+    clear_rpm_failure();CHECK(NADSB_Validate(&f.c)==1 && NADSB_Error()==OK);
+    pass("an owner RPM failure after the actual immediate setter rolls Begin back with its fresh causal3");
+}
 int main() {
     Fixture f;CHECK(f.stats().installed==0 && NADSB_Validate(&f.c)==1 && fixture_cas_calls==0 && calls==0);
     CHECK(begin_current(&f.c)==0 && reserved.load()==0);pass("normal4 preflight is read-only; Begin requires the exact owned native6 record");
@@ -184,7 +293,7 @@ int main() {
     CHECK(policy.source_count==2 && calls==start+6);f.invoke(reinterpret_cast<void*>(f.object),0xF7A3101F0000006BULL,0xA7990477,f.input);CHECK(last()==0);
     CHECK(end_current()==1);put<uint32_t>(f.classes+6*4,0xC823B21C);put<uint64_t>(f.blobs+6*8,0);
     pass("two independently eligible weapon rows are scoped separately without assuming both exist");
-    for(uint64_t at:{f.c.exe+0x2df690,f.c.exe+0x2df600,f.c.exe+0x66a090,f.c.exe+0x2df780,f.c.exe+0x6693a0,f.c.game+0xe9aaeb}) {
+    for(uint64_t at:{f.c.exe+0x2df740,f.c.exe+0x2df6b0,f.c.exe+0x66a170,f.c.exe+0x2df830,f.c.exe+0x669480,f.c.game+0xe9ac4b}) {
         f.normal();uint8_t old=0;CHECK(value(at,old));put<uint8_t>(at,old^1);CHECK(NADSB_Validate(&f.c)==0 && NADSB_Error()==CODE_MISMATCH);put<uint8_t>(at,old);
     }pass("independent current setter lookup packer parameter-hash and exact callsite fingerprints are mandatory");
     f.begin();const auto stale=active_generation;CHECK(end_current()==1);f.begin();uint64_t busy=99;
@@ -217,5 +326,6 @@ int main() {
     SetEvent(fixture_continue_arm);starting.join();serialized_end.join();CHECK(began==1 && armed.load()==0 && reserved.load()==0);
     CloseHandle(fixture_before_arm_reached);CloseHandle(fixture_continue_arm);fixture_before_arm_reached=nullptr;fixture_continue_arm=nullptr;
     pass("End serializes with Begin so it cannot acknowledge cleanup before a later arm store");
+    owner_read_failures(f);
     std::printf("Native blur fixture PASS: %llu cases\n",static_cast<unsigned long long>(cases));return 0;
 }

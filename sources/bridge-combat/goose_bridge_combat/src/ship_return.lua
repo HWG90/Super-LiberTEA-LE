@@ -18,7 +18,7 @@ function M.new(io,backend)
             if v.context~=2 or b.avatar~=lease.avatar or v.render~=lease.render or b.ep~=lease.ep then return true end
         elseif v.context~=4 or b.avatar==lease.avatar or v.render==lease.render then return true end
         local g,_,gs=io.module('game.dll');local e,_,es=io.module('helldivers2.exe')
-        assert(gs==0x6AE0E5FF and es==0x6AE0964A and g==b.game and g==lease.game,'Ship return build/owner differs')
+        assert(gs==0x6AF322C1 and es==0x6AF2D5E6 and g==b.game and g==lease.game,'Ship return build/owner differs')
         local registry=p(e+0x1ab76f8);local count=u(registry+0x98);local index=lease.render%0x400000
         assert(count>0 and count<=0x400000 and index<count,'Retired body registry differs')
         local function generation_ok()local same=r(p(registry+0xA0)+index,1):byte()==math.floor(lease.render/0x400000);return unowned and same or not unowned and not same end
@@ -44,7 +44,7 @@ function M.new(io,backend)
         if self.phase=='idle'then self.pc,self.avatar,self.reference,self.roles,self.ui=pc,b.avatar,v.render,roles,ui;self.phase='prepared'end
         assert(self.pc==pc and self.avatar==b.avatar and self.reference==v.render and self.ui==ui,'Ship return repair owner changed')
         if self.phase=='prepared'and self.roles%16==context+8 then
-            gate(self.roles);ffi=ffi or require('ffi');remove=remove or assert(io.native(g+0xabc690,'void (*)(void *, const void *)',
+            gate(self.roles);ffi=ffi or require('ffi');remove=remove or assert(io.native(g+0xabc6c0,'void (*)(void *, const void *)',
                 '48895c2418574883ec20488bb9880f00004c8bc94c8b5a10','SHIP_RETURN_ORPHAN_ROLE_REMOVE'))
             local mask=ffi.new('uint64_t[3]',8,0,0);self.phase='role_unknown';remove(ffi.cast('void *',pc+0x50),mask);self.phase='role_returned'
         end

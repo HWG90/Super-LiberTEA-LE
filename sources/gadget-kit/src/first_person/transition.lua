@@ -17,12 +17,30 @@ function M.new(options)
     options=options or{}
     local duration=options.duration or .18
     local max_gap=options.max_gap or .25
+    -- One slow frame may spend at most a third of a blend, so a hitch stretches
+    -- the handoff instead of skipping it. Longer gaps still retire below.
+    local max_step=options.max_step or duration/3
+    -- Stance, action and zoom edges that arrive while a blend has at least
+    -- half its time left join it. Restarting would stall every consumer at
+    -- zero speed again for each edge of one continuous gesture.
+    local merge_until=options.merge_until or .5
     assert(finite(duration)and duration>=.08 and duration<=.5,'Invalid transition duration')
     assert(finite(max_gap)and max_gap>=duration and max_gap<=1,'Invalid transition gap')
+    assert(finite(max_step)and max_step>0 and max_step<=duration,'Invalid transition step')
+    assert(finite(merge_until)and merge_until>=0 and merge_until<1,'Invalid transition merge window')
+    local mergeable={zoom=true,shoulder=true,action=true}
     local self={};local packet,previous,started,epoch=nil,nil,nil,0
     local function retire(reason)
         packet,previous,started=nil,nil,nil
         return nil,reason
+    end
+    local function joins(reason,ads)
+        return packet~=nil and mergeable[reason]==true and packet.continuous==true and packet.ads==ads
+            and packet.progress<merge_until
+    end
+    local function advance(now)
+        local elapsed=math.max(0,math.min(now-previous.time,max_step))
+        packet.progress=math.max(packet.progress,math.min(1,packet.progress+elapsed/duration))
     end
     function self:reset(reason)return retire(reason or'reset')end
     function self:update(s,now,enabled,blocked)
@@ -44,12 +62,14 @@ function M.new(options)
         elseif s.action~=nil and previous.action~=nil and s.action~=previous.action then reason='action'
         elseif s.seated~=previous.seated then reason='seat'
         elseif s.camera_kind~=previous.camera_kind and not((s.camera_kind==4 or s.camera_kind==6)and(previous.camera_kind==4 or previous.camera_kind==6))then reason='camera'end
-        if reason then
+        if reason and joins(reason,ads)then
+            advance(now);packet.merged=reason
+        elseif reason then
             epoch=epoch+1;started=now
             packet={epoch=epoch,progress=reason=='initial'and 1 or 0,ads=ads,
                 reason=reason,identity=s.identity,player_identity=s.player_identity,
                 started=now,duration=duration,continuous=reason~='initial'and reason~='weapon'}
-        elseif packet then packet.progress=math.max(packet.progress,math.max(0,math.min(1,(now-started)/duration)))end
+        elseif packet then advance(now)end
         local observed_action=s.action~=nil and s.action or(previous and previous.action)
         local observed_zoom=s.zoom_identity~=nil and s.zoom_identity or(previous and previous.zoom_identity)
         previous={identity=s.identity,player_identity=s.player_identity,ads=ads,zoom_identity=observed_zoom,
@@ -61,7 +81,9 @@ function M.new(options)
     -- publication; no new frame/input authority is created here.
     function self:action(action,now)
         if not packet or not previous or not text(action)or not finite(now)or now<previous.time or now-previous.time>max_gap then return nil end
-        if previous.action~=nil and previous.action~=action then
+        if previous.action~=nil and previous.action~=action and joins('action',previous.ads)then
+            packet.merged='action'
+        elseif previous.action~=nil and previous.action~=action then
             epoch=epoch+1;started=now
             packet={epoch=epoch,progress=0,ads=previous.ads,reason='action',identity=previous.identity,
                 player_identity=previous.player_identity,started=now,duration=duration,continuous=true}

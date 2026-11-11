@@ -12,7 +12,7 @@ Packaged by Goose ([HWG90](https://github.com/HWG90)).
 - Nova Weapon FOV
 - War Journalist (Proton) and its assets: [HWG90/DBF_PhotoMode](https://github.com/HWG90/DBF_PhotoMode), the `WJ-Proton` line with bone posing
 
-## Other authors' mods, ported to LuaJIT and game build 26251122 by Goose
+## Other authors' mods, ported to LuaJIT and game builds 26251122 and 26568081 by Goose
 
 - **Vanilla Plus Megapack v42**: CowboyBingus and the authors of the mods it bundles. Zero-Clause BSD (`sources/vanilla-plus-megapack/LICENSE`).
 - **Smarter Guard Dogs & Sentries 5.2.0**: the original release on [Nexus Mods](https://www.nexusmods.com/helldivers2/mods/16610).

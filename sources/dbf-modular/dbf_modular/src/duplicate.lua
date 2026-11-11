@@ -1,16 +1,16 @@
 -- Own new native widget storage. Never memcpy a live widget or its links.
 local function duplicate_cards(b)
     local ffi=require('ffi')
-    local init=b.fn('void (*)(uintptr_t, uint32_t)',0x12de550)
-    local card_init=b.fn('void (*)(uintptr_t, NSR_vec2, NSR_vec2, NSR_vec2, uint32_t, uint32_t)',0x16b67c0)
-    local card_update=b.fn('void (*)(uintptr_t, float, uint32_t, uintptr_t, float, float)',0x16b7400)
-    local attach=b.fn('void (*)(uintptr_t, uintptr_t)',0x12e42d0)
-    local finish=b.fn('void (*)(uintptr_t)',0x12e3fd0)
-    local visible=b.fn('void (*)(uintptr_t, uint8_t)',0x12e4cc0)
-    local release=b.fn('void (*)(uintptr_t)',0x12e5a80)
-    local opacity=b.fn('void (*)(uintptr_t, float)',0x12e07e0)
-    local push_context=b.fn('void (*)(uintptr_t, uint8_t)',0x11822f0)
-    local pop_context=b.fn('void (*)(void)',0x1182310)
+    local init=b.fn('void (*)(uintptr_t, uint32_t)',0x12de6b0)
+    local card_init=b.fn('void (*)(uintptr_t, NSR_vec2, NSR_vec2, NSR_vec2, uint32_t, uint32_t)',0x16b6920)
+    local card_update=b.fn('void (*)(uintptr_t, float, uint32_t, uintptr_t, float, float)',0x16b7560)
+    local attach=b.fn('void (*)(uintptr_t, uintptr_t)',0x12e4430)
+    local finish=b.fn('void (*)(uintptr_t)',0x12e4130)
+    local visible=b.fn('void (*)(uintptr_t, uint8_t)',0x12e4e20)
+    local release=b.fn('void (*)(uintptr_t)',0x12e5be0)
+    local opacity=b.fn('void (*)(uintptr_t, float)',0x12e0940)
+    local push_context=b.fn('void (*)(uintptr_t, uint8_t)',0x1182450)
+    local pop_context=b.fn('void (*)(void)',0x1182470)
     local storage,address,identity,parent
     local retired={} -- Pin uncertain old generations; never follow a stale HUD link.
     local self={}

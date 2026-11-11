@@ -7,7 +7,7 @@ PAIRS=[('alignment','fixture'),('editor','editor_fixture'),('fov','fov_fixture')
 def build(pair):
  name,fixture=pair
  stamp=hashlib.sha256(b''.join(p.read_bytes()for p in sorted(NATIVE.iterdir())if p.suffix in ('.cpp','.h'))).hexdigest()[:12]
- dll=OUT/f'native_ads_{name}_26251122_{stamp}.dll';exe=OUT/f'{fixture}.exe'
+ dll=OUT/f'native_ads_{name}_26568081_{stamp}.dll';exe=OUT/f'{fixture}.exe'
  common=[str(ZIG),'c++','-target','x86_64-windows-gnu','-std=c++17','-fms-extensions','-O2']
  for source,output,flags in [(f'native_ads_{name}.cpp',dll,['-shared']),(fixture+'.cpp',exe,[])]:
   proc=subprocess.run(common+flags+[str(NATIVE/source),'-o',str(output)],capture_output=True,text=True)
@@ -19,7 +19,7 @@ def build(pair):
  print(name+': '+proc.stdout.splitlines()[-1],flush=True)
  return {'name':name,'file':str(dll),'sha256':hashlib.sha256(dll.read_bytes()).hexdigest(),'fixture_passed':True,'fixture_log':str(OUT/(fixture+'.log')),'source_sha256':hashlib.sha256((NATIVE/f'native_ads_{name}.cpp').read_bytes()).hexdigest()}
 with concurrent.futures.ThreadPoolExecutor(max_workers=3)as pool:results=list(pool.map(build,PAIRS))
-(OUT/'build.json').write_text(json.dumps({'target_build':26251122,'helpers':results,'in_game_tested':False},indent=2)+'\n')
+(OUT/'build.json').write_text(json.dumps({'target_build':26568081,'helpers':results,'in_game_tested':False},indent=2)+'\n')
 
 import shutil,re
 p=ROOT/'src/first_person/profile.lua';text=p.read_text()

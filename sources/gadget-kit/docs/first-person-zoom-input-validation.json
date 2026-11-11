@@ -1,0 +1,567 @@
+{
+  "version": "0.5.40-sdk-test.1-cffi-26251122",
+  "target_build": 26251122,
+  "default_normalization_enabled": false,
+  "status": "offline experimental candidate; no live acceptance",
+  "native_receipts": [
+    {
+      "file": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/dist/native-input/build.json",
+      "sha256": "6c351d498bd9f8ad6a6043c79ec2a215756da4788c9bbca4408e7f159acd3505",
+      "receipt": {
+        "created_utc": "2026-11-09T13:53:16.138006+00:00",
+        "status": "offline_candidate_experimental_disabled_not_installed",
+        "profile_flag_enabled": false,
+        "abi": {
+          "Config": 104,
+          "Stats": 80,
+          "DepthStats": 104,
+          "InputStats": 96
+        },
+        "compiler": {
+          "path": "/home/goose/Documents/Codex/2026-10-22/a-2/work/ffi-comparison/toolchain/zig-x86_64-linux-0.14.1/zig",
+          "version": "0.14.1",
+          "target": "x86_64-windows-gnu",
+          "optimization": "O2"
+        },
+        "commands": {
+          "dll": "ZIG_GLOBAL_CACHE_DIR=/tmp/tfp-zig-cache ZIG_LOCAL_CACHE_DIR=/tmp/tfp-zig-local /home/goose/Documents/Codex/2026-10-22/a-2/work/ffi-comparison/toolchain/zig-x86_64-linux-0.14.1/zig c++ -target x86_64-windows-gnu -std=c++17 -fms-extensions -O2 -shared work/gadget-kit-fp-input/native/first_person/native_ads_editor.cpp work/gadget-kit-fp-input/native/first_person/native_ads_input.S -o work/gadget-kit-fp-input/dist/native-input/native_ads_editor_input_candidate.dll",
+          "fixture": "ZIG_GLOBAL_CACHE_DIR=/tmp/tfp-zig-cache ZIG_LOCAL_CACHE_DIR=/tmp/tfp-zig-local /home/goose/Documents/Codex/2026-10-22/a-2/work/ffi-comparison/toolchain/zig-x86_64-linux-0.14.1/zig c++ -target x86_64-windows-gnu -std=c++17 -fms-extensions -O2 work/gadget-kit-fp-input/native/first_person/input_fixture.cpp work/gadget-kit-fp-input/native/first_person/native_ads_input.S work/gadget-kit-fp-input/native/first_person/input_fixture_thunks.S -o work/gadget-kit-fp-input/dist/native-input/input_fixture.exe",
+          "abi_smoke": "ZIG_GLOBAL_CACHE_DIR=/tmp/tfp-zig-cache ZIG_LOCAL_CACHE_DIR=/tmp/tfp-zig-local /home/goose/Documents/Codex/2026-10-22/a-2/work/ffi-comparison/toolchain/zig-x86_64-linux-0.14.1/zig c++ -target x86_64-windows-gnu -std=c++17 -fms-extensions -O2 work/gadget-kit-fp-input/native/first_person/input_production_smoke.cpp -o work/gadget-kit-fp-input/dist/native-input/input_production_smoke.exe"
+        },
+        "source_inputs": {
+          "work/gadget-kit-fp-input/native/first_person/native_ads_editor.cpp": "eb60b1709ff067ae5e9c9c541dba663a5b9b7b539129b98a1a94d53642760ac7",
+          "work/gadget-kit-fp-input/native/first_person/native_ads_editor.h": "64e97061f0c7c5590fd14b7bf4a8979c0051eba4a278877453410b9a9b41c577",
+          "work/gadget-kit-fp-input/native/first_person/native_ads_input.S": "293f4f7a9090377b1904f5b4ffd4b3a9b7733e057132861f3984fd290d6eafde",
+          "work/gadget-kit-fp-input/native/first_person/native_ads_input.asm": "b51bf9ba0fe07b2551e3555b59ec6eef217e8c8e683fb3cf1c1e42cb649ca335",
+          "work/gadget-kit-fp-input/native/first_person/zoom_gain_math.h": "5d990507a89693b43327a88d9321c278876064dc8dc9f1a0a63c050fcbc9291b",
+          "work/gadget-kit-fp-input/native/first_person/zoom_input_math.h": "0147e561cb5af4ca1d601cec039d099f1c7b1fe2e647f43f1f89595f222ba923",
+          "work/gadget-kit-fp-input/native/first_person/native_memory.h": "5820ec96d4e5986bea7026d4ff0f0238a516b2ee51d5ba79340c4bd3e5a5902b",
+          "work/gadget-kit-fp-input/native/first_person/presentation_phase.h": "6a5f190ed56c386e7862e6b13253800845d5701646d3d5dd2e0bd01f1d5dc4a9",
+          "work/gadget-kit-fp-input/native/first_person/editor_fixture.cpp": "6e4936a7726bb2ee0a7e05bb15a6caa9bd8fe17c25eb2b024ca148383e360200",
+          "work/gadget-kit-fp-input/native/first_person/input_fixture.cpp": "bb50a117c38367fa5a171ca1c002578010908d280fad41381d4c2088ef257ca0",
+          "work/gadget-kit-fp-input/native/first_person/input_fixture_thunks.S": "8e76578b7ad578d183bf3edd5713afa44ffc36e0a5fe47623e55e2c2fc5e85b2",
+          "work/gadget-kit-fp-input/native/first_person/input_fixture_thunks.asm": "5c1e011cf4f08dffa143c5084da2275d7ecbecb290abff8b42a493aedc5dd16f",
+          "work/gadget-kit-fp-input/native/first_person/input_production_smoke.cpp": "76df4adc78938a60ccd583d2084fb058dcd87cf77cd7d48050891c2c0af1c1f0"
+        },
+        "artifacts": {
+          "work/gadget-kit-fp-input/dist/native-input/native_ads_editor_input_candidate.dll": "cde915c481078dff36dbbd9831c9d89c6b5df61240d3b03c9ee1be66cf24a8e9",
+          "work/gadget-kit-fp-input/dist/native-input/input_fixture.exe": "d319c3bc5280431e3e545c0e8c064e390ff57e54b93cc72e7bdc7a3d9cdec093",
+          "work/gadget-kit-fp-input/dist/native-input/input_production_smoke.exe": "0ad8a9c1d0a550d2a28a0cef5c11f258844a004fa4b4b7505c0755faa8b5b4da",
+          "work/gadget-kit-fp-input/dist/native-input/production-unwind.json": "88d8c88ff6891e4d12b2fe8e2bc3815cb7d74afdd72aeb0291aa23c208548f5d",
+          "work/gadget-kit-fp-input/dist/native-input/input-fixture-final.log": "129fbe9ae82967d59d911d842d31b49d81f2b68b7133f579dc51005f99e5bc45",
+          "work/gadget-kit-fp-input/dist/native-input/input-unmap-final.log": "cd94198065b8733427fe2045a6c111e78715c4880b0bdbd2e06e9bf03a9bc483",
+          "work/gadget-kit-fp-input/dist/native-input/production-smoke.log": "81acec0e38739aae17ac45394deb991fd1da79e24e6a550cf78dfc7bef32a375"
+        },
+        "verification": {
+          "native_fixture": {
+            "groups": 130,
+            "terminal_exit": 0,
+            "log": "input-fixture-final.log"
+          },
+          "unmap_after_query": {
+            "terminal_exit": 0,
+            "log": "input-unmap-final.log"
+          },
+          "production_abi_smoke": {
+            "terminal_exit": 0,
+            "log": "production-smoke.log",
+            "scope": "Actual newly built DLL export/ABI/invalid-owner/output/stale-token rejection; no hook installation"
+          },
+          "unwind": "production-unwind.json: version1 flags1 EHANDLER at exact static CAS leaf",
+          "synthetic_metrics": {
+            "eligible_reads": 96,
+            "eligible_bytes": 1292,
+            "eligible_mean_us": 6.117,
+            "original_getter_ns": 0.775,
+            "current_legacy00_ns": 1.556,
+            "input90_thunk_ns": 2.232,
+            "input00_thunk_ns": 2.119,
+            "scope": "private buffers under Wine, includes fake exp/fixtures; not game FPS"
+          },
+          "independent_pointer_and_SEH_review": {
+            "status": "ACK",
+            "reviewer": "/root/input_pointer_review",
+            "production_dll_sha256": "cde915c481078dff36dbbd9831c9d89c6b5df61240d3b03c9ee1be66cf24a8e9",
+            "scope": "Exact leaf instruction/unwind match, normal-search flags/target bounds, pointer lifetime; experimental limits retained"
+          }
+        },
+        "limits": [
+          "Nonzero-steering dynamic gain depends on a bounded sampled state; no proven producer serialization or all-frame visual/angular acceptance.",
+          "S0 inverse gains do not depend on current raw/history and are published even at idle; sampled ratio/native gain still qualified.",
+          "Abnormal same-thread reused native frame or unproved completion retains pending hooks/generation and quarantined backing until process exit.",
+          "No raw/history/context/steering/user-settings/lens/quaternion writes; only exact-owned request80 CAS plus private clone gain writes.",
+          "The new request80 CAS uses an explicit static SEH handler; this does not qualify catchability of unchanged legacy dispatch-slot __try intrinsics.",
+          "MSVC MASM sources supplied and builder owned by parent; MSVC execution not performed.",
+          "No profile enablement, installed-file modification, or live game callback experiment."
+        ],
+        "native_sources_frozen": true
+      }
+    },
+    {
+      "file": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/dist/native-input/production-unwind.json",
+      "sha256": "88d8c88ff6891e4d12b2fe8e2bc3815cb7d74afdd72aeb0291aa23c208548f5d",
+      "receipt": {
+        "dll_sha256": "cde915c481078dff36dbbd9831c9d89c6b5df61240d3b03c9ee1be66cf24a8e9",
+        "cas_begin_rva": "0xc050",
+        "cas_fault_rva": "0xc052",
+        "cas_end_rva": "0xc063",
+        "unwind_rva": "0x56f40",
+        "unwind_version": 1,
+        "unwind_flags": 1,
+        "unwind_codes": 0,
+        "handler_rva": "0x1000",
+        "explicit_EHANDLER": true,
+        "scope": "Static DLL leaf only; actual fault behavior separately exercised in Wine fixture"
+      }
+    },
+    {
+      "file": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/dist/zoom-input-math/math-build.json",
+      "sha256": "c7a582094e4a416f951560926ccc233f7ff2103591dbef3cb4f667626446de97",
+      "receipt": {
+        "scope": "offline pure-math and private captured-code fixture only; no game process calls or product integration",
+        "baseline": "canonical installed 0.5.39-cffi-26251122",
+        "execution_owner": "root ran Wine; subagent compiled and ran host SSE fixture",
+        "native_cases": 28,
+        "accepted_samples": 165941,
+        "safe_bypasses": 2049,
+        "max_abs_error": 1.1920929e-07,
+        "fixture_passed": true,
+        "windows_x64_provider_abi_passed": true,
+        "captured_native_exp": {
+          "private_fixture_pages": true,
+          "game_process_calls": false,
+          "sse_provider": true,
+          "avx_provider": true,
+          "captured_calls": 38932,
+          "alpha_crt_bit_mismatches": 0
+        },
+        "host_cases": 26,
+        "host_fixture_passed": true,
+        "actual_game_exp_binding_qualified": false,
+        "files": {
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/native/first_person/zoom_input_math.h": "0147e561cb5af4ca1d601cec039d099f1c7b1fe2e647f43f1f89595f222ba923",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/native/first_person/zoom_input_math_fixture.cpp": "240f070cf7e53917fda3bbe6f2d7d0bf8fbabfd15ec570ab5a04cf03d9dc9343",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/dist/zoom-input-math/zoom-input-math-fixture.exe": "10f97727ad7845dcaaf8b2584c28190f27a582761fc2b566b6e98761a355af7e",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/dist/zoom-input-math/zoom-input-math-host": "0dd615da3963af664bfa05f60f9c09715fe1b627e2698baa5c9f101b9539f9fd",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/dist/zoom-input-math/math-native-exp-fixture.log": "af2da08ea0cdc6f91ee7d9b076bfd3d808dd52494447258306aaa0bbc08fffce"
+        },
+        "compile": {
+          "compiler": "Zig 0.14.1 c++",
+          "target": "x86_64-windows-gnu",
+          "flags": [
+            "-std=c++17",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ffp-contract=off"
+          ]
+        },
+        "limits": {
+          "min_ratio": 0.000244140625,
+          "max_ratio": 16,
+          "max_component": 1000000,
+          "min_alpha": 1e-05,
+          "abs_tolerance": 2e-07,
+          "relative_tolerance": 2e-06,
+          "dt_interval": [
+            -1,
+            1
+          ]
+        },
+        "native_exp_image": {
+          "path": "/home/goose/Documents/ChatGPT/GooseGadgets/module-captures/20261103T1408/game-6ae0e5ff-6ffff0880000.bin",
+          "sha256": "ed6409625c7bb8867a5975c35ae3b62b419b80bad4b0006f72a6b4e08a3320dc",
+          "entry_rva": "0x1f8fe10",
+          "finite_qualified_argument_interval": [
+            -75,
+            0
+          ],
+          "finite_path_outbound_calls": 0,
+          "private_fixture_executable_pages": true,
+          "production_executable_writes": false
+        }
+      }
+    },
+    {
+      "file": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/dist/zoom-input-math/gain-build.json",
+      "sha256": "56e269387b59afc794fbfd5ac7fd3e753181fedc10541ec53f9dce35fa29acde",
+      "receipt": {
+        "scope": "offline bounded pure gain math only; no hook integration or game process calls",
+        "baseline": "canonical 0.5.39-cffi-26251122",
+        "execution_owner": "root ran actual Wine fixture; subagent compiled Windows and ran host SSE fixture",
+        "native_cases": 28,
+        "accepted_samples": 34720,
+        "honest_bypasses": 16439,
+        "max_increment_error": 1.90734863e-06,
+        "max_clamped_pitch_error": 2.38418579e-07,
+        "reason_counts": {
+          "0": 22778,
+          "1": 11942,
+          "2": 16,
+          "3": 4,
+          "4": 0,
+          "5": 0,
+          "6": 2,
+          "7": 12,
+          "8": 15546,
+          "9": 28,
+          "10": 10,
+          "11": 821
+        },
+        "fixture_passed": true,
+        "host_cases": 26,
+        "host_fixture_passed": true,
+        "captured_exp": {
+          "private_fixture_pages": true,
+          "game_process_calls": false,
+          "sse": true,
+          "avx_fma": true,
+          "captured_calls": 23299
+        },
+        "files": {
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/native/first_person/zoom_gain_math.h": "5d990507a89693b43327a88d9321c278876064dc8dc9f1a0a63c050fcbc9291b",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/native/first_person/zoom_gain_math_fixture.cpp": "063d9e81db945e783fc230ab03017a25affbb80f0087de981f0b0629af25f2ef",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/native/first_person/zoom_input_math.h": "0147e561cb5af4ca1d601cec039d099f1c7b1fe2e647f43f1f89595f222ba923",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/native/first_person/zoom_input_math_fixture.cpp": "240f070cf7e53917fda3bbe6f2d7d0bf8fbabfd15ec570ab5a04cf03d9dc9343",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/dist/zoom-input-math/zoom-gain-math-fixture.exe": "2f27a2642962b65939edc73a03ec4b22f88c0baef07b4f8f15673266ba0048b6",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-input/dist/zoom-input-math/gain-native-exp-fixture.log": "8792112f8889aab19ef3d626c0376d673cdfacd79d0b09c6e98a49c62ea124ee"
+        },
+        "numeric_limits": {
+          "min_gain": 1e-06,
+          "max_gain": 1000000.0,
+          "gain_ratio": [
+            0.000244140625,
+            4096
+          ],
+          "relative_cancellation_condition": 0.000244140625,
+          "increment_abs_tolerance": 2e-07,
+          "increment_relative_tolerance": 2e-06,
+          "increment_error_absolute_cap": 2e-06,
+          "pitch_same_base_add_bound": 2.384185791015625e-07,
+          "dt_eval": [
+            -1,
+            1
+          ],
+          "dt_global": [
+            0,
+            1
+          ]
+        },
+        "production_lifetime_or_all_frame_guarantee": false,
+        "s_zero_gain_policy": "Unconditional rounded g/R independent of predicted U; no U-dependent neighbour selection, including idle input.",
+        "input_dependent_flags": "Axis input_dependent for nonzero steering; Prepared OR of both axes.",
+        "s_zero_transition_cases": 433,
+        "freeze_state": "S0 refinement source/EXE/actual root Wine log frozen; no further source edits planned."
+      }
+    },
+    {
+      "file": "/home/goose/Documents/Codex/2026-11-07/tr/work/tfp-private-preset-native-fixture39/build/build.json",
+      "sha256": "41e456e5dc0e1e50e4fd1f2b4750421083a8156408b58e5b808dd1b24c8f5c29",
+      "receipt": {
+        "scope": "standalone private native-fragment fixture only; no game process calls",
+        "fixture_passed": true,
+        "command": [
+          "/home/goose/Documents/Codex/2026-10-22/a-2/work/ffi-comparison/toolchain/zig-x86_64-linux-0.14.1/zig",
+          "c++",
+          "-target",
+          "x86_64-windows-gnu",
+          "-std=c++17",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-ffp-contract=off",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/tfp-private-preset-native-fixture39/fixture.cpp",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/tfp-private-preset-native-fixture39/copy_wrapper.S",
+          "-o",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/tfp-private-preset-native-fixture39/build/native-preset-copy-fixture.exe"
+        ],
+        "files": {
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/tfp-private-preset-native-fixture39/fixture.cpp": "beaf2a49691fdfc522cdb304bb89d3b3a46d3f3fc8c1ea37b1576830097c9c45",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/tfp-private-preset-native-fixture39/copy_wrapper.S": "1e1ca867c57275504bd6d59173a3d32be95a75b710d7003ded962e34a03a6820",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/tfp-private-preset-native-fixture39/build/native-preset-copy-fixture.exe": "47bb0b722179e33b5239f716d22de27dd4b9360ba6578c25ca79d9e9c0144692",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/tfp-private-preset-native-fixture39/build.py": "6431add05d3c6ca1301c94fa3222748f1ba7830aa3509716c1f3f443b6f07367",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/tfp-private-preset-native-fixture39/README.md": "d98c2a512defdfa0e432b35f9de00b48baaf8137231df87936d23105a47e6e18",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/tfp-private-preset-native-fixture39/build/fixture.log": "9d7e8005cebd8212ff9d8a75f1438219630cdae7ad0f17387439525bebf21e3b",
+          "/home/goose/Documents/Codex/2026-11-07/tr/work/tfp-private-preset-native-fixture39/build/wrapper-disassembly.asm": "fb016a7c05bc72e8bebe7e45997e2f4a92e956be641fe8facf4a161d1a6292bc"
+        },
+        "capture_sha256": "ed6409625c7bb8867a5975c35ae3b62b419b80bad4b0006f72a6b4e08a3320dc",
+        "execution_owner": "root ran Wine; subagent built and inspected wrapper",
+        "native_cases": 11,
+        "native_fragment_copies": 12,
+        "source_bytes": 144,
+        "metadata_8c_passed": true,
+        "high_unsigned_passed": true,
+        "uint32_max_passed": true,
+        "scope_detail": {
+          "private_fixture_pages": true,
+          "game_process_calls": false,
+          "production_executable_writes": false,
+          "fragment1": "11187a9..111882e",
+          "fragment2": "1118ac5..1118b7e",
+          "allocation_window_regions": 64
+        },
+        "freeze_state": "Compiled and actual Wine fixture passed; no further source edits planned. Production lifetime/ownership not qualified by this standalone CPU test.",
+        "capture_actual_sha256": "ed6409625c7bb8867a5975c35ae3b62b419b80bad4b0006f72a6b4e08a3320dc",
+        "capture_path": "/home/goose/Documents/ChatGPT/GooseGadgets/module-captures/20261103T1408/game-6ae0e5ff-6ffff0880000.bin",
+        "captured_fragments": [
+          {
+            "start_rva": "0x11187a9",
+            "end_exclusive_rva": "0x111882e",
+            "native_bytes": 133,
+            "native_sha256": "bd26c7aa944002b25fff49ec857086ffe2a311da81d956b1ab9b63619f3e0440",
+            "private_execution_sha256": "f4013ebd1252e1abfad937d33c84b639bcfd79a10bd4bf1769f1387506eb240c"
+          },
+          {
+            "start_rva": "0x1118ac5",
+            "end_exclusive_rva": "0x1118b7e",
+            "native_bytes": 185,
+            "native_sha256": "cddef934b5bafbe4a8f1b15ba74e2bb676c4a6ee7a988c2b33c19fdfbb79f48a",
+            "private_execution_sha256": "f6fa6d657090afac9a045b259f22c1ee2a97965cd1176603a6ce72f35e01f819"
+          }
+        ]
+      }
+    }
+  ],
+  "lua51_cffi_suites": [
+    {
+      "fixture": "action_placement.lua",
+      "passed": true
+    },
+    {
+      "fixture": "action_state.lua",
+      "passed": true
+    },
+    {
+      "fixture": "aim_marker_source.lua",
+      "passed": true
+    },
+    {
+      "fixture": "aim_markers.lua",
+      "passed": true
+    },
+    {
+      "fixture": "backend.lua",
+      "passed": true
+    },
+    {
+      "fixture": "backend_transition.lua",
+      "passed": true
+    },
+    {
+      "fixture": "blur.lua",
+      "passed": true
+    },
+    {
+      "fixture": "camera.lua",
+      "passed": true
+    },
+    {
+      "fixture": "camera_compat.lua",
+      "passed": true
+    },
+    {
+      "fixture": "clock.lua",
+      "passed": true
+    },
+    {
+      "fixture": "compat51_bindings.lua",
+      "passed": true
+    },
+    {
+      "fixture": "controller.lua",
+      "passed": true
+    },
+    {
+      "fixture": "diagnostics.lua",
+      "passed": true
+    },
+    {
+      "fixture": "dof.lua",
+      "passed": true
+    },
+    {
+      "fixture": "editor.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_aim.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_auto.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_camera_pose.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_capture.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_capture_ready.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_fov.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_handoff.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_native_ads.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_person.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_presentation.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_projection.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_render.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_retarget.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_source_pose.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_warm.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fird_weapon_children.lua",
+      "passed": true
+    },
+    {
+      "fixture": "first_person_movement.lua",
+      "passed": true
+    },
+    {
+      "fixture": "fov.lua",
+      "passed": true
+    },
+    {
+      "fixture": "head_placement.lua",
+      "passed": true
+    },
+    {
+      "fixture": "head_visibility.lua",
+      "passed": true
+    },
+    {
+      "fixture": "held_fire.lua",
+      "passed": true
+    },
+    {
+      "fixture": "locomotion.lua",
+      "passed": true
+    },
+    {
+      "fixture": "menu.lua",
+      "passed": true
+    },
+    {
+      "fixture": "motion.lua",
+      "passed": true
+    },
+    {
+      "fixture": "motion_runtime.lua",
+      "passed": true
+    },
+    {
+      "fixture": "native_ads_option.lua",
+      "passed": true
+    },
+    {
+      "fixture": "near_clip.lua",
+      "passed": true
+    },
+    {
+      "fixture": "pose_adapter.lua",
+      "passed": true
+    },
+    {
+      "fixture": "ready_pose.lua",
+      "passed": true
+    },
+    {
+      "fixture": "ready_pose_backend.lua",
+      "passed": true
+    },
+    {
+      "fixture": "recovery.lua",
+      "passed": true
+    },
+    {
+      "fixture": "runtime_frame.lua",
+      "passed": true
+    },
+    {
+      "fixture": "runtime_recovery.lua",
+      "passed": true
+    },
+    {
+      "fixture": "skinned_placement.lua",
+      "passed": true
+    },
+    {
+      "fixture": "support_hand.lua",
+      "passed": true
+    },
+    {
+      "fixture": "transition.lua",
+      "passed": true
+    },
+    {
+      "fixture": "vignette.lua",
+      "passed": true
+    },
+    {
+      "fixture": "zoom.lua",
+      "passed": true
+    }
+  ],
+  "settings_writes": false,
+  "new_inline_patch": false,
+  "new_sdk_slot": "UnitAPI+0x90",
+  "camera_pin": false,
+  "live_trial": {
+    "executed": false,
+    "plan": "Explicitly requested 30-second native SDK input trial, F11 initially off; cached profile opt-in resets immediately after Begin; native/controller deadline ends the lease."
+  },
+  "limits": [
+    "Nonzero-steering gain uses sampled input state without a producer serialization proof.",
+    "Abnormal unproved completion keeps ownership/pinned backing pending.",
+    "Synthetic timing does not qualify live frame rate.",
+    "Legacy 64-bit dispatch-slot __try catchability is not qualified by the explicit new 32-bit field CAS guard."
+  ],
+  "lua_fixture_log_sha256": "10da1cd8c03d1c8b9d6b0cfdced53646023aeec81fd62413ef3bd39c2cda4145",
+  "lua_syntax_files": 83,
+  "module_reference_closure": 133,
+  "selected_native_helpers": {
+    "native/native_ads_alignment_26251122_2668bd6c56b1.dll": "90f80106133ff9029662a1e363e6bd059b723e5ebd8efbf18b527025ed0e1da9",
+    "native/native_ads_blur_26251122_68f8f5f1aa85.dll": "50d16aeab7304f83d280e545ddb4b352a01befcf03a332f9c7224e67f41394f2",
+    "native/native_ads_camera_26251122_9c5c46ce1792.dll": "c4c9ec24d53ee752e7b642eb4ee583def833c68a94608b2d282fb0cbaf7957a8",
+    "native/native_ads_editor_26251122_cde915c48107.dll": "cde915c481078dff36dbbd9831c9d89c6b5df61240d3b03c9ee1be66cf24a8e9",
+    "native/native_ads_fov_26251122_0cf62916bef2.dll": "d5e42c808e1c501370b59c1245241d69a05344fa6ff564c733ded0f6a85db509",
+    "native/native_ads_heldfire_26251122_11ec08060d94.dll": "b660a68dfd81c7ff5cfda06fca731bd65a4a681a31dd95a86971672ca89aa142",
+    "native/native_ads_near_26251122_8e4f29e63a3f.dll": "459421f3eb79d7da6e0592f837005e247f20b8d923d5caac81ae1a4404abf778"
+  }
+}

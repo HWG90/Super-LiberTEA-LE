@@ -147,18 +147,18 @@ local function fixture()
         return true
     end
     b.fn = function(_, rva)
-        if rva == 0x12de550 or rva == 0x12d67c0 then
+        if rva == 0x12de6b0 or rva == 0x12d6920 then
             return function(at)
                 write("construct", at)
                 p[at + 0xf8], s[at] = context, 1
                 s[at + 0xf0] = 0
             end
-        elseif rva == 0x12e42d0 then
+        elseif rva == 0x12e4430 then
             return function(owner, child)
                 write("attach", child)
                 p[child + 0xf0], s[child + 0xf0] = owner, nil
             end
-        elseif rva == 0x12e4cc0 then
+        elseif rva == 0x12e4e20 then
             return function(at, shown)
                 write("visible", at)
                 if not f.ignore_visibility then
@@ -177,19 +177,19 @@ local function fixture()
                 f.properties[at].rotation = degrees
                 return 0
             end
-        elseif rva == 0x11822f0 then
+        elseif rva == 0x1182450 then
             return function(_, index)
                 f.pushes = f.pushes + 1
                 write("push", manager)
                 s[manager + 0x2c5bc], s[manager + 0x2c5b8] = 0, index
             end
-        elseif rva == 0x1182310 then
+        elseif rva == 0x1182470 then
             return function()
                 write("pop", manager)
                 s[manager + 0x2c5bc] = 0xffffffff
             end
         end
-        assert(rva ~= 0x12e7510, "Texture hash must never be sent to the whole-resource asset() setter")
+        assert(rva ~= 0x12e7670, "Texture hash must never be sent to the whole-resource asset() setter")
         return function(at)
             write("native", at)
         end

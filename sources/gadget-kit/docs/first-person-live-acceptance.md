@@ -1,6 +1,6 @@
-# True First Person 0.5.38 — live acceptance
+# True First Person 0.5.39 — live acceptance
 
-Status: **performance follow-up pending**. The native camera/rig was accepted as natural and stable in0.5.35.0.5.36 still measured107FPS off/85FPS on after profiling was removed.0.5.38 changes only Lua observation/publication work and needs a clean same-scene comparison. Offline fixtures and DLL checks do not prove appearance or the native gameplay result. Use the combined Super LiberTEA/LLL build, not the separate HellForge runtime.
+Status: **0.5.39 live acceptance pending**. The user accepted0.5.38: FPS drop gone, natural motion, and F8 arms/gun-only preview plus cancel working.0.5.39 restores F8's original appearance and changes read-fault recovery/visibility ownership. Native camera and animation math stay unchanged; the fresh helper build still needs visual and FPS regression checks.
 
 Camera pinning is retired: the native game camera and look input are authoritative. First Person does not force an eye camera through actions or vehicles.
 
@@ -8,7 +8,7 @@ F11 toggles True First Person. Preserve existing placement and motion preference
 
 | Sequence | Required result | Evidence |
 |---|---|---|
-| Same-scene F11 off/on, profiling off | No material mod-induced frame-time loss; preserve natural motion | 0.5.36:107/85FPS;0.5.38 pending |
+| Same-scene F11 off/on, profiling off | No material mod-induced frame-time loss; preserve natural motion | 0.5.36:107/85FPS;0.5.38 user reports drop gone;0.5.39 pending |
 | Enter/release ADS, reverse halfway, repeat while firing, then reload | Continuous weapon/view/FOV handoff; native recoil/reload and grip remain intact | Pending user observation + bounded diagnostics |
 | Change supported zoom selections repeatedly, including during ADS handoff | No placement restart or unexpected view switch; separately measure zoom-dependent native sensitivity (unresolved) | Pending |
 | Primary → secondary → support → back | Correct saved/default placement; no old-weapon delta or drifting attachments | Pending |
@@ -22,6 +22,6 @@ F11 toggles True First Person. Preserve existing placement and motion preference
 
 Read-only diagnostics: `NativeADSCameraTest.diagnostics()` and `.recovery_status()`. The history is bounded to720 rows and stores copied scalar state, never live SDK handles or native cdata. Independent look is removed. The positional fallback helper has no shared transition epoch. FOV/pose epoch fields report acknowledged publication, not proof of simultaneous render consumption. A difference can identify a handoff worth inspecting; it is not by itself a visible bug.
 
-For a genuine native read error, verify cleanup is acknowledged before paced retries and fresh same-player authorization. Unknown/build/signature/ownership faults never grant retry authority. After the finite retry allowance, the affected capability remains suspended/unavailable until an explicit off/on session; user look is never smoothed to hide an error.
+For a genuine native read error, verify cleanup is acknowledged before paced retries and fresh same-player authorization. Unknown/build/signature faults never grant retry authority. Known acknowledged owner/profile retirement follows the separate lifecycle path documented in `first-person-native-read-recovery.md`; it does not authorize writes through an old handle. After the finite retry allowance, the affected capability remains suspended/unavailable until an explicit off/on session; user look is never smoothed to hide an error.
 
 A completed record should identify the weapon, action sequence, whether native ADS was enabled, observed outcome, diagnostic counters and any follow-up. Do not mark this matrix accepted solely from a package hash or synthetic test.

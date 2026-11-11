@@ -59,8 +59,8 @@ function Setting.new(backend,log,sr,deps)
             -- Boolean readback, command and restoration acknowledgement.
             local profile=assert(backend.profile and backend.profile.pose,'Renderer executable profile unavailable')
             local exe=backend:_alignment_executable(profile)
-            assert(backend:_read(exe+0x3d42f0,8)=='\072\139\209\233\008\253\255\255'
-                and backend:_read(exe+0x3d3f10,8)=='\072\139\209\233\136\250\255\255','Renderer DoF SDK contract changed')
+            assert(backend:_read(exe+0x3d43d0,8)=='\072\139\209\233\008\253\255\255'
+                and backend:_read(exe+0x3d3ff0,8)=='\072\139\209\233\136\250\255\255','Renderer DoF SDK contract changed')
         end
         verified=c
     end

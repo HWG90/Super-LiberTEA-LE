@@ -1,5 +1,9 @@
 -- Build 26251122. Native inventory category permutation and weapon preset
 -- initializer (game+EC5160). Only missing weapon roots and presets are added.
+-- The Armory customization screen lists a weapon's parts from the owned part rows
+-- (kind 2, stable = part ID) that directly follow its root; the root's index entry
+-- counts them and each part's entry holds its distance back to the root. A hidden
+-- weapon that has a choice of parts gets those rows too.
 local M = {}
 local PRESETS, STRIDE, CAPACITY = 0x1181AE4, 148, 512
 local CATEGORIES, CATEGORY_COUNT = 0xD1CE4, 24
@@ -31,7 +35,22 @@ local function preset(item, defaults)
         ..string.rep(table.concat(ordered),3)..zeros(16)
 end
 
-function M.prepare(host, ctx, weapons)
+-- Parts in slot order, when at least one slot offers a choice.
+local function choices(groups)
+    local list,choice={},false
+    for category=1,9 do
+        local ids=groups and groups[category]
+        if ids then
+            if #ids>1 then choice=true end
+            for _,id in ipairs(ids) do
+                if id~=0 then list[#list+1]=id end
+            end
+        end
+    end
+    return choice and list or {}
+end
+
+function M.prepare(host, ctx, weapons, parts)
     local mem,C,n = host.mem,host.constants,ctx.count
     local function span(address,size) return assert(host:_span(address,size),'Armory memory unavailable') end
     local function read(offset,size) return span(ctx.account+offset,size) end
@@ -40,12 +59,13 @@ function M.prepare(host, ctx, weapons)
     local groups=read(CATEGORIES,(CATEGORY_COUNT+1)*4)
     local order=read(C.category_index,n*4)
     assert(word(groups,0)==0 and word(groups,96)==n,'Armory category bounds changed')
-    local seen,present,kinds={},{},{}
+    local seen,present,kinds,used={},{},{},{[0]=true}
     for i=0,n-1 do
         local r,x=i*C.record_size,i*C.index_size
         assert(word(records,r)==i and records:sub(r+1,r+12)==indexes:sub(x+1,x+12),'Armory row identity changed')
         local id,stable,kind=word(records,r+4),word(records,r+8),word(records,r+12)
         kinds[i]=kind
+        used[id]=true
         present[id]=true
         if kind==1 then present[stable]=true end
     end
@@ -62,8 +82,14 @@ function M.prepare(host, ctx, weapons)
     for _,item in ipairs(weapons) do
         if not present[item.id] then missing[#missing+1]=item end
     end
-    if #missing==0 then return {},missing end
-    assert(n+#missing<=C.max_rows,'Armory catalogue is full')
+    if #missing==0 then return {},missing,{} end
+    local fitted,total={},#missing
+    for i,item in ipairs(missing) do
+        used[item.id]=true
+        fitted[i]=choices(parts and parts[item.id])
+        total=total+#fitted[i]
+    end
+    assert(n+total<=C.max_rows,'Armory catalogue is full')
 
     local catalogue=assert(mem:ptr(ctx.game+C.weapons),'Weapon catalogue unavailable')
     local native=span(catalogue,C.weapon_count*C.weapon_size)
@@ -80,7 +106,7 @@ function M.prepare(host, ctx, weapons)
         if id~=0 then existing[id]=i
         elseif presets:sub(at+1,at+STRIDE)==zeros(STRIDE) then empty[#empty+1]=i end
     end
-    local edits,rows,links,inserted={},{},{},{}
+    local edits,rows,links,roots,children,tail={},{},{},{},{},{}
     local function edit(offset,before,after)
         assert(#before==#after,'Armory edit length changed')
         if before~=after then edits[#edits+1]={offset=offset,before=before,after=after} end
@@ -118,27 +144,40 @@ function M.prepare(host, ctx, weapons)
                 edit(PRESETS+free*STRIDE,zeros(STRIDE),defaults)
             end
         end
-        local index=n+i-1
+        local index=n+#rows
         local identity=le(index)..le(item.id)..le(item.id)
-        -- Owned root, quantity one, no prices, children or parent.
-        rows[i]=identity..le(1)..le(0)..le(2)..le(0x7fffffff)..zeros(C.record_size-36)..le(1)..le(0)
-        links[i]=identity..zeros(C.index_size-12)
-        inserted[i]=le(index)
+        -- Owned, quantity one, no prices. A root has no parent; a part row has no children.
+        local function owned(identity,kind,back,count)
+            rows[#rows+1]=identity..le(kind)..le(0)..le(2)..le(0x7fffffff)..zeros(C.record_size-36)..le(1)..le(0)
+            links[#links+1]=identity..le(back)..le(back)..le(count)..zeros(C.index_size-24)
+        end
+        owned(identity,1,0,#fitted[i])
+        roots[#roots+1]=le(index);tail[#tail+1]={id=item.id,stable=item.id}
+        for j,part in ipairs(fitted[i]) do
+            -- Row IDs are unique across the account; a part row's is ours to choose.
+            local id=(item.id+part)%4294967296
+            while used[id] do id=(id+1)%4294967296 end
+            used[id]=true
+            owned(le(index+j)..le(id)..le(part),2,j,0)
+            children[#children+1]=le(index+j);tail[#tail+1]={id=id,stable=part}
+        end
     end
     local function append(offset,data) edit(offset,read(offset,#data),data) end
     append(C.records+n*C.record_size,table.concat(rows))
     append(C.index+n*C.index_size,table.concat(links))
-    local first=word(groups,8)*4 -- end of weapon category
+    -- Roots go at the end of the weapon category, part rows at the end of the attachment category.
+    local first,second=word(groups,8)*4,word(groups,12)*4
     local suffix=order:sub(first+1)
-    edit(C.category_index+first,suffix..read(C.category_index+#order,#missing*4),table.concat(inserted)..suffix)
-    local ends={}
-    for kind=2,CATEGORY_COUNT do ends[#ends+1]=le(word(groups,kind*4)+#missing) end
+    edit(C.category_index+first,suffix..read(C.category_index+#order,#rows*4),
+        table.concat(roots)..order:sub(first+1,second)..table.concat(children)..order:sub(second+1))
+    local ends={le(word(groups,8)+#roots)}
+    for kind=3,CATEGORY_COUNT do ends[#ends+1]=le(word(groups,kind*4)+#rows) end
     edit(CATEGORIES+8,groups:sub(9),table.concat(ends))
-    edit(C.account_count,le(n),le(n+#missing)) -- publish last, unpublish first
-    return edits,missing
+    edit(C.account_count,le(n),le(n+#rows)) -- publish last, unpublish first
+    return edits,missing,tail
 end
 
-function M.new(host, weapons)
+function M.new(host, weapons, parts)
     local mem,C=host.mem,host.constants
     local self={wanted=false,elapsed=1,message='Off'}
     local lease,registered_account,registered_count
@@ -164,10 +203,10 @@ function M.new(host, weapons)
         return false
     end
     local function has_tail(ctx)
-        if ctx.count~=lease.context.count+#lease.items then return false end
-        for i,item in ipairs(lease.items) do
+        if ctx.count~=lease.context.count+#lease.tail then return false end
+        for i,row in ipairs(lease.tail) do
             local at=ctx.account+C.records+(lease.context.count+i-1)*C.record_size
-            if mem:u32(at+8)~=item.id then return false end
+            if mem:u32(at+4)~=row.id or mem:u32(at+8)~=row.stable then return false end
         end
         return true
     end
@@ -177,7 +216,7 @@ function M.new(host, weapons)
         if not records then return false end
         for i=0,n-1 do
             local at=i*C.record_size
-            if word(records,at)~=i or lease.ids[word(records,at+4)]
+            if word(records,at)~=i or lease.rows[word(records,at+4)]
                 or (word(records,at+12)==1 and lease.ids[word(records,at+8)]) then return false end
         end
         return true
@@ -228,15 +267,16 @@ function M.new(host, weapons)
         lease=nil
         return true
     end
-    local function apply(ctx,edits,items)
+    local function apply(ctx,edits,items,tail)
         local after=host:context()
         if not host:same_context(ctx,after) or not closed(ctx.game)
             or mem:u32(ctx.account+C.account_ready)~=12 then return false,'Armory changed while preparing' end
         for _,e in ipairs(edits) do
             if host:_span(ctx.account+e.offset,#e.before)~=e.before then return false,'Armory changed before registration' end
         end
-        lease={context=ctx,journal={},ids={},items=items}
+        lease={context=ctx,journal={},ids={},rows={},items=items,tail=tail}
         for _,item in ipairs(items) do lease.ids[item.id]=true end
+        for _,row in ipairs(tail) do lease.rows[row.id]=true end
         for _,e in ipairs(edits) do
             for pos=1,#e.after,4096 do
                 local after=e.after:sub(pos,pos+4095)
@@ -281,12 +321,12 @@ function M.new(host, weapons)
             local done,why=restore()
             if not done then return why end
         end
-        local edits,items=M.prepare(host,ctx,weapons)
+        local edits,items,tail=M.prepare(host,ctx,weapons,parts)
         if #edits>0 then
-            local ok,why=apply(ctx,edits,items)
+            local ok,why=apply(ctx,edits,items,tail)
             if not ok then return why end
         end
-        registered_account,registered_count=ctx.account,ctx.count+#items
+        registered_account,registered_count=ctx.account,ctx.count+#tail
         return 'Registered'
     end
     function self:update(dt)

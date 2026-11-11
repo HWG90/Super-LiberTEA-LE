@@ -224,9 +224,9 @@ function Camera.new(backend,log,helper,clock)
         for _,name in ipairs(identity_fields)do if a[name]~=b[name]then return false end end
         return true
     end
-    local function problem(message)
+    local function problem(message,native_cause)
         self.fault=tostring(message)
-        self.failure_native_error=helper.last_failure_code
+        self.failure_native_error=native_cause or helper.last_failure_code
         self.failure_kind=self.failure_native_error==3 and'temporary_read'or(self.failure_native_error and'unsafe'or nil)
         log('Native head camera: '..self.fault);return false,self.fault
     end
@@ -359,7 +359,14 @@ function Camera.new(backend,log,helper,clock)
         end
         local ok,why=collect();if not ok then self:stop();return false,why end
         if self.last.armed~=true then
-            local stopped,issue=self:stop();if not stopped then return false,issue end
+            -- Capture the callback's typed cause before End/ReadStats can
+            -- replace its native error. A read fault belongs to the bounded
+            -- recovery ledger, including while its cleanup still needs ACK.
+            local cause=self.last.error
+            local typed_fault=PORT51.kind(cause)=='number'and cause~=0 and cause~=7
+            local stopped,issue=self:stop()
+            if typed_fault then return problem(issue or 'Head-camera native policy disarmed',cause)end
+            if not stopped then return false,issue end
             self.phase='waiting';self.fault=nil
             return true,'Head-camera player changed; waiting for a fresh normal camera'
         end

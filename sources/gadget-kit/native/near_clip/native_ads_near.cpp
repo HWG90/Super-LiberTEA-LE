@@ -1,11 +1,14 @@
 // First-person near clip: one generation-owned CameraAPI slot; no camera
 // transforms, settings, executable writes or protection changes.
 // game.dll 6AE0E5FF sets the gameplay camera's near distance to its .rdata
-// 0.05 (0x2245EEC) through CameraAPI+0x68 from several call sites (0x110DCAB,
-// 0x11107AF, 0x1107B90, 0x1144971 load that constant). Only a game.dll caller
+// 0.05 (0x2245EFC) through CameraAPI+0x68 from several call sites (0x110DE0B,
+// 0x111090F, 0x1107CF0, 0x1144ad1 load that constant). Only a game.dll caller
 // setting exactly that value on the owned camera, with the first-person
 // request (kind 6) current and full ADS released, receives the configured
 // distance instead. Every distinct caller is counted for diagnosis.
+// The distance handed to the game eases toward its target (hip, normal aim,
+// or the game's own value in full ADS) so clipped geometry does not pop when
+// the view changes; it lands exactly, and never goes below the game's value.
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <windows.h>
@@ -25,7 +28,7 @@ static std::atomic<float> hip_meters{0},aim_meters{0},last_native{0},last_applie
 static_assert(std::atomic<float>::is_always_lock_free,"Near clip requires lock-free floats");
 static uint64_t slot=0,slot_image=0,generation_counter=0,owned_generation=0,retired_generation=0;
 static bool possible=false;
-static constexpr uint32_t SETTER=0x2dcfa0,GETTER=0x2dcf80,SITE=0x110dc8c,NATIVE_NEAR=0x2245eec,TEXT=0x1000,TEXT_END=0x1f99000;
+static constexpr uint32_t SETTER=0x2dd050,GETTER=0x2dd030,SITE=0x110ddec,NATIVE_NEAR=0x2245efc,TEXT=0x1000,TEXT_END=0x1f99000;
 static constexpr uint32_t NATIVE_BITS=0x3d4ccccd;
 static constexpr float MAX_METERS=1.0f;
 enum Error:uint32_t { OK=0,INVALID_CONFIG=1,BUSY=2,READ_FAILED=3,IMAGE_MISMATCH=4,
@@ -51,6 +54,7 @@ static void note_site(uint64_t ret,bool owned,float value) {
     site_overflow.fetch_add(1,std::memory_order_relaxed);
 }
 #if defined(NADSN_FIXTURE)
+static uint64_t fixture_now_us=1;
 static Setter fixture_target=nullptr;
 static uint32_t fixture_cas_calls=0,fixture_cas_fail_at=0,fixture_foreign_cas_at=0;
 static uint64_t fixture_foreign_value=0;
@@ -84,6 +88,37 @@ static bool executable(uint64_t at) {
     MEMORY_BASIC_INFORMATION r{};
     if(VirtualQuery(reinterpret_cast<const void*>(at),&r,sizeof r)!=sizeof r || r.State!=MEM_COMMIT || !pe_section_mapping(r))return false;
     return r.Protect==PAGE_EXECUTE_READ || r.Protect==PAGE_EXECUTE_READWRITE || r.Protect==PAGE_EXECUTE_WRITECOPY;
+}
+// Ease state: the last distance handed to the game on the owned camera and
+// when. A gap means the first-person view was not being driven, so the next
+// distance applies at once instead of resuming a stale glide.
+static std::atomic<float> shown_meters{0};
+static std::atomic<uint64_t> shown_at{0};
+static constexpr uint64_t EASE_GAP_US=250000,EASE_STEP_US=50000;
+static constexpr float EASE_TAU_US=45000.0f,EASE_SNAP_METERS=.002f;
+static uint64_t now_us() {
+#if defined(NADSN_FIXTURE)
+    return fixture_now_us;
+#else
+    static LARGE_INTEGER frequency{};LARGE_INTEGER ticks{};
+    if(!frequency.QuadPart && !QueryPerformanceFrequency(&frequency))return 0;
+    if(frequency.QuadPart<=0 || !QueryPerformanceCounter(&ticks))return 0;
+    const uint64_t t=static_cast<uint64_t>(ticks.QuadPart),f=static_cast<uint64_t>(frequency.QuadPart);
+    return (t/f)*1000000ULL+(t%f)*1000000ULL/f;
+#endif
+}
+static void ease_reset() {shown_at.store(0,std::memory_order_relaxed);shown_meters.store(0,std::memory_order_relaxed);}
+static float ease(float target) {
+    const uint64_t now=now_us(),before=shown_at.load(std::memory_order_relaxed);
+    const float from=shown_meters.load(std::memory_order_relaxed);
+    float out=target;
+    if(now && before && now>=before && now-before<=EASE_GAP_US && std::isfinite(from) && from>0) {
+        const uint64_t elapsed=now-before<EASE_STEP_US?now-before:EASE_STEP_US;
+        out=from+(target-from)*(1.0f-std::exp(-static_cast<float>(elapsed)/EASE_TAU_US));
+        if(!std::isfinite(out) || std::fabs(out-target)<EASE_SNAP_METERS)out=target;
+    }
+    shown_meters.store(out,std::memory_order_relaxed);shown_at.store(now,std::memory_order_relaxed);
+    return out;
 }
 enum class View {LOST,OTHER,ADS,SHOULDER,HIP};
 // LOST: the owned camera, context or avatar row is no longer current.
@@ -129,10 +164,10 @@ static bool cas(uint64_t expected,uint64_t desired,uint64_t& observed) {
     } __except(EXCEPTION_EXECUTE_HANDLER) {return false;}
 }
 static bool binary_contract(const NADSN_Config& c) {
-    if(!image(c.game,0x6ae0e5ff,0x3382000) || !image(c.exe,0x6ae0964a,0x29fe000))return reject(IMAGE_MISMATCH)!=0;
+    if(!image(c.game,0x6af322c1,0x3382000) || !image(c.exe,0x6af2d5e6,0x29fe000))return reject(IMAGE_MISMATCH)!=0;
     // mov rax,[api root]; movss xmm1,[0.05]; mov rcx,[r15]; movaps; mov rdx,[rax+20]; call [rdx+68]
-    if(!bytes(c.game+SITE,"488b053538bd01f30f100d51821301498b0f440f29bc2490010000488b5020ff5268")
-        || !bytes(c.game+NATIVE_NEAR,"cdcc4c3d") || !bytes(c.exe+SETTER,"f30f114928e9966b1f00")
+    if(!bytes(c.game+SITE,"488b05d536bd01f30f100d01811301498b0f440f29bc2490010000488b5020ff5268")
+        || !bytes(c.game+NATIVE_NEAR,"cdcc4c3d") || !bytes(c.exe+SETTER,"f30f114928e9c66b1f00")
         || !bytes(c.exe+GETTER,"f30f104128c3"))return reject(CODE_MISMATCH)!=0;
     return true;
 }
@@ -167,16 +202,21 @@ static void setter_hook(void* camera,float native) {
         owned=armed.load(std::memory_order_acquire) && reinterpret_cast<uint64_t>(camera)==policy.camera;
         if(owned && bits==NATIVE_BITS && ret>=text_low.load(std::memory_order_relaxed) && ret<text_high.load(std::memory_order_relaxed)) {
             const View view=observe(policy);
-            if(view==View::LOST) {armed.store(0,std::memory_order_release);error(OWNER_MISMATCH);}
-            else if(view==View::OTHER)other_kind.fetch_add(1,std::memory_order_relaxed);
-            else if(view==View::ADS)ads_forwarded.fetch_add(1,std::memory_order_relaxed);
+            if(view==View::LOST) {armed.store(0,std::memory_order_release);error(OWNER_MISMATCH);ease_reset();}
+            else if(view==View::OTHER) {other_kind.fetch_add(1,std::memory_order_relaxed);ease_reset();}
             else {
-                const bool aim=view==View::SHOULDER;
-                const float wanted=(aim?aim_meters:hip_meters).load(std::memory_order_relaxed);
-                if(meters(wanted) && wanted>native) {
-                    applied=wanted;replaced.fetch_add(1,std::memory_order_relaxed);
-                    if(aim)aim_applied.fetch_add(1,std::memory_order_relaxed);
+                // Full ADS targets the game's own distance; hip and normal
+                // aim target theirs when it is further than the game's.
+                const bool aim=view==View::SHOULDER;float target=native;
+                if(view==View::ADS)ads_forwarded.fetch_add(1,std::memory_order_relaxed);
+                else {
+                    const float wanted=(aim?aim_meters:hip_meters).load(std::memory_order_relaxed);
+                    if(meters(wanted) && wanted>native) {
+                        target=wanted;if(aim)aim_applied.fetch_add(1,std::memory_order_relaxed);
+                    }
                 }
+                const float eased=ease(target);
+                if(meters(eased) && eased>native) {applied=eased;replaced.fetch_add(1,std::memory_order_relaxed);}
             }
             last_native.store(native,std::memory_order_relaxed);last_applied.store(applied,std::memory_order_relaxed);
         }
@@ -239,7 +279,7 @@ NADSN_EXPORT uint32_t NADSN_Begin(const NADSN_Config* input,uint64_t* output) {
     if(!output_generation(output,generation_counter))return reject(INVALID_CONFIG);
     owned_generation=generation_counter;reserved.store(1,std::memory_order_release);possible=true;
     AcquireSRWLockExclusive(&policy_lock);
-    policy=next;hip_meters.store(c.hip);aim_meters.store(c.aim);last_native.store(0);last_applied.store(0);
+    policy=next;hip_meters.store(c.hip);aim_meters.store(c.aim);last_native.store(0);last_applied.store(0);ease_reset();
     seen.store(0);forwarded.store(0);replaced.store(0);ads_forwarded.store(0);aim_applied.store(0);other_kind.store(0);
     text_low.store(c.game+TEXT,std::memory_order_relaxed);text_high.store(c.game+TEXT_END,std::memory_order_relaxed);
     ReleaseSRWLockExclusive(&policy_lock);

@@ -11,13 +11,13 @@ word(state+0xAC29C,3);word(players+0x88,1);word(player+8,22);word(manager+0x166C
 put(profile+0x3C,string.char(0));word(profile+0x40,1);word(profile+0x44,2);word(profile+0x48,3)
 put(profile+0x14C,ffi.string(ffi.new('uint32_t[11]',{10,4,5,6,0,20,30,40,0,50,0}),44))
 local function hex(s)return(s:gsub('%x%x',function(h)return string.char(tonumber(h,16))end))end
-put(game+0x175E7F0,hex('40535556574883ec284c896c2458488bf98b098bda4c89742460e871cb90ff33f6448bc64885c07403448b008bd3e8cd3b12ff4c8b35163858018bee4139b640'))
-put(game+0x175EA7C,hex('0f1007488b0d8a966d0133d20f11814c0100000f104f100f11895c010000f20f104720f20f11816c0100008b47288981740100004883c4285f5e5d5be9'))
+put(game+0x175E950,hex('40535556574883ec284c896c2458488bf98b098bda4c89742460e871cb90ff33f6448bc64885c07403448b008bd3e86d3a12ff4c8b35b63658018bee4139b640'))
+put(game+0x175EBDC,hex('0f1007488b0d2a956d0133d20f11814c0100000f104f100f11895c010000f20f104720f20f11816c0100008b47288981740100004883c4285f5e5d5be9'))
 local calls,cold_reads=0,0
 local wrapped=setmetatable({}, {__index=ffi})
 function wrapped.cast(kind,address)
  if kind=='void (*)(void *, uint32_t)'then
-  assert(address==game+0x175E7F0)
+  assert(address==game+0x175E950)
   return function(appearance,id)
    assert(id==22);calls=calls+1;put(profile+0x14C,ffi.string(appearance,44))
   end
@@ -26,7 +26,7 @@ function wrapped.cast(kind,address)
  return ffi.cast(kind,address)
 end
 local mem={_ffi=wrapped}
-function mem:read(at,n)if at==game+0x12ED7A0 then cold_reads=cold_reads+1;return 'PACKED' end;return read(at,n)end
+function mem:read(at,n)if at==game+0x12ED900 then cold_reads=cold_reads+1;return 'PACKED' end;return read(at,n)end
 function mem:ptr(at)return pointers[at]end
 function mem:u8(at)local s=read(at,1);return s and s:byte()end
 function mem:u32(at)local s=read(at,4);if not s then return nil end;local a,b,c,d=s:byte(1,4);return a+b*256+c*65536+d*16777216 end

@@ -1,6 +1,6 @@
 -- The setting queues intent. All gameplay work happens in update/cleanup.
 local M = {}
-local STAMP, SIZE, PAIR = 0x6AE0E5FF, 0x1160, 0x3100000000
+local STAMP, SIZE, PAIR = 0x6AF322C1, 0x1160, 0x3100000000
 local HASHES = {0xF2F926AB, 0xB65540AB, 0x13AEB16B, 0x2E3F3C44, 0xB013CA6F, 0x92AA29EB}
 
 local function word(bytes, offset)

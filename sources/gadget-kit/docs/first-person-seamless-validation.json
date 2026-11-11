@@ -1,5 +1,5 @@
 {
-  "version": "0.5.38-cffi-26251122",
+  "version": "0.5.39-cffi-26251122",
   "target_build": 26251122,
   "lua51_cffi_suites": [
     {
@@ -217,123 +217,211 @@
   ],
   "total_suites": 53,
   "syntax_files": 83,
-  "native_helpers": "unchanged from installed0.5.36; production DLL and source hashes verified against build receipts",
-  "combined_mcm_and_f11_f8_integration_passed": true,
-  "module_closure_passed": true,
-  "atomic_install_tests_passed": true,
-  "head_observation": {
-    "isolated_root": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-hotpath",
-    "baseline": "installed0.5.36 copy supplied by parent; source hashes in tfp-head-fastpath-baseline/baseline.json",
-    "scope": [
-      "src/first_person/head_visibility.lua",
-      "src/first_person/model_shadow_source.lua",
-      "tests/first_person/head_visibility.lua"
-    ],
-    "final_sha256": {
-      "src/first_person/head_visibility.lua": "cda09bf23b0db3d750e4805d5fa607a2ccc872c1527a266f7f6e20a1cff47d77",
-      "src/first_person/model_shadow_source.lua": "fac450ee5f348f6a219aac0b609b03ec1921edbbe52d0d1b541d6d24a65e1374",
-      "tests/first_person/head_visibility.lua": "83891fe717bbdcc043bbade813732d63b88593474493f446824e466f7ed610f8"
-    },
-    "tests": {
-      "head_visibility_cases": 68,
-      "runtimes": [
-        "Lua5.1 packaged realCFFI",
-        "LuaJIT actualcompat"
-      ],
-      "steady_frames_in_regression": 100
-    },
-    "source_backed_counter_100_steady_frames": {
-      "baseline": {
-        "full_snapshots": 200,
-        "alignment_context_calls": 1200,
-        "SDK_writes": 0,
-        "player_plus_full_snapshot_calls": 300,
-        "direct_fixture_read_callbacks": 7900
-      },
-      "candidate": {
-        "full_snapshots": 0,
-        "alignment_context_calls": 0,
-        "SDK_writes": 0,
-        "player_plus_full_snapshot_calls": 200,
-        "direct_fixture_read_callbacks": 10800
-      },
-      "important_limit": "Old full snapshots, alignment_context and scalar getters are fake in this byte-backed fixture, so direct_read_callbacks omit their production read chains. Compare call counts; no timing or FPS claim."
-    },
-    "fastpath_contract": {
-      "read_only_return": true,
-      "mutations_use_original_full_guards": true,
-      "admission": "native6 + full model observation + exact last masks + same owner/epoch/flags + complete renderer/kept-clothing arrays/resources + complete cached topology endpoints + descriptor/backpack/appearance/SDK identities",
-      "closing_checks": "model topology + descriptor; player-only ownership + appearance + registry pointer/tables/capacity + every inspected UnitRef generation/object",
-      "failure": "immediate original full resolve; refresh kept layouts while retaining per-row ownership/foreign-mask history"
-    },
-    "no_live_calls_or_install": true
+  "native_cases_changed_helpers": {
+    "camera": 59,
+    "fov": 70,
+    "blur": 32
   },
-  "phase_publication": {
-    "scope": "Private generation-owned phase publication only; no new native export, DLL, hook or shared struct ABI. No installed files or live process modified.",
-    "source_sha256": {
-      "src/first_person/backend.lua": "8397a53063b8282123055935b1356671bb8192fcc95d22a0367a0fa50f85ab0d",
-      "tests/first_person/backend_transition.lua": "3132c0f1215b2aaa75168f6377099d23a41284a1e95b7d4704c6fbdf0158dcff"
+  "production_dll_smoke_changed_helpers_passed": true,
+  "captured_native_health_bridges": {
+    "camera": {
+      "policy": "camera",
+      "runtime": "Lua5.1 actual CFFI",
+      "native_fixture_log": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-recovery/dist/camera-read-recovery/fixture.log",
+      "native_fixture_log_sha256": "e49902cdc8634927808e342a7892154a77b5be9f6f2c3b716c376bce489d7fa9",
+      "captured_native_event": {
+        "stage": "callback_read_failed",
+        "result": 1,
+        "native_error": 3,
+        "token": 2,
+        "cas_changes": 0,
+        "rpm_failures": 4,
+        "exact_native": true,
+        "armed": 0,
+        "installed": 1,
+        "reserved": 1
+      },
+      "lua_source_sha256": {
+        "src/first_person/camera.lua": "f70ade66240449bb57392f068a92ac797dc3e19f48a6fb50790c800640b87c54",
+        "src/first_person/recovery.lua": "7b9ad390be194bbbb50d73e6ef24d12542bb3be6b0b559f1ffae9fced91e3766",
+        "src/first_person/compat51.lua": "6a4b0a796be8a03f98d5a5315be48ec191cc9bb4f6520f432452cbb27827be12",
+        "tests/native_recovery_bridge.lua": "bd31ad343a439a851aeafacaa76920a20840fe6852a91cb57abfd14a9c76703e"
+      },
+      "cases": 2,
+      "passed": true,
+      "scope": "Separate-process captured health contract through actual Lua CFFI Adapter/Manager/Recovery; no game calls or live fault injection"
     },
-    "baseline": {
-      "source": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit/src/first_person/backend.lua",
-      "sha256": "6ee6fd30809f86054a8c9f4c03572696f710a00832c930b2846a37238d73dd4a"
+    "fov": {
+      "policy": "fov",
+      "runtime": "Lua5.1 actual CFFI",
+      "native_fixture_log": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-recovery/dist/recovery-r2-fov-blur/fov-fixture.log",
+      "native_fixture_log_sha256": "b85ba12357c3d9c3d75a788e27a5c8f5d9ee1d3bb5c72c24d7965cfc67677e92",
+      "captured_native_event": {
+        "stage": "callback_read_failed",
+        "result": 1,
+        "native_error": 3,
+        "token": 56,
+        "cas_changes": 0,
+        "rpm_failures": 3,
+        "exact_native": true,
+        "armed": 0,
+        "installed": 1,
+        "reserved": 1
+      },
+      "lua_source_sha256": {
+        "src/first_person/fov.lua": "1bcc13c209304f81bc64e78642db9d5ec9b6a39992015c25d80ad1c77d971465",
+        "src/first_person/recovery.lua": "7b9ad390be194bbbb50d73e6ef24d12542bb3be6b0b559f1ffae9fced91e3766",
+        "src/first_person/compat51.lua": "6a4b0a796be8a03f98d5a5315be48ec191cc9bb4f6520f432452cbb27827be12",
+        "tests/native_recovery_bridge.lua": "bd31ad343a439a851aeafacaa76920a20840fe6852a91cb57abfd14a9c76703e"
+      },
+      "cases": 2,
+      "passed": true,
+      "scope": "Separate-process captured health contract through actual Lua CFFI Adapter/Manager/Recovery; no game calls or live fault injection"
     },
-    "affected_suites": [
-      {
-        "fixture": "backend.lua",
-        "passed": true
+    "blur": {
+      "policy": "blur",
+      "runtime": "Lua5.1 actual CFFI",
+      "native_fixture_log": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-recovery/dist/recovery-r2-fov-blur/blur-fixture.log",
+      "native_fixture_log_sha256": "65567d1e14fe7ed7146f0c1e697df79745424309d2bbc29e6720b03771877176",
+      "captured_native_event": {
+        "stage": "callback_read_failed",
+        "result": 1,
+        "native_error": 3,
+        "token": 29,
+        "cas_changes": 0,
+        "rpm_failures": 3,
+        "exact_native": true,
+        "armed": 0,
+        "installed": 1,
+        "reserved": 1
       },
-      {
-        "fixture": "backend_transition.lua",
-        "passed": true
+      "lua_source_sha256": {
+        "src/first_person/blur.lua": "a0b82e4b0d6a7f0ef76692c79d924e7cc6b34bb4e63c1dc7256418417cf8fff8",
+        "src/first_person/recovery.lua": "7b9ad390be194bbbb50d73e6ef24d12542bb3be6b0b559f1ffae9fced91e3766",
+        "src/first_person/compat51.lua": "6a4b0a796be8a03f98d5a5315be48ec191cc9bb4f6520f432452cbb27827be12",
+        "tests/native_recovery_bridge.lua": "bd31ad343a439a851aeafacaa76920a20840fe6852a91cb57abfd14a9c76703e"
       },
-      {
-        "fixture": "controller.lua",
-        "passed": true
-      },
-      {
-        "fixture": "motion_runtime.lua",
-        "passed": true
-      },
-      {
-        "fixture": "runtime_frame.lua",
-        "passed": true
-      },
-      {
-        "fixture": "runtime_recovery.lua",
-        "passed": true
-      }
-    ],
-    "paired_measurement": {
-      "baseline": {
-        "snapshots": 3,
-        "contexts": 3,
-        "protected_reads": 187,
-        "native_transition_calls": 2,
-        "native_motion_calls": 1
-      },
-      "fixed": {
-        "snapshots": 1,
-        "contexts": 1,
-        "protected_reads": 77,
-        "native_transition_calls": 1,
-        "native_motion_calls": 1
-      }
+      "cases": 2,
+      "passed": true,
+      "scope": "Separate-process captured health contract through actual Lua CFFI Adapter/Manager/Recovery; no game calls or live fault injection"
     }
+  },
+  "integration": [
+    {
+      "fixture": "first_person_integration.lua",
+      "passed": true,
+      "output": "Shared MCM ownership, namespaced settings, controls, lifecycle and pending cleanup passed\n"
+    },
+    {
+      "fixture": "first_person_input.lua",
+      "passed": true,
+      "output": "Engine F11/F8/modifier input, foreground gating, editor token capture, timing and restoration passed\nMerged F11 toggle/F8 editor work when modern MCM has no camera_input; key edges and focus recovery passed\n"
+    },
+    {
+      "fixture": "mcm.lua",
+      "passed": true,
+      "output": "MCM tabs, independent toggles, defaults, routing and cleanup passed\nComplete all objectives on the Gameplay page: request button and status passed\n"
+    }
+  ],
+  "atomic_install_tests": 3,
+  "ui_restore": {
+    "baseline_root": "/home/goose/Projects/Super-LiberTEA-LE/sources/gadget-kit",
+    "baseline_version": "0.5.38-cffi-26251122",
+    "original_visual_source": "/home/goose/Documents/Codex/2026-11-07/tr/work/install-backups/tfp-seamless-20261109T063218Z/source/src/first_person/placement_editor.lua",
+    "original_visual_sha256": "88e39a1e8366cb8d158f2eb991cc20c46544e31a3f8b0b320b7830f253804568",
+    "baseline_files": {
+      "src/first_person/placement_editor.lua": "ce607936467b1162bd8adfc6fb55757f3342ecdd4fe803ec3992a4b94ed5d9cb",
+      "src/first_person/ui_style.lua": "674c0bcd1300d23b01dc93f6434d6f4d964fd28ff4f37971d02f0d04b316ce2a",
+      "tests/first_person/editor.lua": "a67cd5b65a32928a9eaa3f46954afa30d57b82ec94111b632a50aacd6dfe1348"
+    },
+    "non_draw_editor_code_identical": true,
+    "time_utc": "2026-11-09T07:56:46.540859+00:00",
+    "candidate_root": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-ui-restore",
+    "final_sha256": {
+      "src/first_person/placement_editor.lua": "44a91b303eb53b58aa85ee8f82a330936a47c93122c7d25d3306855245c9b792",
+      "src/first_person/ui_style.lua": "b0683e93926f9c513df28f79a64a3d6b4482c86b8b2d9629f719b7ebd6a794f3",
+      "tests/first_person/editor.lua": "7eb91ce8e000b13fb008b7665a4ebf71fdc5c0a9d90b9ef335c16287a71af96e",
+      "docs/first-person-editor-appearance-restore.md": "9215ee7e1c7ce2944745028f0abee78995413c7186e0393e23542134e6a584d5"
+    },
+    "validation": {
+      "editor_cases": 42,
+      "full_actual_Lua51_CFFI_fixture_files": {
+        "passed": 53,
+        "total": 53
+      },
+      "top_level_actual_Lua51_CFFI": {
+        "passed": 3,
+        "total": 3
+      },
+      "top_level_plain_Lua51": [
+        "first_person_integration.lua",
+        "first_person_input.lua"
+      ],
+      "actual_original_draw_equivalence_scenarios": 9,
+      "source_non_draw_equivalence": true,
+      "live_or_screen_acceptance": false
+    },
+    "fixture_inputs_only": {
+      "docs/first-person-applied-migration.json": "d2c0cd79e4eed22d21ee928cecca0cc686dbe622dfa8592990295fc9796db67d",
+      "docs/first-person-26251122-migration.json": "2a3ad77b276d8c08f7d3f31ddcd45a3b24ab3951ffa607ba2671d389bb3bb71e"
+    },
+    "patch": "/home/goose/Documents/Codex/2026-11-07/tr/work/tfp-editor-ui-restore.patch",
+    "manifest_and_runtime_unchanged": true,
+    "canonical_untouched": true,
+    "changed_files": [
+      "src/first_person/placement_editor.lua",
+      "src/first_person/ui_style.lua",
+      "tests/first_person/editor.lua",
+      "docs/first-person-editor-appearance-restore.md"
+    ],
+    "runtime_payload_files": [
+      "src/first_person/placement_editor.lua",
+      "src/first_person/ui_style.lua"
+    ],
+    "source_only_files": [
+      "tests/first_person/editor.lua",
+      "docs/first-person-editor-appearance-restore.md"
+    ],
+    "active_before_hashes": {
+      "src/first_person/placement_editor.lua": "ce607936467b1162bd8adfc6fb55757f3342ecdd4fe803ec3992a4b94ed5d9cb",
+      "src/first_person/ui_style.lua": "674c0bcd1300d23b01dc93f6434d6f4d964fd28ff4f37971d02f0d04b316ce2a"
+    }
+  },
+  "visibility_history_fix": {
+    "baseline": "canonical installed0.5.38",
+    "isolated_candidate": "/home/goose/Documents/Codex/2026-11-07/tr/work/gadget-kit-fp-mask-fix",
+    "files": {
+      "src/first_person/head_visibility.lua": {
+        "before": "cda09bf23b0db3d750e4805d5fa607a2ccc872c1527a266f7f6e20a1cff47d77",
+        "after": "28eadb6ecef4849892741d1cdc8dd17db7310ec60774ff6bb175654700141699"
+      },
+      "tests/first_person/head_visibility.lua": {
+        "before": "83891fe717bbdcc043bbade813732d63b88593474493f446824e466f7ed610f8",
+        "after": "cbea57cb03739615bdc59f9578d10498ce198c36bd834c21ac965a70b814d401"
+      }
+    },
+    "regression": "Simultaneous weapon-tree signature change and unowned body/head mask replacement. Baseline reclaims foreign masks; fixed variant preserves them and writes only the new child shadow bit.",
+    "before": "actual Lua5.1/CFFI regression fails255~=253",
+    "after": {
+      "head_cases": 69,
+      "all_cffi_suites": 53,
+      "top_level_integrations": 3,
+      "syntax_passed": true,
+      "independent_review": "implement_transitions CLEAR"
+    },
+    "native_changes": false,
+    "new_hooks": false,
+    "installed": false,
+    "settings_changed": false,
+    "current_game": "0.5.38 remains untouched; user FPS and natural motion accepted"
   },
   "camera_pin_removed": true,
   "new_hooks": false,
   "structure_abis_changed": false,
   "settings_changed": false,
-  "baseline_live": {
-    "version": "0.5.36",
-    "fps_off": 107,
-    "fps_on": 85,
-    "profiler_removed_drop_confirmed": true
-  },
-  "optimized_live_fps": "pending clean restart and same-scene check",
-  "camera_animation": "accepted natural/stable35; unchanged native helpers in38",
-  "zoom_sensitivity": "unresolved native scaling; uninstalled workspace zoom/DOF development explicitly excluded",
-  "live_acceptance": "pending",
+  "baseline_live38": "User: FPS drop is gone; motion natural. F8 preview/cancel arms/gun only and world fixed accepted.",
+  "live39_acceptance": "pending clean restart; native fault tests are synthetic buffers only",
+  "zoom_sensitivity": "unresolved native scaling; no uninstalled37 zoom/DoF development included",
+  "module_closure_passed": true,
   "source_hashes_checked": true
 }

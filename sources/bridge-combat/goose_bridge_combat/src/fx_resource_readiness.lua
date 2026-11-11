@@ -2,9 +2,9 @@
 -- resource manager, not GUI material flag+4 or a fallback/default resource.
 local M={}
 local TYPES={A8193123526FAD64=true,EAC0B497876ADEDF=true,CD4238C6A0C69E32=true, ["535A7BD3E650D799"]=true}
-local PRESENT={0x632070,'uint8_t (*)(void *, const uint64_t *, const uint64_t *)',
+local PRESENT={0x632110,'uint8_t (*)(void *, const uint64_t *, const uint64_t *)',
     '4053415641574883ec30488b02488bd98b89c00200004533'}
-local FETCH={0x6321a0,'uintptr_t (*)(void *, const uint64_t *, const uint64_t *, uint64_t *)',
+local FETCH={0x632240,'uintptr_t (*)(void *, const uint64_t *, const uint64_t *, uint64_t *)',
     '4c894424184889542410535556574155415641574883ec30'}
 local function unhex(s)return(s:gsub('%x%x',function(x)return string.char(tonumber(x,16))end))end
 local function key(s)
@@ -27,7 +27,7 @@ function M.new(io,b,checks)
     local function u(at)local value,why=b:u32(at);assert(type(value)=='number'and value%1==0 and value>=0 and value<4294967296,why or 'Resource field unavailable');return value end
     local function modules()
         local game,_,gs=io.module('game.dll');local exe,_,es=io.module('helldivers2.exe')
-        assert(game and exe and gs==0x6AE0E5FF and es==0x6AE0964A,'Unsupported resource module build')
+        assert(game and exe and gs==0x6AF322C1 and es==0x6AF2D5E6,'Unsupported resource module build')
         address(game);address(exe);assert(not bound_game or bound_game==game and bound_exe==exe,'Resource module identity changed')
         for _,spec in ipairs({PRESENT,FETCH})do assert(read(exe+spec[1],#spec[3]/2)==unhex(spec[3]),'Resource native fingerprint changed')end
         return game,exe

@@ -11,7 +11,7 @@ int hd2env_probe_friends_host(const HD2FriendsHost *h){
     if(h->read(h->context,h->image_base,header,sizeof(header))!=1||header[0]!='M'||header[1]!='Z')return 0;
     uint32_t nt=word(header+0x3c);
     if(nt>0x1000||memcmp(header+nt,"PE\0\0",4)||header[nt+4]!=0x64||header[nt+5]!=0x86||
-       word(header+nt+8)!=0x6ae0964a||header[nt+24]!=0x0b||header[nt+25]!=2||word(header+nt+24+56)!=0x29fe000)return 0;
+       word(header+nt+8)!=0x6af2d5e6||header[nt+24]!=0x0b||header[nt+25]!=2||word(header+nt+24+56)!=0x29fe000)return 0;
     for(size_t i=0;i<sizeof(friends_regions)/sizeof(*friends_regions);i++){
         if(friends_regions[i].size>sizeof(buffer)||h->read(h->context,h->image_base+friends_regions[i].rva,buffer,friends_regions[i].size)!=1||
            memcmp(buffer,friends_regions[i].bytes,friends_regions[i].size))return 0;

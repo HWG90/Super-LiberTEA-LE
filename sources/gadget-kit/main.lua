@@ -39,7 +39,7 @@ return {
             log('Read-only catalogue preflight ready: '..#captured.records..' equipment/parent rows; master switch remains in MCM')
         else log('Read-only catalogue preflight: '..tostring(why)) end
         local hidden=mod.require('src/loadout_catalogue.lua').hidden
-        local unreleased=mod.require('src/armory_weapons.lua').new(backend,hidden)
+        local unreleased=mod.require('src/armory_weapons.lua').new(backend,hidden,mod.require('src/loadout_parts.lua').weapons)
         controller = mod.require('src/controller.lua').new(backend, log, unreleased)
         equipment=mod.require('src/equipment.lua').new(mod.require('src/equipment_backend.lua').new(backend),mod,log)
         first_person=mod.require('src/first_person.lua')

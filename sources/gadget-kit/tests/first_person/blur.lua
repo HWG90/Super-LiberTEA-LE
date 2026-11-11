@@ -357,3 +357,14 @@ test('typed read failures are fresh and distinct from unsafe or unknown faults',
 end)
 
 print('Native scoped blur policy and adapter: '..passed..' passed')
+
+test('partial blur Begin read fault survives pending End under its original cause',function()
+ local f=fixture();f.end_failure=true
+ f.helper.begin=function(self)f.begins=f.begins+1;f.handle={};self.failure_native_error=3;return false,'Native owner read unavailable',3 end
+ f.helper.finish=function(self)f.ends=f.ends+1;self.failure_native_error=13;return false,'Native cleanup pending'end
+ assert(not f.manager:update(f.controller));assert(not f.manager:is_clean())
+ local failure=f.manager:result();equal(failure.failure_native_error,3);equal(failure.failure_kind,'temporary_read')
+ local Recovery=dofile(root..'/src/recovery.lua')
+ local row=Recovery.new():failure('blur',failure,false,{fresh=true,safe=true,same_player=true,foreign=false},0)
+ equal(row.phase,'cleanup');equal(row.pending_classification,'retry');equal(f.begins,1)
+end)

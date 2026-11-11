@@ -832,10 +832,10 @@ return function(runtime, memory)
     function api.bind(game,exe)
         -- Signatures and entity/record identity are checked before each call.
         local flag = ffi.cast('sentry_aim_retention_fn',game+0x6c9a50)
-        local replicate = ffi.cast('sentry_aim_replicate_fn',game+0xe69780)
+        local replicate = ffi.cast('sentry_aim_replicate_fn',game+0xe698e0)
         local mode = ffi.cast('sentry_aim_fire_mode_fn',game+0x761700)
-        local world_id = ffi.cast('sentry_aim_world_id_fn',exe+0x826bc0)
-        local raycast = ffi.cast('sentry_aim_raycast_fn',exe+0x87bb20)
+        local world_id = ffi.cast('sentry_aim_world_id_fn',exe+0x826d60)
+        local raycast = ffi.cast('sentry_aim_raycast_fn',exe+0x87bcc0)
         local function ptr(address)
             return assert(api.pointer(api.read(address,8)),'Pose pointer unavailable')
         end
@@ -1002,7 +1002,7 @@ local signatures={
     -- never be checked. api.bind does their work itself and calls only the
     -- routine they end with, which queues the field for replication; it is
     -- checked here in full (221 bytes, through its ret).
-    {0xe69780,'48896c241856415641574883ec30488b0523aae7014d8bf0448bfa8be9488b700880be1d300000000f85a000000048897c2458488b7e1081f9ff7f00000f84860000004c8b0dfe7ce70148895c2450498b4140488b9868010000498b4138ff5008488bc88bd5ffd385c07e588b074803c0896c242044897c24244c897424280f104424200f1144c7088b07ffc0890780be1c3000000074073d000800007525488b1e488b05777de701488bcbff5070488bd7e8294c0000488b05627de701488bcbff5078488b5c2450488b7c2458488b6c24604883c430415f415e5ec3'},
+    {0xe698e0,'48896c241856415641574883ec30488b05c3a8e7014d8bf0448bfa8be9488b700880be1d300000000f85a000000048897c2458488b7e1081f9ff7f00000f84860000004c8b0d9e7be70148895c2450498b4140488b9868010000498b4138ff5008488bc88bd5ffd385c07e588b074803c0896c242044897c24244c897424280f104424200f1144c7088b07ffc0890780be1c3000000074073d000800007525488b1e488b05177ce701488bcbff5070488bd7e8294c0000488b05027ce701488bcbff5078488b5c2450488b7c2458488b6c24604883c430415f415e5ec3'},
     {0x761700,'48894c24085355565741574883ec20'},
 }
 M.signatures=signatures
@@ -2053,13 +2053,13 @@ local function bind_natives(api,game,exe)
         ready=native_code(api,game+s[1],fromhex(s[2]),'Unsupported native sentry setter') and ready
     end
     if not ready then return nil end
-    local pose_signature=fromhex('40534883ec204863dae872d6eaff488bc84c8b0041ff90e8')
+    local pose_signature=fromhex('40534883ec204863dae8e2d5eaff488bc84c8b0041ff90e8')
     assert(exe,'Unsupported engine pose getter')
-    ready=native_code(api,exe+0x1f3020,pose_signature,'Unsupported engine pose getter')
+    ready=native_code(api,exe+0x1f30e0,pose_signature,'Unsupported engine pose getter')
     for _,s in ipairs({
-        {0x826bc0,'33c04c8d0547b403020f1f800000000049390cc0740cffc083f80475f3'},
-        {0x87bb20,'488bc4f30f11582089480855535657415441554156415748'},
-        {0x87bb80,'488d15c961fe014181e40080000033f644896424680fae5c24508b4c24500fbae90f894c24500fae54245083ff047205448bfeeb0c4869cfb00000004c8b7c1120'},
+        {0x826d60,'33c04c8d05a7b203020f1f800000000049390cc0740cffc083f80475f3'},
+        {0x87bcc0,'488bc4f30f11582089480855535657415441554156415748'},
+        {0x87bd20,'488d152960fe014181e40080000033f644896424680fae5c24508b4c24500fbae90f894c24500fae54245083ff047205448bfeeb0c4869cfb00000004c8b7c1120'},
     }) do
         ready=native_code(api,exe+s[1],fromhex(s[2]),'Unsupported terrain query') and ready
     end
@@ -2327,4 +2327,4 @@ return function(create_api,patch,build,runtime)
 end
 
 end)()
-install_loader(function() return create_api(runtime, runtime_write.extend(runtime_memory.new(runtime))) end, patch, {revision = 'data-v8.7-26251122', exe_sha256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D', game_sha256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'}, runtime)
+install_loader(function() return create_api(runtime, runtime_write.extend(runtime_memory.new(runtime))) end, patch, {revision = 'data-v8.7-26568081', exe_sha256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB', game_sha256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'}, runtime)

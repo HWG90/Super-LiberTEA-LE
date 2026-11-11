@@ -552,7 +552,7 @@ end)()
 if rawget(_G, 'ArcThrowerRevampedInstalled') then return end
 rawset(_G, 'ArcThrowerRevampedInstalled', true)
 
-local module = {revision = 'v1.7.1-26251122'}
+local module = {revision = 'v1.7.1-26568081'}
 
 local ffi = require('ffi')
 local bit = require('bit')
@@ -698,8 +698,8 @@ end
 -- On any other build the addon logs why and does nothing more: no binding,
 -- read, write, page query or update hook. The game.dll signature check in
 -- ready() still runs after this gate.
-local EXE_SHA256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D'
-local GAME_SHA256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'
+local EXE_SHA256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB'
+local GAME_SHA256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'
 
 -- True, or false and why.
 local function verified_build()
@@ -709,7 +709,7 @@ local function verified_build()
     end)
     if not ran then return false, tostring(verified) end
     if verified then return true end
-    if why == 'unsupported game build' then return false, 'unsupported game build (needs Steam build 26251122)' end
+    if why == 'unsupported game build' then return false, 'unsupported game build (needs Steam build 26568081)' end
     return false, tostring(why)
 end
 
@@ -1734,6 +1734,6 @@ if jit and jit.off then
     jit.off(true, true) -- this chunk and every function in it
 end
 
-note('Arc Thrower Revamped ' .. module.revision .. ' initialised on game build 26251122 (loader API ' ..
+note('Arc Thrower Revamped ' .. module.revision .. ' initialised on game build 26568081 (loader API ' ..
      tostring(loader and loader.api or '?') .. ')')
 end)(runtime, bingus_memory)

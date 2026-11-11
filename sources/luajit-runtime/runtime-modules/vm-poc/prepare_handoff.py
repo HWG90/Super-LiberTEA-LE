@@ -47,10 +47,10 @@ def prepare():
     assert stock_boot==(STOCK/'f476df93691895fa.luac').read_bytes(),'LLL embeds a different stock boot'
     out.append(carray('handoff_lll_source',body))
     out.append('static const HD2Asset handoff_assets[]={\n'+'\n'.join(rows)+'\n};')
-    raw=Path('/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin').read_bytes()
-    mapped=Path('/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin').read_bytes()
-    getter=raw[0x9fbd0:0x9fbd0+109]
-    assert getter==mapped[0x9fbd0:0x9fbd0+109] and getter.startswith(bytes.fromhex('4883ec284c8bd1'))
+    raw=Path('/home/goose/Projects/Linux HD2 Mods/builds/26568081/runtime/images/exe-26568081.bin').read_bytes()
+    mapped=Path('/home/goose/Projects/Linux HD2 Mods/builds/26568081/runtime/images/exe-26568081.bin').read_bytes()
+    getter=raw[0x9fc00:0x9fc00+109]
+    assert getter==mapped[0x9fc00:0x9fc00+109] and getter.startswith(bytes.fromhex('4883ec284c8bd1'))
     out.append(carray('handoff_getter_witness',getter))
     # LLL under LuaJIT takes LLL_DISCOVERY_HASH or loads its own src/discovery_hash.lua
     # (an ffi/bit murmur64); the handoff defines the global from that exact file.

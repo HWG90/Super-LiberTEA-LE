@@ -5,9 +5,9 @@ local PORT51=mod.require('src/first_person/compat51.lua')
 local M={}
 local ffi=PORT51.ffi
 local pins={
-    {0x110be95,'41ff5120488b052856bd014c8d45008b5308488b0b4c8b482041ff5128'},
-    {0x110beb2,'488b050f56bd018b5308488b8b800100004c8b400841ff9000010000488b05f355bd0133d2488b4818488b81900000008b4b08ffd0'},
-    {0x110bee7,'33d20f10000f11430c0f1048100f114b1c0f1040200f11432c0f104830488b05bd55bd010f114b3c'},
+    {0x110bff5,'41ff5120488b05c854bd014c8d45008b5308488b0b4c8b482041ff5128'},
+    {0x110c012,'488b05af54bd018b5308488b8b800100004c8b400841ff9000010000488b059354bd0133d2488b4818488b81900000008b4b08ffd0'},
+    {0x110c047,'33d20f10000f11430c0f1048100f114b1c0f1040200f11432c0f104830488b055d54bd010f114b3c'},
 }
 for _,pin in ipairs(pins)do pin[2]=pin[2]:gsub('..',function(v)return string.char(tonumber(v,16))end)end
 local function finite(v)return type(v)=='number'and v==v and math.abs(v)<math.huge end
@@ -80,8 +80,8 @@ function M.read(b,cal,expected)
     local s=owner(b,cal,expected)
     local exe=b:_alignment_executable();assert(exe==cal.camera_context.exe,'Submitted camera executable changed')
     for _,pin in ipairs(pins)do assert(raw(b,s.base+pin[1],#pin[2])==pin[2],'Submitted camera dispatch contract changed')end
-    assert(raw(b,exe+0x28d310,5)=='\072\141\065\096\195','Submitted camera graph getter changed')
-    assert(raw(b,exe+0x1f226b,15)=='\072\139\203\072\193\225\006\072\131\193\036\072\139\064\032',
+    assert(raw(b,exe+0x28d3c0,5)=='\072\141\065\096\195','Submitted camera graph getter changed')
+    assert(raw(b,exe+0x1f232b,15)=='\072\139\203\072\193\225\006\072\131\193\036\072\139\064\032',
         'Submitted camera local layout changed')
     local bound=binding(b,cal,s)
     local pose=raw(b,s.context+0x0c,64)

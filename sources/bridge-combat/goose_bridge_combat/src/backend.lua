@@ -5,7 +5,7 @@
 -- 0x1214 initializer experiment is deliberately absent from this backend.
 local M = {}
 local HIGH, LIMIT, LOW = 4294967296, 140737488355328, 65536
-local STAMP, PROFILE_BYTES = 0x6AE0E5FF, 0x1160
+local STAMP, PROFILE_BYTES = 0x6AF322C1, 0x1160
 local MAX_READ, MAX_WRITE, MAX_CAP, MAX_PROBES = 8192, 4096, 1048576, 4096
 local GLOBAL = {
     player = 0x2CE1618, inventory = 0x2CE18E8, world = 0x2CE41B8,
@@ -13,18 +13,18 @@ local GLOBAL = {
     input = 0x2E38250, projectiles = 0x2E381E0,
 }
 local SPECS = {
-    add = {0xABC580, 'void (*)(void *, const void *)',
+    add = {0xABC5B0, 'void (*)(void *, const void *)',
         '48895c2408574883ec20488b1a488bfa4c8b89980f00004c'},
-    remove = {0xABC690, 'void (*)(void *, const void *)',
+    remove = {0xABC6C0, 'void (*)(void *, const void *)',
         '48895c2418574883ec20488bb9880f00004c8bc94c8b5a10'},
     profile = {0x83EB90, 'void (*)(void *, uint32_t, uint32_t)',
         '405355574883ec203b1532056002418bf88bda488be90f84'},
-    query = {0x11907C0, 'uint64_t (*)(void *, uint64_t)',
+    query = {0x1190920, 'uint64_t (*)(void *, uint64_t)',
         '48895c240848896c24104889742418574883ec204c8bd94c'},
-    block = {0x11901F0, 'void (*)(void *, uint64_t, uint32_t, float)',
+    block = {0x1190350, 'void (*)(void *, uint64_t, uint32_t, float)',
         '48895c240848896c2410488974241848897c242041544156'},
-    release = {0x1190350, 'void (*)(void *, uint64_t)',
-        '48896c2418564883ec204c8bd94c8bca488bcae8f8e43fff'},
+    release = {0x11904b0, 'void (*)(void *, uint64_t)',
+        '48896c2418564883ec204c8bd94c8bca488bcae898e33fff'},
 }
 local NAMES = {'add', 'remove', 'profile', 'query', 'block', 'release'}
 for _, name in ipairs(NAMES) do

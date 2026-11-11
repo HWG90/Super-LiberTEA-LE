@@ -52,18 +52,18 @@ function Supply:_bind(b)
     self.backend, self.native = b, self.native_factory(b)
     local call = b.fn
     self.calls = {
-        init = call("void (*)(uintptr_t,uint32_t)", 0x12de550),
-        sprite = call("void (*)(uintptr_t)", 0x12d67c0),
+        init = call("void (*)(uintptr_t,uint32_t)", 0x12de6b0),
+        sprite = call("void (*)(uintptr_t)", 0x12d6920),
         picture = call(Build.calls.supply_picture_set.ctype, Build.calls.supply_picture_set.rva),
         rotation = call(Build.calls.supply_rotation_set.ctype, Build.calls.supply_rotation_set.rva),
-        attach = call("void (*)(uintptr_t,uintptr_t)", 0x12e42d0),
-        finish = call("void (*)(uintptr_t)", 0x12e3fd0),
-        opacity = call("void (*)(uintptr_t,float)", 0x12e07e0),
-        order = call("void (*)(uintptr_t,uint32_t)", 0x12e0f00),
-        visible = call("void (*)(uintptr_t,uint8_t)", 0x12e4cc0),
-        release = call("void (*)(uintptr_t)", 0x12e5a80),
-        push = call("void (*)(uintptr_t,uint8_t)", 0x11822f0),
-        pop = call("void (*)(void)", 0x1182310),
+        attach = call("void (*)(uintptr_t,uintptr_t)", 0x12e4430),
+        finish = call("void (*)(uintptr_t)", 0x12e4130),
+        opacity = call("void (*)(uintptr_t,float)", 0x12e0940),
+        order = call("void (*)(uintptr_t,uint32_t)", 0x12e1060),
+        visible = call("void (*)(uintptr_t,uint8_t)", 0x12e4e20),
+        release = call("void (*)(uintptr_t)", 0x12e5be0),
+        push = call("void (*)(uintptr_t,uint8_t)", 0x1182450),
+        pop = call("void (*)(void)", 0x1182470),
     }
 end
 function Supply:_code(rotate)

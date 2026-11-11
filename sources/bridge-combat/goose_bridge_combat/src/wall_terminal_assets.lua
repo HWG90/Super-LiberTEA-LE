@@ -24,7 +24,7 @@ function M.new(options)
         return type(view) == 'table' and view.can_start == true and view.menu_closed == true
             and not view.photo and not view.fixed_pose and (view.context == 2 or view.context == 4)
             and type(view.token) == 'string' and #view.token > 0 and view.base
-            and view.base.scene == 3 and view.base.stamp == 0x6AE0E5FF
+            and view.base.scene == 3 and view.base.stamp == 0x6AF322C1
             and type(view.base.game) == 'number' and type(view.base.world) == 'number'
             and type(view.base.pm) == 'number' and type(view.base.avatar) == 'number'
     end
@@ -51,10 +51,10 @@ function M.new(options)
         local io = {}; for name, value in pairs(source_io) do io[name] = value end
         io.meta = function()
             local meta, why = source_io.meta()
-            assert(type(meta) == 'table' and type(meta.A) == 'table' and meta.A.stamp == 0x6AE0E5FF,
+            assert(type(meta) == 'table' and type(meta.A) == 'table' and meta.A.stamp == 0x6AF322C1,
                 why or 'Wall terminal game build changed')
             local exe, reason, stamp = source_io.module('helldivers2.exe')
-            assert(exe and stamp == 0x6AE0964A, reason or 'Wall terminal executable changed')
+            assert(exe and stamp == 0x6AF2D5E6, reason or 'Wall terminal executable changed')
             return {game = meta.game, exe = exe, A = meta.A}
         end
         local identity = io.meta()

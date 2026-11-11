@@ -51,10 +51,10 @@ function M.new(backend)
             assert(player(s),why or 'Animation local player unavailable')
             local c=context(s)
             local vt=backend:_ptr(c.object)
-            assert(backend:_ptr(vt+0x1B0)==c.exe+0x28d460
-                and read(c.exe+0x28d460,#ANIM_GETTER)==ANIM_GETTER,'Animation interface getter changed')
-            assert(backend:_ptr(vt+0x1B8)==c.exe+0x28d470
-                and read(c.exe+0x28d470,#RESOURCE_GETTER)==RESOURCE_GETTER,'Animation resource getter changed')
+            assert(backend:_ptr(vt+0x1B0)==c.exe+0x28d510
+                and read(c.exe+0x28d510,#ANIM_GETTER)==ANIM_GETTER,'Animation interface getter changed')
+            assert(backend:_ptr(vt+0x1B8)==c.exe+0x28d520
+                and read(c.exe+0x28d520,#RESOURCE_GETTER)==RESOURCE_GETTER,'Animation resource getter changed')
             local resource=read(c.object+0x358,8)
             local instance=backend:_ptr(c.object+0x178)
             local graph=backend:_ptr(instance+0x28)

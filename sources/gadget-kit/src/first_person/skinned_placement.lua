@@ -31,7 +31,7 @@ function M.new(b,sr,cal,parts)
     local address=bridge_address()
     if b._alignment_executable then
         local exe=b:_alignment_executable()
-        assert(b:_read(exe+0x523310,16)=='\064\085\087\072\141\108\036\168\072\129\236\088\001\000\000\072','Skinning palette builder changed')
+        assert(b:_read(exe+0x5233e0,16)=='\064\085\087\072\141\108\036\168\072\129\236\088\001\000\000\072','Skinning palette builder changed')
     end
     local function point(v)return{V.x(v),V.y(v),V.z(v)}end
     local position_buffer=PORT51.ffi.new('float[3]')

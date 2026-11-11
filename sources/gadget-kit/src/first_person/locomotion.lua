@@ -108,7 +108,7 @@ function M.new(backend)
         local generations,objects=backend:_ptr(registry+0xA0),backend:_ptr(registry+0x88)
         local object=backend:_ptr(objects+index*8)
         assert(backend:_u8(generations+index)==generation,'Motion Unit retired')
-        assert(backend:_ptr(backend:_ptr(object)+0xE8)==exe+0x28d310,'Motion graph getter changed')
+        assert(backend:_ptr(backend:_ptr(object)+0xE8)==exe+0x28d3c0,'Motion graph getter changed')
         local graph=object+0x60;local count=backend:_u32(graph+0x10)
         assert(count>0 and count<=512,'Motion graph bounds changed')
         return {ref=ref,object=object,graph=graph,count=count,generations=generations,objects=objects,index=index,generation=generation}

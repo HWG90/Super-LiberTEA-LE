@@ -648,8 +648,8 @@ local Mod = {VERSION = '1.0'}
 
 local ffi = require('ffi')
 
-Mod.EXE_SHA256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D'
-Mod.GAME_SHA256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'
+Mod.EXE_SHA256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB'
+Mod.GAME_SHA256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'
 
 -- Build 26088801. Tests pass their own layout.
 Mod.LAYOUT = {
@@ -940,7 +940,7 @@ function Mod.attempt(api, native, game, layout, tables)
     Mod.check_pool(api, settings, Mod.GROUPS)
     local state = Mod.arcade_state(api, game, layout, tables)
     if state == 'expanded' then return 'already applied' end
-    need(state == 'vanilla', "The arcade's tables differ from build 26251122's")
+    need(state == 'vanilla', "The arcade's tables differ from build 26568081's")
     return 'applied', write_tables(api, native, game, layout, tables)
 end
 
@@ -1044,7 +1044,7 @@ function Mod.install(api, options)
         need(type(loader) == 'table' and loader.api == 1 and type(loader.open_log) == 'function',
             'Bingus Shared Loader with API 1 required')
         local built, why = api.verify_build({exe_sha256 = Mod.EXE_SHA256, game_sha256 = Mod.GAME_SHA256})
-        need(built, why == 'unsupported game build' and 'Unsupported game build (needs Steam build 26251122)' or why)
+        need(built, why == 'unsupported game build' and 'Unsupported game build (needs Steam build 26568081)' or why)
         state.game = need(api.module('game.dll'), 'game.dll not loaded')
         state.tables = Mod.tables()
         start(env, api, options.native or Mod.native(api), state, note)

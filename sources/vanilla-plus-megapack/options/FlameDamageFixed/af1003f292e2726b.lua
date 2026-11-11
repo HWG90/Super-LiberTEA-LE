@@ -1542,8 +1542,8 @@ end
 -- (P2). ERRORS/RESUME/CLEAN below are the runtime's defaults, kept for the tests.
 Fix.ERRORS, Fix.RESUME_FRAMES, Fix.CLEAN_FRAMES = 8, 60, 3600
 
-local GAME_SHA256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'
-local EXE_SHA256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D'
+local GAME_SHA256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'
+local EXE_SHA256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB'
 
 -- Bingus Shared Loader v18+ with API 1. The loader's own version field is not its release number (the v18
 -- release reports 17), so v18 is recognized by the `jit` state it added.
@@ -1669,7 +1669,7 @@ function Fix.install(runtime, memory)
         local game, exe = get_module('game.dll'), get_module(nil)
         assert(game ~= nil and exe ~= nil, 'Game modules unavailable')
         local ok, why = memory.verify_build({exe_sha256 = EXE_SHA256, game_sha256 = GAME_SHA256})
-        assert(ok, why == 'unsupported game build' and 'Unsupported game build (needs 26251122)' or why)
+        assert(ok, why == 'unsupported game build' and 'Unsupported game build (needs 26568081)' or why)
         return Fix.new(api, tonumber(ffi.cast('uintptr_t', game)), tonumber(ffi.cast('uintptr_t', exe)), note)
     end)
     if not ready then

@@ -3,12 +3,12 @@ local PORT51=mod.require('src/first_person/compat51.lua')
 -- Standalone protected IO for the maintained animation/resource leases.
 -- Import/new perform no game access, FFI declarations, or DLL helper loads.
 local M = {}
-local STAMPS = {['game.dll']=0x6AE0E5FF,['helldivers2.exe']=0x6AE0964A}
+local STAMPS = {['game.dll']=0x6AF322C1,['helldivers2.exe']=0x6AF2D5E6}
 local IMAGE_SIZE = {['game.dll']=0x3382000,['helldivers2.exe']=0x29fe000}
 local RVAS = {GAME_STATE=0x2ce1508,STATE_VALUE=0xac29c,WORLD=0x2ce41b8,
     PLAYER=0x2ce1618,INVENTORY=0x2ce18e8,WORLD_UNITS=0xf24990,
     WORLD_ENTITIES=0xf1c978,WORLD_RECORDS=0xf349e0,ENGINE=0x2ce14c8,
-    PACKAGES=0x2e381e8,PACKAGE_REQUEST=0x11912f0,PACKAGE_RELEASE=0x1191480}
+    PACKAGES=0x2e381e8,PACKAGE_REQUEST=0x1191450,PACKAGE_RELEASE=0x11915e0}
 local HAS_LOADED_SHAPE = '48895c2408574883ec20488b05????????488bd1488bf9488b9800040000488b8b08020000e8'
 local function integer(value,maximum)
     return PORT51.kind(value)=='number' and value==math.floor(value) and value>=0 and value<=maximum
@@ -37,7 +37,7 @@ local ZERO8 = string.rep('\0', 8)
 local FP = {
     base = {0x4fd9e0, '4885c97471488b05cc677e02448bc14c8b900840f10048b8'},
     instance = {0x4fdea0, '4883ec284c8bd14885c9750733c04883c428c38b41083b05'},
-    materialize = {0x9d7c10, '48895c240848896c2410488974241848897c242041564883'},
+    materialize = {0x9d7c40, '48895c240848896c2410488974241848897c242041564883'},
     single = {0x4fda70, '48896c2410488974241848897c242041564883ec20498bf0'},
     list = {0x4fdb20, '40564881ec00010000488b05e074fb014833c448898424e0'},
     modifier = {0x51dc20, '48895c2408488b058c657c0233d24533c04c8bd9488b9860'},
@@ -104,7 +104,7 @@ local function session(read, game, world, names)
     assert(r(game,2)=='MZ', 'game PE signature differs')
     local pe=u32(game+0x3C)
     assert(pe>=64 and pe<=4096 and r(game+pe,4)=='PE\0\0', 'game PE header differs')
-    assert(u32(game+pe+8)==0x6AE0E5FF, 'game build differs')
+    assert(u32(game+pe+8)==0x6AF322C1, 'game build differs')
     for _,name in ipairs(names) do
         local f=assert(FP[name]); assert(r(game+f[1],24)==unhex(f[2]), name..' fingerprint differs')
     end

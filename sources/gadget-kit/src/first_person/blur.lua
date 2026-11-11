@@ -268,6 +268,9 @@ function Blur.new(backend,log,helper,monotonic)
             end
             if RETIRED[code]then return retire()end
             local problem=handle or 'Native blur policy was not accepted'
+            -- Capture the fresh Begin cause before cleanup can publish its
+            -- own error. Pending End never grants a replacement generation.
+            self.failure_native_error=PORT51.kind(code)=='number'and code or helper.failure_native_error
             self:stop();return fault(problem)
         end
         remember(lease,request,weapon,player);self.phase,self.fault='active',nil

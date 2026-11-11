@@ -23,15 +23,28 @@ struct NADSE_DepthStats {
     uint64_t applied,unsupported,cache_refreshes,cache_checks,ads_bypassed;
     float native_distance,reference_distance,correction,zoom,target_fov,current_fov,gain,padding;
 };
+// Optional input-normalization diagnostics, polled only on explicit request.
+struct NADSE_InputStats {
+    uint32_t size,abi,installed,active,reason,pending,cache_entries,reserved;
+    uint64_t observed,normalized,unsupported,restored,foreign_wins,quarantined;
+    float ratio,yaw_gain,pitch_gain,padding;
+};
 static_assert(sizeof(NADSE_Config)==104,"NADSE_Config ABI");
 static_assert(sizeof(NADSE_Stats)==80,"NADSE_Stats ABI");
 static_assert(sizeof(NADSE_DepthStats)==104,"NADSE_DepthStats ABI");
+static_assert(sizeof(NADSE_InputStats)==96,"NADSE_InputStats ABI");
 NADSE_EXPORT uint32_t NADSE_Validate(const NADSE_Config*);
 // Begin: 0 rejected/no owned lease; 1 armed; 2 owned cleanup required.
 NADSE_EXPORT uint32_t NADSE_Begin(const NADSE_Config*,uint64_t* generation);
 // Same ownership/cleanup contract. Saved placement is fully applied on the
 // first fresh pose; native ADS still uses the ordinary 150ms release blend.
 NADSE_EXPORT uint32_t NADSE_BeginSteady(const NADSE_Config*,uint64_t* generation);
+// Opt-in SDK+90 policy. Pose startup remains available if optional input
+// qualification is unavailable; InputStats reports whether it is active.
+NADSE_EXPORT uint32_t NADSE_ValidateInput(const NADSE_Config*);
+NADSE_EXPORT uint32_t NADSE_BeginInput(const NADSE_Config*,uint64_t* generation);
+NADSE_EXPORT uint32_t NADSE_BeginSteadyInput(const NADSE_Config*,uint64_t* generation);
+NADSE_EXPORT uint32_t NADSE_ReadInputStats(uint64_t generation,NADSE_InputStats*);
 NADSE_EXPORT uint32_t NADSE_SetPlacement(uint64_t generation,float x,float y,float z);
 // Presentation delta is separate from saved placement; all axes are metres.
 NADSE_EXPORT uint32_t NADSE_SetADSPlacement(uint64_t generation,float x,float y,float z);

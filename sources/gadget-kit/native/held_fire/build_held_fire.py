@@ -7,7 +7,7 @@ ZIG=Path('/home/goose/Documents/Codex/2026-10-22/a-2/work/ffi-comparison/toolcha
 INPUTS=[HERE/'native_held_fire.cpp',HERE/'native_held_fire.h',HERE/'native_held_fire_cas.cpp',HERE/'native_held_fire_cas.h',HERE/'held_fire_fixture.cpp',HERE/'held_fire_dll_smoke.cpp',HERE/'held_fire_seh_test.cpp',Path(__file__),HERE.parent/'first_person/native_memory.h']
 OUT.mkdir(exist_ok=True)
 stamp=hashlib.sha256(b''.join(p.read_bytes() for p in INPUTS)).hexdigest()[:12]
-dll=OUT/f'native_ads_heldfire_26251122_{stamp}.dll'
+dll=OUT/f'native_ads_heldfire_26568081_{stamp}.dll'
 fixture=OUT/'held_fire_fixture.exe'
 smoke=OUT/'held_fire_dll_smoke.exe'
 seh=OUT/'held_fire_seh_test.dll'
@@ -47,7 +47,7 @@ result={'file':str(dll),'filename':dll.name,'sha256':digest(dll),'input_sha256':
  'production_dll_smoke_passed':smoke_passed,'production_dll_smoke_log':str(OUT/'held-fire-dll-smoke.log'),
  'production_imports_log':str(OUT/'production-imports.log'),'crt_startup':False,
  'windows_seh':True,'production_cas_protection_test':smoke_passed,
- 'target_build':26251122,'abi':1,'config_bytes':144,'stats_bytes':184,'events':['6BD9C5E3','8BCD9161'],
+ 'target_build':26568081,'abi':1,'config_bytes':144,'stats_bytes':184,'events':['6BD9C5E3','8BCD9161'],
  'mechanism':'Generation-owned writable UnitAPI+370 data slot; exact local-body caller/event suppression only.',
  'ttl_max_ms':250,'executable_writes':False,'protection_changes':False,'minhook_linked':False,'installed':False,'in_game_tested':False}
 (OUT/'held-fire-build.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))

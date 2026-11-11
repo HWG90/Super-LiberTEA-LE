@@ -20,6 +20,12 @@ stage2=json.loads((ROOT/'docs/first-person-26251122-migration.json').read_text()
 mapping={k:int(stage2['constants'].get(hex(v),hex(v)),16)for k,v in mapping.items()}
 for k,v in stage2['constants'].items():mapping.setdefault(int(k,16),int(v,16))
 STAGE2_WITNESS={bytes.fromhex(k):bytes.fromhex(v)for k,v in stage2['witnesses'].items()}
+# 26251122 -> 26568081: third stage over the result (fixtures written against 26251122 pass through it too)
+stage3=json.loads((ROOT/'docs/first-person-26568081-migration.json').read_text())
+STAGE3={int(k,16):int(v,16)for k,v in stage3['constants'].items()}
+mapping={k:STAGE3.get(v,v)for k,v in mapping.items()}
+for k,v in STAGE3.items():mapping.setdefault(k,v)
+STAGE3_WITNESS={bytes.fromhex(k):bytes.fromhex(v)for k,v in stage3['witnesses'].items()}
 E=Path('/home/goose/Documents/ChatGPT/Linux HD2/native-work/evidence')
 pairs=[((E/'game-pre1020.dll').read_bytes(),(E/'game-26088801.dll').read_bytes(),report['game_code']),((Path('/home/goose/Applications/HellForge/mods-retired/localappdata-1019/LocalAppData/LinksLinkToMemory/r6_reload_exe_20261017.bin')).read_bytes(),(E/'exe-26088801.bin').read_bytes(),report['exe_code'])]
 def witness(raw):
@@ -29,7 +35,8 @@ def witness(raw):
    a,b=int(a,16),int(b,16)
    if old[a:a+len(raw)]==raw:hits.add(new[b:b+len(raw)])
  out=next(iter(hits))if len(hits)==1 else raw
- return STAGE2_WITNESS.get(out,out)
+ out=STAGE2_WITNESS.get(out,out)
+ return STAGE3_WITNESS.get(out,out)
 
 def fixture_source(text):
  text=convert(text).replace("local PORT51=mod.require('port51/compat51.lua')",'local PORT51=TEST_PORT51');parts=[]

@@ -26,7 +26,16 @@ HD2ENV_API int hd2env_probe_steam_host(const HD2SteamHost *);
 /* Supplies guarded access to the current Windows EXE. Refused output is intact.
  * Linux hosts can provide explicit owned-image access for isolated execution. */
 HD2ENV_API int hd2env_current_steam_host(HD2SteamHost *out);
-/* Port of registrar 0x7f4ac0. Stores service in EXE+0x2860608, creates/reuses
+/* Compares the code at address with its pinned witness. The game's protection
+ * runtime (bin/runtime.dll) decrypts code pages on first use and leaves the
+ * rest no-access, so code the host can neither call nor read is
+ * HD2_CODE_NOT_RESIDENT: a normal boot state, though still no code to run.
+ * Readable but not executable, executable but unreadable, or different code is
+ * HD2_CODE_REFUSED. why (optional) receives the reason; on Windows it adds this
+ * process's page state at address (the boot host is in-process). */
+enum {HD2_CODE_REFUSED=-1,HD2_CODE_NOT_RESIDENT=0,HD2_CODE_MATCH=1};
+int hd2env_check_code(const HD2SteamHost *,uintptr_t address,const unsigned char *witness,size_t size,char *why,size_t why_size);
+/* Port of registrar 0x7f4d70. Stores service in EXE+0x2860608, creates/reuses
  * the registry module and installs all eleven replacement callbacks. Null
  * service only stores null, matching the original. Calls use Win64 vtable ABI,
  * never a PUC initializer or lua_State. Native slot lifetime is engine-owned;

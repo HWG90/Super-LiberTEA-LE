@@ -31,8 +31,8 @@ local function native_pointing(b)
     local ffi=require('ffi')
     local state=ffi.new('uint64_t[928]') -- 0x1d00, aligned; no native widget pointers
     local address=tonumber(ffi.cast('uintptr_t',state))
-    local reader=b.fn('void (*)(uintptr_t, uintptr_t, float)',0x16ac4b0)
-    local binding=b.fn('uintptr_t (*)(uintptr_t, uint64_t, uint8_t)',0x118c4e0)
+    local reader=b.fn('void (*)(uintptr_t, uintptr_t, float)',0x16ac610)
+    local binding=b.fn('uintptr_t (*)(uintptr_t, uint64_t, uint8_t)',0x118c640)
     local owner
     local self={}
     function self.reset()

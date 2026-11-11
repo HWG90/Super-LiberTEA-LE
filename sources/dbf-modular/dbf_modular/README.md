@@ -1,6 +1,6 @@
 # DBF Modular — Quiet Bracket
 
-Version0.1.0-dev.23, Steam HD2 build26251122, LuaJIT LLL on Linux/Proton.
+Version0.1.0-dev.25, Steam HD2 build26568081, LuaJIT LLL on Linux/Proton.
 
 Original DBF R46 selection, hotkeys, filters, exclusions, cooldown modes and timers, weapon options,
 input pacing and terminal routines remain under one lifecycle and settings owner. Quiet aiming hides

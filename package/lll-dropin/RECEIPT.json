@@ -1,22 +1,27 @@
 {
- "purpose": "LLL on PUC for 26251122 (Chef/Boot compat), staged only",
+ "purpose": "LLL on PUC for 26568081 with the LuaJIT handoff in front, staged only",
  "release_label": "R38-26251122-luajit.1",
  "toolchain_check": {
-  "deployed_source_reproduced": true,
-  "deployed_patch_reproduced": "d0f0f7afb9fda69689447ec04e4eb79651e0558117e27b56c95a236d593fbbaa"
+  "released_checkout": "/home/goose/Worktrees/linux-hd2/lll-r38-luajit2",
+  "lll_source_reproduced": "57fa4dc3ef1b48df37c86a39b90e1bd3fffd186c34492caa4f395eed86a8837b",
+  "live_plain_patch_reproduced": "b3e3c6c728004183544a6a41a0d1ca52e7dd145af110349f7d316d4dd04b5ee5",
+  "deployed_dropin_patch_reproduced": "1dc502e733fc9dc41e0e46fe28dcd49fc94d76e72c64fc42274e1c8a92fdd672",
+  "deployed_patch": "/home/goose/.config/hd2arsenal/mods/LLL-R38-26251122-luajit.2_AR622507/LLL-R38/9ba626afa44a3aa3.patch_0"
  },
- "lll_checkout": "/home/goose/Worktrees/linux-hd2/lll-26251122",
- "lll_source_sha256": "57fa4dc3ef1b48df37c86a39b90e1bd3fffd186c34492caa4f395eed86a8837b",
+ "lll_checkout": "/home/goose/Worktrees/linux-hd2/lll-26568081",
+ "lll_commit": "1cd9948dc34cf1756c54a046fd93a60e45da636b",
+ "lll_checkout_clean": true,
+ "lll_source_sha256": "6be284a830612486be9c4ac5680cc7c7af2858b0db77724159cee707ca45e6ea",
  "lll_source_bytes": 493166,
  "prologue_sha256": "3aad53105c0c383524bc898956de5e2eb41213d178388e6f3acf2ef9eecae376",
- "boot_chunk_sha256": "7b339b49762cb69f39d13a03e2e62f178bc6686c903ea9f29c2ca124596a848d",
- "patch_sha256": "b3e3c6c728004183544a6a41a0d1ca52e7dd145af110349f7d316d4dd04b5ee5",
+ "boot_chunk_sha256": "9441c3ab7a8e2c88cd7c54d35283d31edbc2567c6b715e3573a53b6539c4e391",
+ "patch_sha256": "36a1c1facca8e7ccc034ff04f453860ae22f385d6b89a6376e7a99385a143a18",
  "patch_bytes": 713824,
  "native": {
-  "hd2_cffi_915da533d47a3f9c.dll": "915da533d47a3f9c2b09e3715032ce821d9ebbc69e1c9d8d02b01bc50238315c",
-  "hd2_nativeinfo_8d03e036881e4ddc.dll": "8d03e036881e4ddcee663c25b75dcd0caf12789f82a97d7c294fabb88ca62b9b",
-  "lll_steam_service_580905da64a3642d.exe": "580905da64a3642d1bdef358c7de38f7e10bc34163594c5d0e5e885f94e1cdb1",
-  "lll_steam_launcher_e8a5c0fffbc8d802.exe": "e8a5c0fffbc8d802a3936e9e5ceecfcc8ad9d55f26f863cc9b6739cb8d441ef9"
+  "hd2_cffi_35ee9bb9bedfeaf9.dll": "35ee9bb9bedfeaf92bfd52ccdd855a2ae5713096c6aa39a6d3bf71ea6d3e3917",
+  "hd2_nativeinfo_f375fc4798c33ad5.dll": "f375fc4798c33ad560a5ef0dd7bb2c51c6299e27518377394184625a489b2fef",
+  "lll_steam_launcher_aa4e9d2ad66fc88a.exe": "aa4e9d2ad66fc88a75417f889030e1b2edd3339099745accffd17e8bbbd40fe8",
+  "lll_steam_service_a0263f613a8cc031.exe": "a0263f613a8cc03189a4818908342fda1cecd48819ba924c1a272730043a3ce3"
  },
  "pipe": "lll_steam_05052a2fb04dbddc81b8070f45f2ae53",
  "stock_startup_sha256": "e0c2f6b48225c07cc612d9f412c9b050abcf5c04093dd5f2b9b425d8878d0841"

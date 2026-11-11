@@ -1,7 +1,7 @@
 {
   "id": "dbf_modular",
   "name": "DBF Modular",
-  "version": "0.1.0-dev.23-26251122",
+  "version": "0.1.0-dev.25-26568081",
   "author": "Goose",
   "description": "Original DBF and unboxed Bracket HUD with native supply icons and compact weapon controls.",
   "lll": {
@@ -73,8 +73,8 @@
     "retain_until_exit": false,
     "defaults": "config/defaults.cfg"
   },
-  "port_status": "Steam26251122 / LLL LuaJIT / Linux-Proton. HUD candidate; native Heat Limiter withheld after failed live acceptance.",
-  "target_build": "26251122",
+  "port_status": "Steam26568081 / LLL LuaJIT / Linux-Proton. HUD candidate; native Heat Limiter withheld after failed live acceptance.",
+  "target_build": "26568081",
   "conflicts": [
     "divers_best_friend",
     "dbfplusplus"

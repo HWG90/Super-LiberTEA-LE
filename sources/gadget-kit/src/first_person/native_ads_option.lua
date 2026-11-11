@@ -26,8 +26,8 @@ function M.source(b,memory)
  end
  function self:probe()
   local s,why=b:snapshot();assert(s,why);assert(s.safe and(s.camera_kind==6 or s.camera_kind==4),'Native aim owner unavailable')
-  for at,bytes in pairs({[0xa5ced3]='488b0506502802488b4840f781f0000000fdffffff',
-   [0xa5cfc5]='8bc8498b42500fb60448',[0xa5d083]='486bc138420fb68408ec020000'})do
+  for at,bytes in pairs({[0xa5cf03]='488b05d64f2802488b4840f781f0000000fdffffff',
+   [0xa5cff5]='8bc8498b42500fb60448',[0xa5d0b3]='486bc138420fb68408ec020000'})do
    assert(b:_read(s.base+at,#bytes/2)==hex(bytes),'Native aim selection contract changed')
   end
   local r=context(s,s.weapon);local after=assert(b:snapshot())

@@ -45,7 +45,7 @@ function M.new(o)
         if o.chat_active then return o.chat_active()end
         local ok,active=pcall(function()
             guard_backend=guard_backend or o.load('src/backend.lua').new()
-            local game,stamp=guard_backend:_module();assert(game and stamp==0x6AE0E5FF,'Terminal chat build differs')
+            local game,stamp=guard_backend:_module();assert(game and stamp==0x6AF322C1,'Terminal chat build differs')
             local chat=assert(guard_backend:ptr(game+0x2E28788));local value=assert(guard_backend:u8(chat+0x27E50))
             assert(guard_backend:ptr(game+0x2E28788)==chat,'Terminal chat owner changed');return value~=0
         end)

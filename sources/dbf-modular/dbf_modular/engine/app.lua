@@ -98,7 +98,7 @@ function App:enable()
         return false, self.error .. (clean and "" or "; cleanup refused: " .. tostring(problem))
     end
     self:report(
-        "enabled v0.1.0-dev.23; build26251122; animated player/weapon anchors; Quiet aiming minimizes routine details"
+        "enabled v0.1.0-dev.25; build26568081; animated player/weapon anchors; Quiet aiming minimizes routine details"
     )
     return true
 end
@@ -179,7 +179,7 @@ function App.descriptor(context, globals)
     return {
         live_lua_api = 1,
         name = "DBF Modular",
-        version = "0.1.0-dev.23",
+        version = "0.1.0-dev.25",
         on_enable = function()
             if app then
                 return false, "DBF Modular lifecycle already owns state"

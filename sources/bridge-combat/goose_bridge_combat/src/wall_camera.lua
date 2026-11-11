@@ -22,7 +22,7 @@ function M.new(options)
     local function modules()
         local g,_,gs=io.module('game.dll');local e,_,es=io.module('helldivers2.exe')
         assert(type(g)=='number'and g>=65536 and g<2^47 and type(e)=='number'and e>=65536 and e<2^47
-            and gs==0x6ae0e5ff and es==0x6ae0964a,'Unsupported wall terminal camera build')
+            and gs==0x6af322c1 and es==0x6af2d5e6,'Unsupported wall terminal camera build')
         return g,e
     end
     local function sample(identity_only)

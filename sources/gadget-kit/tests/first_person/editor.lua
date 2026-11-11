@@ -471,3 +471,57 @@ test('Reset previews the current weapon-family baseline without saving or moving
  f.editor:cancel();near(f.controller.placement.x,.15);near(f.controller.placement.z,-.12)
 end)
 print('Weapon-family Reset remains preview-only and cancels back to saved placement')
+
+test('F8 restores the original square panel plain typography and equal button treatments',function()
+ local f=fixture():open():arm();local commands=f.commands;equal(#commands,21)
+ local panel=commands[1];equal(panel.type,'rect');equal(panel.x,24);equal(panel.y,800)
+ equal(panel.w,530);equal(panel.h,256);near(panel.a,.92)
+ equal(table.concat(panel.c,','),'15,18,20')
+ local rects,texts=0,0
+ for i,command in ipairs(commands)do
+  assert(command.type=='rect'or command.type=='text','Original F8 has no rounded/triangle or outline primitives')
+  if command.type=='rect'then
+   rects=rects+1
+   if i~=1 then equal(table.concat(command.c,','),'41,44,46');equal(command.a,1)end
+  else
+   texts=texts+1;equal(command.text_bold,nil);equal(command.a,1)
+  end
+ end
+ equal(rects,7);equal(texts,14)
+ equal(commands[2].text,'WEAPON PLACEMENT');equal(commands[2].x,40);equal(commands[2].y,1028);equal(commands[2].size,17)
+ equal(table.concat(commands[2].c,','),'244,202,53')
+ equal(commands[14].text,'Save weapon');equal(commands[16].text,'Save all')
+ equal(commands[18].text,'Cancel [Esc]');equal(commands[20].text,'Reset')
+ equal(commands[21].text,'Save weapon / all applies to the selected action only')
+ equal(table.concat(commands[21].c,','),'244,202,53')
+ assert(f.editor:cancel());equal(f.release_calls,1);equal(f.view_releases,1)
+end)
+test('original F8 preserves custom label case and its existing accent and hint palette',function()
+ local f=fixture();f.store.title='Arms and weapon';f.store.save_label='Save this weapon';f.store.all_label='Save all weapons'
+ f.store.footer='Only the arms and gun placement changes';f:open():arm()
+ equal(f.commands[2].text,'Arms and weapon');equal(f.commands[14].text,'Save this weapon');equal(f.commands[16].text,'Save all weapons')
+ equal(table.concat(f.commands[3].c,','),'234,235,228')
+ equal(table.concat(f.commands[6].c,','),'234,235,228')
+ equal(table.concat(f.commands[8].c,','),'181,187,188')
+ equal(f.commands[21].text,f.store.footer);assert(f.editor:cancel())
+end)
+test('original F8 scale and hit geometry remain identical at small and large resolutions',function()
+ for _,resolution in ipairs({{1280,720},{3840,2160}})do
+  local f=fixture();local w,h=resolution[1],resolution[2]
+  f.api.photo_resolution=function()return w,h end;f:open():arm()
+  local scale=math.max(.6,math.min(1.5,h/1080));local panel=f.commands[1]
+  near(panel.x,24*scale);near(panel.y,h-280*scale);near(panel.w,530*scale);near(panel.h,256*scale)
+  near(f.commands[2].size,17*scale)
+  local cancel=f.commands[17]
+  f:tick({x=cancel.x+cancel.w/2,y=cancel.y+cancel.h/2,click=true,wheel=0,dt=.016})
+  equal(f.editor.phase,'idle');equal(f.save_calls,0);equal(f.release_calls,1)
+ end
+end)
+test('original editor remains square and plain even when the renderer supports rounded triangles',function()
+ local f=fixture():open():arm()
+ rawset(_G,'stingray',{Gui={triangle=function()error('No rounded primitives belong in original F8')end}})
+ assert(f:tick());equal(#f.commands,21)
+ for _,command in ipairs(f.commands)do assert(command.type~='triangle');equal(command.text_bold,nil)end
+ assert(f.editor:cancel())
+end)
+print('Native ADS editor including original F8 appearance: '..passed..' passed')

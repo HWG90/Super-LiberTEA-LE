@@ -109,13 +109,13 @@ function Head.new(backend,log,sr,deps)
         -- closure address is not the game's setter thunk. Qualify the current
         -- executable directly, retain this SDK function's identity, and use
         -- the same bounded high-level call plus native mask readback below.
-        assert(read(exe+0x3f4bc0,8)==hex('488bd1e9a8f8ffff'),'Head mesh visibility binding changed')
-        assert(read(exe+0x51fdb0,14)==hex('40574883ec30440fb689dc000000'),'Head mesh pass-mask layout changed')
-        assert(read(exe+0x3f4b43,24)==hex('3b3d7f0f48027504b101eb363b3d6f0f48027504b102eb2a')
-            and read(exe+0x51fdda,26)==hex('84d27405450ac8eb0641f6d04522c8488b5908448889dc000000')
-            and u32(exe+0x2875ac8)==0xF2760503 and u32(exe+0x2875ac4)==0x3100C3D2,
+        assert(read(exe+0x3f4ca0,8)==hex('488bd1e9a8f8ffff'),'Head mesh visibility binding changed')
+        assert(read(exe+0x51fe80,14)==hex('40574883ec30440fb689dc000000'),'Head mesh pass-mask layout changed')
+        assert(read(exe+0x3f4c23,24)==hex('3b3d970e48027504b101eb363b3d930e48027504b102eb2a')
+            and read(exe+0x51feaa,26)==hex('84d27405450ac8eb0641f6d04522c8488b5908448889dc000000')
+            and u32(exe+0x2875ac0)==0xF2760503 and u32(exe+0x2875ac8)==0x3100C3D2,
             'Head camera/shadow visibility contexts changed')
-        assert(read(exe+0xa06a0,22)==hex('48895c24084889742410574883ec20488b354270a101'),'Head Unit registry changed')
+        assert(read(exe+0xa06d0,22)==hex('48895c24084889742410574883ec20488b351270a101'),'Head Unit registry changed')
         checked,checked_game=address,s.base;setter=sr.Unit.set_mesh_visibility;observed=nil
     end
     local function registry()
@@ -138,7 +138,7 @@ function Head.new(backend,log,sr,deps)
         local vt=pointer(header)
         if not context.types[vt]then
             local methods=read(vt+0xC8,56)
-            assert(pointer(methods,48)==exe+0x28d330 and pointer(methods)==exe+0x293550,'Head renderer type changed')
+            assert(pointer(methods,48)==exe+0x28d3e0 and pointer(methods)==exe+0x293600,'Head renderer type changed')
             context.types[vt]=true
         end
         return object,header
@@ -316,6 +316,14 @@ function Head.new(backend,log,sr,deps)
         local changed=not same or spec.retry~=nil
         if not same or spec.retry then
             if not same then layout=index_layout(layout)end
+            -- A weapon-tree change can rebuild specs while these renderers
+            -- remain unchanged. Keep their last observation even when they
+            -- own no bits, so a foreign pass change is not mistaken for an
+            -- unseen native baseline. This history cannot authorize a write.
+            local previous=observed and observed.owner==s.player_identity and observed.body_ref==s.body
+                and observed.body==body and observed.world==world_native and observed.customization==base
+                and observed.refs[ref]
+            local history=previous and previous.rows
             spec.rows={};spec.layout,spec.object,spec.resource=layout,object,resource
             spec.retry=nil
             local selected
@@ -330,7 +338,10 @@ function Head.new(backend,log,sr,deps)
             for mesh in pairs(layout.indices)do
                 if not spec.rig or spec.shadow_rig or selected and selected[mesh]then
                     local key=tostring(ref)..':'..tostring(mesh)
-                    local existing=owned[key]
+                    local earlier=history and history[key]
+                    if earlier and(earlier.owner~=s.player_identity or earlier.body_ref~=s.body
+                        or earlier.handle~=handle or earlier.setter~=setter or earlier.part~=spec.part)then earlier=nil end
+                    local existing=owned[key]or earlier
                     local shadow_suppressed=spec.shadow_rig==true or spec.model_shadow==true
                     local shadow_only=spec.model_shadow==true or spec.shadow_rig==true and not(selected and selected[mesh])
                     local row=existing and existing.object==object and existing.body_object==body

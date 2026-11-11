@@ -8,17 +8,17 @@ from trace import Image
 
 def prepare():
     im=Image('early');digest=hashlib.sha256(im.data).hexdigest()
-    assert digest=='6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c'
-    specs=[('num_friends',0x7ef620,0x7ef6e4),('id',0x7ef6f0,0x7ef7d1),('name',0x7ef7e0,0x7ef894),
-      ('relationship',0x7ef8a0,0x7ef956),('status',0x7ef960,0x7efa16),('in_category',0x7efa20,0x7efb41),
-      ('playing_game',0x7efb50,0x7eff35),('invite',0x7eff40,0x7f0466),('next_invite',0x7f0470,0x7f05e6),
-      ('boot_invite',0x7f05f0,0x7f06eb),('advertise_playing',0x7f06f0,0x7f0bb4),
-      ('stop_advertise_playing',0x7f0bc0,0x7f0bee),('set_presence',0x7f0bf0,0x7f0cce),('presence',0x7f0cd0,0x7f0e02)]
-    helpers=[('native_name',0x7cb9b0,0x7cba23),('native_playing',0x7cbe70,0x7cbfbb),
-      ('native_invite_lobby',0x7cc020,0x7cc323),('native_invite_server',0x7cc330,0x7cc633),
-      ('native_next_invite',0x7cc690,0x7cc73a),('native_advertise_lobby',0x7ce390,0x7ce683),
-      ('native_advertise_server',0x7ce690,0x7ce983)]
-    instructions=list(im.cs.disasm(im.data[0x7f0e10:0x7f20f3],0x7f0e10))
+    assert digest=='1932b56a7670a62ab1dd432dc05ca5dbcfd12e7fa49637068b16512ea75602a7'
+    specs=[('num_friends',0x7ef8d0,0x7ef994),('id',0x7ef9a0,0x7efa81),('name',0x7efa90,0x7efb44),
+      ('relationship',0x7efb50,0x7efc06),('status',0x7efc10,0x7efcc6),('in_category',0x7efcd0,0x7efdf1),
+      ('playing_game',0x7efe00,0x7f01e5),('invite',0x7f01f0,0x7f0716),('next_invite',0x7f0720,0x7f0896),
+      ('boot_invite',0x7f08a0,0x7f099b),('advertise_playing',0x7f09a0,0x7f0e64),
+      ('stop_advertise_playing',0x7f0e70,0x7f0e9e),('set_presence',0x7f0ea0,0x7f0f7e),('presence',0x7f0f80,0x7f10b2)]
+    helpers=[('native_name',0x7cbc50,0x7cbcc3),('native_playing',0x7cc110,0x7cc25b),
+      ('native_invite_lobby',0x7cc2c0,0x7cc5c3),('native_invite_server',0x7cc5d0,0x7cc8d3),
+      ('native_next_invite',0x7cc930,0x7cc9da),('native_advertise_lobby',0x7ce630,0x7ce923),
+      ('native_advertise_server',0x7ce930,0x7cec23)]
+    instructions=list(im.cs.disasm(im.data[0x7f10c0:0x7f23a3],0x7f10c0))
     targets={i.address+i.size+o.mem.disp for i in instructions if i.mnemonic=='lea' for o in i.operands if o.type==X86_OP_MEM and o.mem.base==X86_REG_RIP}
     census=json.loads((ROOT.parent/'vm-trace/binding-inventory.json').read_text())['bindings']
     expected={r['name'].split('.',1)[1]:int(r['rva'],16) for r in census if r['name'].startswith(('Friends.','Presence.'))}
@@ -37,13 +37,13 @@ def prepare():
         if i.mnemonic=='lea' and len(o)==2 and o[0].type==X86_OP_REG and o[0].reg==X86_REG_RDX and o[1].type==X86_OP_MEM and o[1].mem.base==X86_REG_RIP:
             at=i.address+i.size+o[1].mem.disp;raw=im.data[at:at+80].split(b'\0')[0]
             if raw and all(32<=c<127 for c in raw):name=raw.decode()
-        if i.address>=0x7f16b0 and i.mnemonic=='mov' and o[0].type==X86_OP_MEM and o[0].mem.base==X86_REG_RAX and o[0].mem.disp==0:
+        if i.address>=0x7f1960 and i.mnemonic=='mov' and o[0].type==X86_OP_MEM and o[0].mem.base==X86_REG_RAX and o[0].mem.disp==0:
             n=registers[o[1].reg] if o[1].type==X86_OP_REG else o[1].imm
             value=struct.unpack('<d',struct.pack('<Q',n&0xffffffffffffffff))[0]
             assert name and value.is_integer()
             constants.append({'name':name,'value':int(value),'store':hex(i.address)})
     assert len(constants)==28 and len({r['name'] for r in constants})==28
-    regions=[('registrar',0x7f0e10,0x7f20f3),('registry_module',0x4ece60,0x4ed005),('global_module',0x4ecc90,0x4ece51)]+specs+helpers
+    regions=[('registrar',0x7f10c0,0x7f23a3),('registry_module',0x4ecf30,0x4ed0d5),('global_module',0x4ecd60,0x4ecf21)]+specs+helpers
     lines=['/* Generated from the pinned local mapped capture. */']
     for name,a,b in regions:lines.append('static const unsigned char friends_'+name+'_witness[]={'+','.join(map(str,im.data[a:b]))+'};')
     lines.append('static const struct {uintptr_t rva;const unsigned char *bytes;size_t size;} friends_regions[]={')
@@ -51,7 +51,7 @@ def prepare():
     lines.append('};')
     lines.append('static const struct {const char *name;int value;} friends_constants[]={'+','.join('{'+json.dumps(r['name'])+','+str(r['value'])+'}' for r in constants)+'};')
     (ROOT/'work/friends_witnesses.h').write_text('\n'.join(lines)+'\n')
-    evidence={'capture':str(im.path),'capture_sha256':digest,'registrar':{'entry':'0x7f0e10','end':'0x7f20f3'},
+    evidence={'capture':str(im.path),'capture_sha256':digest,'registrar':{'entry':'0x7f10c0','end':'0x7f23a3'},
       'context_slot':'0x28605f0','interface_getter_iat':'0x148e7b8','interface_context':'0x19b65a0',
       'bindings':[{'name':('Friends.' if k<10 else 'Presence.')+n,'entry':hex(a),'end':hex(b),'sha256':hashlib.sha256(im.data[a:b]).hexdigest()} for k,(n,a,b) in enumerate(specs)],
       'native_helpers':[{'name':n,'entry':hex(a),'end':hex(b),'sha256':hashlib.sha256(im.data[a:b]).hexdigest()} for n,a,b in helpers],

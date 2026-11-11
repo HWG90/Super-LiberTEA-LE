@@ -1386,7 +1386,7 @@ local function partial(before,after,current)
     end
     return false
 end
-local DIVE_TIMEOUT_RVAS={0x2246968,0x2246958}
+local DIVE_TIMEOUT_RVAS={0x2246978,0x2246968}
 local RESOURCE='\151\250\077\041\077\051\028\077'
 local RESOURCE_LOW,RESOURCE_HIGH
 do
@@ -1648,15 +1648,15 @@ function M.snapshot(api,game,state)
         end
         if not timeout_ok then
             -- Evidence for the next migration: every 2.0 near the expected block.
-            local window,two=reader.read(base+0x22468d8,0x100) or '',packed(2)
+            local window,two=reader.read(base+0x22468e8,0x100) or '',packed(2)
             local found={}
-            for o=0,#window-4,4 do if window:sub(o+1,o+4)==two then found[#found+1]=string.format('0x%x',0x22468d8+o) end end
+            for o=0,#window-4,4 do if window:sub(o+1,o+4)==two then found[#found+1]=string.format('0x%x',0x22468e8+o) end end
             error(string.format('Native dive timeout changed (2.0 near expected block at: %s)',
                 #found>0 and table.concat(found,',') or 'none'),0)
         end
-        local prone=read(base+0x224650c,4);if not prone then return nil,wait end
+        local prone=read(base+0x224651c,4);if not prone then return nil,wait end
         assert(u(prone)==PRONE,'Stance offsets changed')
-        local crouch=read(base+0x2246230,4);if not crouch then return nil,wait end
+        local crouch=read(base+0x2246240,4);if not crouch then return nil,wait end
         assert(u(crouch)==CROUCH,'Stance offsets changed')
         if state then state.constants_verified=true end
     end
@@ -2172,4 +2172,4 @@ return {
 }
 
 end)()
-install_loader(function() return create_api(runtime, runtime_write.extend(runtime_memory.new(runtime))) end, patch, {revision = 'data-v3.10.1-26251122', exe_sha256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D', game_sha256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'}, text, locales, runtime)
+install_loader(function() return create_api(runtime, runtime_write.extend(runtime_memory.new(runtime))) end, patch, {revision = 'data-v3.10.1-26568081', exe_sha256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB', game_sha256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'}, text, locales, runtime)

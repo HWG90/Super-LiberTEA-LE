@@ -42,7 +42,7 @@ function M.new(options)
         if not v or v.can_start~=true or v.photo or v.fixed_pose or v.menu_closed~=true or not v.base then return false end
         if options.can_request then return options.can_request(v)==true end
         local base=v.base
-        if base.scene~=3 or base.stamp~=0x6AE0E5FF or not base.pm then return false end
+        if base.scene~=3 or base.stamp~=0x6AF322C1 or not base.pm then return false end
         local count=options.backend:u32(base.pm+0x70)
         return count==1
     end
@@ -72,8 +72,8 @@ function M.new(options)
         local function meta()
             local m,why=source_io.meta();assert(type(m)=='table',why or 'UI package metadata unavailable')
             local exe,reason,stamp=source_io.module('helldivers2.exe')
-            assert(exe and stamp==0x6AE0964A,reason or 'UI asset executable changed')
-            assert(m.A and m.A.stamp==0x6AE0E5FF,'UI asset game build changed')
+            assert(exe and stamp==0x6AF2D5E6,reason or 'UI asset executable changed')
+            assert(m.A and m.A.stamp==0x6AF322C1,'UI asset game build changed')
             return{game=m.game,exe=exe,A=m.A}
         end
         io.meta=meta

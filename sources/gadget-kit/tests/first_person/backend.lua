@@ -463,6 +463,39 @@ test('native exit error and unchanged request retain lease', function()
     f.exit_stays = true; assert(not f.backend:release(lease)); equal(lease.done, nil)
     f.exit_stays = false; assert(f.backend:release(lease)); equal(f.exits, 3)
 end)
+test('transition hold keeps the owned request only under the exact put-away mask', function()
+    local f = fixture(); local lease = f:enter()
+    f:u32(f.controller, 2)
+    -- Off by default: the exit is requested at once, as before.
+    assert(f.backend:release(lease)); equal(f.exits, 1); equal(f.backend.holds, 0)
+    f:u32(f.controller, 0)
+    f = fixture(); lease = f:enter(); f.backend.hold_transition = true
+    f:u32(f.controller, 2)
+    local done, why = f.backend:release(lease)
+    assert(not done); contains(why, 'Holding'); equal(f.exits, 0); equal(lease.done, nil)
+    assert(not f.backend:release(lease)); equal(f.exits, 0); equal(f.backend.holds, 1); equal(lease.hold_polls, 2)
+    equal(f.backend.io.read(f.context + 0x200 + 0xe8, 1):byte(), 6)
+    -- The first poll after the mask clears performs the ordinary exit.
+    f:u32(f.controller, 0)
+    assert(f.backend:release(lease)); equal(f.exits, 1); equal(lease.done, true)
+    -- Vault/dive masks, full ADS and the guard byte are never held.
+    for _, bytes in ipairs({ pack(0x22, 4), pack(0x20, 4), pack(2, 4) .. '\1', pack(2, 4) .. '\0\1' }) do
+        f = fixture(); lease = f:enter(); f.backend.hold_transition = true
+        f:write(f.controller, bytes)
+        local released, problem = f.backend:release(lease)
+        assert(not tostring(problem):find('Holding', 1, true), tostring(problem)); equal(f.backend.holds, 0)
+        assert(released ~= nil)
+    end
+    -- A mask that never clears cannot hold a retired lease forever.
+    f = fixture(); lease = f:enter(); f.backend.hold_transition = true; f.backend.hold_limit = 3
+    f:u32(f.controller, 2)
+    for _ = 1, 3 do assert(not f.backend:release(lease)) end
+    assert(f.backend:release(lease)); equal(f.exits, 1)
+    -- A replaced request is acknowledged without holding.
+    f = fixture(); lease = f:enter(); f.backend.hold_transition = true
+    f:u32(f.controller, 2); f:top(4)
+    assert(f.backend:release(lease)); equal(f.exits, 0); equal(f.backend.holds, 0)
+end)
 test('exit readback failure remains pending without duplicate foreign exit', function()
     local f = fixture(); local lease = f:enter()
     f.on_exit = function(self)

@@ -75,7 +75,7 @@ static int friends_id(lua_State *L){
     friends_push_id(L,id);return 1;
 }
 static int friends_name(lua_State *L){
-    uint64_t id=friends_hex(L,1);uintptr_t fn=friends_native(L,0x7cb9b0);
+    uint64_t id=friends_hex(L,1);uintptr_t fn=friends_native(L,0x7cbc50);
     return friends_string(L,((uintptr_t(HD2_NATIVE_ABI *)(void *,uint64_t))fn)(NULL,id),0);
 }
 static int friends_enum(lua_State *L,size_t slot){
@@ -97,7 +97,7 @@ static void friends_address(char *out,size_t size,uint32_t ip,int32_t port,int w
     else snprintf(out,size,"%u.%u.%u.%u",ip>>24,(ip>>16)&255,(ip>>8)&255,ip&255);
 }
 static int friends_playing_game(lua_State *L){
-    uint64_t id=friends_hex(L,1);_Alignas(16) unsigned char data[48]={0};uintptr_t fn=friends_native(L,0x7cbe70);
+    uint64_t id=friends_hex(L,1);_Alignas(16) unsigned char data[48]={0};uintptr_t fn=friends_native(L,0x7cc110);
     if(!((unsigned char(HD2_NATIVE_ABI *)(void *,uint64_t,void *))fn)(NULL,id,data))return 0;
     int32_t app;memcpy(&app,data+4,4);lua_newtable(L);friends_number_field(L,"app_id",app);
     /* The captured callback uses app_id again here, not native data+8. */
@@ -121,7 +121,7 @@ static int friends_invite_result(lua_State *L,const unsigned char *data,int32_t 
     lua_pushlstring(L,message,size);friends_push_id(L,friends_u64(data+24));return 4;
 }
 static int friends_next_invite(lua_State *L){
-    uintptr_t service=friends_service(L),fn=friends_native(L,0x7cc690);_Alignas(16) unsigned char data[96]={0};
+    uintptr_t service=friends_service(L),fn=friends_native(L,0x7cc930);_Alignas(16) unsigned char data[96]={0};
     int32_t kind=((int32_t(HD2_NATIVE_ABI *)(void *,void *))fn)((void *)service,data);
     return friends_invite_result(L,data,kind,1);
 }
@@ -164,16 +164,16 @@ static int friends_destination(lua_State *L,int index,uint64_t *lobby,uint32_t a
 static int friends_invite(lua_State *L){
     uint64_t id=friends_hex(L,1),lobby=0;uint32_t address[2]={0};
     int is_lobby=friends_destination(L,2,&lobby,address);const char *extra=friends_optional(L,3);
-    if(is_lobby){uintptr_t fn=friends_native(L,0x7cc020);((void(HD2_NATIVE_ABI *)(void *,uint64_t,uint64_t,const char *))fn)(NULL,id,lobby,extra);}
-    else {const char *password=friends_optional(L,4);uintptr_t fn=friends_native(L,0x7cc330);
+    if(is_lobby){uintptr_t fn=friends_native(L,0x7cc2c0);((void(HD2_NATIVE_ABI *)(void *,uint64_t,uint64_t,const char *))fn)(NULL,id,lobby,extra);}
+    else {const char *password=friends_optional(L,4);uintptr_t fn=friends_native(L,0x7cc5d0);
         ((void(HD2_NATIVE_ABI *)(void *,uint64_t,const void *,const char *,const char *))fn)(NULL,id,address,extra,password);}
     return 0;
 }
 static int friends_advertise_playing(lua_State *L){
     uint64_t lobby=0;uint32_t address[2]={0};int is_lobby=friends_destination(L,1,&lobby,address);
     const char *extra=friends_optional(L,2);
-    if(is_lobby){uintptr_t fn=friends_native(L,0x7ce390);((void(HD2_NATIVE_ABI *)(void *,uint64_t,const char *))fn)(NULL,lobby,extra);}
-    else {const char *password=friends_optional(L,3);uintptr_t fn=friends_native(L,0x7ce690);
+    if(is_lobby){uintptr_t fn=friends_native(L,0x7ce630);((void(HD2_NATIVE_ABI *)(void *,uint64_t,const char *))fn)(NULL,lobby,extra);}
+    else {const char *password=friends_optional(L,3);uintptr_t fn=friends_native(L,0x7ce930);
         ((void(HD2_NATIVE_ABI *)(void *,const void *,const char *,const char *))fn)(NULL,address,extra,password);}
     return 0;
 }

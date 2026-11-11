@@ -10,26 +10,26 @@ from trace import Image
 
 def prepare():
     image=Image('early')
-    want='6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c'
+    want='1932b56a7670a62ab1dd432dc05ca5dbcfd12e7fa49637068b16512ea75602a7'
     assert hashlib.sha256(image.data).hexdigest()==want
-    start,end=0x6cde10,0x6ce61b
+    start,end=0x6cded0,0x6ce6db
     code=image.data[start:end];ins={i.address:i for i in image.cs.disasm(code,start)}
-    calls={0x6cdfec:0x2a3530,0x6ce05c:0x7f4ac0,0x6ce06b:0x7f72a0,0x6ce076:0x7eb510,
-           0x6ce07e:0x7f9490,0x6ce0a1:0x7edac0,0x6ce0ac:0x7f0e10,0x6ce0bb:0x7f3ba0}
-    spans=[(0x6cde4d,0x6cde92),*[(a,a+5) for a in calls],(0x6ce190,0x6ce38d),
-           (0x6ce4b8,0x6ce4c1),(0x6ce4c1,0x6ce5f9),(0x6ce601,0x6ce605)]
+    calls={0x6ce0ac:0x2a35e0,0x6ce11c:0x7f4d70,0x6ce12b:0x7f7550,0x6ce136:0x7eb7c0,
+           0x6ce13e:0x7f9740,0x6ce161:0x7edd70,0x6ce16c:0x7f10c0,0x6ce17b:0x7f3e50}
+    spans=[(0x6cdf0d,0x6cdf52),*[(a,a+5) for a in calls],(0x6ce250,0x6ce44d),
+           (0x6ce578,0x6ce581),(0x6ce581,0x6ce6b9),(0x6ce6c1,0x6ce6c5)]
     for a,b in spans: assert a in ins and b in ins and b-a<=512
     for at,target in calls.items():
         i=ins[at];assert i.mnemonic=='call' and i.size==5 and i.operands[0].type==X86_OP_IMM and i.operands[0].imm==target
-    assert ins[0x6ce196].op_str=='byte ptr [rip + 0x14ecbe5], cl'
-    assert ins[0x6ce614].mnemonic=='ret' and ins[0x6ce61a].mnemonic=='int3'
+    assert ins[0x6ce256].op_str=='byte ptr [rip + 0x14ecb25], cl'
+    assert ins[0x6ce6d4].mnemonic=='ret' and ins[0x6ce6da].mnemonic=='int3'
     # Every external branch into replaced interiors must have an explicit
     # preserved entry (the missing-key path lands three bytes into its patch).
     for at,i in ins.items():
         if i.mnemonic.startswith('j') and i.operands[0].type==X86_OP_IMM:
             target=i.operands[0].imm
             for a,b in spans:
-                if not a<=at<b and a<target<b: assert target==0x6ce4bb
+                if not a<=at<b and a<target<b: assert target==0x6ce57b
     (ROOT/'work/boot_witnesses.h').write_text('/* Local captured boot code, not a redistributable game package. */\n'
         +'static const unsigned char boot_witness[] = {'+','.join(map(str,code))+'};\n')
     evidence={'capture':str(image.path),'capture_sha256':want,'entry':hex(start),'end':hex(end),

@@ -73,3 +73,11 @@ Linux HD2 Mods `builds/26251122/maps/bridge/holds_probe.py`.
 - `out/goose_bridge_combat/`: the assembled package; `out/goose_bridge_combat-RECEIPT.json` its hashes and counts.
 - `dll/`: moved DLL source and fixture, `BridgeCombatWeaponMenu-<sha12>.dll`, `build-receipt.json`.
 - Stage and install: `builds/26251122/mods/bridge-combat/stage_original.py`, `install-original.sh [--revert]` (game closed).
+
+## Game 26568081
+
+`port-26568081/` is this package moved to Steam build 26568081 (`0.1.17-experimental-26568081.1`): the assembled
+`out/goose_bridge_combat` and `dll/` rewritten by Linux HD2 Mods `builds/26568081/maps/bridge/port.py` (asserted
+literal and witness rewrite, new warm-up sites, rebuilt DLL, 110 DLL fixture modes, 35 Lua fixtures). The generator
+chain above still produces the 26251122 state; rerun `port.py` after changing it. Maps, evidence and README:
+`builds/26568081/maps/bridge/`. Stage and install: `builds/26568081/mods/bridge-combat/`.

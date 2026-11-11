@@ -33,7 +33,7 @@ HD2ENV_API size_t hd2env_native_state_count(void);
 
 /* Pure planner for the pinned constructor and destructor. Constructor native
  * bookkeeping and destructor native cleanup stay intact. The close target must
- * be reachable by rel32 from image_base+0x4ed4da; the embedding host may supply
+ * be reachable by rel32 from image_base+0x4ed5aa; the embedding host may supply
  * a nearby leaf jump stub. No such stub is allocated or installed here.
  * Complete function witnesses are checked; refused output is unchanged.
  * These routes alone are not a complete or installable VM replacement. */

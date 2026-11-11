@@ -40,13 +40,18 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
     local profile_epoch,profile_used,continuity
     local last_lease,last_time,last_options,last_message
     local sent_lease,sent,sent_phase,sent_ads,sent_authored=nil,{},nil,nil,nil
-    local handoff,previous_ads
+    local handoff,previous_ads,handoff_epoch
     local handoff_seconds=.15
+    -- Pop guard. `shown` is what the rig last accepted for `shown_lease`. A
+    -- submission further from it than any authored motion travels in one
+    -- Update is crossfaded over guard_seconds instead of landing in a frame.
+    local shown_lease,shown,guard=nil,{},nil
+    local guard_seconds,guard_speed,guard_turn=.12,1,math.rad(360)
+    local frame_time,frame_step=nil,1/60
+    local max_step=.05
     local axes={'dx','dy','dz','qx','qy','qz','qw'}
     local motion_keys={'enabled','scale','bob_strength','bob_speed','sway_strength','sway_speed','sprint_strength','camera_bob_strength','camera_bob_speed','camera_sway_strength','camera_sway_speed'}
-    local camera=dependencies.camera
-    local camera_zero={dx=0,dy=0,dz=0,pitch=0,yaw=0,roll=0}
-    local state={phase='idle',applied=0,coalesced=0,read_failures=0,write_refusals=0,time_held=0,
+    local state={phase='idle',applied=0,coalesced=0,softened=0,read_failures=0,write_refusals=0,time_held=0,
         dx=0,dy=0,dz=0,qx=0,qy=0,qz=0,qw=1}
     local function report(reason)
         state.reason=reason
@@ -56,7 +61,7 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
     local function clear(keep_continuity)
         if not keep_continuity then continuity=nil end
         profile_epoch,profile_used=nil,nil
-        if camera and(last_lease or state.phase~='idle')then invoke(camera,'set_motion',camera_zero)end
+        shown_lease,guard,handoff_epoch=nil,nil,nil
         profile_lease,profile_revision,profile_action,profile_target,profile_value=nil,nil,nil,nil,nil
         invoke(model,'reset');last_lease,last_time=nil,nil
         sent_lease,sent_phase,sent_ads,sent_authored=nil,nil,nil,nil
@@ -65,8 +70,45 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
         state.qx,state.qy,state.qz,state.qw=0,0,0,1
         state.sprint_weight,state.bob_weight,state.sprint_target,state.sprint_held,state.shoulder_weight=0,0,false,false,0
     end
-    local function apply(lease,value,phase,reason)
+    local function mix_modifier(from,to,mix)
+        local out={authored_ads=to.authored_ads}
+        for _,axis in ipairs({'dx','dy','dz'})do out[axis]=from[axis]+(to[axis]-from[axis])*mix end
+        -- Both ends lie within the validated 120-degree bound, and so does
+        -- every normalized point between them.
+        local length=0
+        for _,axis in ipairs({'qx','qy','qz','qw'})do
+            out[axis]=from[axis]+(to[axis]-from[axis])*mix
+            length=length+out[axis]^2
+        end
+        length=math.sqrt(length)
+        for _,axis in ipairs({'qx','qy','qz','qw'})do out[axis]=out[axis]/length end
+        return out
+    end
+    -- Only our own parent-local addition is eased. Native arm, weapon and
+    -- camera animation is never filtered, delayed or replayed.
+    -- A running handoff is already a crossfade from the last accepted value,
+    -- and a large authored rotation legitimately peaks above the guard speed
+    -- at its midpoint, so no new guard starts while one is blending.
+    local function soften(lease,value,blending)
+        if shown_lease~=lease then guard=nil;return value end
+        if not guard then
+            if blending then return value end
+            local distance=math.sqrt((value.dx-shown.dx)^2+(value.dy-shown.dy)^2+(value.dz-shown.dz)^2)
+            local dot=value.qx*shown.qx+value.qy*shown.qy+value.qz*shown.qz+value.qw*shown.qw
+            local turn=2*math.acos(math.max(-1,math.min(1,dot)))
+            if distance<=math.max(.002,guard_speed*frame_step)and turn<=math.max(math.rad(1),guard_turn*frame_step)then return value end
+            local from={};for _,axis in ipairs(axes)do from[axis]=shown[axis]end
+            guard={from=from,progress=0}
+            state.softened=state.softened+1
+        end
+        guard.progress=math.min(1,guard.progress+frame_step/guard_seconds)
+        local t=guard.progress
+        if t>=1 then guard=nil;return value end
+        return mix_modifier(guard.from,value,t*t*(3-2*t))
+    end
+    local function apply(lease,value,phase,reason,direct,blending)
         local ads=state.ads==true or(PORT51.kind(state.ads)=='number'and state.ads>=1)
+        if direct then guard=nil else value=soften(lease,value,blending)end
         local authored=value.authored_ads==true
         local unchanged=sent_lease==lease and sent_phase==phase and sent_ads==ads and sent_authored==authored
         if unchanged then for _,axis in ipairs(axes)do if sent[axis]~=value[axis]then unchanged=false;break end end end
@@ -80,8 +122,9 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
             return true,state.reason
         end
         state.applied=state.applied+1;state.phase=phase
-        for _,axis in ipairs(axes)do sent[axis]=value[axis]end
+        for _,axis in ipairs(axes)do sent[axis]=value[axis];shown[axis]=value[axis]end
         sent_lease,sent_phase,sent_ads,sent_authored=lease,phase,ads,authored
+        shown_lease=lease
         state.dx,state.dy,state.dz=value.dx,value.dy,value.dz
         state.qx,state.qy,state.qz,state.qw=value.qx,value.qy,value.qz,value.qw
         report(reason);return true,reason
@@ -103,30 +146,27 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
     local function handoff_parent(lease,value,ads,timestamp)
         local packet=shared_phase()
         local shared=packet and packet.ads==ads
-        if (shared and (not handoff or handoff.epoch~=packet.epoch))or (previous_ads~=nil and previous_ads~=ads) or (previous_ads==nil and (ads or lease.pose_blend_entry)) then
+        if (shared and handoff_epoch~=packet.epoch)or (previous_ads~=nil and previous_ads~=ads) or (previous_ads==nil and (ads or lease.pose_blend_entry)) then
             local from={dx=0,dy=0,dz=0,qx=0,qy=0,qz=0,qw=1}
             if sent_lease==lease then for _,axis in ipairs(axes)do from[axis]=sent[axis]end end
-            handoff={from=from,at=timestamp,epoch=shared and packet.epoch or nil}
+            handoff={from=from,at=timestamp,progress=0,epoch=shared and packet.epoch or nil}
+            if shared then handoff_epoch=packet.epoch end
         end
         previous_ads=ads
         local mix=1
         if handoff then
-            local t=shared and packet.progress or math.max(0,math.min(1,(timestamp-handoff.at)/handoff_seconds))
+            -- The unshared timer spends at most max_step per Update: a slow
+            -- frame stretches the fade instead of skipping to its end.
+            handoff.progress=math.min(1,handoff.progress+math.max(0,math.min(timestamp-handoff.at,max_step))/handoff_seconds)
+            handoff.at=timestamp
+            local t=shared and packet.progress or handoff.progress
             mix=t*t*(3-2*t)
             local from=handoff.from
             if mix==0 then
                 for _,axis in ipairs(axes)do value[axis]=from[axis]end
             elseif mix<1 then
-                for _,axis in ipairs({'dx','dy','dz'})do value[axis]=from[axis]+(value[axis]-from[axis])*mix end
-                -- Normalized interpolation keeps intermediate deltas within
-                -- the validated 120-degree bound and never touches bones.
-                local length=0
-                for _,axis in ipairs({'qx','qy','qz','qw'})do
-                    value[axis]=from[axis]+(value[axis]-from[axis])*mix
-                    length=length+value[axis]^2
-                end
-                length=math.sqrt(length)
-                for _,axis in ipairs({'qx','qy','qz','qw'})do value[axis]=value[axis]/length end
+                local blended=mix_modifier(from,value,mix)
+                for _,axis in ipairs(axes)do value[axis]=blended[axis]end
             end
             if t==1 then handoff=nil end
         end
@@ -135,8 +175,7 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
         return value
     end
     local function neutral(lease,phase,reason)
-        handoff,previous_ads=nil,nil
-        if camera then invoke(camera,'set_motion',camera_zero)end
+        handoff,previous_ads,handoff_epoch=nil,nil,nil
         if reason or state.phase~=phase then sent_lease=nil end
         invoke(model,'reset');last_time=nil
         state.dx,state.dy,state.dz=0,0,0
@@ -173,11 +212,7 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
             pitch=math.rad(placement.pitch or 0),roll=math.rad(placement.roll or 0)}
         local ok,parent=pcall(to_parent,output,sample.camera_basis,sample.parent_basis)
         if not ok or not vector(parent)then return false,'Capture rotation basis unavailable'end
-        if camera then
-            accepted,problem=invoke(camera,'set_motion',camera_zero)
-            if accepted~=true then return false,problem or'Capture camera motion unavailable'end
-        end
-        local done,reason=apply(lease,parent,'capture')
+        local done,reason=apply(lease,parent,'capture',nil,true)
         state.capture_ready=done==true and state.phase=='capture'
         state.capture_native_ads=native_ads==true
         return state.capture_ready,reason
@@ -185,6 +220,15 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
     function self:update()
         local resumed_modifier=false
         state.capture_ready=false
+        do
+            local ok,timestamp=pcall(clock)
+            if ok and finite(timestamp)then
+                local elapsed=frame_time and timestamp-frame_time or 1/60
+                -- A held or rewound clock keeps the previous step.
+                if elapsed>0 then frame_step=math.max(1/240,math.min(elapsed,max_step))end
+                frame_time=timestamp
+            end
+        end
         local result,why=invoke(controller,'result')
         local enabled=invoke(controller,'is_enabled')
         local lease=controller.lease
@@ -213,7 +257,7 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
                 resumed_modifier=true
                 for _,axis in ipairs(axes)do sent[axis]=carried.value[axis]end
                 sent_lease=lease;previous_ads=carried.ads
-                handoff={from=carried.value,at=timestamp}
+                handoff={from=carried.value,at=timestamp,progress=0}
                 if PORT51.kind(backend.presentation_resume)=='function'then pcall(backend.presentation_resume,origin.identity,origin.player_identity,timestamp)end
             end
         end
@@ -248,7 +292,7 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
             if not sample then return neutral(lease,'editor_frozen',why)end
             local ok,parent=pcall(to_parent,{dx=0,dy=0,dz=0,yaw=math.rad(preview.yaw or 0),pitch=math.rad(preview.pitch or 0),roll=math.rad(preview.roll or 0)},sample.camera_basis,sample.parent_basis)
             if not ok or not vector(parent)then return neutral(lease,'editor_frozen','Rotation preview basis unavailable')end
-            return apply(lease,parent,'editor_frozen')
+            return apply(lease,parent,'editor_frozen',nil,true)
         end
         if not backend.action_placement and(not on or scale==0)and(state.shoulder_weight or 0)==0 then
             -- This is the backend's fresh current-frame snapshot, never an
@@ -277,6 +321,7 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
             if PORT51.kind(backend.presentation_action)=='function'then pcall(backend.presentation_action,action,timestamp)end
             state.action=action
             local revision=backend.action_placement_revision or 0
+            local first_profile=profile_lease~=lease
             if profile_lease~=lease or profile_revision~=revision then
                 local ads=backend.action_placement(backend.placement_weapon_key,'ads')
                 local accepted,why=invoke(backend,'set_ads_placement',lease,ads)
@@ -297,7 +342,12 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
             end
             local next_value={};local changed=false
             local packet=shared_phase()
-            local blend=packet and phase_step(packet)or(1-math.exp(-math.max(0,math.min(dt,.1))/.10))
+            -- A shared phase this placement already followed to its end has
+            -- no fraction left to spend. A target that moves after it eases
+            -- in; only a lease's first placement lands at once.
+            local spent=packet and profile_epoch==packet.epoch and profile_used>=1
+            local blend=packet and(not spent or first_profile)and phase_step(packet)
+                or(1-math.exp(-math.max(0,math.min(dt,.1))/.10))
             for _,axis in ipairs({'x','y','z','yaw','pitch','roll'})do
                 local before=profile_value[axis]or 0;local target=profile_target[axis]or 0
                 local angular=axis=='yaw' or axis=='pitch' or axis=='roll'
@@ -328,12 +378,8 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
             output,math_problem=invoke(model,'update',sample,dt)
         end
         if PORT51.kind(output)~='table'then return neutral(lease,'neutral',math_problem or 'Motion calculation unavailable')end
-        if camera then
-            local accepted,why=invoke(camera,'set_motion',{dx=output.camera_dx or 0,dy=output.camera_dy or 0,dz=output.camera_dz or 0,pitch=output.camera_pitch or 0,yaw=output.camera_yaw or 0,roll=output.camera_roll or 0})
-            if accepted~=true then report(why or 'Camera movement unavailable')end
-        end
         if output.reset and not resumed_modifier then
-            handoff,previous_ads,sent_lease=nil,nil,nil
+            handoff,previous_ads,sent_lease,handoff_epoch=nil,nil,nil,nil
         end
         if profile_value then
             output.yaw=(output.yaw or 0)+math.rad(profile_value.yaw or 0)
@@ -351,11 +397,11 @@ function Runtime.new(controller,backend,editor,log,clock,options,dependencies)
         local transitioned,why=handoff_parent(lease,parent,ads,timestamp)
         if not transitioned or not vector(transitioned)then return neutral(lease,'neutral',why or'ADS handoff exceeds native bounds')end
         parent=transitioned
-        state.speed,state.gait_phase,state.reset=output.speed,output.phase,output.reset
+        state.speed,state.gait_phase,state.reset,state.rebased=output.speed,output.phase,output.reset,output.rebased
         state.sprint_weight,state.sprint_target,state.sprint_held=output.sprint_weight,output.sprint_target,output.sprint_held
         state.bob_weight=output.bob_weight
         state.shoulder_weight=output.shoulder_weight
-        return apply(lease,parent,'active')
+        return apply(lease,parent,'active',nil,false,handoff~=nil)
     end
     return self
 end

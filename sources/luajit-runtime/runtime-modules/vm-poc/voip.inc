@@ -75,11 +75,11 @@ static int voip_broken_host(lua_State *L){
 static int voip_select(lua_State *L,int input){
     uintptr_t client=voip_client(L);int selected=lua_toboolean(L,2),one=lua_gettop(L)>2;
     uint64_t id=one?voip_hex(L,3):0;HD2Environment *e=environment(L);
-    uintptr_t fn=e->voip_host.image_base+(input?(one?0x7d1d80:0x7d1d10):(one?0x7d1c90:0x7d1c20));
+    uintptr_t fn=e->voip_host.image_base+(input?(one?0x7d2020:0x7d1fb0):(one?0x7d1f30:0x7d1ec0));
     if(e->voip_host.callable(e->voip_host.context,fn)!=1)
         return luaL_error(L,"SteamVoip selection function is not callable");
     if(one){
-        if(e->voip_host.callable(e->voip_host.context,e->voip_host.image_base+0x7d3a70)!=1)
+        if(e->voip_host.callable(e->voip_host.context,e->voip_host.image_base+0x7d3d10)!=1)
             return luaL_error(L,"SteamVoip native member lookup is unavailable");
         ((void(HD2_NATIVE_ABI *)(void *,unsigned char,uint64_t))fn)((void *)client,(unsigned char)selected,id);
     }else ((void(HD2_NATIVE_ABI *)(void *,unsigned char))fn)((void *)client,(unsigned char)selected);

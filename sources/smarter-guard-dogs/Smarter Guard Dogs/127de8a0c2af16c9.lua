@@ -14,7 +14,7 @@
 --    Targeting Laser (your screen only).
 --  * Finds the game addresses it needs by scanning the game's code after a patch.
 -- Keeps a small status log (SmarterGuardDogsAndSentries.log) in the local app-data folder for bug reports.
--- (LuaJIT 26251122 port) game builds 26088801, 26251122 are added as known builds: their addresses and the AI behavior ids
+-- (LuaJIT 26568081 port) game builds 26088801, 26251122, 26568081 are added as known builds: their addresses and the AI behavior ids
 -- that moved in 26088801 (KNOWN_BUILDS). Everything else is the 5.2.0 release unchanged.
 local VERSION = '5.2.0'
 local READ_ONLY = false            -- diagnostic builds set this to true: nothing is ever written to game memory
@@ -125,7 +125,7 @@ local function write_counts(f, title, t)
 end
 local function mmss(s) return string.format('%dm%02ds', math.floor(s / 60), math.floor(s % 60)) end
 local function write_log_to(f)
-  f:write('Smarter Guard Dogs & Sentries ' .. VERSION .. ' (LuaJIT 26251122 port)' .. (READ_ONLY and ' (read-only diagnostic build: actions below were NOT carried out)' or '') .. '\n')
+  f:write('Smarter Guard Dogs & Sentries ' .. VERSION .. ' (LuaJIT 26568081 port)' .. (READ_ONLY and ' (read-only diagnostic build: actions below were NOT carried out)' or '') .. '\n')
   f:write('started ' .. tostring(session.started) .. ', running for ' .. mmss(os.clock() - T0) .. '\n')
   for _, n in ipairs(startup_notes) do f:write(n .. '\n') end
   f:write('status: ' .. tostring(SGD.status) .. (SGD.dog and (' (' .. SGD.dog .. ')') or '') .. ', last action: ' .. tostring(last_reason) .. '\n')
@@ -651,15 +651,16 @@ local KNOWN = { dll_hash = '2E2C3B7C2500646DADD5F2B4C6E0504DBB7E7896139F64CDDC0D
   dll_stamp = '1790161983/74727424', exe_stamp = '1790149348/60719104',
   globals = { mission = 53634720, players = 53634152, owners = 54968216, equipment = 53634872, backpacks = 53634536, attachments = 53636544, targeting = 53636400, behaviours = 53634880, perception = 53634376, registry = 53636280, clock = 53633864, weapons = 53636320, heatbar = 53636424, health = 53634696 },
   owner_index = 15871688, owner_rows = 15937304, stride = 504, exe_units = 27328752, laser_behaviour = 190 }
--- (LuaJIT 26251122 port) the ping record (SpottableComponent manager) of each known build: Ping Targeting kept it for
+-- (LuaJIT 26568081 port) the ping record (SpottableComponent manager) of each known build: Ping Targeting kept it for
 -- this build only
 KNOWN.ping = 53634128
--- (LuaJIT 26251122 port) builds 26088801, 26251122 (the 2026-10-22 and 2026-10-29 patches): the same layout, their
+-- (LuaJIT 26568081 port) builds 26088801, 26251122, 26568081 (the 2026-10-22, 2026-10-29 and 2026-11-11 patches): the same layout, their
 -- addresses found by matching the 2026-09-24 build's code (behaviours, registry and the behavior dispatcher match
 -- none of the patterns above in them, and their code pages are unreadable to the scan). From 26088801 on, AI
 -- behavior ids 42-103 moved down one and 115-497 up one (ai_shift: first, last, by), so the laser drones run 191
--- and the Guard Dog 192, and the sentries' ids are moved at start-up (resolve_layout). 26251122 has the same
--- addresses and numbering as 26088801
+-- and the Guard Dog 192, and the sentries' ids are moved at start-up (resolve_layout). 26251122 and 26568081
+-- have the same addresses and numbering as 26088801 (26568081: game.dll code moved, but not these .data
+-- globals, the behavior dispatcher or its jump table)
 local KNOWN_BUILDS = { KNOWN,
 { build = 26088801, dll_hash = '6D1D4D3BC6FC84801D9F8F1B310E13A603D07409F3D9495D74B42E1D0BB1C08F', exe_hash = '0ACC07DEBE04714AE04281E1A66BD2EB9D3D85232953E32A93C8A3DD0874EABE',
   dll_stamp = '1792524381/54009856', exe_stamp = '1792510989/44032000',
@@ -668,6 +669,11 @@ local KNOWN_BUILDS = { KNOWN,
   ai_shift = { { 42, 103, -1 }, { 115, 497, 1 } } },
 { build = 26251122, dll_hash = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF', exe_hash = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D',
   dll_stamp = '1793123839/54009856', exe_stamp = '1793103434/44032000',
+  globals = { mission = 47061072, players = 47060504, owners = 47071672, equipment = 47061224, backpacks = 47060888, attachments = 47062920, targeting = 47062768, behaviours = 47061232, perception = 47060728, registry = 47062648, clock = 47060216, weapons = 47062688, heatbar = 47062792, health = 47061048 },
+  owner_index = 15878544, owner_rows = 15944160, stride = 504, exe_units = 28014328, laser_behaviour = 191, ping = 47060480,
+  ai_shift = { { 42, 103, -1 }, { 115, 497, 1 } } },
+{ build = 26568081, dll_hash = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F', exe_hash = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB',
+  dll_stamp = '1794319041/54009856', exe_stamp = '1794299366/44032000',
   globals = { mission = 47061072, players = 47060504, owners = 47071672, equipment = 47061224, backpacks = 47060888, attachments = 47062920, targeting = 47062768, behaviours = 47061232, perception = 47060728, registry = 47062648, clock = 47060216, weapons = 47062688, heatbar = 47062792, health = 47061048 },
   owner_index = 15878544, owner_rows = 15944160, stride = 504, exe_units = 28014328, laser_behaviour = 191, ping = 47060480,
   ai_shift = { { 42, 103, -1 }, { 115, 497, 1 } } } }
@@ -893,7 +899,7 @@ local function resolve_layout()
     if whole then for k in pairs(PATTERNS.globals) do if not c.globals[k] then whole = false end end end
     return c, whole and c.mod == cache_tag()
   end
-  -- (LuaJIT 26251122 port) any of the known builds
+  -- (LuaJIT 26568081 port) any of the known builds
   local known
   for _, k in ipairs(KNOWN_BUILDS) do if gst and est and gst == k.dll_stamp and est == k.exe_stamp then known = k end end
   if known then
@@ -944,7 +950,7 @@ local function resolve_layout()
     exe_units = ebase + L.exe_units, g = {}, gbase = gbase, ping = L.ping and gbase + L.ping }
   for k, v in pairs(L.globals) do A.g[k] = gbase + v end
   note(string.format('laser behavior %d, guard dog behavior %d', L.laser_behaviour, L.laser_behaviour + 1))
-  -- (LuaJIT 26251122 port) the sentries' AI behavior ids (written for the 2026-09-24 build) in this build's numbering
+  -- (LuaJIT 26568081 port) the sentries' AI behavior ids (written for the 2026-09-24 build) in this build's numbering
   if L.ai_shift and not SGD.ai_shifted then
     SGD.ai_shifted = L.build or true
     local function shifted(id)
@@ -8352,7 +8358,7 @@ local sentry_tick, sentry_restore, sentry_beams, sentry_after = (function()
   local PING = { t = -1, rows = {}, pinged = {}, notes = 0, LAST = 20, ok = nil }
   local function ping_known()
     if PING.ok == nil and A and A.gbase and A.g and A.g.behaviours then
-      PING.ok = A.ping ~= nil   -- (LuaJIT 26251122 port) the known builds carry their ping record's address
+      PING.ok = A.ping ~= nil   -- (LuaJIT 26568081 port) the known builds carry their ping record's address
       note('ping targeting: ' .. (PING.ok and 'ready' or 'off (unknown game build: the ping record is not known for it)'))
     end
     return PING.ok

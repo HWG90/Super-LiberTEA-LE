@@ -59,6 +59,62 @@ test('persistent entry uses steady placement with the same retained cleanup cont
     f.pending=false;assert(f.adapter:finish(h))
     f.config.steady_entry=false;h=f:begin();equal(f.steady,1);assert(f.adapter:finish(h))
 end)
+test('input-enabled profiles qualify and begin the input helper without changing the opaque cleanup token',function()
+    local f=fixture();local a=f.adapter;local checked,began,steady=0,0,0
+    a.profile.normalize_zoom_input=true
+    local legacy_validate=a.library.NADSE_Validate
+    local legacy_begin=a.library.NADSE_Begin
+    a.library.NADSE_ValidateInput=function(value)checked=checked+1;return legacy_validate(value)end
+    a.library.NADSE_BeginInput=function(...)began=began+1;return legacy_begin(...)end
+    a.library.NADSE_BeginSteadyInput=function(...)steady=steady+1;return legacy_begin(...)end
+    a.library.NADSE_Validate=function()error('wrong legacy validation entry')end
+    a.library.NADSE_Begin=function()error('wrong legacy Begin entry')end
+    local h=f:begin();equal(checked,1);equal(began,1);equal(steady,0)
+    f.pending=true;assert(not a:finish(h));equal(a:owned_handle(),h)
+    f.pending=false;assert(a:finish(h))
+    f.config.steady_entry=true;h=f:begin();equal(checked,2);equal(began,1);equal(steady,1)
+    assert(a:finish(h))
+end)
+test('input partial and throwing Begin retain their published token for the ordinary End path',function()
+    for _,uncertain in ipairs({false,true})do
+        local f=fixture();local a=f.adapter;a.profile.normalize_zoom_input=true
+        a.library.NADSE_ValidateInput=a.library.NADSE_Validate
+        local legacy=a.library.NADSE_Begin
+        a.library.NADSE_BeginInput=function(...)
+            local result=legacy(...)
+            if uncertain then error('input Begin threw after publishing generation')end
+            return result
+        end
+        f.partial=true
+        local ok,prepared=a:prepare(f.config);assert(ok,prepared)
+        local accepted=a:begin(f.config,prepared);assert(not accepted)
+        local h=a:owned_handle();assert(h and h.generation[0]~=0)
+        f.pending=true;assert(not a:finish(h));equal(a:owned_handle(),h)
+        f.pending=false;assert(a:finish(h))
+    end
+end)
+test('input diagnostics are lazy and generation-owned with the separate96-byte ABI',function()
+    local f=fixture();local a=f.adapter;local h=f:begin();local calls=0
+    a.library.NADSE_ReadInputStats=function(token,out)
+        calls=calls+1;equal(tonumber(token),f.owned and f.token or 0)
+        equal(tonumber(out.size),96);equal(tonumber(out.abi),1);equal(tonumber(out.reserved),0)
+        if f.input_buffer then assert(rawequal(f.input_buffer,out))else f.input_buffer=out end
+        if f.input_refuse then return 0 end
+        out.installed=1;out.active=1;out.reason=0;out.pending=0;out.cache_entries=2
+        out.observed=calls;out.normalized=3;out.unsupported=1;out.restored=3;out.foreign_wins=0;out.quarantined=0
+        out.ratio=.5;out.yaw_gain=2;out.pitch_gain=2
+        if f.input_bad then out.abi=2 end
+        return 1
+    end
+    for _=1,20 do assert(a:stats(h))end;equal(calls,0);equal(a.input_buffer,nil)
+    local before=f.reads;local first=assert(a:input_stats(h));equal(ffi.sizeof('NADSE_InputStats'),96)
+    equal(first.active,true);equal(first.normalized,3);equal(first.ratio,.5);equal(first.cache_entries,2)
+    local second=assert(a:input_stats());equal(second.observed,2);equal(first.observed,1);equal(f.reads,before)
+    assert(not a:input_stats({owner={}}));equal(calls,2)
+    f.input_bad=true;assert(not a:input_stats(h));f.input_bad=false
+    f.input_refuse=true;assert(not a:input_stats(h));f.input_refuse=false
+    assert(a:finish(h));assert(not a:input_stats(h))
+end)
 test('all native polls refresh health while only counters are converted at10Hz',function()
     local f=fixture();local h=f:begin();local a=f.adapter;local start=f.reads
     local first=assert(a:stats(h));local count=first.weapon_updates

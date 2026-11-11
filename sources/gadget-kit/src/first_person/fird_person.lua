@@ -38,7 +38,7 @@ end
 local function lens(b,s)
     local exe=b:_alignment_executable()
     if b.fird_projection_getter~=exe then
-        assert(b:_read(exe+0x2dcfc0,6)=='\243\015\016\065\052\195','FirdPerson camera-FOV getter changed')
+        assert(b:_read(exe+0x2dd070,6)=='\243\015\016\065\052\195','FirdPerson camera-FOV getter changed')
         b.fird_projection_getter=exe
     end
     assert(PORT51.kind(s.camera)=='number','FirdPerson camera pointer unavailable')

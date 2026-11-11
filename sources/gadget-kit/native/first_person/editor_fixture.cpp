@@ -68,13 +68,13 @@ struct Fixture {
     Setter calls[2]{},rig=nullptr,branch=nullptr;Getter getter=nullptr;
     Fixture() {
         c.size=sizeof c;c.abi=2;c.game=allocate(0x3382000,PAGE_EXECUTE_READWRITE);c.exe=allocate(0x29fe000);
-        fake_image(c.game,0x6ae0e5ff,0x3382000);fake_image(c.exe,0x6ae0964a,0x29fe000);
+        fake_image(c.game,0x6af322c1,0x3382000);fake_image(c.exe,0x6af2d5e6,0x29fe000);
         // Independent captured opcode literals, not populated from production constants.
-        literal(c.exe+0x1f2520,"48895c24084889742410574883ec20498bf08bfa8bd9e865e1eaff4c8b5018b801000000f0410fc182380017008bc04c");
-        literal(c.exe+0x1f2680,"48895c24084889742410574883ec20498bf08bfa8bd9e805e0eaff4c8b5018b801000000f0410fc182380017008bc04c");
-        literal(c.exe+0x1f25a0,"48895c24084889742410574881eca0000000440f29b42490000000498bd84863fae8dae0eaff488bc8488bf04c8b0841");
-        literal(c.exe+0x1f2250,"40534883ec204863dae842e4eaff488bc84c8b0041ff90e8000000488bcb48c1e1064883c124488b40204803c14883c4205bc3");
-        literal(c.exe+0x28d310,"488d4160c3");
+        literal(c.exe+0x1f25e0,"48895c24084889742410574883ec20498bf08bfa8bd9e8d5e0eaff4c8b5018b801000000f0410fc182380017008bc04c");
+        literal(c.exe+0x1f2740,"48895c24084889742410574883ec20498bf08bfa8bd9e875dfeaff4c8b5018b801000000f0410fc182380017008bc04c");
+        literal(c.exe+0x1f2660,"48895c24084889742410574881eca0000000440f29b42490000000498bd84863fae84ae0eaff488bc8488bf04c8b0841");
+        literal(c.exe+0x1f2310,"40534883ec204863dae8b2e3eaff488bc84c8b0041ff90e8000000488bcb48c1e1064883c124488b40204803c14883c4205bc3");
+        literal(c.exe+0x28d3c0,"488d4160c3");
         c.context=allocate(0x3000);c.avatar_owner=allocate(0x540000);controller=allocate(0x1000);descriptor=allocate(0x1000);
         c.avatar_index=0;c.avatar=0x333;c.weapon=0x444;c.body=0x222;c.viewmodel=0x400003;c.duration_ms=1000;
         c.weapon_descriptor=allocate(0x1000);c.weapon_unit=0x400004;c.blend_ms=150;c.offset_x=.15f;c.offset_z=-.12f;
@@ -89,7 +89,7 @@ struct Fixture {
         put<uint64_t>(objects+3*8,object);put<uint8_t>(gens+4,1);put<uint64_t>(objects+4*8,allocate(0x1000));
         vtable=allocate(0x1000);links=allocate(0x1000);hashes=allocate(0x1000);
         poses=allocate(0x1000);put<uint64_t>(object+0x80,poses);
-        put<uint64_t>(object,vtable);put<uint64_t>(vtable+0xE8,c.exe+0x28d310);put<uint32_t>(object+0x70,63);
+        put<uint64_t>(object,vtable);put<uint64_t>(vtable+0xE8,c.exe+0x28d3c0);put<uint32_t>(object+0x70,63);
         put<uint64_t>(object+0x98,links);put<uint64_t>(object+0xA0,hashes);
         // Independent full captured graph: uint32 parent/flag links and hash rows.
         literal(links,"000000000100000001000100010002000100030001000400010005000100050001000700010008000100070001000a0001000a0001000c0001000d0001000e0001000f0001000d00010011000100120001000d00010014000100150001000d00010017000100180001000d0001001a0001001b0001000c000100070001001e0001001e000100200001002000010022000100230001002400010022000100260001002700010022000100290001002a000100220001002c0001002d000100220001002f0001003000010004000100020001000200010034000100340001003400010034000100340001000c000100040001003b0001003b0001003b00");
@@ -100,8 +100,8 @@ struct Fixture {
         put<uint64_t>(api+0x38,reinterpret_cast<uint64_t>(synthetic_position));put<uint64_t>(api+0x48,reinterpret_cast<uint64_t>(synthetic_rotation));
         put<uint64_t>(api+0x40,reinterpret_cast<uint64_t>(synthetic_branch_rotation));
         put<uint64_t>(api,reinterpret_cast<uint64_t>(synthetic_getter));
-        calls[0]=stub(c.game+0x111a6a9,0,api);calls[1]=stub(c.game+0x111a6c9,1,api);rig=stub(c.game+0x111a300,0,api);
-        branch=stub(c.game+0x111afbb,2,api);getter=getter_stub(c.game+0x1119921,api);normal();
+        calls[0]=stub(c.game+0x111a809,0,api);calls[1]=stub(c.game+0x111a829,1,api);rig=stub(c.game+0x111a460,0,api);
+        branch=stub(c.game+0x111b11b,2,api);getter=getter_stub(c.game+0x1119a81,api);normal();
     }
     void normal() {
         put<uint32_t>(c.context+0x1F8,0);put<uint32_t>(c.context+0x1FC,1);put<uint32_t>(c.context+0x200,4);put<uint32_t>(c.context+0x204,c.avatar);
@@ -142,12 +142,12 @@ struct DepthFixture {
         literal(f.c.game+0x511b3f,"4c8b90a046f10048b80fdf6f49a121b3af48f7e148c1ea09");
         literal(f.c.game+0x511b57,"69c2ea020000442bc0");
         literal(f.c.game+0x511bb1,"4869c1d80400004805a02e00004903c2c3");
-        literal(f.c.game+0x1119293,"f30f1044245cf30f1015ef251301");
-        literal(f.c.game+0x11192b9,"f30f5c4424600f54c2f30f5ec1");
-        literal(f.c.game+0x1119971,"f3450f58fb");literal(f.c.game+0x1119a23,"f30f59faf3410f59cff3");
-        literal(f.c.game+0x1119ae4,"f3410f11774cf3450f114750");
-        literal(f.c.game+0x1118215,"5556574154415541564157488dac24f0fcffff4881ec10040000");
-        literal(f.c.game+0x111a66b,"4c8d8540010000f2410f11475433");literal(f.c.game+0x111a6b4,"4c8d8530010000");
+        literal(f.c.game+0x11193f3,"f30f1044245cf30f10159f241301");
+        literal(f.c.game+0x1119419,"f30f5c4424600f54c2f30f5ec1");
+        literal(f.c.game+0x1119ad1,"f3450f58fb");literal(f.c.game+0x1119b83,"f30f59faf3410f59cff3");
+        literal(f.c.game+0x1119c44,"f3410f11774cf3450f114750");
+        literal(f.c.game+0x1118375,"5556574154415541564157488dac24f0fcffff4881ec10040000");
+        literal(f.c.game+0x111a7cb,"4c8d8540010000f2410f11475433");literal(f.c.game+0x111a814,"4c8d8530010000");
         f.c.offset_x=0;f.c.offset_y=0;f.c.offset_z=0;f.c.duration_ms=0;
     }
     static void properties(uint64_t at) {
@@ -273,8 +273,8 @@ int main() {
     f.begin_at(8000);fixture_now=8150;f.match();start=actual_calls;fixture_now=9000;CHECK(read_current(&stats)==1 && stats.zero_restores==1 && actual_calls==start+1);
     CHECK(std::memcmp(records[start].bits,f.source(),16)==0 && end_current()==1 && actual_calls==start+1);pass("stats TTL restores cached native baseline once");
     f.normal();fixture_cas_calls=0;put<uint32_t>(f.object+0x70,62);CHECK(NADSE_Validate(&f.c)==0 && NADSE_Error()==GRAPH_MISMATCH && begin_current(&f.c)==0 && fixture_cas_calls==0);put<uint32_t>(f.object+0x70,63);
-    put<uint8_t>(f.c.exe+0x28d310,0x90);CHECK(NADSE_Validate(&f.c)==0 && NADSE_Error()==GRAPH_MISMATCH);put<uint8_t>(f.c.exe+0x28d310,0x48);
-    put<uint8_t>(f.c.game+0x111a300,0x90);CHECK(NADSE_Validate(&f.c)==0 && NADSE_Error()==CODE_MISMATCH);put<uint8_t>(f.c.game+0x111a300,0x41);
+    put<uint8_t>(f.c.exe+0x28d3c0,0x90);CHECK(NADSE_Validate(&f.c)==0 && NADSE_Error()==GRAPH_MISMATCH);put<uint8_t>(f.c.exe+0x28d3c0,0x48);
+    put<uint8_t>(f.c.game+0x111a460,0x90);CHECK(NADSE_Validate(&f.c)==0 && NADSE_Error()==CODE_MISMATCH);put<uint8_t>(f.c.game+0x111a460,0x41);
     pass("count/getter/callsite drift rejects before CAS");
     const uint32_t selected[]={0,1,2,3,4,5,7,8,10,12,13,30,32,34,50};
     for(uint32_t node:selected)for(unsigned table=0;table<2;++table) {
@@ -530,11 +530,11 @@ int main() {
     CHECK(actual_calls==start+2 && records[start].kind==1 && records[start+1].kind==3);
     CHECK(std::memcmp(records[start+1].bits,base_bits,16)==0 && end_current()==1 && actual_calls==start+2);
     pass("TTL restores translation and fresh native branch rotation independently without renewing lifetime");
-    f.normal();fixture_cas_calls=0;put<uint8_t>(f.c.game+0x111afbb,0x90);
+    f.normal();fixture_cas_calls=0;put<uint8_t>(f.c.game+0x111b11b,0x90);
     CHECK(NADSE_Validate(&f.c)==0 && NADSE_Error()==CODE_MISMATCH && fixture_cas_calls==0);
-    put<uint8_t>(f.c.game+0x111afbb,0x41);put<uint8_t>(f.c.exe+0x1f25a0,0x90);
+    put<uint8_t>(f.c.game+0x111b11b,0x41);put<uint8_t>(f.c.exe+0x1f2660,0x90);
     CHECK(NADSE_Validate(&f.c)==0 && NADSE_Error()==CODE_MISMATCH && fixture_cas_calls==0);
-    put<uint8_t>(f.c.exe+0x1f25a0,0x48);CHECK(NADSE_Validate(&f.c)==1);
+    put<uint8_t>(f.c.exe+0x1f2660,0x48);CHECK(NADSE_Validate(&f.c)==1);
     fixture_cas_fail_at=3;CHECK(begin_current(&f.c)==0 && reserved.load()==0);
     CHECK(value(f.api+0x38,kept) && kept==reinterpret_cast<uint64_t>(synthetic_position));
     CHECK(value(f.api+0x48,kept) && kept==reinterpret_cast<uint64_t>(synthetic_rotation));
@@ -651,9 +651,9 @@ int main() {
     exact(start,f.c.viewmodel,5,f.source(),f.source());CHECK(armed.load()==0 && NADSE_Error()==GRAPH_MISMATCH);
     depth.end();put<uint8_t>(f.hashes+50*4,0x39);
     pass("ownership and graph changes during metadata capture are rechecked before any corrected pose can reach the native setter");
-    depth.begin(212000);put<uint8_t>(f.c.game+0x1119293,0x90);depth.frame_at(0);start=actual_calls;f.match();
+    depth.begin(212000);put<uint8_t>(f.c.game+0x11193f3,0x90);depth.frame_at(0);start=actual_calls;f.match();
     exact(start,f.c.viewmodel,5,f.source(),f.source());CHECK(policy.depth.observed.reason==2 && armed.load()==1);depth.end();
-    put<uint8_t>(f.c.game+0x1119293,0xF3);
+    put<uint8_t>(f.c.game+0x11193f3,0xF3);
     pass("unproven native caller-frame layout leaves depth untouched without refusing the existing FPV lease");
     depth.begin(214000);f.match();depth.event(2);depth.frame_at(0);
     fixture_reads=0;const uint64_t original_getters=getter_calls;
@@ -778,9 +778,9 @@ int main() {
     }
     depth.end();
     depth.begin(238500);f.match();depth.event(1);effective=depth.frame_at(0);f.match();
-    put<uint8_t>(f.c.game+0x1118215,0x90);start=actual_calls;depth.root(effective,root_identity);
+    put<uint8_t>(f.c.game+0x1118375,0x90);start=actual_calls;depth.root(effective,root_identity);
     exact(start,f.c.viewmodel,0,depth.root_source(),depth.root_source());CHECK(armed.load()==1 && !policy.carrier_shifted);
-    depth.end();put<uint8_t>(f.c.game+0x1118215,0x55);
+    depth.end();put<uint8_t>(f.c.game+0x1118375,0x55);
     pass("fading ring entries, invalid final poses and unproven stack layout leave the native carrier untouched");
 
     for(unsigned race=0;race<3;++race) {

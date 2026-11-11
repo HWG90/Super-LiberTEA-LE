@@ -3,7 +3,7 @@ Super LiberTEA - LE (Linux Edition): credits
 Packaged by Goose (HWG90). Source of every item: https://github.com/HWG90/Super-LiberTEA-LE
 
 BY GOOSE
-  Live Lua Loader R38 and its LuaJIT runtime   https://github.com/HWG90/LLL (release R38-26251122-luajit.2)
+  Live Lua Loader R38 and its LuaJIT runtime   https://github.com/HWG90/LLL (R38-26568081-luajit.1)
   LLL Compat Test
   Mod Configuration Menu (DBF-MCM)
   Diver's Best Friend (ASS) R46
@@ -11,7 +11,7 @@ BY GOOSE
   Goose Gadget Kit (LE build)
   War Journalist (Proton) and its assets       https://github.com/HWG90/DBF_PhotoMode (branch WJ-Proton)
 
-OTHER AUTHORS' MODS, PORTED TO LUAJIT AND GAME BUILD 26251122 BY GOOSE
+OTHER AUTHORS' MODS, PORTED TO LUAJIT AND GAME BUILD 26568081 BY GOOSE
   Vanilla Plus Megapack v42        CowboyBingus and the authors of the mods it bundles (Zero-Clause BSD,
                                    LICENSES\Vanilla-Plus-Megapack-0BSD.txt); see
                                    Vanilla Plus Megapack\VanillaPlusMegapack-README.txt

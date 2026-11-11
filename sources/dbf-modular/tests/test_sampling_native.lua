@@ -370,9 +370,9 @@ end
 -- witness: they changed from old CC padding in the same pinned executable.
 do
     local live = {
-        unit_alive = "4883ec28e8e7b9eaff4885c00f95c04883c428c3",
-        unit_world_position = "40534883ec204863dae802d7eaff488bc84c8b0041ff90e8000000488bcb48c1e1064883c130488b40284803c14883c4205bc3",
-        unit_world_pose = "40534883ec204863dae872d6eaff488bc84c8b0041ff90e8000000488bcb48c1e10648034828488bc14883c4205bc3",
+        unit_alive = "4883ec28e857b9eaff4885c00f95c04883c428c3",
+        unit_world_position = "40534883ec204863dae872d6eaff488bc84c8b0041ff90e8000000488bcb48c1e1064883c130488b40284803c14883c4205bc3",
+        unit_world_pose = "40534883ec204863dae8e2d5eaff488bc84c8b0041ff90e8000000488bcb48c1e10648034828488bc14883c4205bc3",
     }
     for name, head in pairs(live) do
         eq(Build.calls[name].head, head, "current live semantic getter witness")

@@ -54,6 +54,17 @@ typedef struct {
 /* Checks PE identity and all 39 entry witnesses, then fills api with entries
  * in the current image. No engine code runs. 0 if refused (api untouched). */
 HD2ENV_API int hd2puc_bind(HD2PucApi *api,const HD2SteamHost *host);
+/* The engine's LuaEnvironment as its getter exe+0x9fc00 returns it: registry[1]
+ * as a userdata pointer (full userdata block or light userdata, else NULL).
+ * Only bound API entries run, so no other code page is needed; the stack is
+ * left as it was. */
+void *hd2puc_lua_environment(const HD2PucApi *,HD2PucState *);
+/* Calls each original vector native once, with valid arguments, through the
+ * game's own Lua (loadstring, pcall). The game decrypts a code page the first
+ * time code on it runs; this is what stock scripts do moments later. Returns
+ * the calls made (failed: how many raised), or -1 with why if it was skipped.
+ * The temporary checkpoint is restored and the stack left as it was. */
+int hd2puc_warm_vectors(const HD2PucApi *,HD2PucState *,int *failed,char *why,size_t why_size);
 typedef struct {
     uint64_t calls,errors,callbacks,callback_errors;
     uint32_t roots,modules,modules_kept,merged,kept,functions,lua_functions,tables_mirrored;

@@ -71,6 +71,11 @@ function Pose:_load()
     pcall(ffi.cdef,'uint32_t NADSE_SetZoomPolicy(uint64_t generation,uint32_t active);')
     pcall(ffi.cdef,'uint32_t NADSE_SetTransition(uint64_t generation,uint64_t epoch,float progress,uint32_t ads);')
     pcall(ffi.cdef,'uint32_t NADSE_BeginSteady(const NADSE_Config*,uint64_t*);')
+    -- Input normalization has its own opt-in entry points. Declaring them
+    -- leaves old four-slot helpers and Config/Stats ABI2 unchanged.
+    pcall(ffi.cdef,'uint32_t NADSE_ValidateInput(const NADSE_Config*);')
+    pcall(ffi.cdef,'uint32_t NADSE_BeginInput(const NADSE_Config*,uint64_t*);')
+    pcall(ffi.cdef,'uint32_t NADSE_BeginSteadyInput(const NADSE_Config*,uint64_t*);')
     assert(ffi.sizeof('NADSE_Config')==104 and ffi.sizeof('NADSE_Stats')==80,'Pose helper ABI layout mismatch')
     self.ffi=ffi
     if self.library then return self.library end
@@ -174,11 +179,43 @@ function Pose:depth_stats(handle)
     return out
 end
 
+-- Explicit diagnostics only: ordinary health polls never call this ABI.
+function Pose:input_stats(handle)
+    if handle and(PORT51.kind(handle)~='table' or handle.owner~=self or handle.disarmed
+        or(self.owned and self.owned~=handle))then return nil,'Input statistics handle is not owned'end
+    handle=handle or self.owned
+    local library=self:_load();local ffi=self.ffi
+    if not pcall(ffi.typeof,'NADSE_InputStats')then ffi.cdef([[
+        typedef struct NADSE_InputStats {
+            uint32_t size,abi,installed,active,reason,pending,cache_entries,reserved;
+            uint64_t observed,normalized,unsupported,restored,foreign_wins,quarantined;
+            float ratio,yaw_gain,pitch_gain,padding;
+        } NADSE_InputStats;
+        uint32_t NADSE_ReadInputStats(uint64_t generation,NADSE_InputStats*);
+    ]])end
+    if ffi.sizeof('NADSE_InputStats')~=96 then return nil,'Input statistics ABI layout mismatch'end
+    local value=self.input_buffer
+    if not value then value=ffi.new('NADSE_InputStats');self.input_buffer=value end
+    value.size,value.abi,value.reserved=96,1,0
+    local called,accepted=pcall(function()return library.NADSE_ReadInputStats(handle and handle.generation[0]or 0,value)end)
+    if not called then return nil,'Optional input statistics unavailable: '..tostring(accepted)end
+    if accepted~=1 then return nil,self:_error('Input statistics')end
+    if PORT51.number(value.size)~=96 or PORT51.number(value.abi)~=1 or PORT51.number(value.reserved)~=0 then
+        return nil,'Input statistics ABI mismatch'
+    end
+    local out={installed=value.installed~=0,active=value.active~=0}
+    for _,name in ipairs({'reason','pending','cache_entries','observed','normalized','unsupported','restored',
+        'foreign_wins','quarantined','ratio','yaw_gain','pitch_gain'})do out[name]=PORT51.number(value[name])end
+    return out
+end
+
 function Pose:prepare(config)
     self:_invalidate_stats()
     local stats,why=self:stats();if not stats then return false,why end
     if stats.armed then return false,'Another pose lease is already armed' end
-    if self:_load().NADSE_Validate(self:_config(config))~=1 then return false,self:_error('Pose read-only validation') end
+    local library=self:_load()
+    local validate=self.profile.normalize_zoom_input==true and library.NADSE_ValidateInput or library.NADSE_Validate
+    if validate(self:_config(config))~=1 then return false,self:_error('Pose read-only validation') end
     local after,problem=self:stats();if not after then return false,problem end
     if after.armed or after.installed~=stats.installed then return false,'Pose helper state changed during read-only preparation' end
     return true,{owner=self}
@@ -192,7 +229,12 @@ function Pose:begin(config,prepared)
     -- The native helper publishes this opaque generation before pointer CAS.
     -- Keep it as uint64 cdata, including when native entry raises afterward.
     local handle={owner=self,disarmed=false,stats=false,generation=self.ffi.new('uint64_t[1]')}
-    local begin=config.steady_entry==true and library.NADSE_BeginSteady or library.NADSE_Begin
+    local begin
+    if self.profile.normalize_zoom_input==true then
+        begin=config.steady_entry==true and library.NADSE_BeginSteadyInput or library.NADSE_BeginInput
+    else
+        begin=config.steady_entry==true and library.NADSE_BeginSteady or library.NADSE_Begin
+    end
     local called,result=pcall(begin,value,handle.generation)
     if PORT51.number(handle.generation[0])~=0 then self.owned=handle end
     if not called then return false,'Pose arm result uncertain: '..tostring(result) end

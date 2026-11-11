@@ -46,10 +46,10 @@ struct Fixture {
     Setter calls[2]{};
     Fixture() {
         c.size=sizeof c;c.abi=1;c.game=allocate(0x3382000,PAGE_EXECUTE_READWRITE);c.exe=allocate(0x29fe000);
-        fake_image(c.game,0x6ae0e5ff,0x3382000);fake_image(c.exe,0x6ae0964a,0x29fe000);
+        fake_image(c.game,0x6af322c1,0x3382000);fake_image(c.exe,0x6af2d5e6,0x29fe000);
         // Independent literal captured 48-byte prefixes, not generated from PREFIX.
-        literal(c.exe+0x1f2520,"48895c24084889742410574883ec20498bf08bfa8bd9e865e1eaff4c8b5018b801000000f0410fc182380017008bc04c");
-        literal(c.exe+0x1f2680,"48895c24084889742410574883ec20498bf08bfa8bd9e805e0eaff4c8b5018b801000000f0410fc182380017008bc04c");
+        literal(c.exe+0x1f25e0,"48895c24084889742410574883ec20498bf08bfa8bd9e8d5e0eaff4c8b5018b801000000f0410fc182380017008bc04c");
+        literal(c.exe+0x1f2740,"48895c24084889742410574883ec20498bf08bfa8bd9e875dfeaff4c8b5018b801000000f0410fc182380017008bc04c");
         c.context=allocate(0x3000);c.avatar_owner=allocate(0x540000);controller=allocate(0x1000);descriptor=allocate(0x1000);
         c.avatar_index=0;c.avatar=0x333;c.weapon=0x444;c.body=0x222;c.viewmodel=0x400003;c.duration_ms=100;
         put<uint64_t>(c.game+0x2e287d0,c.context);put<uint64_t>(c.game+0x2ce1ee0,c.avatar_owner);
@@ -88,8 +88,8 @@ int main() {
     uint8_t code_before[2][64]{};CHECK(read(reinterpret_cast<uint64_t>(synthetic_position),code_before[0],64));
     CHECK(read(reinterpret_cast<uint64_t>(synthetic_rotation),code_before[1],64));
     CHECK(NADS_Begin(nullptr)==0);auto bad=f.c;bad.duration_ms=10501;CHECK(NADS_Begin(&bad)==0);
-    put<uint8_t>(f.c.exe+0x1f2520,0);CHECK(NADS_Validate(&f.c)==0 && NADS_Error()==CODE_MISMATCH);
-    CHECK(!f.begin());literal(f.c.exe+0x1f2520,PREFIX[0]);
+    put<uint8_t>(f.c.exe+0x1f25e0,0);CHECK(NADS_Validate(&f.c)==0 && NADS_Error()==CODE_MISMATCH);
+    CHECK(!f.begin());literal(f.c.exe+0x1f25e0,PREFIX[0]);
     fixture_slot_readonly=true;CHECK(NADS_Validate(&f.c)==0 && NADS_Error()==SLOT_NOT_WRITABLE);
     CHECK(!f.begin() && fixture_cas_calls==0);fixture_slot_readonly=false;
     uint32_t bits[4]={0x80000000,0x7FC12345,0x7F800000,0x00000001};const float* pose=reinterpret_cast<const float*>(bits);

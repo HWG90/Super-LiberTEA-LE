@@ -2,7 +2,7 @@
 -- Import/new are inert. This module never changes counts or releases a package.
 local M={}
 local ZERO=string.rep('\0',8)
-local APP={0x2f01e0,'488bd1488b0d1e767c01488b8900040000e97a333500'}
+local APP={0x2f0280,'488bd1488b0d7e757c01488b8900040000e98a333500'}
 local function unhex(s)return(s:gsub('%x%x',function(x)return string.char(tonumber(x,16))end))end
 local function u32(s,o)local a,b,c,d=s:byte(o+1,o+4);assert(d,'Recovery integer unreadable');return a+b*256+c*65536+d*16777216 end
 local function pointer(s)local p=u32(s,0)+u32(s,4)*4294967296;assert(p>=65536 and p<140737488355328,'Recovery pointer unavailable');return p end
@@ -19,7 +19,7 @@ function M.new(io)
     local function p(at)return pointer(read(at,8))end
     local function context()
         local m=assert(io.meta());assert(type(m.game)=='number'and type(m.exe)=='number'and type(m.A)=='table','Recovery metadata unavailable')
-        for _,v in ipairs({{m.game,0x6AE0E5FF},{m.exe,0x6AE0964A}})do
+        for _,v in ipairs({{m.game,0x6AF322C1},{m.exe,0x6AF2D5E6}})do
             assert(read(v[1],2)=='MZ','Recovery module unavailable');local pe=u32(read(v[1]+0x3C,4),0)
             assert(pe>=64 and pe<=4096 and read(v[1]+pe,4)=='PE\0\0'and u32(read(v[1]+pe+8,4),0)==v[2],'Recovery build changed')
         end

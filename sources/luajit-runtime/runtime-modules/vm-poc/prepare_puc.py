@@ -3,7 +3,7 @@
 The bridge calls these entries directly on a dedicated PUC host thread so that
 original native callbacks run unchanged. Most come from the engine's LuaApi
 table at EXE RVA 0x286f710 (lua.h order; slots in comments). lua_newthread is
-not in that table: 0x796930 inlines luaE_newthread (0xb8-byte allocation,
+not in that table: 0x796980 inlines luaE_newthread (0xb8-byte allocation,
 thread tag 8, pushed at L->top). Prefixes must be identical in the on-disk
 evidence image and the live mapped capture.
 """
@@ -11,20 +11,20 @@ from pathlib import Path
 import struct
 
 ROOT=Path(__file__).resolve().parent
-RAW='/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin'
-MAPPED='/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin'
+RAW='/home/goose/Projects/Linux HD2 Mods/builds/26568081/runtime/images/exe-26568081.bin'
+MAPPED='/home/goose/Projects/Linux HD2 Mods/builds/26568081/runtime/images/exe-26568081.bin'
 TABLE=0x286f710
 # (field, rva, LuaApi slot or None)
-ENTRIES=[('gettop',0x796a60,13),('settop',0x796a70,14),('pushvalue',0x796cb0,15),('remove',0x796ad0,16),
-    ('insert',0x796b20,17),('replace',0x796b70,18),('checkstack',0x7967f0,19),('iscfunction',0x796d30,23),
-    ('type',0x796ce0,25),('rawequal',0x796e10,28),('tonumber',0x796f10,30),('toboolean',0x796fd0,32),
-    ('tolstring',0x797000,33),('objlen',0x7970a0,34),('tocfunction',0x797120,35),('touserdata',0x797150,36),
-    ('topointer',0x7971b0,38),('pushnil',0x797220,39),('pushnumber',0x797240,40),('pushlstring',0x797280,42),
-    ('pushcclosure',0x7973c0,46),('pushboolean',0x797490,47),('pushlightuserdata',0x7974b0,48),
-    ('gettable',0x797500,50),('getfield',0x797530,51),('rawget',0x7975a0,52),('rawgeti',0x7975e0,53),
-    ('createtable',0x797620,54),('newuserdata',0x7981b0,55),('getmetatable',0x797690,56),('settable',0x797770,58),
-    ('setfield',0x7977a0,59),('rawset',0x797810,60),('rawseti',0x7978b0,61),('setmetatable',0x797980,62),
-    ('pcall',0x797ba0,65),('error',0x798090,73),('next',0x7980a0,74),('newthread',0x796930,None)]
+ENTRIES=[('gettop',0x796ab0,13),('settop',0x796ac0,14),('pushvalue',0x796d00,15),('remove',0x796b20,16),
+    ('insert',0x796b70,17),('replace',0x796bc0,18),('checkstack',0x796840,19),('iscfunction',0x796d80,23),
+    ('type',0x796d30,25),('rawequal',0x796e60,28),('tonumber',0x796f60,30),('toboolean',0x797020,32),
+    ('tolstring',0x797050,33),('objlen',0x7970f0,34),('tocfunction',0x797170,35),('touserdata',0x7971a0,36),
+    ('topointer',0x797200,38),('pushnil',0x797270,39),('pushnumber',0x797290,40),('pushlstring',0x7972d0,42),
+    ('pushcclosure',0x797410,46),('pushboolean',0x7974e0,47),('pushlightuserdata',0x797500,48),
+    ('gettable',0x797550,50),('getfield',0x797580,51),('rawget',0x7975f0,52),('rawgeti',0x797630,53),
+    ('createtable',0x797670,54),('newuserdata',0x798200,55),('getmetatable',0x7976e0,56),('settable',0x7977c0,58),
+    ('setfield',0x7977f0,59),('rawset',0x797860,60),('rawseti',0x797900,61),('setmetatable',0x7979d0,62),
+    ('pcall',0x797bf0,65),('error',0x7980e0,73),('next',0x7980f0,74),('newthread',0x796980,None)]
 IMAGE_BASE=0x140000000
 
 def prepare():

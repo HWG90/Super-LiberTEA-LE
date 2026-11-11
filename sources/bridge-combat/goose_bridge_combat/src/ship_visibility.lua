@@ -3,7 +3,7 @@
 -- Run update/restore on the ordinary game Lua thread. Logical visibility and
 -- animation state remain under game control; normal layout consumes alpha.
 local M = {}
-local STAMP, SETTER = 0x6ae0e5ff, 0x12e07e0
+local STAMP, SETTER = 0x6af322c1, 0x12e0940
 local FP = '40574883ec20f30f104144488bf90f2ec17a237521f70100'
 local ABI = 'void (*)(void *, float)'
 local UI, GUI, GAME_STATE = 0x2e28788, 0x2e381c8, 0x2ce1508

@@ -1,38 +1,38 @@
 {
   "id": "goose_temporary_unlocks",
-  "version": "0.5.38-cffi-26251122",
+  "version": "0.5.42-shear.1-cffi-26568081",
   "upstream_first_person": "Native ADS Camera Test 0.1.49-test",
-  "steam_build": 26251122,
-  "ported_from": 26088801,
-  "port_date": "2026-10-29",
-  "evidence": "/home/goose/Projects/Linux HD2 Mods/builds/26251122/maps/gadget-kit",
+  "steam_build": 26568081,
+  "ported_from": 26251122,
+  "port_date": "2026-11-11",
+  "evidence": "/home/goose/Projects/Linux HD2 Mods/builds/26568081/maps/gadget-kit",
   "game_dll": {
-    "stamp": "0x6AE0E5FF",
+    "stamp": "0x6AF322C1",
     "size_of_image": "0x3382000",
-    "note": "code and data did not move; .rdata above ~0x2056000 shifted (witness bytes rederived)"
+    "note": "code below 0x988000 unchanged, +0x30 to 0xABC690, +0x160 above (0xC0F380 +0x170); .rdata constants +0x10; .data globals unchanged; witnesses re-derived from the 26568081 capture"
   },
   "executable": {
-    "stamp": "0x6AE0964A",
+    "stamp": "0x6AF2D5E6",
     "size_of_image": "0x29FE000",
-    "note": "41 exe RVAs moved (-0x10..-0xC0); witnesses rederived from the 26251122 capture"
+    "note": "code +0x30..+0xE0 per block; engine API tables except the Unit API table moved -0x10; 5 witnesses on uncaptured pages are predicted"
   },
   "native_rebinding_pending": false,
   "live_activation_verified": false,
   "visual_acceptance_pending": true,
   "helpers": {
-    "alignment": "90f80106133ff9029662a1e363e6bd059b723e5ebd8efbf18b527025ed0e1da9",
-    "editor": "22b7cee1b21cae8f8e4bb2b4f903a1f992bd0517c35cbb38bd8367a29395bf54",
-    "fov": "43252d9d03e1e10b6e737e38da4eaa5d58d180de2192dafde02c28c3b51e8110",
-    "blur": "cf184cc46ffbca44dfcbf3e4c38dd3b2087833eae975bed3b2d57c43f585b2fe",
-    "near": "459421f3eb79d7da6e0592f837005e247f20b8d923d5caac81ae1a4404abf778",
-    "heldfire": "b660a68dfd81c7ff5cfda06fca731bd65a4a681a31dd95a86971672ca89aa142",
-    "camera": "13175a39b9d5b7bbcf14435ea9b784974c33c3116f37676bd0b6aba7d68b2c5f"
+    "alignment": "8e0af36233bd38b0f6d9d056fa97215e1ad450885be1d6a18a2987fa9b47d85b",
+    "editor": "5ea05817ad56e38db9b68a717bc95328ac957b561eb795d3d4c686c02e37d9b5",
+    "fov": "764664986628d25db5fb0d9f6202fb62c63b79eb0f522caa34ffeded267fd872",
+    "blur": "c18c221e2cc6cad56fc79e851eb13ed2ba9600251d93239fde4b7f87546c6a9d",
+    "camera": "46e3ba382419818aaa34569fb3a677887ddd2928d2b5666de784fb9c13e4c616",
+    "near": "d9ac0249f950e13d90b5b734459133c9aeded3bcca69d0329203643dc2d30f93",
+    "heldfire": "4553a768a13450c5834d97c845984a427df6c7326dc497b7c0be5bc7dbee807c"
   },
   "guarded_reads": {
-    "guarded_reads_fb18682bc3515a7a.dll": "fb18682bc3515a7ab3484f5437498fef538086c1f8ccdf74c16f394b442a9e98"
+    "guarded_reads_218dbf400f24f282.dll": "218dbf400f24f28285bef0a7e87a158d56d6ea3f8bd770d2e74ea9dcf3ba8972"
   },
   "nativeinfo": {
-    "port51/hd2_nativeinfo_8d03e036881e4ddc.dll": "LLL 26251122 hd2_nativeinfo (same source as the 26088801 f6d34659, new exe SHA and Lua API map)"
+    "port51/hd2_nativeinfo_f375fc4798c33ad5.dll": "LLL 26568081 hd2_nativeinfo from builds/26568081/lll/native (used only when the host has not preloaded hd2_nativeinfo)"
   },
   "hotkey_input": "engine keyboard and token-owned shared input adapter",
   "prior_version_live_activation": "0.5.32 loaded; native ADS entry user accepted; exit remained jarring in weapon and whole view",
@@ -173,5 +173,38 @@
     },
     "writes": "Original fresh mutation, foreign-mask, cleanup and native owner guards retained",
     "live_performance_acceptance": "pending"
+  },
+  "true_first_person_polish_0_5_39": {
+    "baseline": "accepted0.5.38; user FPS drop gone, natural motion and F8 preview/cancel accepted",
+    "native_changes": [
+      "camera/fov/blur owner-data transport-fault taxonomy only; same hook sites and ABIs"
+    ],
+    "healthy_camera_protected_reads": {
+      "native6_before": 64,
+      "after": 64,
+      "normal4_before": 102,
+      "after_normal4": 102,
+      "failure_mapping_queries_on_success": 0
+    },
+    "ui": "Original pre35 F8 draw commands reproduced exactly in9CFFI scenarios; all non-draw editor logic retained; scoped original palette tokens",
+    "visibility": "Same renderer ownership history survives weapon topology changes; new meshes still use fresh guards",
+    "recovery": "Real native code3 evidence bridges through actual Lua/CFFI adapters/managers into clean ACK, backoff, fresh proof and rearm; unknown faults remain unsafe",
+    "boundary": "Synthetic native fixtures and Lua evidence bridge are separate processes, not live game fault injection",
+    "camera_pin": false,
+    "independent_look": false,
+    "new_hooks": false,
+    "settings_migration": false,
+    "live39_acceptance": "pending"
+  },
+  "zoom_input_candidate": {
+    "enabled_by_default": false,
+    "new_inline_patch": false,
+    "sdk_slot": "UnitAPI+0x90",
+    "input_stats_abi": 1,
+    "status": "Offline validated experimental trial; native nonzero-steering ordering and live FPS/behavior remain unqualified."
+  },
+  "evidence_images_sha256": {
+    "exe-26568081.bin": "1932b56a7670a62ab1dd432dc05ca5dbcfd12e7fa49637068b16512ea75602a7",
+    "game-26568081.dll": "90387ef491b52dc07dc7cec3393220b1cf41557740aebb9b1ac70641dd1f3fa3"
   }
 }

@@ -4,15 +4,15 @@
 -- Firing and reloading on the ship leave units of the equipped weapon's packages behind (a reload drops a
 -- unit of its magazine attachment package). The Armory's weapon swap then releases those packages, and the
 -- engine's resource release refuses to unload a resource that a live unit still holds: its own fatal check
--- (helldivers2.exe+0x635b43, four crashes 2026-10-31/11-01, each on a magazine attachment unit). Stock HD2
+-- (helldivers2.exe+0x635be3, four crashes 2026-10-31/11-01, each on a magazine attachment unit). Stock HD2
 -- never reloads on the ship. So while combat is on, every loaded catalogue package carries one Bridge
 -- reference through the game's counted wrapper, taken before combat controls arm. A swap then cannot drop
 -- such a package to zero. A reference is returned only when the game no longer holds the package and the
 -- engine's live-unit ledger holds none of its units; until then it stays, for the process at most.
 local M={}
 local BANK_KEY,MAX_BANK,MAX_CAP,MAX_REFS='GOOSE_BRIDGE_EQUIPMENT_HOLDS_V1',512,4096,1000000
-local REQUEST={0x11912f0,'4585c00f8475010000415641574883ec3848895c24504c8b'}
-local RELEASE={0x1191480,'4585c00f8460010000415641574883ec3848895c24504c8b'}
+local REQUEST={0x1191450,'4585c00f8475010000415641574883ec3848895c24504c8b'}
+local RELEASE={0x11915e0,'4585c00f8460010000415641574883ec3848895c24504c8b'}
 local ABI='void (*)(void *, const uint64_t *, uint32_t)'
 local UNIT='e0a48d0be9a7453f'
 local ZERO8=string.rep('\0',8)
@@ -40,7 +40,7 @@ function M.new(io,options)
     local function context()
         ffi=ffi or require('ffi')
         if not wanted then
-            assert(type(catalogue)=='table'and catalogue.stamp==0x6AE0E5FF and type(catalogue.packages)=='table'
+            assert(type(catalogue)=='table'and catalogue.stamp==0x6AF322C1 and type(catalogue.packages)=='table'
                 and #catalogue.packages>0 and #catalogue.packages<=4096,'Equipment package catalogue unavailable')
             local set={}
             for _,h in ipairs(catalogue.packages)do
@@ -49,8 +49,8 @@ function M.new(io,options)
             end
             wanted=set
         end
-        local meta=assert(io.meta());assert(type(meta.game)=='number'and type(meta.A)=='table'and meta.A.stamp==0x6AE0E5FF,'Unsupported game build')
-        local exe,_,stamp=io.module('helldivers2.exe');assert(exe and stamp==0x6AE0964A,'Unsupported executable build')
+        local meta=assert(io.meta());assert(type(meta.game)=='number'and type(meta.A)=='table'and meta.A.stamp==0x6AF322C1,'Unsupported game build')
+        local exe,_,stamp=io.module('helldivers2.exe');assert(exe and stamp==0x6AF2D5E6,'Unsupported executable build')
         local function r(at,n)
             assert(type(at)=='number'and at==math.floor(at)and at>=65536 and type(n)=='number'and n>0 and n<=1048576 and at+n<=2^47,'Equipment read bounds refused')
             local parts={} -- the protected reader takes at most 64 KiB per call
@@ -150,7 +150,7 @@ function M.new(io,options)
         for i=0,count-1 do if raw:sub(i*16+1,i*16+8)==unit then tags[u32(raw,i*16+12)]=true end end
         return tags,ctx.p(child+8)
     end
-    -- The live-unit hold map the release fatal consults (manager+0x350, exe 0x63eee0/0x638ad0/0x63bf20):
+    -- The live-unit hold map the release fatal consults (manager+0x350, exe 0x63ef90/0x638b80/0x63bfd0):
     -- +0 slot count, +8 slots {resource, units, name tag, next}; a slot is in use when next >= 0.
     local function live_tags(ctx,manager)
         local h=ctx.r(manager+0x350,0x20);local slots,entries,used=u32(h),pointer(h,8),u32(h,0x18)

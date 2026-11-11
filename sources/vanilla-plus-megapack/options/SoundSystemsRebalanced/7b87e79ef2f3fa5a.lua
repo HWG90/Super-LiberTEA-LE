@@ -557,8 +557,8 @@ local Mod = {VERSION = '1.0'}
 
 local ffi = require('ffi')
 
-Mod.EXE_SHA256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D'
-Mod.GAME_SHA256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'
+Mod.EXE_SHA256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB'
+Mod.GAME_SHA256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'
 
 -- Build 26088801: the game object's static pointer and its game state (1 splash, 2 title, 5 preparing the ship,
 -- 3 ship, 6 preparing a mission, 4 mission; also read by Hellpod Drop Hold). Tests pass their own layout.
@@ -667,7 +667,7 @@ end
 Mod.WWISE = {
     module = 'wwise_pluginw64_release.dll',
     export = '?SetState@SoundEngine@AK@@YA?AW4AKRESULT@@PEBD0@Z',
-    rva = 0xDA130, -- the current plugin file's export table
+    rva = 0xDA120, -- the current plugin file's export table
     -- The export's first 31 bytes (whole, position-independent instructions) in the build-25480438 plugin, built from
     -- the same Wwise SDK 2024.1.9.8920 library. The current file is encrypted on disk: a live match is the check.
     prologue = '\064\083\069\051\201\076\139\218\072\139\217\072\133\201\117\005\069\139\209\235\074\068\015\182\001'
@@ -740,7 +740,7 @@ function Mod.install(runtime, api, options)
         need(type(loader) == 'table' and loader.api == 1 and type(loader.open_log) == 'function',
             'Bingus Shared Loader with API 1 required')
         local built, why = api.verify_build({exe_sha256 = Mod.EXE_SHA256, game_sha256 = Mod.GAME_SHA256})
-        need(built, why == 'unsupported game build' and 'unsupported game build (needs Steam build 26251122)'
+        need(built, why == 'unsupported game build' and 'unsupported game build (needs Steam build 26568081)'
             or tostring(why))
         local game = need(api.module('game.dll'), 'game.dll not loaded')
         local set_state = need(options.set_state or Mod.engine_set_state(env) or Mod.native_set_state(api, note),

@@ -38,11 +38,11 @@ struct Fixture {
     NADSN_Config c{};uint64_t controller=0,api=0,slot_address=0,second_site=0;Setter invoke=nullptr,invoke_second=nullptr;
     Fixture() {
         c.size=sizeof c;c.abi=1;c.game=allocate(0x3382000,PAGE_EXECUTE_READWRITE);c.exe=allocate(0x29fe000);
-        fake_image(c.game,0x6ae0e5ff,0x3382000);fake_image(c.exe,0x6ae0964a,0x29fe000);
+        fake_image(c.game,0x6af322c1,0x3382000);fake_image(c.exe,0x6af2d5e6,0x29fe000);
         // Independent literal read-only capture: LLtM batch 4457 and the 26251122 game.dll capture.
-        literal(c.exe+0x2dcfa0,"f30f114928e9966b1f00");literal(c.exe+0x2dcf80,"f30f104128c3");
-        literal(c.game+0x2245eec,"cdcc4c3d");
-        literal(c.game+0x110dc8c,"488b053538bd01f30f100d51821301498b0f440f29bc2490010000488b5020ff5268");
+        literal(c.exe+0x2dd050,"f30f114928e9c66b1f00");literal(c.exe+0x2dd030,"f30f104128c3");
+        literal(c.game+0x2245efc,"cdcc4c3d");
+        literal(c.game+0x110ddec,"488b05d536bd01f30f100d01811301498b0f440f29bc2490010000488b5020ff5268");
         c.context=allocate(0x3000);c.camera=allocate(0x1000);c.avatar_owner=allocate(0x540000);c.avatar_index=0;
         controller=allocate(0x1000);
         put<uint64_t>(c.game+0x2e287d0,c.context);put<uint64_t>(c.context,c.camera);
@@ -50,16 +50,16 @@ struct Fixture {
         put<uint64_t>(c.game+0x2e381a8,controller);
         const uint64_t root=allocate(0x1000);api=allocate(0x1000);slot_address=api+0x68;
         put<uint64_t>(c.game+0x2ce14c8,root);put<uint64_t>(root+0x20,api);
-        put<uint64_t>(api+0x58,c.exe+0x2dcf80);put<uint64_t>(slot_address,reinterpret_cast<uint64_t>(synthetic_setter));
+        put<uint64_t>(api+0x58,c.exe+0x2dd030);put<uint64_t>(slot_address,reinterpret_cast<uint64_t>(synthetic_setter));
         fixture_target=synthetic_setter;
-        // Stub: sub rsp,28; mov rdx,API; jmp into the real call [rdx+68] at 0x110DCAB,
-        // whose return address 0x110DCAE then holds add rsp,28; ret.
-        const uint64_t stub=c.game+0x1000,site=c.game+0x110dcab;
+        // Stub: sub rsp,28; mov rdx,API; jmp into the real call [rdx+68] at 0x110DE0B,
+        // whose return address 0x110DE0E then holds add rsp,28; ret.
+        const uint64_t stub=c.game+0x1000,site=c.game+0x110de0b;
         literal(stub,"4883ec2848ba");put<uint64_t>(stub+6,api);put<uint8_t>(stub+14,0xe9);
         put<int32_t>(stub+15,static_cast<int32_t>(site-(stub+19)));literal(site+3,"4883c428c3");
         CHECK(FlushInstructionCache(GetCurrentProcess(),reinterpret_cast<void*>(c.game),0x3382000));
         invoke=reinterpret_cast<Setter>(stub);c.hip=.15f;c.aim=0;normal();
-        // A second game.dll caller (like 0x11107AF): sub rsp,28; mov rdx,API; call [rdx+68]; add rsp,28; ret.
+        // A second game.dll caller (like 0x111090F): sub rsp,28; mov rdx,API; call [rdx+68]; add rsp,28; ret.
         const uint64_t second=c.game+0x2000;literal(second,"4883ec2848ba");put<uint64_t>(second+6,api);
         literal(second+14,"ff52684883c428c3");second_site=second+17;
         CHECK(FlushInstructionCache(GetCurrentProcess(),reinterpret_cast<void*>(second),32));
@@ -75,8 +75,11 @@ struct Fixture {
     void fp() {ads(false);shoulder(false);top(6,2);}
     void begin() {fp();CHECK(begin_current(&c)==1);}
     uint64_t slot() {uint64_t v=0;std::memcpy(&v,reinterpret_cast<void*>(slot_address),8);return v;}
-    void sample(float f=NATIVE,uint64_t camera=0) {invoke(reinterpret_cast<void*>(camera?camera:c.camera),f);}
-    void sample_second(float f=NATIVE) {invoke_second(reinterpret_cast<void*>(c.camera),f);}
+    // A second passes before each ordinary sample, so it lands at once;
+    // frame() advances by a real frame time and exercises the ease.
+    void sample(float f=NATIVE,uint64_t camera=0) {fixture_now_us+=1000000;invoke(reinterpret_cast<void*>(camera?camera:c.camera),f);}
+    void sample_second(float f=NATIVE) {fixture_now_us+=1000000;invoke_second(reinterpret_cast<void*>(c.camera),f);}
+    float frame(uint64_t microseconds=16667) {fixture_now_us+=microseconds;invoke(reinterpret_cast<void*>(c.camera),NATIVE);return records[calls-1].value;}
     float distance() {float v=0;std::memcpy(&v,reinterpret_cast<void*>(c.camera+0x28),4);return v;}
     NADSN_Stats stats() {NADSN_Stats s{};s.size=sizeof s;s.abi=1;CHECK(NADSN_ReadStats(reserved.load()?active_generation:0,&s)==1);return s;}
 };
@@ -135,15 +138,15 @@ int main() {
     pass("BUSY while reserved; Set/ReadStats/End only accept the owned generation; bounds enforced");
 
     const uint64_t before=fixture_cas_calls;
-    f.fp();literal(f.c.game+0x2245eec,"0000803f");CHECK(begin_current(&f.c)==0 && NADSN_Error()==CODE_MISMATCH);
-    literal(f.c.game+0x2245eec,"cdcc4c3d");literal(f.c.game+0x110dcab,"ff5270");CHECK(begin_current(&f.c)==0 && NADSN_Error()==CODE_MISMATCH);
-    literal(f.c.game+0x110dcab,"ff5268");literal(f.c.exe+0x2dcfa0,"f30f114934");CHECK(begin_current(&f.c)==0 && NADSN_Error()==CODE_MISMATCH);
-    literal(f.c.exe+0x2dcfa0,"f30f114928");put<uint32_t>(f.c.game+128+8,0);CHECK(begin_current(&f.c)==0 && NADSN_Error()==IMAGE_MISMATCH);
-    put<uint32_t>(f.c.game+128+8,0x6ae0e5ff);
+    f.fp();literal(f.c.game+0x2245efc,"0000803f");CHECK(begin_current(&f.c)==0 && NADSN_Error()==CODE_MISMATCH);
+    literal(f.c.game+0x2245efc,"cdcc4c3d");literal(f.c.game+0x110de0b,"ff5270");CHECK(begin_current(&f.c)==0 && NADSN_Error()==CODE_MISMATCH);
+    literal(f.c.game+0x110de0b,"ff5268");literal(f.c.exe+0x2dd050,"f30f114934");CHECK(begin_current(&f.c)==0 && NADSN_Error()==CODE_MISMATCH);
+    literal(f.c.exe+0x2dd050,"f30f114928");put<uint32_t>(f.c.game+128+8,0);CHECK(begin_current(&f.c)==0 && NADSN_Error()==IMAGE_MISMATCH);
+    put<uint32_t>(f.c.game+128+8,0x6af322c1);
     put<uint64_t>(f.slot_address,reinterpret_cast<uint64_t>(foreign_setter));CHECK(begin_current(&f.c)==0 && NADSN_Error()==API_MISMATCH);
     put<uint64_t>(f.slot_address,reinterpret_cast<uint64_t>(synthetic_setter));
-    put<uint64_t>(f.api+0x58,f.c.exe+0x2dcf90);CHECK(begin_current(&f.c)==0 && NADSN_Error()==API_MISMATCH);
-    put<uint64_t>(f.api+0x58,f.c.exe+0x2dcf80);
+    put<uint64_t>(f.api+0x58,f.c.exe+0x2dd040);CHECK(begin_current(&f.c)==0 && NADSN_Error()==API_MISMATCH);
+    put<uint64_t>(f.api+0x58,f.c.exe+0x2dd030);
     fixture_slot_readonly=true;CHECK(begin_current(&f.c)==0 && NADSN_Error()==SLOT_NOT_WRITABLE);fixture_slot_readonly=false;
     CHECK(fixture_cas_calls==before && f.slot()==reinterpret_cast<uint64_t>(synthetic_setter));
     pass("changed constant, call site, setter, image, slot or getter is refused before any slot write");
@@ -176,11 +179,52 @@ int main() {
 
     NADSN_Site rows[16]{};const uint32_t count=NADSN_ReadSites(rows,16);bool first=false,second=false;
     for(uint32_t i=0;i<count && i<16;++i) {
-        if(rows[i].return_address==f.c.game+0x110dcae)first=rows[i].calls>0 && rows[i].owned_calls>0;
+        if(rows[i].return_address==f.c.game+0x110de0e)first=rows[i].calls>0 && rows[i].owned_calls>0;
         if(rows[i].return_address==f.second_site)second=rows[i].calls>=4;
     }
     CHECK(count>=3 && first && second && NADSN_ReadSites(rows,0)==count);
     pass("every distinct caller of the slot is counted for diagnosis");
+
+    // Hip to normal aim to full ADS and back: monotonic, bounded per frame,
+    // exact at both ends, never below the game's distance.
+    f.begin();CHECK(NADSN_Set(active_generation,.15f,.08f)==1);CHECK(f.frame()==.15f);
+    for(unsigned i=0;i<30;++i)CHECK(f.frame()==.15f);
+    f.shoulder(true);float previous=.15f;unsigned frames=0;
+    for(;;) {const float v=f.frame();++frames;CHECK(v<previous && v>=.08f && previous-v<.03f);previous=v;if(v==.08f)break;CHECK(frames<40);}
+    CHECK(frames>=5 && frames<=16 && f.frame()==.08f && f.stats().aim_applied>0);
+    f.shoulder(false);f.ads(true);frames=0;
+    for(;;) {const float v=f.frame();++frames;CHECK(v<previous && v>=NATIVE);previous=v;if(v==NATIVE)break;CHECK(frames<40);}
+    CHECK(frames>=3 && f.frame()==NATIVE && f.distance()==NATIVE && f.stats().ads_forwarded>frames);
+    f.ads(false);frames=0;
+    for(;;) {const float v=f.frame();++frames;CHECK(v>previous && v<=.15f && v-previous<.04f);previous=v;if(v==.15f)break;CHECK(frames<40);}
+    CHECK(frames>=5 && frames<=20);CHECK(end_current()==1);
+    pass("the distance eases between hip, normal aim and full ADS and lands exactly");
+
+    // Frame rate: the same glide takes the same time at 30, 60 and 144 FPS.
+    for(const uint64_t step:{33333ULL,16667ULL,6944ULL}) {
+        f.begin();CHECK(f.frame(step)==.15f);f.ads(true);uint64_t elapsed=0;
+        while(f.frame(step)!=NATIVE) {elapsed+=step;CHECK(elapsed<400000);}
+        CHECK(elapsed>=100000 && elapsed<=260000);f.ads(false);CHECK(end_current()==1);
+    }
+    pass("the ease lasts the same time at 30, 60 and 144 FPS");
+
+    // A hitch spends one bounded step; a longer gap, a third-person request
+    // or a fresh lease applies the target at once.
+    f.begin();CHECK(f.frame()==.15f);f.ads(true);const float hitch=f.frame(200000);CHECK(hitch<.15f && hitch>.07f);
+    CHECK(f.frame(300000)==NATIVE);f.ads(false);CHECK(f.frame(300000)==.15f);
+    f.ads(true);CHECK(f.frame()<.15f);f.top(4,0);CHECK(f.frame()==NATIVE);f.top(6,2);f.ads(false);CHECK(f.frame()==.15f);
+    f.ads(true);const float partial=f.frame();CHECK(partial<.15f && partial>NATIVE);
+    const uint64_t eased_end=calls;CHECK(end_current()==1 && calls==eased_end+1 && f.distance()==NATIVE);
+    f.begin();CHECK(f.frame()==.15f);CHECK(end_current()==1);
+    pass("hitches stretch the ease; gaps, other requests and new leases start clean; End restores mid-ease");
+
+    // Changing the distances while playing glides to the new value.
+    f.begin();CHECK(f.frame()==.15f);CHECK(NADSN_Set(active_generation,.30f,0)==1);
+    const float raised=f.frame();CHECK(raised>.15f && raised<.30f);
+    for(unsigned i=0;i<40;++i)f.frame();CHECK(f.frame()==.30f);
+    CHECK(NADSN_Set(active_generation,.03f,0)==1);for(unsigned i=0;i<40;++i)f.frame();
+    CHECK(f.frame()==NATIVE && f.distance()==NATIVE);CHECK(end_current()==1);
+    pass("live distance changes ease; a distance at or below the game's settles on the game's value");
 
     f.begin();for(unsigned i=0;i<200;++i) {f.sample();CHECK(last()==.15f);}
     CHECK(f.stats().replaced==200 && end_current()==1);

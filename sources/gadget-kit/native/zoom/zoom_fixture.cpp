@@ -12,7 +12,7 @@ static uint32_t synthetic_selector(uint32_t,uint32_t) {++selector_calls;if(rotat
 static float magnifications[3]{1,2.5f,3.5f};
 static void synthetic_event(void*,void* request) {
     ++event_calls;auto* bytes_=static_cast<uint8_t*>(request);
-    const uint64_t before=fixture_caller;fixture_caller=hook_game+0x110ac74;
+    const uint64_t before=fixture_caller;fixture_caller=hook_game+0x110add4;
     const uint32_t index=selector_hook(policy.c.weapon,1);fixture_caller=before;
     float lens=0,depth=0;std::memcpy(&lens,bytes_+0x84,4);std::memcpy(&depth,bytes_+0x90,4);
     std::memcpy(bytes_+0xa0,&lens,4);std::memcpy(bytes_+0x9c,&depth,4);
@@ -44,13 +44,13 @@ struct Fixture {
     NADZ_Config c{};uint64_t controller=0,descriptor=0,registry=0,units=0,generations=0,body_object=0,api=0,settings=0;
     Fixture() {
         c.size=sizeof c;c.abi=1;c.game=allocate(0x3382000,PAGE_EXECUTE_READWRITE);c.exe=allocate(0x29fe000);
-        fake_image(c.game,0x6ae0e5ff,0x3382000);fake_image(c.exe,0x6ae0964a,0x29fe000);
-        literal(c.game+SELECTOR,"40534883ec208bdae853ffffff84c00f84ac0000004c8b1db4926d014533c03b0d");
-        literal(c.game+0x764f29,"e8a23cea0085c07434");
-        literal(c.game+0x110ac6f,"e85cdf4f00418b55083bc38bf8410f44fee80ba265ff");
+        fake_image(c.game,0x6af322c1,0x3382000);fake_image(c.exe,0x6af2d5e6,0x29fe000);
+        literal(c.game+SELECTOR,"40534883ec208bdae853ffffff84c00f84ac0000004c8b1d54916d014533c03b0d");
+        literal(c.game+0x764f29,"e8023eea0085c07434");
+        literal(c.game+0x110adcf,"e85cdf4f00418b55083bc38bf8410f44fee8aba065ff");
         literal(c.game+ZOOM,"48895c24084889742410574883ec203b152ba26d028bda");
-        literal(c.game+EVENT,"40554881ec30010000488b05e0a53a014833c448898424d0000000488bea");
-        literal(c.game+0x1118731,"f3410f109784000000f30f59155ee81201f30f5e9088c40a00");
+        literal(c.game+EVENT,"40554881ec30010000488b0580a43a014833c448898424d0000000488bea");
+        literal(c.game+0x1118891,"f3410f109784000000f30f59150ee71201f30f5e9088c40a00");
         c.context=allocate(0x3000);c.camera=allocate(0x1000);c.avatar_owner=allocate(0x540000);
         c.avatar_index=0;c.avatar=0x333;c.body=0x400003;c.weapon=0x444;
         controller=allocate(0x1000);descriptor=allocate(0x1000);registry=allocate(0x1000);units=allocate(0x1000);
@@ -84,8 +84,8 @@ struct Fixture {
 int main() {
  Fixture f;CHECK(NADZ_Validate(&f.c)==1 && !installed.load());
  CHECK(NADZ_Begin(&f.c,&active_generation)==0 && !active_generation);pass("read-only normal-camera preflight; Begin requires owned native6");
- f.fp();literal(f.c.game+0x1118731,"00");CHECK(NADZ_Validate(&f.c)==0 && NADZ_Error()==CODE_MISMATCH);
- literal(f.c.game+0x1118731,"f3");pass("sensitivity witness drift fails closed before hook installation");
+ f.fp();literal(f.c.game+0x1118891,"00");CHECK(NADZ_Validate(&f.c)==0 && NADZ_Error()==CODE_MISMATCH);
+ literal(f.c.game+0x1118891,"f3");pass("sensitivity witness drift fails closed before hook installation");
  fixture_hook_failure=HOOK_APPLY+5;CHECK(NADZ_Begin(&f.c,&active_generation)==0 && !reserved.load());
  fixture_hook_failure=0;pass("hook transaction failure is reported without an owned generation");
  selected=UINT32_MAX;uint64_t absent_events=event_calls;
@@ -100,7 +100,7 @@ int main() {
  CHECK(selector_hook(f.c.weapon,1)==0 && selector_calls==before+1);pass("selector always calls native first, then overrides exact magnification caller");
  rotate_epoch=true;CHECK(selector_hook(f.c.weapon,1)==2);rotate_epoch=false;CHECK(selector_hook(f.c.weapon,1)==0);
  pass("callbacks crossing a lease epoch forward their original result");
- fixture_caller=f.c.game+0x110ac74;CHECK(selector_hook(f.c.weapon,1)==0);pass("native zoom event receives the same baseline coefficient index");
+ fixture_caller=f.c.game+0x110add4;CHECK(selector_hook(f.c.weapon,1)==0);pass("native zoom event receives the same baseline coefficient index");
  fixture_caller=f.c.game+0x764f2f;CHECK(selector_hook(f.c.weapon,1)==2);pass("other caller return addresses forward exact native result");
  fixture_caller=f.c.game+0x764f2e;CHECK(selector_hook(f.c.weapon+1,1)==2 && selector_hook(f.c.weapon,2)==2);
  pass("foreign weapons and parameter types remain native");

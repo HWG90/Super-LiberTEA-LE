@@ -1,0 +1,29 @@
+{
+ "folder": "LLL-R38-LuaJIT-26568081",
+ "staged": "/home/goose/Projects/Linux HD2 Mods/builds/26568081/lll/arsenal/LLL-R38-LuaJIT-26568081",
+ "manifest_guid": "a6b2d1f0-26568081-4c4c-8c50-554300000001",
+ "release": "R38-26568081-luajit.1",
+ "lll_release_label": "R38-26251122-luajit.1",
+ "patch_sha256": "425edeb2d65a904c75f1a8e4daa969dd306a97df00f220cfca8a3bcb0eff68b9",
+ "marker": "hd2_luajit_runtime_d6c1aec33706b30e.dll",
+ "files": {
+  "FILES-SHA256.txt": "ff319421f06fda8819ff7da7c3fc4c22907ccf00ec7cbe73de2fc6ef7df8bd86",
+  "LICENSES/BSL-HELPERS-LICENSE.txt": "4ee36d70b08394ea8241a6615fdc892802bd8eeac5693dc907631f76afa54d11",
+  "LICENSES/BSL-V20-LICENSE.txt": "4ee36d70b08394ea8241a6615fdc892802bd8eeac5693dc907631f76afa54d11",
+  "LICENSES/BSL-V20-PROVENANCE.txt": "b0960d039236188d244bca65412c2d2f933321faf3eeb61cc23660cedd5be1ca",
+  "LICENSES/LLL-CONTENTS-NOTICES.txt": "8dca4fb26757b6235dda23bc0ca175d06e0a7b3d0e4f69a2c9140abfcc23c376",
+  "LICENSES/LLL-R38-LUAJIT-NOTICES.txt": "db41750e06522f834f19be7657715affe98975067bb543cae98acecda5a2f3b2",
+  "LICENSES/LuaJIT-COPYRIGHT.txt": "6cda3076a8c09b31bb1f90da614ea89e7ee194589626eeac613e522849604e47",
+  "LICENSES/cffi-lua.txt": "38211991cb0a5685f962f231a013d416330c9a33e7797f35f635034349751668",
+  "LICENSES/libffi.txt": "2c9c2acb9743e6b007b91350475308aee44691d96aa20eacef8e199988c8c388",
+  "LICENSES/lua-5.1.4.txt": "15c7579ae46d908816dd0ce6f41256a84c2e1862489eb731421626d7335f0db3",
+  "LLL-R38/9ba626afa44a3aa3.patch_0": "425edeb2d65a904c75f1a8e4daa969dd306a97df00f220cfca8a3bcb0eff68b9",
+  "LLL-R38/9ba626afa44a3aa3.patch_0.gpu_resources": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "LLL-R38/9ba626afa44a3aa3.patch_0.stream": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "LLL-R38/f476df93691895fa.lua": "6c6d7acb31b0614e14e0c8525848d3367788b71f1336a976c5686b25c3defc01",
+  "README.txt": "2e6961463d9521b0ee58730d2d8931708a6d83d89bb974aba27d6411213ccd16",
+  "icon.png": "66c83c149143fad99e3ea10def6280561f1e4c8d7ee1f15710f7736c3fe11199",
+  "manifest.json": "f4789661abff4304e9fe18b229a933f9df84f3dd23498dc5ebdda1cb727f5f50"
+ },
+ "library": "/home/goose/.config/hd2arsenal/mods/LLL-R38-LuaJIT-26568081"
+}

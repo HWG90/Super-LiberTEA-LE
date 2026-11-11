@@ -48,7 +48,7 @@ def main():
     hashes = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in (lll, src)}
     (dist / 'SHA256SUMS').write_text(''.join(f'{value}  {name}\n' for name, value in hashes.items()))
     (dist / 'PACKAGE.json').write_text(json.dumps({
-        'id':manifest['id'], 'version':version, 'target':'Steam HD2 build26251122 / LLL LuaJIT / Linux-Proton',
+        'id':manifest['id'], 'version':version, 'target':'Steam HD2 build26568081 / LLL LuaJIT / Linux-Proton',
         'installed':False, 'runtime_files':len(runtime), 'complete_source_files':len(source), 'sha256':hashes,
         'acceptance':'Offline fixtures and exact LLL folder preflight only; native game preview pending.'
     }, indent=2)+'\n')

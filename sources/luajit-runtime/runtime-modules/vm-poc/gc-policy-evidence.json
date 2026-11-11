@@ -1,30 +1,30 @@
 {
-  "capture": "/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin",
-  "capture_sha256": "6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c",
-  "newer_capture": "/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin",
-  "newer_capture_sha256": "6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c",
+  "capture": "/home/goose/Projects/Linux HD2 Mods/builds/26568081/runtime/images/exe-26568081.bin",
+  "capture_sha256": "1932b56a7670a62ab1dd432dc05ca5dbcfd12e7fa49637068b16512ea75602a7",
+  "newer_capture": "/home/goose/Projects/Linux HD2 Mods/builds/26568081/runtime/images/exe-26568081.bin",
+  "newer_capture_sha256": "1932b56a7670a62ab1dd432dc05ca5dbcfd12e7fa49637068b16512ea75602a7",
   "functions": {
     "caller": {
-      "start": "0x5eb2b0",
-      "end": "0x5eb4d6",
-      "sha256": "b878538270ffb83b6e22aa21773308882c668621dc7fdb014d23745e32eb8fea",
+      "start": "0x5eb340",
+      "end": "0x5eb566",
+      "sha256": "09dbcf19a23f3c698cd93fdf96264800f9de2ad54cb4dae3da52c88025fefb93",
       "size": 550
     },
     "forward": {
-      "start": "0x6cd1e0",
-      "end": "0x6cd1ec",
-      "sha256": "1f328732c1df4af9a377276dae6e73904ec51244dd20817cbbc8447bdb1bc328",
+      "start": "0x6cd170",
+      "end": "0x6cd17c",
+      "sha256": "a5039f928a7968e52d258f2999657665b73cdb8ca33ff29564c92c6b04b60d44",
       "size": 12
     },
     "settings": {
-      "start": "0x174dac0",
-      "end": "0x174dad0",
+      "start": "0x174dab0",
+      "end": "0x174dac0",
       "sha256": "3a7be3a2d3dba3cff7199c67df03d056fdf5034d2a7044a4c0cb20ae54176303",
       "size": 16
     },
     "maximum": {
-      "start": "0x174d754",
-      "end": "0x174d758",
+      "start": "0x174d74c",
+      "end": "0x174d750",
       "sha256": "80c8a717ccd70c8809eb78e6a9591c003e11c721fe0ccaf62fd592abda1a5593",
       "size": 4
     }
@@ -37,12 +37,12 @@
     "min_ms": 0.0,
     "max_ms": 10.0
   },
-  "wrapper": "0x6cd1e0 adds 0x100148 to native environment and tail-calls 0x5eb2b0",
+  "wrapper": "0x6cd170 adds 0x100148 to native environment and tail-calls 0x5eb340",
   "history": "peak/previous_peak at +8/+12, floor/previous_floor at +16/+20; cycle saves current then resets peak=0,floor=INT_MAX",
   "growth": "max(current_peak,previous_peak)/min(current_floor,previous_floor)-1; zero floor selects ratio zero",
   "budget": "excess=growth-start; full collection when excess>full_growth; interpolate min/max using excess/growth_range and clamp; retain pre-full excess",
   "loop": "at least one step; stop only when counter>deadline, not equal; at most 5000 steps; rotate history on every completed cycle",
-  "native_time": "QueryPerformanceFrequency IAT 0x148d340; QueryPerformanceCounter IAT 0x148d368; float milliseconds/frequency arithmetic",
+  "native_time": "QueryPerformanceFrequency IAT 0x148d348; QueryPerformanceCounter IAT 0x148d370; float milliseconds/frequency arithmetic",
   "native_vm": "totalbytes +0x78, estimate +0x80, threshold +0x70, state +0x21 at PUC global; exit threshold UINT64_MAX-2 disables automatic GC",
   "replacement_vm": "pinned source headers read own VM estimates; lua_gc public STEP/COLLECT/STOP; defaults pause=200, stepmul=20 from constructor",
   "remaining": "early loader, native settings/profiler wiring and finalizer/TLS behavior; collector step granularity is runtime-specific; no live-game or native Windows acceptance"

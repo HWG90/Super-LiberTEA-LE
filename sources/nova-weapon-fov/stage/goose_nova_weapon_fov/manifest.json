@@ -1,0 +1,15 @@
+{
+  "id": "goose_nova_weapon_fov",
+  "name": "Nova Weapon FOV",
+  "author": "Goose",
+  "version": "0.1.0-26568081",
+  "description": "LAS-44 Nova: the weapon keeps its 3.5x look at the 2.5x and 1x scope zooms. Game build 26568081 only; disabling restores the game's own values.",
+  "lll": {
+    "entry": "main.lua",
+    "defaults": "config/defaults.cfg",
+    "modules": [
+      "src/memory.lua",
+      "src/nova.lua"
+    ]
+  }
+}

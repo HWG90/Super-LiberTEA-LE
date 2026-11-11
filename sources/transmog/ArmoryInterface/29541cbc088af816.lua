@@ -763,7 +763,7 @@ local ArmorStatSemantics = (function()
 -- ui-proof-020bbb78.txt SHA256 8aa8284ec87d07ca5a333ea5d70bf730887c7101f24abcb03eb8b0b613cbc506
 -- ui-rounding-leaf.txt SHA256 b48fe51b81e136ae17baedccee40bd41aa09401baace8a0d5e87a2878b606116
 return {
-["current_native_witness"]={first=24736102,label=24736315,last=24737767,build="26251122",hex="4889bc24180200004c89b424c80100004c89bc24c00100000f29b424b00100000f29bc24a0010000440f29842490010000440f298c2480010000440f29942470010000440f299c2460010000440f29a42450010000440f29ac2440010000440f29b42430010000440f29bc2420010000e8f5b20efff3440f1005d0f3aa00448bf88b4328450f57c983f8010f85a8010000c745f00000c842c745f40000c842c745f80000c842c745e00000c842c745e40000c842c745e80000c84233c048894500894508488d8ec0160000c7860863000003000000bac143b781e85bcab3ff488d8e78190000baeb0c2d5ce84acab3ff488d8e301c0000ba3b89fb10e839cab3fff3440f101550ecaa004c8db6c0520000f3440f101d58f2aa00488dbe78530000f3440f1025e4edaa004c8dbea0210000f3440f102db8fbaa00498bf4c74424380000803fc744243c0000803ff2440f10742438c7442448b2b1313fc744244cb2b1313ff2440f107c24484c89742420c74424400000803fc7442450b2b1313fc7442458b2b1313fc744245cb2b1313fc7442460b2b1313f4c896424300f1f4000660f1f840000000000410f28c8498d8e00c4ffffe8c094b4ff498bcee8b894b4ff8b442440488d542470498bce89442478f2440f11742470e85c90b4ff8b442450488d5580498d8e00c4ffff894588f2440f117d80e83f90b4ffba3cb35272498bcee832c9b3fff30f104c3500410f2fc98b5c2460f20f107424580f86e1010000410f28f2c745a8e7e6e63e8b5da8410f14f3e9e201000085c07522493bdd7515448bc2488d542420e8abc20eff418b7d008b18eb0e8b1b418b7d00eb06418bdc418bfc41837d2802c745f00000c842c745f40000c842c745f80000c842c745e00000c842c745e40000c842c745e80000c8420f8421fefffff30f103d64fbaa004c8d75f0f30f1035f8f8aa00418bf4660f1f84000000000033c9448bce458bc78bd3e8f1328dfff3410f102e0f28e085f67528488b44242841b8473baeaf0f28c88b481ce83f438dff0f28e0f3410f5ce0f30f59e7f30f58e5eb0d83fe02741af30f59e6f30f59e5f3410f1126ffc64983c60483fe0372a0eb1bf3410f5ce0410f28c1f30f5cc4f3410f58c0f30f59c5f3410f1106418bf4498bdc4c8b6424280f1f84000000000033c9448bce458bc78bd7e861328dff0f28e085f67529418b4d1c41b8473baeaf0f28c8e8b8428dfff3410f5cc0f30f59c7f30f58441de0f30f11441de0eb3a83fe027520f3410f5ce0410f28c1f30f5cc4f3410f58c0f30f59441de0f30f11441de0eb1583fe017510f30f59e6f30f59641de0f30f11641de0f30f104c1df0f30f10441de04d3be57506f30f5cc1eb07f30f5cc80f28c1f30f11441d00ffc64883c30483fe030f8254ffffff488b7424684533e4e9c1fcffff440f2fc97616410f28f0c745b8c9c8483e8b5db8410f14f4440f2fc9488b4c2468410f97c1410f2fc9418bd4410f97c0e882e3fffff30f107c35e00f28c7f3410f5ec5e8e7c07a00f34c0f2cf0be0a0000000f1f440000453bf4760ef20f1175d0488d45d0895dd8eb19c745c0cdcccc3e488d45c0c745c4cdcccc3ec745c8cdcccc3ef20f1000488d55908b4008498bcff20f114590894598e8998db4ff410f28c8498bcfe8cd91b4ff498bcfe8c591b4ff4981c7180100004883ee0175984c396c2428750f0f28c7e861c07a00488b742430eb10488b742430f30f104435f0e84ac07a00f30f2cd883fb637e144c8b742420baa724aa2b498bcee837c6b3ffeb7b4533c0488d4f58bada7d7c6441b91030000083fb097f0641b920300000e883a9b3ff84c074508b178bc283c80289073bc27443f7d223d081e2ff2fffff7411488b4f284885c9740841b001e855cab4ff8b8f48ffffff8bc1c1e802a801751783c904898f48ffffff488b4f384885c97405e82fd8b4ff4c8b742420488d4f584533c9448bc3ba357b2aabe816a9b3ff84c074508b178bc283c80289073bc27443f7d223d081e2ff2fffff7411488b4f284885c9740841b001e8e8c9b4ff8b8f48ffffff8bc1c1e802a801751783c904898f48ffffff488b4f384885c97405e8c2d7b4ff4981c6b80200004883c60441ffc44c897424204881c7b802000048897424304183fc030f8299fbffff440f28bc2420010000440f28b42430010000440f28ac2440010000440f28a42450010000440f289c2460010000440f28942470010000440f288c2480010000440f288424900100000f28bc24a00100000f28b424b00100004c8bbc24c00100004c8bb424c8010000488bbc2418020000"},
+["current_native_witness"]={first=24736454,label=24736667,last=24738119,build="26568081",hex="4889bc24180200004c89b424c80100004c89bc24c00100000f29b424b00100000f29bc24a0010000440f29842490010000440f298c2480010000440f29942470010000440f299c2460010000440f29a42450010000440f29ac2440010000440f29b42430010000440f29bc2420010000e895b10efff3440f100580f2aa00448bf88b4328450f57c983f8010f85a8010000c745f00000c842c745f40000c842c745f80000c842c745e00000c842c745e40000c842c745e80000c84233c048894500894508488d8ec0160000c7860863000003000000bac143b781e85bcab3ff488d8e78190000baeb0c2d5ce84acab3ff488d8e301c0000ba3b89fb10e839cab3fff3440f101500ebaa004c8db6c0520000f3440f101d08f1aa00488dbe78530000f3440f102594ecaa004c8dbea0210000f3440f102d68faaa00498bf4c74424380000803fc744243c0000803ff2440f10742438c7442448b2b1313fc744244cb2b1313ff2440f107c24484c89742420c74424400000803fc7442450b2b1313fc7442458b2b1313fc744245cb2b1313fc7442460b2b1313f4c896424300f1f4000660f1f840000000000410f28c8498d8e00c4ffffe8c094b4ff498bcee8b894b4ff8b442440488d542470498bce89442478f2440f11742470e85c90b4ff8b442450488d5580498d8e00c4ffff894588f2440f117d80e83f90b4ffba3cb35272498bcee832c9b3fff30f104c3500410f2fc98b5c2460f20f107424580f86e1010000410f28f2c745a8e7e6e63e8b5da8410f14f3e9e201000085c07522493bdd7515448bc2488d542420e84bc10eff418b7d008b18eb0e8b1b418b7d00eb06418bdc418bfc41837d2802c745f00000c842c745f40000c842c745f80000c842c745e00000c842c745e40000c842c745e80000c8420f8421fefffff30f103d14faaa004c8d75f0f30f1035a8f7aa00418bf4660f1f84000000000033c9448bce458bc78bd3e8f1328dfff3410f102e0f28e085f67528488b44242841b8473baeaf0f28c88b481ce83f438dff0f28e0f3410f5ce0f30f59e7f30f58e5eb0d83fe02741af30f59e6f30f59e5f3410f1126ffc64983c60483fe0372a0eb1bf3410f5ce0410f28c1f30f5cc4f3410f58c0f30f59c5f3410f1106418bf4498bdc4c8b6424280f1f84000000000033c9448bce458bc78bd7e861328dff0f28e085f67529418b4d1c41b8473baeaf0f28c8e8b8428dfff3410f5cc0f30f59c7f30f58441de0f30f11441de0eb3a83fe027520f3410f5ce0410f28c1f30f5cc4f3410f58c0f30f59441de0f30f11441de0eb1583fe017510f30f59e6f30f59641de0f30f11641de0f30f104c1df0f30f10441de04d3be57506f30f5cc1eb07f30f5cc80f28c1f30f11441d00ffc64883c30483fe030f8254ffffff488b7424684533e4e9c1fcffff440f2fc97616410f28f0c745b8c9c8483e8b5db8410f14f4440f2fc9488b4c2468410f97c1410f2fc9418bd4410f97c0e882e3fffff30f107c35e00f28c7f3410f5ec5e8e7c07a00f34c0f2cf0be0a0000000f1f440000453bf4760ef20f1175d0488d45d0895dd8eb19c745c0cdcccc3e488d45c0c745c4cdcccc3ec745c8cdcccc3ef20f1000488d55908b4008498bcff20f114590894598e8998db4ff410f28c8498bcfe8cd91b4ff498bcfe8c591b4ff4981c7180100004883ee0175984c396c2428750f0f28c7e861c07a00488b742430eb10488b742430f30f104435f0e84ac07a00f30f2cd883fb637e144c8b742420baa724aa2b498bcee837c6b3ffeb7b4533c0488d4f58bada7d7c6441b91030000083fb097f0641b920300000e883a9b3ff84c074508b178bc283c80289073bc27443f7d223d081e2ff2fffff7411488b4f284885c9740841b001e855cab4ff8b8f48ffffff8bc1c1e802a801751783c904898f48ffffff488b4f384885c97405e82fd8b4ff4c8b742420488d4f584533c9448bc3ba357b2aabe816a9b3ff84c074508b178bc283c80289073bc27443f7d223d081e2ff2fffff7411488b4f284885c9740841b001e8e8c9b4ff8b8f48ffffff8bc1c1e802a801751783c904898f48ffffff488b4f384885c97405e8c2d7b4ff4981c6b80200004883c60441ffc44c897424204881c7b802000048897424304183fc030f8299fbffff440f28bc2420010000440f28b42430010000440f28ac2440010000440f28a42450010000440f289c2460010000440f28942470010000440f288c2480010000440f288424900100000f28bc24a00100000f28b424b00100004c8bbc24c00100004c8bb424c8010000488bbc2418020000"},
 ["ui"]={
 "cmp dword [r13+0x28], +0x02",
 "mov dword [rbp-0x10], initial_float",
@@ -2151,12 +2151,19 @@ function M.new(bridge,report,backend,process)
  local snapshots=setmetatable({}, {__mode='k'});local movement
  local creator_actions,creator_bounds
  local commit_snapshots=setmetatable({}, {__mode='k'});local commit_session,commit_session_key
+ -- What the cold parts wait for: `unread` the last evidence that could not be
+ -- read, `waits` those readings kept for a cold part, `cold_at` the code pages
+ -- the scan found unreadable, `absent` the optional patterns not found on what
+ -- it could read.
+ local unread;local waits,cold_at,absent={}, {}, {}
  local function read(at,n)
   if not(type(at)=='number'and type(n)=='number'and at%1==0 and n%1==0
    and at>=65536 and at+n<140737488355328 and n>=1 and n<=262144)then
    error(string.format('grid read bounds rejected: address=%s length=%s',tostring(at),tostring(n)))
   end
-  local raw=bridge.read(at,n);assert(type(raw)=='string'and #raw==n,'grid evidence unreadable');return raw
+  local raw=bridge.read(at,n)
+  if not(type(raw)=='string'and #raw==n)then unread={at=at,n=n};error('grid evidence unreadable')end
+  return raw
  end
  local function inside(rva,n,exec)
   for _,section in ipairs(sections)do
@@ -2168,17 +2175,62 @@ function M.new(bridge,report,backend,process)
  -- unreadable; those are zeros here, so nothing is found on them, and a
  -- function that lay on one is named as not loaded yet, for a later scan.
  local PAGE=4096;local ZERO=string.rep('\0',PAGE)
- local function code(at,n)
+ local function code(at,n,again)
   local raw=bridge.read(at,n);if type(raw)=='string'and #raw==n then return raw end
   local parts,stop={},at+n
   while at<stop do
    local size=math.min(PAGE-at%PAGE,stop-at)
    local page=bridge.read(at,size)
-   if type(page)~='string'or #page~=size then page=size==PAGE and ZERO or ZERO:sub(1,size);self.cold_pages=(self.cold_pages or 0)+1 end
+   if type(page)~='string'or #page~=size then
+    page=size==PAGE and ZERO or ZERO:sub(1,size)
+    if not again then self.cold_pages=(self.cold_pages or 0)+1;cold_at[#cold_at+1]=at end
+   end
    parts[#parts+1]=page;at=at+size
   end
   return table.concat(parts)
  end
+ -- Whether a scan pattern is in these bytes.
+ local function holds(raw,p)
+  local start=1
+  while true do
+   local at=raw:find(p.anchor,start,true);if not at then return false end
+   local match=at+#p.bytes-1<=#raw
+   if match then for j=1,#p.bytes do if not p.ignore[j]and p.bytes:byte(j)~=raw:byte(at+j-1)then match=false;break end end end
+   if match then return true end
+   start=at+1
+  end
+ end
+ -- Whether code a cold part waits for can be read since the last asking: a
+ -- reading that failed, or a page the scan could not read that now holds the
+ -- pattern of a part it did not find. True once for each; the grid is then
+ -- made again (NativeGridRenewal). The game runs a picker's hover and detail
+ -- code when the player first points at a card, which may be long after the
+ -- picker opened. `budget` pages are tried per call, in turn.
+ local turn=0
+ function self:warmed(budget)
+  if self.phase~='ready'or #self.cold_parts==0 then return false end
+  for i=#waits,1,-1 do
+   local raw=bridge.read(waits[i].at,waits[i].n)
+   if type(raw)=='string'and #raw==waits[i].n then table.remove(waits,i);return true end
+  end
+  if #absent==0 then return false end
+  for _=1,math.min(budget or 64,#cold_at)do
+   if turn>=#cold_at then turn=0 end
+   turn=turn+1
+   local at=cold_at[turn]
+   if type(bridge.read(at,1))=='string'then
+    table.remove(cold_at,turn);turn=turn-1
+    local first=at-at%PAGE
+    local raw=code(first-PAGE,3*PAGE,true)
+    for i=#absent,1,-1 do
+     if holds(raw,absent[i])then table.remove(absent,i);return true end
+    end
+   end
+  end
+  return false
+ end
+ -- The address proven for a named target, or nil.
+ function self:target(name)return targets[name]end
  -- Whether memory still holds bytes read earlier: compared in place when the
  -- bridge can, with no string made of the reading.
  local function same(at,bytes)
@@ -2248,7 +2300,7 @@ function M.new(bridge,report,backend,process)
    -- thumbnail): a player who joins a mission in progress never gets there.
    -- What the code that can be read proves is a grid now.
    if p.spec.optional and not p.found and self.cold_pages then
-    self.cold_parts[#self.cold_parts+1]=p.spec.name
+    self.cold_parts[#self.cold_parts+1]=p.spec.name;absent[#absent+1]=p
    elseif p.spec.optional and (not p.found or p.ambiguous)then report('grid.'..p.spec.name,'optional proof unavailable')
    else
    if not p.found and self.cold_pages then
@@ -2256,7 +2308,7 @@ function M.new(bridge,report,backend,process)
     error('native grid function '..p.spec.name..' is not loaded yet ('..self.cold_pages..' code pages unread)',0)
    end
    assert(p.found,'native grid function unavailable: '..p.spec.name)
-   local proof_count=#proofs
+   local proof_count=#proofs;unread=nil
    local valid,reason=pcall(function()
    assert(inside(p.found,p.spec.length,true),'grid function proof outside code')
    local raw=read(base+p.found,p.spec.length)
@@ -2524,6 +2576,7 @@ function M.new(bridge,report,backend,process)
      proofs[#proofs+1]={rva=setter,bytes=raw};return base+setter
     end)
     if feedback_ok then targets.equip_state=feedback end
+    unread=nil
     local widgets_ok,widget_proof=pcall(function()
      local stats,passive
      for i,row in ipairs(detail_rows)do
@@ -2554,7 +2607,14 @@ function M.new(bridge,report,backend,process)
     if widgets_ok then
      targets.detail_stats=widget_proof.stats;targets.detail_passive=widget_proof.passive
      for _,proof in ipairs(widget_proof.proofs)do proofs[#proofs+1]=proof end
-    else report('grid.variant_widgets',tostring(widget_proof))end
+    else
+     -- Widget code the game has not run yet is waited for like any cold part.
+     if unread and tostring(widget_proof):find('unreadable',1,true)then
+      self.cold_parts[#self.cold_parts+1]='variant_widgets';waits[#waits+1]=unread
+     end
+     unread=nil
+     report('grid.variant_widgets',tostring(widget_proof))
+    end
    elseif p.spec.name=='list_clear'then
     for _,op in ipairs(Expect.list_clear)do
      assert(has(rows,op),'native list clear contract differs: '..op)
@@ -2707,7 +2767,10 @@ function M.new(bridge,report,backend,process)
     while #proofs>proof_count do table.remove(proofs)end
     targets[p.spec.name]=nil
     if p.spec.name=='selection'then progression_global=nil elseif p.spec.name=='thumbnail'then thumbnail_global=nil elseif p.spec.name=='commit_source'then commit_info=nil end
-    if unreadable then self.cold_parts[#self.cold_parts+1]=p.spec.name end
+    if unreadable then
+     self.cold_parts[#self.cold_parts+1]=p.spec.name
+     if unread then waits[#waits+1]=unread end
+    end
     report('grid.'..p.spec.name,tostring(reason))
    else report('grid.'..p.spec.name,'semantic proof verified')end
    end
@@ -4634,11 +4697,14 @@ local NativeGridRenewal = (function()
 -- A screen whose renewal found nothing new while its picker stayed open is
 -- not renewed again, and no screen more than ATTEMPTS times. A picker that
 -- closed before the new grid resolved gave the game no time to run its code.
--- No game reads; the grids are the caller's.
+-- Neither limit holds once a grid says code its cold parts wait for can be
+-- read (`grid:warmed()`): the game runs some picker code only when the player
+-- first points at a card, and each such word is a reason to scan again.
+-- No game reads of its own; the grids are the caller's.
 local M={ATTEMPTS=3}
 function M.new()
  local self={}
- local previous,previous_kind,opening_used
+ local previous,previous_kind,opening_used,asked
  local tried,spent={}, {}
  -- `bridge` the grid in use, `open` whether a picker of screen kind `kind` is
  -- up, `make()` a new resolving grid. Returns the grid to use and, when the
@@ -4647,12 +4713,12 @@ function M.new()
   if not open then opening_used=nil end
   if previous then
    if bridge.phase=='resolving'then return bridge end
-   local old,where=previous,previous_kind;previous=nil;previous_kind=nil
+   local old,where,warm=previous,previous_kind,asked;previous=nil;previous_kind=nil;asked=nil
    if bridge.phase=='ready'and #bridge.cold_parts<=#old.cold_parts then
-    if #bridge.cold_parts==#old.cold_parts and opening_used then tried[where]=true end
+    if #bridge.cold_parts==#old.cold_parts and opening_used and not warm then tried[where]=true end
     return bridge,#bridge.cold_parts==0 and'complete'or'still cold: '..table.concat(bridge.cold_parts,',')
    end
-   if opening_used then tried[where]=true end
+   if opening_used and not warm then tried[where]=true end
    return old,'kept the previous grid: '..tostring(bridge.failure or'the new one has more cold parts')
   end
   if open and kind and not opening_used and bridge and bridge.phase=='ready'and #bridge.cold_parts>0
@@ -4660,6 +4726,11 @@ function M.new()
    opening_used=true;spent[kind]=(spent[kind]or 0)+1
    previous,previous_kind=bridge,kind
    return make(),'scanning again for '..table.concat(bridge.cold_parts,',')
+  end
+  if open and kind and bridge and bridge.phase=='ready'and #bridge.cold_parts>0
+   and type(bridge.warmed)=='function'and bridge:warmed()then
+   previous,previous_kind,asked=bridge,kind,true
+   return make(),'the game has loaded code since: scanning again for '..table.concat(bridge.cold_parts,',')
   end
   return bridge
  end

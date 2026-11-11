@@ -46,7 +46,7 @@ function M.new(options)
     local function p(at)return pointer(r(at,8))end
     local function u(at)return word(r(at,4))end
     local function basic(v)return type(v)=='table'and v.can_start==true and v.menu_closed==true and not v.photo and not v.fixed_pose
-        and(v.context==2 or v.context==4)and v.base and v.base.scene==3 and v.base.stamp==0x6ae0e5ff end
+        and(v.context==2 or v.context==4)and v.base and v.base.scene==3 and v.base.stamp==0x6af322c1 end
     local function input_gate(v)
         if not basic(v)then return false end
         if options.gate then return options.gate(v)==true end
@@ -59,7 +59,7 @@ function M.new(options)
         if not input_gate(v)then return false end
         if options.gate then return true end
         local b=v.base;local g,e,gs=io.module('game.dll');local _,_,es=io.module('helldivers2.exe')
-        if g~=b.game or gs~=0x6ae0e5ff or es~=0x6ae0964a then return false end
+        if g~=b.game or gs~=0x6af322c1 or es~=0x6af2d5e6 then return false end
         local descriptor=r(b.ep,24)
         return p(g+0x2ce41b8)==b.world and p(g+0x2ce1ee0)==b.pm and u(p(g+0x2ce1508)+0xac29c)==3
             and u(b.pm+0x70)==1 and p(b.pm+0x110)==b.ep and descriptor:byte(21)%2==1

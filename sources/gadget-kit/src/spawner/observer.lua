@@ -3,7 +3,7 @@ local PORT51=mod.require('src/first_person/compat51.lua')
 -- src/runtime.lua (helpers, photo_state and M.observer). The only change: the game state must
 -- be the one the caller passes (4 = in mission) instead of Bridge Combat's ship state 3.
 local M = {}
-local STAMP, EXE_STAMP = 0x6ae0e5ff, 0x6ae0964a
+local STAMP, EXE_STAMP = 0x6af322c1, 0x6af2d5e6
 local BODY = string.char(0x97,0xFA,0x4D,0x29,0x4D,0x33,0x1C,0x4D)
 local function word(bytes,offset)
     offset=offset or 0

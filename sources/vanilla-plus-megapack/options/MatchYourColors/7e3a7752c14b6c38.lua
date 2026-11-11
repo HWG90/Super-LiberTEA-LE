@@ -12289,7 +12289,7 @@ local DECLARATIONS = [[
 ]]
 
 Engine.SCRIPT_API_RVA = 0x2CE14C8
-Engine.GET_ENGINE_API_RVA = 0xa6f60
+Engine.GET_ENGINE_API_RVA = 0xa6f90
 Engine.GET_ENGINE_API_PREFIX = '\72\131\236\40\131\249\1\15\133' -- sub rsp, 28h; cmp ecx, 1; jnz
 Engine.LUT_SLOT = 0x7e662968
 Engine.PATTERN_SLOT = 0x81d4c49d
@@ -12311,13 +12311,13 @@ Engine.TEXTURE_VIEW = 3
 Engine.UPDATABLE = 1 -- create_buffer's validity: the texture takes update_buffer
 -- {table, slot offset, expected executable offset} for every function the mod calls.
 Engine.FUNCTIONS = {
-    alive = {'unit', 1824, 0x1f4cb0}, meshes = {'unit', 424, 0x1f6ad0}, mesh = {'unit', 440, 0x1f6b20},
-    visibility = {'unit', 1624, 0x1fb480}, -- set_unit_visibility: queues the change for the world's update (Hide Cape)
-    materials = {'mesh', 8, 0x3136d0}, material = {'mesh', 24, 0x313720}, commit = {'mesh', 32, 0x313730},
-    set_resource = {'material', 128, 0x2de900}, -- a jump to 0x4f3230
-    create = {'buffers', 0x60, 0x1bd7c0}, update = {'buffers', 0x68, 0x1bdb90}, destroy = {'buffers', 0x70, 0x1bdca0},
-    resource = {'buffers', 0x78, 0x1be170},
-    can_get = {'resources', 0x30, 0xa2e40}, get = {'resources', 0x40, 0xa2f00},
+    alive = {'unit', 1824, 0x1f4d70}, meshes = {'unit', 424, 0x1f6b90}, mesh = {'unit', 440, 0x1f6be0},
+    visibility = {'unit', 1624, 0x1fb540}, -- set_unit_visibility: queues the change for the world's update (Hide Cape)
+    materials = {'mesh', 8, 0x313780}, material = {'mesh', 24, 0x3137d0}, commit = {'mesh', 32, 0x3137e0},
+    set_resource = {'material', 128, 0x2de9b0}, -- a jump to 0x4f3230
+    create = {'buffers', 0x60, 0x1bd870}, update = {'buffers', 0x68, 0x1bdc40}, destroy = {'buffers', 0x70, 0x1bdd50},
+    resource = {'buffers', 0x78, 0x1be220},
+    can_get = {'resources', 0x30, 0xa2e70}, get = {'resources', 0x40, 0xa2f30},
 }
 local TYPES = {alive = 'myc1_unit_alive', meshes = 'myc1_unit_meshes', mesh = 'myc1_unit_mesh',
                visibility = 'myc1_unit_visibility',
@@ -17767,8 +17767,8 @@ Addon.KEEP_FRAMES = 600
 Addon.CLOSES_PER_CHECK = 4 -- queued game-file handles closed per binding check (close_kept: about 0.09 ms each in game)
 Addon.FAILURE_LIMIT = 3
 Addon.REGISTER_FRAMES = {1, 60, 180, 420, 900, 1800}
-Addon.GAME_SHA256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'
-Addon.EXE_SHA256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D'
+Addon.GAME_SHA256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'
+Addon.EXE_SHA256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB'
 Addon.MODE_NAMES = {'off', 'helmet matches armor', 'armor matches helmet', 'helmet and armor match the cape'}
 
 -- Whether two identities name the same Helldiver with the same kits and records (the cape aside: it matters only
@@ -18966,7 +18966,7 @@ function Addon.install(m)
         local game, exe = memory.module('game.dll'), memory.module(nil)
         require_that(game ~= nil and exe ~= nil, 'game modules unavailable')
         local ok, why = memory.verify_build({exe_sha256 = Addon.EXE_SHA256, game_sha256 = Addon.GAME_SHA256})
-        require_that(ok, why == 'unsupported game build' and 'unsupported game build (needs Steam build 26251122)'
+        require_that(ok, why == 'unsupported game build' and 'unsupported game build (needs Steam build 26568081)'
                      or tostring(why))
         local native, problem = m.Engine.open(memory, memory.address(game), memory.address(exe), m.get_engine_api)
         require_that(native, tostring(problem))

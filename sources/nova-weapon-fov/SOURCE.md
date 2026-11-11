@@ -1,4 +1,4 @@
-# Nova Weapon FOV 0.1.0-26251122
+# Nova Weapon FOV 0.1.0-26568081
 
-The Linux HD2 Mods workspace, branch `indev/nova-weapon-fov-zoom-92372e`, commit `cefd305343ecfcaed3d0c724ebf5d3b3e6484568`: `stage/goose_nova_weapon_fov`
-is the LLL folder mod as shipped, `tests/harness.lua` its offline checks, `live/` the probes the values were found with.
+The Linux HD2 Mods workspace, `builds/26568081`: `stage/goose_nova_weapon_fov` is the LLL folder mod as shipped,
+`tests/harness.lua` its offline checks, `port/` the notes and scripts of the port from the 26251122 build.

@@ -1,2 +1,2 @@
 -- Generated from the rebuilt original weapon menu (native-work/bridge-original).
-return {available=true,file="native/BridgeCombatWeaponMenu-bcb24cbfd1cd.dll",sha256="bcb24cbfd1cd47d30bca49db9cf9c70861a372c5cfca0195840daa8e41c7dbd4",bytes=477696}
+return {available=true,file="native/BridgeCombatWeaponMenu-2c8fa4e14702.dll",sha256="2c8fa4e14702b36080f1d4c1ac977b6f748b46485683bd01d8c2e2f3684efd32",bytes=477696}

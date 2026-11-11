@@ -573,7 +573,7 @@ local Cooldown = (function()
 -- cooling down: 1 to 3 reads while none is, no allocation. A pause (an update below this addon failed) or a stop puts the original bytes back; a
 -- resume writes them again.
 local Cooldown = {VERSION = '1.1.1'}
-Cooldown.REVISION = 'v' .. Cooldown.VERSION .. '-26251122'
+Cooldown.REVISION = 'v' .. Cooldown.VERSION .. '-26568081'
 
 local ffi = require('ffi')
 local format = string.format
@@ -1205,8 +1205,8 @@ end
 
 -- Build 26088801 module hashes, verified through bingus_memory.lua (each file hashed once per session for
 -- every mod that asks).
-Cooldown.GAME_SHA256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'
-Cooldown.EXE_SHA256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D'
+Cooldown.GAME_SHA256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'
+Cooldown.EXE_SHA256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB'
 
 -- Bingus Shared Loader v18+ with API 1, recognized by what it offers, never by its internal version.
 function Cooldown.loader_ok(loader)
@@ -1264,7 +1264,7 @@ function Cooldown.install(runtime, memory, options)
         local game = memory.module('game.dll')
         require_that(game ~= nil and memory.module(nil) ~= nil, 'game modules unavailable')
         local ok, why = memory.verify_build({exe_sha256 = Cooldown.EXE_SHA256, game_sha256 = Cooldown.GAME_SHA256})
-        require_that(ok, why == 'unsupported game build' and 'unsupported game build (needs Steam build 26251122)'
+        require_that(ok, why == 'unsupported game build' and 'unsupported game build (needs Steam build 26568081)'
                      or tostring(why))
         local api = (options.adapter or Cooldown.adapter)()
         return Cooldown.new(api, memory.address(game), note)

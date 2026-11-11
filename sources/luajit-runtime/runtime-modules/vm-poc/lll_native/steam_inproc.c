@@ -31,8 +31,8 @@
 #define LLL_INPROC_MAX_WATCHES 256u
 #define LLL_INPROC_MAX_REQUEST (64u * 1024u * 1024u)
 /* The service build's pins (steam_files.c EXE_SHA/GAME_SHA); test_steam_inproc.c checks they agree. */
-static const char lll_inproc_exe_sha[] = "257fd7de21a04e8668e02e5c820edf3435176fbde3569765255cc52a5ea20f9d";
-static const char lll_inproc_game_sha[] = "61dcfcd201dacbf3545c97beb8a5a6186e9850d2670bf60b0e058320b477f6df";
+static const char lll_inproc_exe_sha[] = "b434f6f326b7759978265f5863ef72e3c5edd4aa5315cc1ef4b640d204eae0bb";
+static const char lll_inproc_game_sha[] = "08b756f535cdb9bdd1b4953fba53c3dfacd25730a155ea6593e5de63211acf5f";
 
 typedef struct LLLInprocWatch { wchar_t *path; HANDLE handle; uint32_t generation; int ancestor; } LLLInprocWatch;
 static LLLInprocWatch lll_inproc_watches[LLL_INPROC_MAX_WATCHES];

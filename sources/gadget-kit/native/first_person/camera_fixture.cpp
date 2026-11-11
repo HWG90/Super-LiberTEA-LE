@@ -37,6 +37,24 @@ static uint32_t end_current() {return NADSC_End(active_generation);}
 static float last(unsigned axis) {float f=0;std::memcpy(&f,&records[calls-1].bits[axis],4);return f;}
 static bool approximately(float a,float b) {return std::fabs(a-b)<.0001f;}
 static void pass(const char* name) {++cases;std::printf("PASS %s\n",name);}
+// The seam changes protection only on our VirtualAlloc data, then calls the
+// production ReadProcessMemory path. No stack, executable or game pages are used.
+static void fail_rpm_once(uint64_t at,bool restore_readable=true) {
+    CHECK(fixture_rpm_failure_remaining==0);
+    fixture_rpm_failure_at=at;fixture_rpm_failure_remaining=1;
+    fixture_rpm_restore_readable=restore_readable;
+}
+static void clear_rpm_failure() {
+    fixture_rpm_failure_at=0;fixture_rpm_failure_remaining=0;fixture_rpm_restore_readable=true;
+}
+static void recovery_event(const char* stage,uint32_t result,uint32_t native_error,uint64_t token,
+                           uint64_t cas_changes,bool exact_native=false,const NADSC_Stats* stats=nullptr) {
+    std::printf("RECOVERY_EVENT {\"stage\":\"%s\",\"result\":%u,\"native_error\":%u,\"token\":%llu,"
+        "\"cas_changes\":%llu,\"rpm_failures\":%llu,\"exact_native\":%s,\"armed\":%u,\"installed\":%u,\"reserved\":%u}\n",
+        stage,result,native_error,static_cast<unsigned long long>(token),static_cast<unsigned long long>(cas_changes),
+        static_cast<unsigned long long>(fixture_rpm_failures),exact_native?"true":"false",
+        stats?stats->armed:armed.load(),stats?stats->installed:installed.load(),reserved.load());
+}
 struct Fixture {
     NADSC_Config c{};uint64_t controller=0,descriptor=0,registry=0,units=0,generations=0,body_object=0,camera_object=0;
     uint64_t api=0,hashes=0,links=0,body_world=0,body_vtable=0,camera_locals=0,camera_worlds=0,request=0;
@@ -44,12 +62,12 @@ struct Fixture {
     Setter invoke=nullptr;float input[4]{-2,0,1,0};
     Fixture() {
         c.size=sizeof c;c.abi=1;c.game=allocate(0x3382000,PAGE_EXECUTE_READWRITE);c.exe=allocate(0x29fe000);
-        fake_image(c.game,0x6ae0e5ff,0x3382000);fake_image(c.exe,0x6ae0964a,0x29fe000);
+        fake_image(c.game,0x6af322c1,0x3382000);fake_image(c.exe,0x6af2d5e6,0x29fe000);
         // Independent literal captures from batches1616/1627, not production constants.
-        literal(c.exe+0x2dd4f0,"48895c2408574883ec60488bd9498bf88bcae89931dcff4c8b4b184c8bd04c6343208b4708498bd048c1e206498b4920");
-        literal(c.exe+0x1f3020,"40534883ec204863dae872d6eaff488bc84c8b0041ff90e8000000488bcb48c1e10648034828488bc14883c4205bc3");
-        literal(c.exe+0x28d310,"488d4160c3");
-        literal(c.exe+0x28d460,"488b8178010000c3");
+        literal(c.exe+0x2dd5a0,"48895c2408574883ec60488bd9498bf88bcae81931dcff4c8b4b184c8bd04c6343208b4708498bd048c1e206498b4920");
+        literal(c.exe+0x1f30e0,"40534883ec204863dae8e2d5eaff488bc84c8b0041ff90e8000000488bcb48c1e10648034828488bc14883c4205bc3");
+        literal(c.exe+0x28d3c0,"488d4160c3");
+        literal(c.exe+0x28d510,"488b8178010000c3");
         c.context=allocate(0x3000);c.camera=allocate(0x1000);c.avatar_owner=allocate(0x540000);
         c.avatar_index=0;c.avatar=0x333;c.body=0x400003;c.camera_unit=0x400004;
         c.forward=.18f;c.up=.04f;c.blend_ms=150;c.smoothing_ms=100;c.max_gap_ms=250;
@@ -64,13 +82,13 @@ struct Fixture {
         put<uint64_t>(registry+0x88,units);put<uint64_t>(registry+0xA0,generations);
         put<uint8_t>(generations+3,1);put<uint64_t>(units+3*8,body_object);
         put<uint8_t>(generations+4,1);put<uint64_t>(units+4*8,camera_object);
-        put<uint64_t>(body_object,body_vtable);put<uint64_t>(body_vtable+0xE8,c.exe+0x28d310);
+        put<uint64_t>(body_object,body_vtable);put<uint64_t>(body_vtable+0xE8,c.exe+0x28d3c0);
         hashes=allocate(0x1000);links=allocate(0x1000);body_world=allocate(107*64);
         put<uint32_t>(body_object+0x70,107);put<uint64_t>(body_object+0xA0,hashes);put<uint64_t>(body_object+0x98,links);
         put<uint64_t>(body_object+0x88,body_world);put<uint32_t>(hashes+90*4,0x8C5570C9);put<uint32_t>(hashes+89*4,0xE9ECCA21);
         put<uint32_t>(links+90*4,(89u<<16)|1u);
         anim_instance=allocate(0x1000);anim_graph=allocate(0x20000);anim_current=allocate(0x1000);anim_definition=anim_graph+0x200;
-        put<uint64_t>(body_vtable+0x1B0,c.exe+0x28d460);put<uint64_t>(body_object+0x178,anim_instance);
+        put<uint64_t>(body_vtable+0x1B0,c.exe+0x28d510);put<uint64_t>(body_object+0x178,anim_instance);
         put<uint64_t>(body_object+0x358,0x4D1C334D294DFA97ULL);put<uint64_t>(anim_instance+0x28,anim_graph);
         put<uint64_t>(anim_instance+0x50,anim_current);put<uint32_t>(anim_graph+4,31);put<uint32_t>(anim_graph+8,0x100);
         put<uint32_t>(anim_graph+0x100+4+13*4,0x100);put<uint32_t>(anim_definition+8,128);
@@ -82,7 +100,7 @@ struct Fixture {
         const uint64_t root=allocate(0x1000);api=allocate(0x1000);put<uint64_t>(c.game+0x2ce14c8,root);put<uint64_t>(root+0x20,api);
         put<uint64_t>(api+0x20,reinterpret_cast<uint64_t>(synthetic_setter));fixture_target=synthetic_setter;
         // sub rsp,28; mov r9,API; call [r9+20]; add rsp,28; ret.
-        const uint64_t site=c.game+0x110be95;literal(site-14,"4883ec2849b9");put<uint64_t>(site-8,api);
+        const uint64_t site=c.game+0x110bff5;literal(site-14,"4883ec2849b9");put<uint64_t>(site-8,api);
         literal(site,"41ff51204883c428c3");CHECK(FlushInstructionCache(GetCurrentProcess(),reinterpret_cast<void*>(site-14),23));
         invoke=reinterpret_cast<Setter>(site-14);normal();
     }
@@ -110,6 +128,105 @@ struct Fixture {
 int main() {
     Fixture f;CHECK(f.stats().installed==0);CHECK(NADSC_Validate(&f.c)==1 && fixture_cas_calls==0);
     CHECK(begin_current(&f.c)==1 && calls==0);CHECK(end_current()==1);pass("read-only preflight; Begin owns dispatch without out-of-frame camera writes");
+
+    // A real failed RPM on an otherwise readable owner span is the only new
+    // retryable result. Neither preflight may acquire a token or alter dispatch.
+    f.normal();const auto recovery_cas=fixture_cas_calls;const auto recovery_failures=fixture_rpm_failures;
+    const auto native_slot=*reinterpret_cast<const uint64_t*>(f.api+0x20);
+    fail_rpm_once(f.controller);
+    const uint32_t validate_read=NADSC_Validate(&f.c),validate_error=NADSC_Error();
+    CHECK(validate_read==0 && validate_error==READ_FAILED && fixture_rpm_failure_remaining==0);
+    CHECK(fixture_rpm_failures==recovery_failures+1 && reserved.load()==0 && fixture_cas_calls==recovery_cas);
+    CHECK(*reinterpret_cast<const uint64_t*>(f.api+0x20)==native_slot);
+    recovery_event("validate_read_failed",validate_read,validate_error,0,fixture_cas_calls-recovery_cas);
+    clear_rpm_failure();CHECK(NADSC_Validate(&f.c)==1 && NADSC_Error()==OK);
+    fail_rpm_once(f.controller);uint64_t rejected_token=UINT64_MAX;
+    const uint32_t begin_read=NADSC_Begin(&f.c,&rejected_token),begin_error=NADSC_Error();
+    CHECK(begin_read==0 && begin_error==READ_FAILED && rejected_token==0 && reserved.load()==0);
+    CHECK(fixture_rpm_failures==recovery_failures+2 && fixture_rpm_failure_remaining==0 && fixture_cas_calls==recovery_cas);
+    CHECK(*reinterpret_cast<const uint64_t*>(f.api+0x20)==native_slot);
+    recovery_event("begin_read_failed",begin_read,begin_error,rejected_token,fixture_cas_calls-recovery_cas);
+    clear_rpm_failure();pass("real transient owner RPM failure returns code3 without token dispatch mutation or sticky success error");
+
+    // Restore=false leaves a committed inaccessible page. That is an unsafe
+    // ownership failure, as are semantic mismatch, invalid and unmapped owners.
+    fail_rpm_once(f.controller,false);CHECK(NADSC_Validate(&f.c)==0 && NADSC_Error()==OWNER_MISMATCH);
+    CHECK(fixture_rpm_failure_remaining==0 && fixture_rpm_failures==recovery_failures+3);
+    MEMORY_BASIC_INFORMATION inaccessible{};CHECK(VirtualQuery(reinterpret_cast<void*>(f.controller),&inaccessible,sizeof inaccessible)==sizeof inaccessible);
+    CHECK(inaccessible.State==MEM_COMMIT && inaccessible.Protect==PAGE_NOACCESS);
+    DWORD discarded=0;CHECK(VirtualProtect(reinterpret_cast<void*>(f.controller),0x1000,PAGE_READWRITE,&discarded));clear_rpm_failure();
+    f.controls(0x20);CHECK(NADSC_Validate(&f.c)==0 && NADSC_Error()==OWNER_MISMATCH);
+    rejected_token=UINT64_MAX;CHECK(NADSC_Begin(&f.c,&rejected_token)==0 && rejected_token==0 && NADSC_Error()==OWNER_MISMATCH);
+    f.controls();put<uint64_t>(f.c.game+0x2e381a8,1);
+    CHECK(NADSC_Validate(&f.c)==0 && NADSC_Error()==OWNER_MISMATCH);
+    const uint64_t unmapped=allocate(0x1000);CHECK(VirtualFree(reinterpret_cast<void*>(unmapped),0,MEM_RELEASE));
+    put<uint64_t>(f.c.game+0x2e381a8,unmapped);CHECK(NADSC_Validate(&f.c)==0 && NADSC_Error()==OWNER_MISMATCH);
+    put<uint64_t>(f.c.game+0x2e381a8,f.controller);
+    const uint8_t original_code=*reinterpret_cast<const uint8_t*>(f.c.exe+0x2dd5a0);
+    put<uint8_t>(f.c.exe+0x2dd5a0,0);CHECK(NADSC_Validate(&f.c)==0 && NADSC_Error()==CODE_MISMATCH);
+    put<uint8_t>(f.c.exe+0x2dd5a0,original_code);
+    CHECK(fixture_cas_calls==recovery_cas && reserved.load()==0 && *reinterpret_cast<const uint64_t*>(f.api+0x20)==native_slot);
+    CHECK(NADSC_Validate(&f.c)==1 && NADSC_Error()==OK);
+    pass("inaccessible mapped unmapped invalid semantic and code failures remain unsafe after a transient read error");
+
+    // The armed path must forward the original native6 frame and keep its lease
+    // only for cleanup; classification comes from the public stats export.
+    f.begin();f.top(6);float recovery_frame[20]{.12f,.04f,1.38f};recovery_frame[3]=-.0f;
+    const uint32_t recovery_nan=0x7fc01234;std::memcpy(recovery_frame+17,&recovery_nan,4);
+    uint8_t recovery_copy[80]{};std::memcpy(recovery_copy,recovery_frame,80);
+    const auto armed_cas=fixture_cas_calls;const auto armed_failures=fixture_rpm_failures;fail_rpm_once(f.controller);
+    fixture_time+=16;f.invoke(reinterpret_cast<void*>(f.c.camera),f.c.camera_unit,recovery_frame);
+    const auto read_fault_stats=f.stats();
+    const bool recovery_exact=records[calls-1].input==recovery_frame && std::memcmp(records[calls-1].bits,recovery_copy,16)==0
+        && std::memcmp(recovery_frame,recovery_copy,80)==0;
+    CHECK(recovery_exact && read_fault_stats.armed==0 && read_fault_stats.installed==1 && read_fault_stats.error==READ_FAILED);
+    CHECK(fixture_rpm_failure_remaining==0 && fixture_rpm_failures==armed_failures+1 && fixture_cas_calls==armed_cas && reserved.load()==1);
+    recovery_event("callback_read_failed",1,read_fault_stats.error,active_generation,fixture_cas_calls-armed_cas,recovery_exact,&read_fault_stats);
+    clear_rpm_failure();CHECK(end_current()==1 && reserved.load()==0 && NADSC_Error()==OK);
+    CHECK(NADSC_Validate(&f.c)==1 && NADSC_Error()==OK);
+    pass("armed native6 owner RPM failure forwards the exact native frame and disarms with code3 until acknowledged End");
+
+    // Start both request classes directly from an actual code3 callback, so a
+    // failed legacy bool export cannot expose an unrelated old retryable error.
+    for(bool invalid_output:{false,true}) {
+        f.begin();f.top(6);fail_rpm_once(f.controller);f.sample();
+        CHECK(f.stats().error==READ_FAILED && !armed.load());clear_rpm_failure();
+        if(invalid_output) {
+            CHECK(NADSC_KickStats46(active_generation,reinterpret_cast<NADSC_KickStats46Data*>(1))==0);
+            CHECK(NADSC_Error()==INVALID_CONFIG);
+            CHECK(NADSC_FreeAim(active_generation+1,0)==0 && NADSC_Error()==TOKEN_MISMATCH);
+        }else {
+            NADSC_FreeStats stale_stats{};
+            CHECK(NADSC_FreeAimStats(active_generation+1,&stale_stats)==0 && NADSC_Error()==TOKEN_MISMATCH);
+            CHECK(NADSC_Profile47(active_generation,1001)==0 && NADSC_Error()==INVALID_CONFIG);
+        }
+        CHECK(end_current()==1);
+    }
+    pass("legacy stale-token invalid-output and out-of-range requests replace prior actual code3 with their own code17 or1");
+
+    // Optional handoff-history reads have no authority to make a later semantic
+    // owner mismatch retryable. The +4 address is the allocated controller page,
+    // but is read here by optional sampling rather than the terminal owner proof.
+    for(bool lose_owner:{false,true}) {
+        f.begin();f.top(6);
+        // This behavior-only fixture invokes a synthetic machine-code caller,
+        // not the captured presentation callsite required by the public API.
+        // Enable optional history privately, as the existing handoff cases do;
+        // Validate/Begin/ReadStats fault evidence above uses actual exports.
+        policy.presentation_enabled=true;
+        const auto optional_failures=fixture_rpm_failures;fail_rpm_once(f.controller+4);
+        uint32_t saved_generation_word=0;
+        if(lose_owner){CHECK(value(f.generations+3,saved_generation_word));fixture_before_history_mutation=f.generations+3;fixture_before_history_value=2;}
+        fixture_time+=16;f.invoke(reinterpret_cast<void*>(f.c.camera),f.c.camera_unit,recovery_frame);
+        const auto optional_stats=f.stats();
+        CHECK(records[calls-1].input==recovery_frame && std::memcmp(recovery_frame,recovery_copy,80)==0);
+        CHECK(fixture_rpm_failure_remaining==0 && fixture_rpm_failures==optional_failures+1);
+        CHECK(optional_stats.armed==(lose_owner?0u:1u) && optional_stats.error==(lose_owner?OWNER_MISMATCH:OK));
+        if(lose_owner){CHECK(fixture_before_history_mutation==0);put<uint32_t>(f.generations+3,saved_generation_word);}
+        clear_rpm_failure();CHECK(end_current()==1);
+    }
+    pass("optional native6 history RPM failure neither disarms a valid owner nor taints a later semantic owner mismatch as retryable");
+
     f.begin();f.settle();const auto offsets_cas=fixture_cas_calls;
     CHECK(NADSC_SetOffsets(active_generation,.1f,-.1f,.02f)==1);f.sample();
     CHECK(approximately(last(0),.1f)&&approximately(last(1),-.1f)&&approximately(last(2),1.52f));
@@ -286,7 +403,7 @@ int main() {
     f.begin();f.settle();f.point(f.body_world,2,0,0);f.sample();
     CHECK(records[calls-1].input==f.input && armed.load()==1 && NADSC_Error()==GRAPH_MISMATCH);
     pass("invalid body-root basis forwards native instead of damping in an unproven frame");CHECK(end_current()==1);
-    for(uint64_t at:{f.c.exe+0x2dd4f0,f.c.exe+0x1f3020,f.c.exe+0x28d310,f.c.game+0x110be95}) {
+    for(uint64_t at:{f.c.exe+0x2dd5a0,f.c.exe+0x1f30e0,f.c.exe+0x28d3c0,f.c.game+0x110bff5}) {
         f.normal();uint8_t b=0;CHECK(value(at,b));put<uint8_t>(at,b^1);CHECK(begin_current(&f.c)==0 && reserved.load()==0);put<uint8_t>(at,b);
     }pass("independent captured setter world-pose graph-getter and callsite bytes required");
     f.normal();fixture_slot_readonly=true;CHECK(begin_current(&f.c)==0);fixture_slot_readonly=false;

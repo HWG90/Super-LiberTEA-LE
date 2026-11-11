@@ -17,6 +17,9 @@ HD2ENV_API int hd2env_register_vector3box(HD2Environment *);
 int hd2env_probe_vector3box_host(const HD2VectorHost *);
 HD2ENV_API int hd2env_register_vector4(HD2Environment *);
 int hd2env_probe_vector4_host(const HD2VectorHost *);
+/* Why the last Vector2/3/3Box/4 probe refused: the witness, the address where
+ * it failed and why (hd2env_check_code); empty after a probe that passed. */
+const char *hd2vector_probe_error(void);
 /* Shares the Vector4 payload; requires Vector4. See quaternion.inc for fitted and pending entries. */
 HD2ENV_API int hd2env_register_quaternion(HD2Environment *);
 int hd2env_probe_quaternion_host(const HD2VectorHost *);

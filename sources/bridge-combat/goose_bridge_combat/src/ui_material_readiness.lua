@@ -4,12 +4,12 @@
 -- No loads, writes, inserting lookups, default-resource success, or atlas guesses.
 local M = {}
 local attached=setmetatable({},{__mode='k'})
-local STAMPS={game=0x6AE0E5FF,exe=0x6AE0964A}
+local STAMPS={game=0x6AF322C1,exe=0x6AF2D5E6}
 local MATERIAL='EAC0B497876ADEDF'
-local PRESENT={0x632070,
+local PRESENT={0x632110,
     'uint8_t (*)(void *, const uint64_t *, const uint64_t *)',
     '4053415641574883ec30488b02488bd98b89c00200004533'}
-local FETCH={0x6321a0,
+local FETCH={0x632240,
     'uintptr_t (*)(void *, const uint64_t *, const uint64_t *, uint64_t *)',
     '4c894424184889542410535556574155415641574883ec30'}
 local ZERO8=string.rep('\0',8)

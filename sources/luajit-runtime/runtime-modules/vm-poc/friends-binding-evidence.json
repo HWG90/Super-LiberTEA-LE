@@ -1,9 +1,9 @@
 {
-  "capture": "/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin",
-  "capture_sha256": "6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c",
+  "capture": "/home/goose/Projects/Linux HD2 Mods/builds/26568081/runtime/images/exe-26568081.bin",
+  "capture_sha256": "1932b56a7670a62ab1dd432dc05ca5dbcfd12e7fa49637068b16512ea75602a7",
   "registrar": {
-    "entry": "0x7f0e10",
-    "end": "0x7f20f3"
+    "entry": "0x7f10c0",
+    "end": "0x7f23a3"
   },
   "context_slot": "0x28605f0",
   "interface_getter_iat": "0x148e7b8",
@@ -11,273 +11,273 @@
   "bindings": [
     {
       "name": "Friends.num_friends",
-      "entry": "0x7ef620",
-      "end": "0x7ef6e4",
-      "sha256": "1ff2c393b7fc5a3278090308f2fab7f9d6959268d2cf0e1597b971512f424164"
+      "entry": "0x7ef8d0",
+      "end": "0x7ef994",
+      "sha256": "a98f3430d89d74bbbcb03e915eb543496fa7e7eaa001a1182206d432900d983f"
     },
     {
       "name": "Friends.id",
-      "entry": "0x7ef6f0",
-      "end": "0x7ef7d1",
-      "sha256": "9d12a0b1e50c2e00122625a81f7f9dbacb1f9dfa21660b80405212c320c2b63f"
+      "entry": "0x7ef9a0",
+      "end": "0x7efa81",
+      "sha256": "63ebbe293a9b6d2bc081a574043c7f0a9c64f2accdfd514b4af14f338cf2f53a"
     },
     {
       "name": "Friends.name",
-      "entry": "0x7ef7e0",
-      "end": "0x7ef894",
-      "sha256": "fbe3cb554ad3724e55deb6ff0e7285dcc4012fa055f88e109205352c6f716faf"
+      "entry": "0x7efa90",
+      "end": "0x7efb44",
+      "sha256": "690a6e4ef9f33f9a84ff0ab81919abe93e570cea139e82c60fb65294acc890d4"
     },
     {
       "name": "Friends.relationship",
-      "entry": "0x7ef8a0",
-      "end": "0x7ef956",
-      "sha256": "a91aaa8ca82818f996c8704dcb5143c5b25c60e2f97d408a74571d8c6e669cfc"
+      "entry": "0x7efb50",
+      "end": "0x7efc06",
+      "sha256": "c639aa0b372c2c214590e52069365c37d528c421dee5cfb54a1710353c55d826"
     },
     {
       "name": "Friends.status",
-      "entry": "0x7ef960",
-      "end": "0x7efa16",
-      "sha256": "4f4d91bdfadfcef2295c037c81c7ff0b2fb0c4a9f06fa9ac83a08d05d05e3cc5"
+      "entry": "0x7efc10",
+      "end": "0x7efcc6",
+      "sha256": "b1abd102e66654e43fad44455fd18dc1ba00e6696eec9cdbce72782f3909e717"
     },
     {
       "name": "Friends.in_category",
-      "entry": "0x7efa20",
-      "end": "0x7efb41",
-      "sha256": "7f05285b5bae3b517671273a4f68bea5627f6517b3f1483fc5d33c0df86695eb"
+      "entry": "0x7efcd0",
+      "end": "0x7efdf1",
+      "sha256": "96b711a1fcdb22cc6c214030072bc7713571fa618011d9248953e17f52173c57"
     },
     {
       "name": "Friends.playing_game",
-      "entry": "0x7efb50",
-      "end": "0x7eff35",
-      "sha256": "2ca16e54c6e70afaa065166440f1fe8fc13ab81d6eff7e92d0fb3de692c89570"
+      "entry": "0x7efe00",
+      "end": "0x7f01e5",
+      "sha256": "a3a9f5611f6c96b49c78116b193fa3cf814d4901365d5674872f2812ef7340fb"
     },
     {
       "name": "Friends.invite",
-      "entry": "0x7eff40",
-      "end": "0x7f0466",
-      "sha256": "b9b02a99707689006ef1da1236dabdaf24fdcb7a20b66967b8fe4a966605cc24"
+      "entry": "0x7f01f0",
+      "end": "0x7f0716",
+      "sha256": "0f8c2c54e5e5f273dd56441c4ac84602f1b1f5fa0b93bfb85b8f5c6c83b6e085"
     },
     {
       "name": "Friends.next_invite",
-      "entry": "0x7f0470",
-      "end": "0x7f05e6",
-      "sha256": "ebc3fec7753e9acbcdb4dfcdc04de0884ef19522faa290c025add5cec2ea3ac2"
+      "entry": "0x7f0720",
+      "end": "0x7f0896",
+      "sha256": "f9d090739fbb679b896de37a6fcb3078ab6dfcc1129a2d819be087116ed01676"
     },
     {
       "name": "Friends.boot_invite",
-      "entry": "0x7f05f0",
-      "end": "0x7f06eb",
-      "sha256": "0ce02bd7521f432e98d8c0185c52dc8e5d5445b095befd4441e0920cbe5c61c6"
+      "entry": "0x7f08a0",
+      "end": "0x7f099b",
+      "sha256": "634502bb7d77ae0d3c1201ef5d89be30e33c7c222042d3a263f6db7ab08a577b"
     },
     {
       "name": "Presence.advertise_playing",
-      "entry": "0x7f06f0",
-      "end": "0x7f0bb4",
-      "sha256": "6d4385fee1832d8e027456d98b34e8752a13f6fd89756edc545263f88c703cac"
+      "entry": "0x7f09a0",
+      "end": "0x7f0e64",
+      "sha256": "62e3387e1b0f7bf69815c63805aa3ff75a1d5b64094f1ce7b456e4fb20c5bafd"
     },
     {
       "name": "Presence.stop_advertise_playing",
-      "entry": "0x7f0bc0",
-      "end": "0x7f0bee",
-      "sha256": "4c9e7cfbf9b3a862e688481eb1f2991b77cd2050dcc9c238232e2aacbe6cc16a"
+      "entry": "0x7f0e70",
+      "end": "0x7f0e9e",
+      "sha256": "66f4725680ef1d968d0c9b28bc3608c4e279d413f3cc5e2556c9172fb9c39e98"
     },
     {
       "name": "Presence.set_presence",
-      "entry": "0x7f0bf0",
-      "end": "0x7f0cce",
-      "sha256": "2d08d14ae59b4966be16ec9cca692ffd7844fcff8666f5418f180db0149fc608"
+      "entry": "0x7f0ea0",
+      "end": "0x7f0f7e",
+      "sha256": "d9dc30ab422832eed849771416ec909dc3df73e73d82ae1072a123d10a114513"
     },
     {
       "name": "Presence.presence",
-      "entry": "0x7f0cd0",
-      "end": "0x7f0e02",
-      "sha256": "53ad195a2b56c3f3404384ca2d23df13998fa84f1ae4b6dc637acd52f3589752"
+      "entry": "0x7f0f80",
+      "end": "0x7f10b2",
+      "sha256": "0226635089325a356704bec7099da4e50ea0c0191f8a676036b5988d2430ce08"
     }
   ],
   "native_helpers": [
     {
       "name": "native_name",
-      "entry": "0x7cb9b0",
-      "end": "0x7cba23",
-      "sha256": "7b600320269a5f87ea8096590cd4bf86cb73c004db623f248455098cc8ba03f5"
+      "entry": "0x7cbc50",
+      "end": "0x7cbcc3",
+      "sha256": "c582d0130b30e033f0b9d6ea7a0bbe306fed6ec29a5864e7a6f6f988c5829084"
     },
     {
       "name": "native_playing",
-      "entry": "0x7cbe70",
-      "end": "0x7cbfbb",
-      "sha256": "f05c43e984cfc1013f03b909c51d8a8a8ae9058b9d36989ee6207d57e786ca01"
+      "entry": "0x7cc110",
+      "end": "0x7cc25b",
+      "sha256": "1a8cae29d11a2b59f3dc68b452cf7ef0f59ce9d46bb72c677fba481bea265aed"
     },
     {
       "name": "native_invite_lobby",
-      "entry": "0x7cc020",
-      "end": "0x7cc323",
-      "sha256": "63efd0c0f553b7ba82afb138236ad229898ba23d42f13fb9953d0486f458aed9"
+      "entry": "0x7cc2c0",
+      "end": "0x7cc5c3",
+      "sha256": "d1353a56e5cd15264e89b56ef7ad1c0596d2b223361f811759573a35d02e6bc3"
     },
     {
       "name": "native_invite_server",
-      "entry": "0x7cc330",
-      "end": "0x7cc633",
-      "sha256": "c70aae54df93518f87b9b60b9c54308c88b90541f95a38b2009e462f917384e8"
+      "entry": "0x7cc5d0",
+      "end": "0x7cc8d3",
+      "sha256": "cb8929423bf5ac548aa34d3543a99dea232f4de11a81560dcf383e8ab2c3fe60"
     },
     {
       "name": "native_next_invite",
-      "entry": "0x7cc690",
-      "end": "0x7cc73a",
+      "entry": "0x7cc930",
+      "end": "0x7cc9da",
       "sha256": "cd81cf204a37c67ef822ac0c42e6ac86850fbf35734535fb713fd7f585c65f38"
     },
     {
       "name": "native_advertise_lobby",
-      "entry": "0x7ce390",
-      "end": "0x7ce683",
-      "sha256": "9410a4d1eed3cea9a79d51c9f74cfa9ba00ba06309cee4b493b5d9b2e4fe8c01"
+      "entry": "0x7ce630",
+      "end": "0x7ce923",
+      "sha256": "396bd0b54ac635f21a3c7de3180d24a70f9a4f9cdfd20684120ccb6ad4353629"
     },
     {
       "name": "native_advertise_server",
-      "entry": "0x7ce690",
-      "end": "0x7ce983",
-      "sha256": "2b7a78950cdf6780efb5ddbd1ffb30fec2dafb727a966b12d7c49601f44b4b7c"
+      "entry": "0x7ce930",
+      "end": "0x7cec23",
+      "sha256": "6b2b3c67956de5a93061ecd1fd7af773097e7101d59e61fb4e6a88f0cdae8e86"
     }
   ],
   "constants": [
     {
       "name": "NO_INVITE",
       "value": 0,
-      "store": "0x7f1706"
+      "store": "0x7f19b6"
     },
     {
       "name": "INVITE_SERVER",
       "value": 2,
-      "store": "0x7f176a"
+      "store": "0x7f1a1a"
     },
     {
       "name": "INVITE_LOBBY",
       "value": 1,
-      "store": "0x7f17ca"
+      "store": "0x7f1a7a"
     },
     {
       "name": "NONE",
       "value": 0,
-      "store": "0x7f181b"
+      "store": "0x7f1acb"
     },
     {
       "name": "BLOCKED",
       "value": 1,
-      "store": "0x7f187a"
+      "store": "0x7f1b2a"
     },
     {
       "name": "REQUEST_RECIPIENT",
       "value": 2,
-      "store": "0x7f18d0"
+      "store": "0x7f1b80"
     },
     {
       "name": "FRIEND",
       "value": 3,
-      "store": "0x7f1930"
+      "store": "0x7f1be0"
     },
     {
       "name": "REQUEST_INITIATOR",
       "value": 4,
-      "store": "0x7f1990"
+      "store": "0x7f1c40"
     },
     {
       "name": "IGNORED",
       "value": 5,
-      "store": "0x7f19f0"
+      "store": "0x7f1ca0"
     },
     {
       "name": "IGNORED_FRIEND",
       "value": 6,
-      "store": "0x7f1a50"
+      "store": "0x7f1d00"
     },
     {
       "name": "SUGGESTED",
       "value": 7,
-      "store": "0x7f1aab"
+      "store": "0x7f1d5b"
     },
     {
       "name": "OFFLINE",
       "value": 0,
-      "store": "0x7f1b06"
+      "store": "0x7f1db6"
     },
     {
       "name": "ONLINE",
       "value": 1,
-      "store": "0x7f1b60"
+      "store": "0x7f1e10"
     },
     {
       "name": "BUSY",
       "value": 2,
-      "store": "0x7f1bb6"
+      "store": "0x7f1e66"
     },
     {
       "name": "AWAY",
       "value": 3,
-      "store": "0x7f1c0c"
+      "store": "0x7f1ebc"
     },
     {
       "name": "SNOOZE",
       "value": 4,
-      "store": "0x7f1c62"
+      "store": "0x7f1f12"
     },
     {
       "name": "TRADING",
       "value": 5,
-      "store": "0x7f1cb8"
+      "store": "0x7f1f68"
     },
     {
       "name": "LOOKING_TO_PLAY",
       "value": 6,
-      "store": "0x7f1d0e"
+      "store": "0x7f1fbe"
     },
     {
       "name": "BLOCKED_FLAG",
       "value": 1,
-      "store": "0x7f1d64"
+      "store": "0x7f2014"
     },
     {
       "name": "FRIENDSHIP_REQUESTED_FLAG",
       "value": 2,
-      "store": "0x7f1dba"
+      "store": "0x7f206a"
     },
     {
       "name": "FRIEND_FLAG",
       "value": 4,
-      "store": "0x7f1e10"
+      "store": "0x7f20c0"
     },
     {
       "name": "CLAN_MEMBER_FLAG",
       "value": 8,
-      "store": "0x7f1e6b"
+      "store": "0x7f211b"
     },
     {
       "name": "ON_GAME_SERVER_FLAG",
       "value": 16,
-      "store": "0x7f1ecb"
+      "store": "0x7f217b"
     },
     {
       "name": "REQUESTING_FRIENDSHIP_FLAG",
       "value": 128,
-      "store": "0x7f1f2b"
+      "store": "0x7f21db"
     },
     {
       "name": "REQUESTING_INFO_FLAG",
       "value": 256,
-      "store": "0x7f1f8b"
+      "store": "0x7f223b"
     },
     {
       "name": "IGNORED_FLAG",
       "value": 512,
-      "store": "0x7f1feb"
+      "store": "0x7f229b"
     },
     {
       "name": "IGNORED_FRIEND_FLAG",
       "value": 1024,
-      "store": "0x7f2050"
+      "store": "0x7f2300"
     },
     {
       "name": "SUGGESTED_FLAG",
       "value": 2048,
-      "store": "0x7f20b0"
+      "store": "0x7f2360"
     }
   ],
   "null_service": "store null, leave Lua modules untouched",

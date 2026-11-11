@@ -7,7 +7,10 @@ local fields={time=true,enabled=true,player=true,weapon=true,request=true,camera
     camera_blend=true,pose_blend=true,camera_epoch=true,fov_epoch=true,pose_epoch=true,look_sequence=true,look_samples=true,look_skipped=true,
     cleanup_pending=true,reason=true,policy=true,event=true,
     placement_x=true,placement_y=true,placement_z=true,placement_yaw=true,placement_pitch=true,placement_roll=true,
-    motion_x=true,motion_y=true,motion_z=true,look_yaw=true,look_pitch=true,ads_rebases=true}
+    motion_x=true,motion_y=true,motion_z=true,look_yaw=true,look_pitch=true,ads_rebases=true,
+    -- Why the view is or is not in native first person on this frame.
+    control_mask=true,control_guard=true,safe=true,aiming=true,snapshot_reason=true,
+    weapon_ready=true,entry_block=true,action=true,softened=true,head_calls=true,camera_gate=true,head_phase=true}
 local function scalar(v)
     local t=type(v)
     if t=='boolean'then return v end

@@ -24,7 +24,7 @@ static std::atomic<uint64_t> policy_epoch{0};
 static uint64_t hook_game=0,generation_counter=0,owned_generation=0,retired_generation=0;
 static uint8_t hooked_bytes[32]{};
 static bool install_failed=false;
-static constexpr uint32_t SELECTOR=0x1608bd0,EVENT=0x110aa20,ZOOM=0x764e90;
+static constexpr uint32_t SELECTOR=0x1608d30,EVENT=0x110ab80,ZOOM=0x764e90;
 static constexpr float RAD_PER_DEG=.01745329251994329577f;
 enum Error:uint32_t {OK=0,INVALID_CONFIG=1,BUSY=2,READ_FAILED=3,IMAGE_MISMATCH=4,CODE_MISMATCH=5,
  API_MISMATCH=6,OWNER_MISMATCH=7,PIN_FAILED=9,CLEANUP_PENDING=13,SOURCE_INVALID=14,TOKEN_MISMATCH=17,
@@ -106,19 +106,19 @@ static bool request_matches(const Policy& p,bool allow_normal=false) {
     return head!=tail && (r[0]&0xffff)==6 && r[2]==p.c.weapon && r[3]==p.c.body;
 }
 static bool fingerprints(const NADZ_Config& c) {
-    if(!image(c.game,0x6ae0e5ff,0x3382000) || !image(c.exe,0x6ae0964a,0x29fe000))return reject(IMAGE_MISMATCH)!=0;
+    if(!image(c.game,0x6af322c1,0x3382000) || !image(c.exe,0x6af2d5e6,0x29fe000))return reject(IMAGE_MISMATCH)!=0;
     if(installed.load()) {
         uint8_t actual[32]{};
         if(c.game!=hook_game || !read(c.game+SELECTOR,actual,sizeof actual)
             || std::memcmp(actual,hooked_bytes,sizeof actual))return reject(CODE_MISMATCH)!=0;
-    } else if(!bytes(c.game+SELECTOR,"40534883ec208bdae853ffffff84c00f84ac0000004c8b1db4926d014533c03b0d"))return reject(CODE_MISMATCH)!=0;
+    } else if(!bytes(c.game+SELECTOR,"40534883ec208bdae853ffffff84c00f84ac0000004c8b1d54916d014533c03b0d"))return reject(CODE_MISMATCH)!=0;
     // Both exact selector call sites, magnification lookup, zoom event and
     // sensitivity's request-lens ratio are independently pinned to this build.
-    if(!bytes(c.game+0x764f29,"e8a23cea0085c07434")
-        || !bytes(c.game+0x110ac6f,"e85cdf4f00418b55083bc38bf8410f44fee80ba265ff")
+    if(!bytes(c.game+0x764f29,"e8023eea0085c07434")
+        || !bytes(c.game+0x110adcf,"e85cdf4f00418b55083bc38bf8410f44fee8aba065ff")
         || !bytes(c.game+ZOOM,"48895c24084889742410574883ec203b152ba26d028bda")
-        || !bytes(c.game+EVENT,"40554881ec30010000488b05e0a53a014833c448898424d0000000488bea")
-        || !bytes(c.game+0x1118731,"f3410f109784000000f30f59155ee81201f30f5e9088c40a00"))return reject(CODE_MISMATCH)!=0;
+        || !bytes(c.game+EVENT,"40554881ec30010000488b0580a43a014833c448898424d0000000488bea")
+        || !bytes(c.game+0x1118891,"f3410f109784000000f30f59150ee71201f30f5e9088c40a00"))return reject(CODE_MISMATCH)!=0;
     return true;
 }
 static bool config(const NADZ_Config* input,NADZ_Config& c) {
@@ -148,7 +148,7 @@ static uint32_t selector_hook(uint32_t weapon,uint32_t type) {
     // Global selector callers, other weapons and non-optic parameter types
     // have exact original results. The actual stored selection is untouched.
     if(armed.load(std::memory_order_acquire) && epoch==policy_epoch.load(std::memory_order_acquire) && weapon==policy.c.weapon
-        && (caller==policy.c.game+0x764f2e || caller==policy.c.game+0x110ac74)) {
+        && (caller==policy.c.game+0x764f2e || caller==policy.c.game+0x110add4)) {
         if(!owner(policy,false)) {armed.store(0,std::memory_order_release);error(OWNER_MISMATCH);}
         else if(request_matches(policy) && policy.safe) {
             if(policy.full_ads)ads_forwarded.fetch_add(1,std::memory_order_relaxed);

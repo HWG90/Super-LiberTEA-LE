@@ -654,9 +654,9 @@ return function(runtime, memory)
             return assert(api.pointer(api.read(address,8)), 'Native binding unavailable')
         end
         local bindings={
-            {0x2ce1500,0x2874ed0,{{0x18,0x81e4d0},{0x38,0x8205b0},{0xa8,0x820720}}},
-            {0x2ce1548,0x2875170,{{0,0x8557b0},{0x28,0x8565e0},{0x68,0x8573a0}}},
-            {0x2ce14e8,0x2875080,{{0,0x826bc0},{0x68,0x805010},{0x80,0x880600}}},
+            {0x2ce1500,0x2874e40,{{0x18,0x81e670},{0x38,0x820750},{0xa8,0x8208c0}}},
+            {0x2ce1548,0x2875160,{{0,0x855950},{0x28,0x856780},{0x68,0x857540}}},
+            {0x2ce14e8,0x2875070,{{0,0x826d60},{0x68,0x8051b0},{0x80,0x8807a0}}},
         }
         for _,binding in ipairs(bindings) do
             local table_address=pointer_at(game+binding[1])
@@ -665,29 +665,29 @@ return function(runtime, memory)
                 assert(api.distance(pointer_at(table_address+entry[1]),exe)==entry[2], 'Unsupported native function')
             end
         end
-        assert(api.read(game+0xab9040,12)=='\072\139\196\072\137\088\008\072\137\104\032\086',
+        assert(api.read(game+0xab9070,12)=='\072\139\196\072\137\088\008\072\137\104\032\086',
             'Native exit validator changed')
-        assert(api.read(game+0xab5ba0,16)=='\064\085\083\086\087\065\084\065\086\065\087\072\141\108\036\208',
+        assert(api.read(game+0xab5bd0,16)=='\064\085\083\086\087\065\084\065\086\065\087\072\141\108\036\208',
             'Native vault driver changed')
         if native_cache then return native_cache end
-        local valid=ffi.cast('uint64_t (*)(uint32_t)',exe+0x81e4d0)
-        local flags=ffi.cast('uint32_t (*)(uint32_t)',exe+0x8205b0)
-        local motion=ffi.cast('void (*)(uint32_t,float *,float *)',exe+0x820720)
-        local mover=ffi.cast('uint32_t (*)(uint32_t,uint32_t)',exe+0x8557b0)
-        local dimensions=ffi.cast('void *(*)(uint32_t)',exe+0x8573a0)
-        local position=ffi.cast('void (*)(uint32_t,float *)',exe+0x8565e0)
-        local basis=ffi.cast('void *(*)(void *,const float *,const float *)',game+0x15b3180)
-        local rotation=ffi.cast('void (*)(float *,const void *)',game+0x15ae780)
+        local valid=ffi.cast('uint64_t (*)(uint32_t)',exe+0x81e670)
+        local flags=ffi.cast('uint32_t (*)(uint32_t)',exe+0x820750)
+        local motion=ffi.cast('void (*)(uint32_t,float *,float *)',exe+0x8208c0)
+        local mover=ffi.cast('uint32_t (*)(uint32_t,uint32_t)',exe+0x855950)
+        local dimensions=ffi.cast('void *(*)(uint32_t)',exe+0x857540)
+        local position=ffi.cast('void (*)(uint32_t,float *)',exe+0x856780)
+        local basis=ffi.cast('void *(*)(void *,const float *,const float *)',game+0x15b32e0)
+        local rotation=ffi.cast('void (*)(float *,const void *)',game+0x15ae8e0)
         -- RCX is unused in this build; RDX is the validated avatar entity.
-        local classify=ffi.cast('int32_t (*)(void *,const void *,const float *,const float *)',game+0xab9040)
-        local world_id=ffi.cast('uint32_t (*)(const void *)',exe+0x826bc0)
-        local query=ffi.cast('uint32_t (*)(uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,const void *,void *,uint32_t)',exe+0x880600)
-        local drive=ffi.cast('void (*)(void *,float)',game+0xab5ba0)
-        local detect=ffi.cast('uint32_t (*)(void *,float)',game+0xab7ec0)
-        assert(api.read(game+0xab9870,16)=='\072\139\196\072\137\088\008\085\086\087\065\084\065\085\065\086',
+        local classify=ffi.cast('int32_t (*)(void *,const void *,const float *,const float *)',game+0xab9070)
+        local world_id=ffi.cast('uint32_t (*)(const void *)',exe+0x826d60)
+        local query=ffi.cast('uint32_t (*)(uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,const void *,void *,uint32_t)',exe+0x8807a0)
+        local drive=ffi.cast('void (*)(void *,float)',game+0xab5bd0)
+        local detect=ffi.cast('uint32_t (*)(void *,float)',game+0xab7ef0)
+        assert(api.read(game+0xab98a0,16)=='\072\139\196\072\137\088\008\085\086\087\065\084\065\085\065\086',
             'Native approach geometry routine changed')
         -- RCX is unused. The remaining arguments and all outputs are private.
-        local approach=ffi.cast('uint8_t (*)(void *,const void *,float *,float *,float *,float *)',game+0xab9870)
+        local approach=ffi.cast('uint8_t (*)(void *,const void *,float *,float *,float *,float *)',game+0xab98a0)
         local override=ffi.cast('void (*)(void *,const void *,const void *)',game+0x8492a0)
         local function aligned(size)
             local storage=ffi.new('uint8_t[?]',size+15)
@@ -2410,7 +2410,7 @@ local function controller_object(api,s,exe,mover)
     local definition,object=ptr(api,record,16),ptr(api,record,24)
     local def=read(api,s,definition,28,true)
     assert(u(def)==u(mover,76),'Mover name mismatch')
-    assert(api.distance(ptr(api,read(api,s,object,8,true)),exe+0x17430a8)==0,'Unsupported character controller')
+    assert(api.distance(ptr(api,read(api,s,object,8,true)),exe+0x1743030)==0,'Unsupported character controller')
     local up=vec(read(api,s,object+80,12,true),0)
     assert(math.abs(up[1])+math.abs(up[2])+math.abs(up[3]-1)<0.001,'Unsupported up vector')
     -- Preserve the separate 70-degree support/drop limit and shared definition.
@@ -3078,4 +3078,4 @@ end
 end)()
 patch.assistance = assistance
 assistance.candidate = patch.assist_candidate
-install_loader(function() return create_api(runtime, runtime_write.extend(runtime_memory.new(runtime))) end, patch, {revision = 'data-v8.9.1-26251122', exe_sha256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D', game_sha256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'}, runtime)
+install_loader(function() return create_api(runtime, runtime_write.extend(runtime_memory.new(runtime))) end, patch, {revision = 'data-v8.9.1-26568081', exe_sha256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB', game_sha256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'}, runtime)

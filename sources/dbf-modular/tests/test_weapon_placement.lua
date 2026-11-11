@@ -106,21 +106,21 @@ local function fixture()
     function b.fn(_, offset)
         return function(at, a, c)
             f.calls = f.calls + 1
-            if offset == 0x12de550 or offset == 0x12d67c0 then
+            if offset == 0x12de6b0 or offset == 0x12d6920 then
                 f.contexts[at] = f.active_context or f.context
                 node(at)
-                if offset == 0x12de550 then
+                if offset == 0x12de6b0 then
                     f.address = at
                 end
-            elseif offset == 0x12e42d0 then
+            elseif offset == 0x12e4430 then
                 f.links[a] = at
-            elseif offset == 0x12e7510 then
+            elseif offset == 0x12e7670 then
                 node(at).asset = tostring(a)
-            elseif offset == 0x12e07e0 then
+            elseif offset == 0x12e0940 then
                 node(at).opacity = a
-            elseif offset == 0x12e4cc0 then
+            elseif offset == 0x12e4e20 then
                 node(at).shown = a
-            elseif offset == 0x12d6c00 then
+            elseif offset == 0x12d6d60 then
                 node(at).uv = { a.x, a.y, c.x, c.y }
             end
         end

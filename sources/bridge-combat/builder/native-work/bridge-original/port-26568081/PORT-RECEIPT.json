@@ -1,0 +1,90 @@
+{
+ "version": "0.1.17-experimental-26568081.1",
+ "from": "0.1.17-experimental-26251122.12",
+ "weapon_menu": {
+  "file": "native/BridgeCombatWeaponMenu-2c8fa4e14702.dll",
+  "sha256": "2c8fa4e14702b36080f1d4c1ac977b6f748b46485683bd01d8c2e2f3684efd32",
+  "bytes": 477696
+ },
+ "dll_fixture": {
+  "modes": 110,
+  "passed": 110
+ },
+ "lua_fixtures": {
+  "passed": 35,
+  "total": 35
+ },
+ "verify": {
+  "lua": {
+   "rows": 631,
+   "same": 85
+  },
+  "dll": {
+   "rows": 36,
+   "same": 36
+  }
+ },
+ "warmup_sites": 42,
+ "images": {
+  "exe-26568081.bin": "1932b56a7670a62ab1dd432dc05ca5dbcfd12e7fa49637068b16512ea75602a7",
+  "game-26251122.rebased.dll": "73d80e8efb9d0308572383e733657a39c312f0fd779591de258733fbd2887d6f",
+  "game-26568081.dll": "90387ef491b52dc07dc7cec3393220b1cf41557740aebb9b1ac70641dd1f3fa3",
+  "exe-26251122.bin": "6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c"
+ },
+ "files": {
+  "LICENSE": "b0568f2a9459b2a5b973086fd1d7c8664be9f08b6f4f73c9263070944100915d",
+  "README.md": "09b70953adc23938c98edc315c569c0f301a02851acdd4aabad8d9d675bcdd1c",
+  "TERMINAL-ICONS.md": "0162b921e127e87fe4c2539e3e2afdf6c017c107c3d65f63870785215964281c",
+  "config/defaults.cfg": "122d429f7eae1e13536927a389e96cdeb63c5c8b12f1533a3b2b40c9fa2a7522",
+  "main.lua": "ce9b970da6b9b7e9a4cdd54179248a8090e931cae342473822106190158142d0",
+  "manifest.json": "70bbf6772be9cacddc4fc4564250c6a4e0f127cacfa7f38f12c6ff694d26e016",
+  "native/BridgeCombatWeaponMenu-2c8fa4e14702.dll": "2c8fa4e14702b36080f1d4c1ac977b6f748b46485683bd01d8c2e2f3684efd32",
+  "src/ammo_console.lua": "2bf31a69c3defcf9a6d62bf51f78d240e2f4bb0ef1472f31043c10cebe319f3a",
+  "src/ammo_station_anchor.lua": "9224edc7c68b95327ed913e2164cb488bd0fd951cfdc3fd8daddd7b828f9b761",
+  "src/animation_blend.lua": "756b4005a2e6c5603c285da3b79b3cbb67bb79230fe9cf364b7feef6a235a24a",
+  "src/animation_clips.lua": "ad4033bb370927cfff549d2c786148be8e244fd3119a796a93877dc142186dc5",
+  "src/animation_controller.lua": "e97bbad939349ff3e430b9eebfa04a30838f39588e5f6d063858a931d433f91a",
+  "src/animation_idle.lua": "02c2d30c2c838396caf82fb159067a73ca7c82da9ea2fa8a9906420d160b67de",
+  "src/animation_io.lua": "8ee040db57662a41d1f3d314e45d843063b0934fc9169e2ed247f7b5b8cc41b6",
+  "src/animation_lifecycle.lua": "5f2c7a49f037fa05c06cabb9a767afd738463bdb68f361aed5e3c9fde786d7e2",
+  "src/animation_packages.lua": "0fe2e9563791e1242ee40066e07f11bfd171e02c91a0b7e993c43b25f8a38b3b",
+  "src/animation_pose.lua": "1c7a857690966df662c1f8c783b44a6c9b6e34f47cdb72a0febcfbd88557babd",
+  "src/backend.lua": "e0bde06b7ae3d488555fe7a2aff2c8b196c2126c924e15e149fc7b3e7d2758f2",
+  "src/bindings.lua": "b414142d56e69389aa42246084ce3d0121725f40cb0c311a1a3d34929207f437",
+  "src/code_warmup.lua": "b1db0c6baeda1f778e5af040b4280f3bafec38848b9a1256a4084fba9c965f52",
+  "src/code_warmup_sites.lua": "46228ead23002f94269c07d97b726091f5a79857e6b34209086e85df1172460a",
+  "src/controller.lua": "8b368040e9c111f0bdd25f83c3a200169a4b6ac479dccc2c64a4f6f7447443d1",
+  "src/equipment_hold.lua": "3f67c1a9745fb5c888c5873b25b1ef4b9f69b31b3a3f8c0fd85160a4519c6091",
+  "src/equipment_packages.lua": "b7b95ab71fe8e51e1b83fdab35466428cd253ab3b6754d2313441d051e286772",
+  "src/fx_assets.lua": "fcf24cb2822fe0f3c8f8a3855030712c16cda3983e881b3ebf9651ac8510b1a8",
+  "src/fx_assets_catalog.lua": "726548c6593c4d4553130d1a38940fd96fece7d8b943ad082b90f8a69b992bd2",
+  "src/fx_resource_readiness.lua": "f23b801b5110d588c941d68d05e990721ac817b07c610f377a52b373baede24c",
+  "src/mcm.lua": "25e7f58e572f0ececbf39c15ba60edf26a75f4892d91bcab084f4bc65669a359",
+  "src/runtime.lua": "25a3245ea29b2913dd9775f0fd4d8c892e6d0914171f06f044cbcb301916d629",
+  "src/sha256.lua": "795a0d393f65b96773ddc49670d327d48022b848e5b795dd23e4a703518c4985",
+  "src/ship_return.lua": "100083e60442405b580259079fe1b75d6ad865188255c56b85a28bb6fa748b3e",
+  "src/ship_visibility.lua": "e0786f50c77b51fd5cfc1df617dc4b4a434dfde7d2a431d885f1bb6c735789fd",
+  "src/support_catalogue.lua": "3ae9b9236c2c621a599aac461d29abf0a7e8512552e3761222641470ce5afa91",
+  "src/support_weapons.lua": "0ca4afb94adabbed522d9fcacc0efe0d169237dc36263a10c303a3effc1dbaef",
+  "src/terminal_icons.lua": "8ba74a328d95748ed4946cb1fbf921dcf052d3397a77f5155422657856f4f526",
+  "src/terminal_input_binary.lua": "e36c8813100b30b272184f1d06432f72676ac1a4bd99057cfa04ceeb5244a5a3",
+  "src/terminal_render.lua": "d6c67bc6a3e477cc0ae1efa938a5a433247757170197215d86ba415a374ca5c8",
+  "src/terminal_services.lua": "4dab0078fd2dbbcb85ba65d9851e43a8d80502b11d43f374c35fdf40f3eb3ea9",
+  "src/ui_assets.lua": "1abfa4859f97887ce35bed99ce0fd8e7df52613db6dd56c3deb7d0d2050db37a",
+  "src/ui_assets_catalog.lua": "33ca84eab666a34c24968ddb167847f091f9546227bb26adc6657299f45d6cdf",
+  "src/ui_atlas_readiness.lua": "fd903c373a7a67a45cd6f3e58b88981d218b34d7f0cffe731452d21a2b57d884",
+  "src/ui_material_readiness.lua": "9b46e2b8b22b1622f6a9bd06ba651af255f0312b6ebe04212fd60f33548379e7",
+  "src/ui_package_lease.lua": "5843f3bece082f5839ae3ef34af5d62ca75d34ad113a54cdbd2cb29339a80573",
+  "src/ui_package_recovery.lua": "c64152feec21afa31b230def4b188b65e8034cdb8ed98d0f26abece6ea0349ae",
+  "src/wall_camera.lua": "d6b8e0cce9405de7cacefea0d6225df1ae250a2ca93a97ff6131a1d2d1ce5592",
+  "src/wall_pointer.lua": "0d91343eee5389ba97f7aad2de85611b0aa69cf172043e42ec01f62b22285543",
+  "src/wall_station.lua": "96ef1b03545253f9cc61aef2e3531c3769ee8da6c4442383116d17fb5c31b1cb",
+  "src/wall_terminal.lua": "f8708787d2852e5eadac1fdf30c7ca0a0aaa0e0cfbfdfdbc845dc04573b70104",
+  "src/wall_terminal_anchor.lua": "a1e189c32b8b275e51d808641fbfaf6fa013e41de56d7492f707a3bdc16e111f",
+  "src/wall_terminal_assets.lua": "b4ba013fb771e69b2ed8422cc816cf1a00b24636db252064703c884d41dd9fd8",
+  "src/wall_zoom.lua": "0e4ae319228616d61c0959afc4470fa36d0a7d22c89cda675ab6d06ef3570b74",
+  "src/weapon_menu.lua": "fbc70c6dbdc52ffbe5a68de1a2afc8bf47d71d5fd60a3a36a11d7de45973f558",
+  "src/weapon_menu_binary.lua": "72bd47591b7d4bcdd766af04e1d34b4483b5e169be9e236a928e5d653db68e14",
+  "src/weapon_menu_native.lua": "74c32245f2c5ccde362716d9095cf0cd364acbf0cccdf6b76d4e8418369bae82"
+ }
+}

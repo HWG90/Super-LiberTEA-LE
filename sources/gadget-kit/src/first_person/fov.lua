@@ -168,9 +168,9 @@ function Fov.new(backend,log,helper,clock)
     end
     local self={handle=nil,bound=nil,closing=false,fault=nil,last={},phase='idle'}
     log=log or function()end
-    local function problem(message)
+    local function problem(message,native_cause)
         self.fault=tostring(message)
-        self.failure_native_error=helper.last_failure_code
+        self.failure_native_error=native_cause or helper.last_failure_code
         self.failure_kind=self.failure_native_error==3 and'temporary_read'or(self.failure_native_error and'unsafe'or nil)
         log('Native FOV: '..self.fault)
         return false,self.fault
@@ -213,8 +213,9 @@ function Fov.new(backend,log,helper,clock)
     function self:stop()
         if not self.handle then self.bound,self.bound_request,self.bound_weapon,self.bound_player=nil,nil,nil,nil;self.presentation_epoch,self.presentation_progress=nil,nil;self.phase='idle';return true end
         self.phase='cleanup_pending'
+        local cause=self.failure_native_error
         local done,stats=invoke(helper,'finish',self.handle)
-        if done~=true then return problem(stats or 'FOV cleanup remains pending') end
+        if done~=true then return problem(stats or 'FOV cleanup remains pending',cause) end
         if PORT51.kind(stats)=='table' then self.last=stats end
         self.handle,self.bound,self.bound_request,self.bound_weapon,self.bound_player=nil,nil,nil,nil,nil;self.presentation_epoch,self.presentation_progress=nil,nil;self.phase='idle'
         return true
@@ -238,11 +239,18 @@ function Fov.new(backend,log,helper,clock)
         if not lease or result.phase~='running' then
             -- The camera policy survives helper suspension and weapon gaps.
             if self.handle then
-                local ready,why=present();if not ready then self:stop();return false,why end
                 local ok,why=collect();if not ok then return false,why end
                 -- Death/respawn and other owner changes can retire the stable
                 -- lens generation while manual FPV intent waits for gameplay.
-                if self.last.armed==false then return self:stop()end
+                if self.last.armed==false then
+                    local cause=self.last.error
+                    if PORT51.kind(cause)=='number'and cause~=0 and cause~=7 then
+                        problem('Native FOV policy disarmed while waiting',cause)
+                        local done,issue=self:stop();return false,done==true and self.fault or issue
+                    end
+                    return self:stop()
+                end
+                local ready,why=present();if not ready then self:stop();return false,why end
             end
             return true
         end
@@ -252,17 +260,24 @@ function Fov.new(backend,log,helper,clock)
         end
         local weapon=lease.origin and lease.origin.weapon or lease.weapon
         if self.handle and self.bound==lease and self.bound_request==lease.request and self.bound_weapon==weapon then
-            local ready,why=present();if not ready then self:stop();return false,why end
             local ok,why=collect();if not ok then self:stop();return false,why end
             if self.last.armed~=true or (self.last.error and self.last.error~=0) then
                 local why='Native FOV policy disarmed or rejected ownership';problem(why);local done,issue=self:stop();return false,done==true and why or issue
             end
+            local ready,why=present();if not ready then self:stop();return false,why end
             return true
         end
         local config,why=invoke(backend,'fov_config',lease)
         if PORT51.kind(config)~='table' then return problem(why or 'Owned FOV camera is unavailable') end
         local had_handle=self.handle~=nil
         if had_handle then
+            -- A callback may have disarmed since the preceding Update. Read
+            -- health before a control call can replace its typed error.
+            local ok,reason=collect();if not ok then self:stop();return false,reason end
+            if self.last.armed~=true or(self.last.error and self.last.error~=0)then
+                problem('Native FOV policy retired before request binding')
+                local stopped,issue=self:stop();return false,stopped==true and self.fault or issue
+            end
             -- Bind can immediately submit a lens. Publish the current phase
             -- first so a same-body request handoff cannot use the old phase.
             local ready,reason=present();if not ready then self:stop();return false,reason end
@@ -286,12 +301,12 @@ function Fov.new(backend,log,helper,clock)
         self.bound,self.phase,self.fault=lease,'active',nil
         self.bound_request,self.bound_weapon=config.request,config.weapon
         self.bound_player=player
-        if not had_handle then
-            local ready,why=present();if not ready then self:stop();return false,why end
-        end
         local ok,why=collect();if not ok then self:stop();return false,why end
         if self.last.armed~=true or (self.last.error and self.last.error~=0) then
             local why='Native FOV policy did not remain armed';problem(why);local stopped,issue=self:stop();return false,stopped==true and why or issue
+        end
+        if not had_handle then
+            local ready,why=present();if not ready then self:stop();return false,why end
         end
         return true
     end

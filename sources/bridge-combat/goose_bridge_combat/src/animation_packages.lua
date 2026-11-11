@@ -6,8 +6,8 @@ local M = {}
 local MAX_KEYS, MAX_CAP, MAX_REFS = 32, 4096, 1000000
 local BANK_KEY, MAX_BANK = 'GOOSE_BRIDGE_COMBAT_ANIMATION_PACKAGE_BANK_V1',128
 local ZERO8 = string.rep('\0', 8)
-local REQUEST = {0x11912f0, '4585c00f8475010000415641574883ec3848895c24504c8b'}
-local RELEASE = {0x1191480, '4585c00f8460010000415641574883ec3848895c24504c8b'}
+local REQUEST = {0x1191450, '4585c00f8475010000415641574883ec3848895c24504c8b'}
+local RELEASE = {0x11915e0, '4585c00f8460010000415641574883ec3848895c24504c8b'}
 local ABI = 'void (*)(void *, const uint64_t *, uint32_t)'
 local function number32(bytes, at)
     at = at or 1
@@ -56,12 +56,12 @@ function M.new(io)
     local function context()
         local meta, raw, resolve, resident, make_native = dependencies()
         assert(type(meta)=='table' and type(meta.game)=='number' and type(meta.A)=='table'
-            and meta.A.stamp==0x6AE0E5FF, 'Unsupported game build')
+            and meta.A.stamp==0x6AF322C1, 'Unsupported game build')
         local r = reader(raw)
         assert(r(meta.game,2)=='MZ', 'Game module is unavailable')
         local pe = number32(r(meta.game+0x3C,4))
         assert(pe>=64 and pe<=4096 and r(meta.game+pe,4)=='PE\0\0'
-            and number32(r(meta.game+pe+8,4))==0x6AE0E5FF, 'Game identity changed')
+            and number32(r(meta.game+pe+8,4))==0x6AF322C1, 'Game identity changed')
         for _,f in ipairs({REQUEST,RELEASE}) do
             assert(r(meta.game+f[1],#f[2]/2)==unhex(f[2]), 'Package wrapper fingerprint differs')
         end

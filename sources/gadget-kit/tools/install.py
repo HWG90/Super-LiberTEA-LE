@@ -3,7 +3,7 @@ from pathlib import Path
 import json,shutil,hashlib,datetime
 from package import build,ROOT
 from install_files import install_file
-TARGETS=[Path('/mnt/WORMHOLE/SteamLibrary/steamapps/compatdata/553850/pfx/drive_c/users/steamuser/AppData/Local/LLL/Helldivers2/Mods/goose_temporary_unlocks')]
+TARGETS=[Path('/home/goose/.local/share/Steam/steamapps/compatdata/553850/pfx/drive_c/users/steamuser/AppData/Local/LLL/Helldivers2/Mods/goose_temporary_unlocks')]
 package=build();stamp=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ');backup=ROOT/'dist/backups'/stamp
 receipts=[]
 for index,target in enumerate(TARGETS):

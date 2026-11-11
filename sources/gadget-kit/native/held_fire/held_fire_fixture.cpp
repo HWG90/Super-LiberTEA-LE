@@ -21,13 +21,13 @@ struct Fixture {
     NADSHF_Config c{};uint64_t token=0,controller=0,descriptor=0,root=0,active=0,table=0;Event invoke[3]{};
     Fixture(){
         c.size=sizeof c;c.abi=1;c.ttl_ms=250;c.game=allocate(0x3382000,PAGE_EXECUTE_READWRITE);c.exe=allocate(0x29fe000);
-        fake_image(c.game,0x6ae0e5ff,0x3382000);fake_image(c.exe,0x6ae0964a,0x29fe000);
-        literal(c.exe+EVENT_RVA,"48895c2408574883ec208bda8bf9e88d8feaff448bc38bd7488b4818488b5c24304883c4205fe99547f3ff");
-        literal(c.exe+0x12bf35,"b801000000f00fc186380017008bc0486bc858c784318800010003000000899c313800010089ac313c000100");
+        fake_image(c.game,0x6af322c1,0x3382000);fake_image(c.exe,0x6af2d5e6,0x29fe000);
+        literal(c.exe+EVENT_RVA,"48895c2408574883ec208bda8bf9e8fd8eeaff448bc38bd7488b4818488b5c24304883c4205fe90547f3ff");
+        literal(c.exe+0x12bf65,"b801000000f00fc186380017008bc0486bc858c784318800010003000000899c313800010089ac313c000100");
         literal(c.game+0x83c37f,"4e85a433807854000f84a6000000488b0534514a02bae3c5d96b8bcf4c8b401841ff9070030000");
         literal(c.game+0x83c782,"4a8b843380785400480fbae0260f83ac0000004380bc37d16a5400000f85d8000000480fbae0120f82cd000000bae3c5d96be9af000000");
         literal(c.game+0x83c842,"430f108437f86a5400440f2ff8722bf3410f58c4410f2fc77620480fbae0127219ba6191cd8b488b05594c4a028bcf4c8b401841ff9070030000");
-        literal(c.game+0xa6be81,"48b900000400400000008b50488bc341899504e95300486bd078488b8432807854004823c148b90000000040000000483bc1751b488b050c562702bae3c5d96b418b4f0c4c8b401841ff9070030000");
+        literal(c.game+0xa6beb1,"48b900000400400000008b50488bc341899504e95300486bd078488b8432807854004823c148b90000000040000000483bc1751b488b05dc552702bae3c5d96b418b4f0c4c8b401841ff9070030000");
         c.context=allocate(0x3000);c.camera=allocate(0x1000);c.request=c.context+0x1f00;c.avatar_owner=allocate(0x550000);
         c.avatar_index=0;c.avatar=17;c.body=(3<<22)|7;controller=allocate(0x1000);descriptor=allocate(0x1000);
         c.registry=allocate(0x1000);c.units=allocate(0x1000);c.generations=allocate(0x1000);c.body_object=allocate(0x1000);
@@ -47,7 +47,7 @@ struct Fixture {
         }
         normal();root=allocate(0x1000);put(c.game+0x2ce14c8,root);put<uint64_t>(root+0x18,c.exe+API_RVA);
         put<uint64_t>(c.exe+API_RVA+0x370,reinterpret_cast<uint64_t>(synthetic_event));fixture_target=synthetic_event;
-        const uint32_t sites[]{0x83c39f,0x83c875,0xa6bec9};
+        const uint32_t sites[]{0x83c39f,0x83c875,0xa6bef9};
         for(unsigned i=0;i<3;++i){
             const uint64_t stub=c.game+0x1000+i*0x40,site=c.game+sites[i];literal(stub,"4883ec2849b8");put<uint64_t>(stub+6,c.exe+API_RVA);put<uint8_t>(stub+14,0xe9);
             put<int32_t>(stub+15,static_cast<int32_t>(site-(stub+19)));literal(site+7,"4883c428c3");invoke[i]=reinterpret_cast<Event>(stub);

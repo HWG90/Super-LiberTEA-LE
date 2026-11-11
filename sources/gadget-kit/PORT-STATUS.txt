@@ -1,6 +1,13 @@
-Goose Gadget Kit 0.5.38-cffi-26251122
-First Person Lua hot-path correction on the visually accepted native-camera baseline.
-Steady visibility observation skips redundant model snapshots and alignment walks only when complete current fingerprints match; it never authorizes an SDK mutation.
-Shared transition publication sends bounded private scalars once per matching owned Update; native callbacks and actual motion writes retain fresh ownership guards.
-Native helpers, camera, animations, F11/F8 and personal settings are unchanged. No new hook, pin, input integration or ABI change.
-Offline checks do not establish live FPS improvement. The combined Kit remains retained until game exit, so a clean restart is required.
+Goose Gadget Kit 0.5.42-shear.1-cffi-26568081
+Ported from Steam build 26251122 to 26568081 on 2026-11-11; no behaviour change. game.dll 6AF322C1, helldivers2.exe 6AF2D5E6.
+Every address and byte witness was re-derived from the 26568081 capture; five executable witnesses sit on pages the capture does not hold and are predicted (the kit refuses those features if they differ).
+All seven first-person helpers and guarded_reads were rebuilt from sources that reproduce the 26251122 libraries byte for byte. Not checked in game.
+Lua-only True First Person smoothing over 0.5.40-sdk-test.1: weapon-offset pop guard, hitch-stretched transitions, merged early edges, eased aim gait, soft rebase after hitches. smooth.2 rebuilds only the near-clip helper (48e8de629b38): the distance eases between hip, normal aim and full ADS; ABI unchanged. The other helpers are byte-identical to 0.5.40-sdk-test.1. smooth.3 (Lua): the pop guard no longer starts during a running handoff, and diagnostics rows carry the control mask and entry block. Live acceptance pending.
+Experimental SDK-only native zoom input candidate. Normalization is OFF by default.
+The optional timed trial uses UnitAPI+0x90 and the existing post-input getter, with no inline patch or camera pin.
+Only an exact-owned camera request preset index and private look gains change; native lens, camera quaternion, animation, raw input, history, steering and saved preferences remain native.
+130 native fixture groups, separate real unmap test, actual production ABI smoke, captured native math and native preset-copy fixtures passed offline.
+Nonzero-steering source ordering remains experimental. Unproved abnormal completion retains cleanup ownership; no all-frame or live performance claim.
+Legacy four-slot entry and existing F11/F8 behavior stay selected until the explicit opt-in trial. Full game exit is required to replace the retained helper.
+Placement and personal configuration files are not part of installation writes. No live trial has been run.
+smooth.4 (probe, Lua only): while the game's weapon put-away/draw mask (controller mask 2) is up, the owned native first-person request is no longer exited; the exit runs on the first Update after the mask changes. The pose, FOV and near-clip helpers still drop their adjustments under that mask, so placement jumps to the native pose for the hold. Switch live with NativeADSCameraTest.hold_transition(false). Not checked in game.

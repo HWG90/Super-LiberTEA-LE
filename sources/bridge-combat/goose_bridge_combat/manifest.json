@@ -2,7 +2,7 @@
   "id": "goose_bridge_combat",
   "name": "Bridge Combat",
   "author": "Goose",
-  "version": "0.1.17-experimental-26251122.12",
+  "version": "0.1.17-experimental-26568081.1",
   "description": "Bridge combat with a fixed equipment terminal, focused mouse controls, resupply and support weapons.",
   "lll": {
     "entry": "main.lua",
@@ -58,8 +58,8 @@
     ]
   },
   "native": {
-    "file": "native/BridgeCombatWeaponMenu-bcb24cbfd1cd.dll",
-    "sha256": "bcb24cbfd1cd47d30bca49db9cf9c70861a372c5cfca0195840daa8e41c7dbd4",
+    "file": "native/BridgeCombatWeaponMenu-2c8fa4e14702.dll",
+    "sha256": "2c8fa4e14702b36080f1d4c1ac977b6f748b46485683bd01d8c2e2f3684efd32",
     "api": 1
   }
 }

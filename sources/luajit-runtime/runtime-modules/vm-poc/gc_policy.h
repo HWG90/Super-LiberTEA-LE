@@ -41,9 +41,9 @@ HD2ENV_API int hd2env_collect_frame(HD2Environment *, HD2GCReport *);
 HD2ENV_API int hd2env_gc_report(const HD2Environment *, HD2GCReport *);
 
 typedef struct { uint32_t rva; size_t size; unsigned char original[12], replacement[12]; } HD2GCPatch;
-/* Complete captured 0x5eb2b0 guard, then replace its entry. Target takes the
+/* Complete captured 0x5eb340 guard, then replace its entry. Target takes the
  * native collector wrapper address (environment + 0x100148), not lua_State.
- * The original 0x6cd1e0 forwarding wrapper is supported unchanged. */
+ * The original 0x6cd170 forwarding wrapper is supported unchanged. */
 HD2ENV_API int hd2env_plan_gc_patch(const void *, size_t, uintptr_t target, HD2GCPatch *);
 HD2ENV_API uintptr_t hd2env_gc_target(void);
 #endif

@@ -52,7 +52,7 @@ do
         put(base,'MZ'..string.rep('\0',0x3A)..le(0x80,4))
         put(base+0x80,'PE\0\0\100\134'..string.rep('\0',2)..le(stamp,4)..string.rep('\0',12)..'\11\2'..string.rep('\0',54)..le(size,4))
     end
-    pe(G,0x6AE0E5FF,0x3382000);pe(E,0x6AE0964A,0x29FE000)
+    pe(G,0x6AF322C1,0x3382000);pe(E,0x6AF2D5E6,0x29FE000)
     local guards=src:match('local CURRENT_GUARDS=(%b{})')
     local optional
     for m,off,hex in guards:gmatch('{"(%a+)",(%d+),"(%x+)"}')do
@@ -67,7 +67,7 @@ do
         return nil,'unreadable'
     end
     local fio={read=read,hashmap=function()return nil end,native=function()natives=natives+1 end,resident=function()end,
-        module=function(name)if name=='game.dll'then return G,0x3382000,0x6AE0E5FF end;return E,0x29FE000,0x6AE0964A end}
+        module=function(name)if name=='game.dll'then return G,0x3382000,0x6AF322C1 end;return E,0x29FE000,0x6AF2D5E6 end}
     local view={can_start=true,context=2,menu_closed=true,base={scene=4,game=G}}
     local function attempt(optional_guards)
         GOOSE_GADGET_SPAWNER_REQUESTS_V1=nil
@@ -100,7 +100,7 @@ do
         ptr(G+0x2ce16b8,TR);ptr(TR+0x68,TROWS);put(TROWS+0x2E0,string.rep('\0',12))
         ptr(G+0x2e381e8,LED);ptr(G+0x2ce14c8,E+0x2870240);ptr(E+0x1ab7808,APP)
         ptr(E+0x2870240+0x10,API);ptr(APP+0x400,LOADER);ptr(LOADER+0x208,0x70000000)
-        ptr(API+0x2F0,E+0x2F01E0);ptr(API+0x328,E+0x2F0860)
+        ptr(API+0x2F0,E+0x2F0280);ptr(API+0x328,E+0x2F0900)
         put(LED,le(LEDROWS,8)..le(8,4)..le(0,4)..EMPTY..le(0,4))
         local ledger={at=LEDROWS,bytes=string.rep(EMPTY..le(0,8),8)};mem[#mem+1]=ledger
         put(LOADER+0x218,string.rep('\0',512*24+12))

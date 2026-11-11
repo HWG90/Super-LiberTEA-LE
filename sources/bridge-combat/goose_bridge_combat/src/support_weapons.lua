@@ -3,12 +3,12 @@
 local M={}
 local BANK='GOOSE_BRIDGE_SUPPORT_REQUESTS_V1'
 local UNIT='e0a48d0be9a7453f'
-local SPECS={drop={0x9c0300,'void (*)(void *, uint32_t, uint32_t, uint32_t)','48895c241848896c24204889542410564883ec30443b05b5'},detach={0x791290,'void (*)(void *, uint32_t, uint32_t, uint32_t)','4053415641574883ec403b1530de6a02458bf9458bf08bda'},floor_remove={0xe6cdc0,'void (*)(void *, void *, uint8_t)','4885d20f84d50500004c8bdc5641554881ecf8000000488b'},defaults={0x7568b0,'void (*)(void *, uint64_t, void *)','40535741564883ec200f57c0488bca410f11004d8bf0488b'},select={0x9bc670,'void (*)(void *, uint32_t, uint32_t)','488bc444894018535541554881ec800000003b15482a4802418b'},equip={0x9bfc50,'void (*)(void *, uint32_t, uint32_t, uint32_t, uint8_t)','40535541554883ec4048897c2468418be84c896424708bda'},
-    remove={0xe6c8b0,'void (*)(void *, uint32_t)','48895c2408574883ec303b15dc31fd018bda488bf90f84d4000000'},request={0x11912f0,'void (*)(void *, const uint64_t *, uint32_t)','4585c00f8475010000415641574883ec3848895c24504c8b'},
-    present={0x632070,'uint8_t (*)(void *, const uint64_t *, const uint64_t *)','4053415641574883ec30488b02488bd98b89c00200004533'},
-    fetch={0x6321a0,'uintptr_t (*)(void *, const uint64_t *, const uint64_t *, uint64_t *)','4c894424184889542410535556574155415641574883ec30'},
-    spawn={0xe696b0,'uint32_t *(*)(uint32_t *, uint64_t, void *)','4c8bdc49895b1049897320574881eca0000000488b0546b9'},
-    open={0x98a190,'void (*)(void *, uint32_t, uint32_t, uint8_t)','415641574883ec283b15324f4b02450fb6f1458bf84c8bd1'}}
+local SPECS={drop={0x9c0330,'void (*)(void *, uint32_t, uint32_t, uint32_t)','48895c241848896c24204889542410564883ec30443b0585'},detach={0x791290,'void (*)(void *, uint32_t, uint32_t, uint32_t)','4053415641574883ec403b1530de6a02458bf9458bf08bda'},floor_remove={0xe6cf20,'void (*)(void *, void *, uint8_t)','4885d20f84d50500004c8bdc5641554881ecf8000000488b'},defaults={0x7568b0,'void (*)(void *, uint64_t, void *)','40535741564883ec200f57c0488bca410f11004d8bf0488b'},select={0x9bc6a0,'void (*)(void *, uint32_t, uint32_t)','488bc444894018535541554881ec800000003b15182a4802418b'},equip={0x9bfc80,'void (*)(void *, uint32_t, uint32_t, uint32_t, uint8_t)','40535541554883ec4048897c2468418be84c896424708bda'},
+    remove={0xe6ca10,'void (*)(void *, uint32_t)','48895c2408574883ec303b157c30fd018bda488bf90f84d4000000'},request={0x1191450,'void (*)(void *, const uint64_t *, uint32_t)','4585c00f8475010000415641574883ec3848895c24504c8b'},
+    present={0x632110,'uint8_t (*)(void *, const uint64_t *, const uint64_t *)','4053415641574883ec30488b02488bd98b89c00200004533'},
+    fetch={0x632240,'uintptr_t (*)(void *, const uint64_t *, const uint64_t *, uint64_t *)','4c894424184889542410535556574155415641574883ec30'},
+    spawn={0xe69810,'uint32_t *(*)(uint32_t *, uint64_t, void *)','4c8bdc49895b1049897320574881eca0000000488b05e6b7'},
+    open={0x98a1c0,'void (*)(void *, uint32_t, uint32_t, uint8_t)','415641574883ec283b15024f4b02450fb6f1458bf84c8bd1'}}
 local function bytes(s)return(s:gsub('%x%x',function(x)return string.char(tonumber(x,16))end)):reverse()end
 local function word(s,o)o=o or 0;local a,b,c,d=s:byte(o+1,o+4);assert(d,'Support word unavailable');return a+b*256+c*65536+d*16777216 end
 local function pointer(s)local v=word(s)+word(s,4)*4294967296;assert(v>=65536 and v<2^47,'Support pointer unavailable');return v end
@@ -50,7 +50,7 @@ function M.new(options)
         assert(type(view)=='table'and view.can_start==true and(view.context==2 or view.context==4)
             and view.menu_closed==true and not view.photo and not view.fixed_pose and view.base and view.base.scene==3,'Support request waiting for normal bridge gameplay')
         local g,_,gs=io.module('game.dll');local e,_,es=io.module('helldivers2.exe');local b=view.base
-        assert(g and e and gs==0x6AE0E5FF and es==0x6AE0964A and b.game==g,'Support request build changed')
+        assert(g and e and gs==0x6AF322C1 and es==0x6AF2D5E6 and b.game==g,'Support request build changed')
         local m=(rawget(globals,'GOOSE_BRIDGE_SERVICES')or rawget(globals,'DBFMCM'));assert(type(m)=='table'and type(m.is_open)=='function'and m.is_open()==false
             and type(m.menu_binding_status)=='function','Close the console menu before delivery')
         local focus=m.menu_binding_status();assert(type(focus)=='table'and focus.focused==true and focus.editing==false,'Support request input is captured')
@@ -484,7 +484,7 @@ function M.new(options)
             and raw.render==lease.render and raw.resource==lease.resource and not raw.photo and not raw.fixed_pose,
             'Support cleanup actor changed')
         local g,_,stamp=io.module('game.dll');local e,_,es=io.module('helldivers2.exe')
-        assert(g==view.game and stamp==0x6AE0E5FF and e and es==0x6AE0964A,'Support cleanup build changed')
+        assert(g==view.game and stamp==0x6AF322C1 and e and es==0x6AF2D5E6,'Support cleanup build changed')
         assert(p(g+0x2ce41b8)==view.world and p(g+0x2ce1ee0)==view.pm
             and u(p(g+0x2ce1508)+0xac29c)==3,'Support cleanup world changed')
         local descriptor=r(view.ep,24)

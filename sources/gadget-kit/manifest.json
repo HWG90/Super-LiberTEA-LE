@@ -2,8 +2,8 @@
   "id": "goose_temporary_unlocks",
   "name": "Goose Gadget Kit",
   "author": "Goose",
-  "version": "0.5.38-cffi-26251122",
-  "description": "Combined Gadget Kit: native First Person with leaner steady visibility observation and shared transition publication; natural camera and animation preserved.",
+  "version": "0.5.42-shear.1-cffi-26568081",
+  "description": "True First Person smoothing: weapon offset pop guard, hitch-proof transitions and eased aim gait. SDK-only zoom input candidate stays disabled by default; native camera and animation baseline retained.",
   "lll": {
     "entry": "main.lua",
     "defaults": "config/defaults.cfg",

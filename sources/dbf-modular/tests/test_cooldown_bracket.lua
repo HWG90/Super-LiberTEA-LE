@@ -336,12 +336,12 @@ local function fixture()
         end
     end
     function b.fn(_, rva)
-        if rva == 0x12de550 then
+        if rva == 0x12de6b0 then
             return function(at)
                 parents[at + 0xf8] = state.resource
             end
         end
-        if rva == 0x16ba420 then
+        if rva == 0x16ba580 then
             return function(at)
                 stats.creates = stats.creates + 1
                 parents[at + 0x920 + 0xf0] = at
@@ -355,12 +355,12 @@ local function fixture()
                 ffi.cast("float *", at + 0x14c4)[0] = 60
             end
         end
-        if rva == 0x12e42d0 then
+        if rva == 0x12e4430 then
             return function(parent, child)
                 parents[child + 0xf0] = parent
             end
         end
-        if rva == 0x16baed0 then
+        if rva == 0x16bb030 then
             return function(at)
                 stats.ticks = stats.ticks + 1
                 ffi.cast("uint32_t *", at + 0x14bc)[0] = state.count
@@ -369,14 +369,14 @@ local function fixture()
                 end
             end
         end
-        if rva == 0x12e4cc0 then
+        if rva == 0x12e4e20 then
             return function(at, visible)
                 stats.visibilities = stats.visibilities + 1
                 stats.visibility_events[#stats.visibility_events + 1] = { at = at, value = visible }
                 field(at).visible = visible
             end
         end
-        if rva == 0x12e07e0 then
+        if rva == 0x12e0940 then
             return function(at, opacity)
                 field(at).opacity = opacity
             end

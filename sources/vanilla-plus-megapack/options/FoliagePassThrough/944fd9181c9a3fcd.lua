@@ -750,8 +750,8 @@ local Mod = (function()
 -- developer's test builds only) is installed after the change; release builds have none.
 local Mod = {VERSION = '1.0'}
 
-Mod.EXE_SHA256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D'
-Mod.GAME_SHA256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'
+Mod.EXE_SHA256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB'
+Mod.GAME_SHA256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'
 
 -- Build 26088801 (native-work/megapack-port/FoliagePassThrough/MAP.json). Tests pass their own layout.
 Mod.LAYOUT = {
@@ -992,7 +992,7 @@ function Mod.install(api, options)
     local ok, err = pcall(function()
         need(loader_ok(loader), 'Bingus Shared Loader with API 1 required')
         local built, why = api.verify_build({exe_sha256 = Mod.EXE_SHA256, game_sha256 = Mod.GAME_SHA256})
-        need(built, why == 'unsupported game build' and 'Unsupported game build (needs Steam build 26251122)'
+        need(built, why == 'unsupported game build' and 'Unsupported game build (needs Steam build 26568081)'
             or why)
         start(env, api, layout, state, note, ready)
     end)

@@ -19,7 +19,7 @@ function M.new(options)
     local function u(at)return word(r(at,4))end
     local function module()
         local g,_,gs=io.module('game.dll');local e,_,es=io.module('helldivers2.exe')
-        assert(g and e and gs==0x6AE0E5FF and es==0x6AE0964A,'Unsupported ammo console build');return g,e
+        assert(g and e and gs==0x6AF322C1 and es==0x6AF2D5E6,'Unsupported ammo console build');return g,e
     end
     local function bank()
         local b=rawget(globals,BANK)
@@ -83,9 +83,9 @@ function M.new(options)
         assert(identity:sub(1,16)==r(b.ep,16)and word(identity,8)==b.avatar and word(identity,12)==view.render
             and identity:byte(21)%2==1,'Console inventory is not the live local actor')
         ffi=ffi or require('ffi')
-        refill_fn=refill_fn or assert(io.native(game+0x9befd0,
+        refill_fn=refill_fn or assert(io.native(game+0x9bf000,
             'void (*)(void *, uint32_t, uint32_t, float, const float *)',
-            '4883ec483b15f60048024c8b15072932020f297424200f28','AMMO_CONSOLE_REFILL'))
+            '4883ec483b15c60048024c8b15d72832020f297424200f28','AMMO_CONSOLE_REFILL'))
         assert(p(game+0x2ce18e8)==inventory and io.hashmap(inventory+0x28,b.avatar)==row
             and p(inventory+0x40)==descriptors and p(inventory+0x50)==rows and p(descriptors+row*8)==descriptor
             and r(descriptor,24)==identity and r(rows+row*48,48)==equipment,'Console inventory changed before refill')

@@ -1,7 +1,7 @@
 -- Steam Lua 5.1 frontend. All native input remains owned by the loader service.
 local api,menu,view,input,capture,legacy,registered,bindings,diagnostics,diagnostic_owner
 local hud_integration;local ctx_owner,loader;local elapsed,restore_retry,restore_ticks=0,0,0;local retired=true
-local VERSION='0.1.74-luajit.7'
+local VERSION='0.1.74-luajit.8'
 local painted=false;local last_width,last_height=1920,1080
 local function close_menu()
  if menu then menu.visible=false;menu.capture=false;if menu.release_console then menu.release_console()end end

@@ -101,6 +101,46 @@ test('transient pose space graph gates retain arm and manual intent',function()
         equal(f.manager:result().error,code);equal(f.ends,0);assert(f.controller.enabled)
     end
 end)
+test('typed callback read faults reach paced recovery after acknowledged cleanup',function()
+    local f=fixture();assert(f.manager:prepare());f.config.camera_kind=6
+    f.native_error=3;f.disarmed=true
+    assert(not f.manager:update(f.controller));assert(f.manager:is_clean());equal(f.ends,1)
+    local failure=f.manager:result();equal(failure.failure_native_error,3);equal(failure.failure_kind,'temporary_read')
+    local Recovery=dofile(root..'/src/recovery.lua');local recovery=Recovery.new()
+    local proof={fresh=true,safe=true,same_player=true,foreign=false}
+    local row=recovery:failure('camera',failure,true,proof,0,'actual callback health code')
+    equal(row.phase,'waiting');equal(recovery:action('camera',.1),'wait');equal(f.begins,1)
+    equal(recovery:action('camera',.25),'update');assert(recovery:revalidate('camera',proof,.25))
+    f.native_error=0;f.disarmed=false;assert(f.manager:update(f.controller));equal(f.begins,2)
+    equal(f.manager:result().failure_kind,nil);assert(f.controller.enabled)
+end)
+test('callback read cause survives pending End with a different cleanup error',function()
+    local f=fixture();assert(f.manager:prepare());f.native_error=3;f.disarmed=true;f.pending=true
+    local finish=f.helper.finish
+    f.helper.finish=function(self,handle)self.last_failure_code=13;return finish(self,handle)end
+    assert(not f.manager:update(f.controller));assert(not f.manager:is_clean())
+    local failure=f.manager:result();equal(failure.failure_native_error,3);equal(failure.failure_kind,'temporary_read')
+    equal(failure.cleanup_pending,true)
+    local Recovery=dofile(root..'/src/recovery.lua');local recovery=Recovery.new()
+    local row=recovery:failure('camera',failure,false,{fresh=true,safe=true,same_player=true,foreign=false},0)
+    equal(row.phase,'cleanup');equal(row.pending_classification,'retry')
+    equal(recovery:action('camera',1),'cleanup');equal(f.begins,1)
+    f.pending=false;assert(f.manager:stop());assert(recovery:cleanup('camera',true,1))
+    equal(recovery:action('camera',1.1),'wait');equal(recovery:action('camera',1.25),'update')
+    assert(not recovery:revalidate('camera',{fresh=true,safe=true,same_player=false,foreign=false},1.25))
+    equal(f.begins,1,'A native3 plus cleanup cannot bypass fresh same-player admission')
+end)
+test('unknown disarmed camera faults reach fatal recovery instead of a lifecycle rearm',function()
+ for _,code in ipairs({1,5,6,8,13,17,99})do
+  local f=fixture();assert(f.manager:prepare());f.native_error=code;f.disarmed=true
+  assert(not f.manager:update(f.controller));assert(f.manager:is_clean())
+  local failure=f.manager:result();equal(failure.failure_native_error,code);equal(failure.failure_kind,'unsafe')
+  local Recovery=dofile(root..'/src/recovery.lua')
+  equal(Recovery.classify('camera',failure,true,{fresh=true,safe=true,same_player=true,foreign=false}),'fatal')
+ end
+ local f=fixture();assert(f.manager:prepare());f.native_error=7;f.disarmed=true
+ assert(f.manager:update(f.controller));assert(f.manager:is_clean());equal(f.manager:result().phase,'waiting')
+end)
 test('native owner loss cleans and waits for fresh configuration before native6 rearm',function()
     local f=fixture();assert(f.manager:prepare());f.config.camera_kind=6;f.disarmed=true
     assert(f.manager:update(f.controller));equal(f.ends,1);assert(f.manager:is_clean());assert(f.controller.enabled)

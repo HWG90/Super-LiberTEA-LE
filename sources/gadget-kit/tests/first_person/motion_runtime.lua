@@ -113,7 +113,10 @@ test('shoulder stance stays visible with sway off or zero strength and disabled 
         for _=1,30 do assert(f:step())end
         equal(f.reads,reads);equal(#f.writes,writes)
         f.shoulder=true;for _=1,120 do assert(f:step())end
-        f.editing=true;assert(f:step());neutral(f.writes[#f.writes])
+        -- Opening the editor eases the held stance out instead of dropping it.
+        f.editing=true;assert(f:step());local eased=f.writes[#f.writes]
+        assert(eased.dx<0 and eased.dx>-.04);equal(f.runtime:result().phase,'editor_frozen')
+        for _=1,8 do assert(f:step())end;neutral(f.writes[#f.writes])
         equal(f.runtime:result().phase,'editor_frozen')
     end
 end)
@@ -151,7 +154,12 @@ test('lease changes long gaps and explicit reset cannot transfer old movement in
     local f=fixture();f:step();f:step(.05)
     local lease={request=200};f.controller.lease=lease;f.backend.alignment_lease=lease
     assert(f:step(30));neutral(f.writes[#f.writes])
-    assert(f:step(30.05));assert(f:step(40,1));neutral(f.writes[#f.writes])
+    assert(f:step(30.05));local moving=f.writes[#f.writes]
+    -- A sub-second hitch eases what was showing; a longer gap starts clean.
+    assert(f:step(40,.5));local eased=f.writes[#f.writes]
+    assert(math.abs(eased.dx)<=math.abs(moving.dx)and math.abs(eased.dz)<=math.abs(moving.dz))
+    equal(f.runtime:result().rebased,'time_gap')
+    assert(f:step(50,2));neutral(f.writes[#f.writes])
     assert(f.runtime:reset());assert(f:step(50));neutral(f.writes[#f.writes])
 end)
 test('unchanged output skips only submissions while sampling stays fresh and movement still applies',function()
@@ -212,7 +220,8 @@ test('editor yaw pitch preview coalesces unchanged rotation',function()
     assert(f:step());assert(math.abs(f.writes[#f.writes].qz)>.01)
     local before=#f.writes;assert(f:step());equal(#f.writes,before)
     yaw=16;assert(f:step());equal(#f.writes,before+1)
-    f.editing=false;assert(f:step());neutral(f.writes[#f.writes])
+    f.editing=false;assert(f:step());assert(math.abs(f.writes[#f.writes].qz)>.01)
+    for _=1,8 do assert(f:step())end;neutral(f.writes[#f.writes])
 end)
 test('automatic capture retains saved idle transform and removes presentation motion',function()
     local f=fixture();f:step();f.sprint=true
@@ -264,7 +273,8 @@ test('custom rotation is eligible before ADS and settles continuously to exact n
     same(f.writes[#f.writes],prior);equal(f.writes[#f.writes].authored_ads,true)
     assert(f:step(nil,.075));local mid=f.writes[#f.writes]
     assert(mid.qx>0 and mid.qx<prior.qx);near(mid.qx^2+mid.qw^2,1)
-    assert(f:step(nil,.076));neutral(f.writes[#f.writes]);equal(f.writes[#f.writes].authored_ads,false)
+    assert(f:step(nil,.076));local late=f.writes[#f.writes];assert(late.qx>0 and late.qx<mid.qx)
+    assert(f:step(nil,.05));neutral(f.writes[#f.writes]);equal(f.writes[#f.writes].authored_ads,false)
 end)
 test('rapid ADS reversal starts from the last submitted modifier without restarting at an endpoint',function()
     local f=fixture();f.rotation_only=.6;f:step();f.rotation_only=nil;f.ads=true;f:step()
@@ -272,23 +282,29 @@ test('rapid ADS reversal starts from the last submitted modifier without restart
     assert(partial.qx>0 and partial.qx<math.sin(.3))
     f.ads=false;f.rotation_only=.6;assert(f.runtime:update());same(f.writes[#f.writes],partial)
     f:step(nil,.075);assert(f.writes[#f.writes].qx>partial.qx)
-    f:step(nil,.076);near(f.writes[#f.writes].qx,math.sin(.3))
+    f:step(nil,.076);f:step(nil,.05);near(f.writes[#f.writes].qx,math.sin(.3))
 end)
 test('ADS return blends rotation from identity and a new weapon cannot inherit it',function()
     local f=fixture();f.rotation_only=.4
     local lease={request=200,pose_blend_entry=true};f.controller.lease=lease;f.backend.alignment_lease=lease
     assert(f:step());neutral(f.writes[#f.writes])
     f:step(nil,.075);local mid=f.writes[#f.writes];assert(mid.qx>0 and mid.qx<math.sin(.2))
-    f:step(nil,.076);near(f.writes[#f.writes].qx,math.sin(.2))
+    f:step(nil,.076);f:step(nil,.05);near(f.writes[#f.writes].qx,math.sin(.2))
     lease={request=300};f.controller.lease=lease;f.backend.alignment_lease=lease;f.rotation_only=-.3
     assert(f:step());near(f.writes[#f.writes].qx,math.sin(-.15))
 end)
-test('an interrupted ADS fade cannot survive a read failure or long clock gap',function()
-    for _,fault in ipairs({'read_failure','time_gap'})do
+test('an interrupted ADS fade eases out through a read failure hitch or long clock gap',function()
+    for _,fault in ipairs({'read_failure','hitch','long_gap'})do
         local f=fixture();f.rotation_only=.4;f:step();f.ads=true;f.rotation_only=nil;f:step();f:step(nil,.04)
-        assert(f.writes[#f.writes].qx>0)
-        if fault=='read_failure'then f.read_failure=true;f:step();f.read_failure=false;f:step()
-        else f:step(nil,.4)end
+        local before=f.writes[#f.writes];assert(before.qx>0)
+        if fault=='read_failure'then f.read_failure=true;f:step();f.read_failure=false
+        elseif fault=='hitch'then f:step(nil,.4);equal(f.runtime:result().rebased,'time_gap')
+        else f:step(nil,2)end
+        -- Never further out than before, never a full drop in one Update at
+        -- a size the eye can follow, and exact neutral shortly after.
+        local previous=f.writes[#f.writes];assert(previous.qx<=before.qx and previous.qx>=0)
+        if fault~='long_gap'then assert(previous.qx>0)end
+        for _=1,12 do f:step();local now=f.writes[#f.writes];assert(now.qx<=previous.qx and now.qx>=0);previous=now end
         neutral(f.writes[#f.writes])
     end
 end)
@@ -297,9 +313,10 @@ test('shared phase controls presentation handoff independently of renderer elaps
     local packet={epoch=1,progress=0,ads=true}
     f.backend.presentation_transition=function()return packet end
     f.rotation_only=nil;f.ads=true;assert(f:step());same(f.writes[#f.writes],prior)
-    packet.progress=.5;assert(f:step(nil,.01));local mid=f.writes[#f.writes];assert(mid.qx>0 and mid.qx<prior.qx)
+    packet.progress=.5;assert(f:step(nil,.05));local mid=f.writes[#f.writes];assert(mid.qx>0 and mid.qx<prior.qx)
     assert(f:step(nil,.01));same(f.writes[#f.writes],mid)
-    packet.progress=1;assert(f:step(nil,.01));neutral(f.writes[#f.writes])
+    packet.progress=1;assert(f:step(nil,.05));neutral(f.writes[#f.writes])
+    equal(f.runtime:result().softened,0)
 end)
 test('same-identity cleanup carries only bounded presentation scalars while a different weapon drops them',function()
     for _,same_owner in ipairs{true,false}do
@@ -309,8 +326,103 @@ test('same-identity cleanup carries only bounded presentation scalars while a di
         local origin={identity=same_owner and'body/weapon1'or'body/weapon2',player_identity='body'}
         local lease={request=201,origin=origin};f.controller.lease=lease;f.backend.alignment_lease=lease;f.controller.phase='running';f.rotation_only=-.2
         assert(f:step(nil,.01));assert(f.reads>reads)
-        if same_owner then same(f.writes[#f.writes],prior);f:step(nil,.16);near(f.writes[#f.writes].qx,math.sin(-.1))
+        if same_owner then same(f.writes[#f.writes],prior);for _=1,3 do f:step(nil,.06)end;near(f.writes[#f.writes].qx,math.sin(-.1))
         else near(f.writes[#f.writes].qx,math.sin(-.1))end
+    end
+end)
+local function travel(a,b)
+    local dot=math.max(-1,math.min(1,a.qx*b.qx+a.qy*b.qy+a.qz*b.qz+a.qw*b.qw))
+    return math.sqrt((a.dx-b.dx)^2+(a.dy-b.dy)^2+(a.dz-b.dz)^2),2*math.acos(dot)
+end
+test('ordinary walking sprinting aiming and ADS never trip the pop guard at 30 60 or 144 FPS',function()
+    for _,rate in ipairs({30,60,144})do
+        local f=fixture();f.options={enabled=true,scale=1,sprint_strength=1,bob_strength=2,sway_strength=2}
+        local dt,y=1/rate,0
+        local function run(seconds,speed)
+            for _=1,math.ceil(seconds*rate)do
+                y=y+speed*dt;local before=f.writes[#f.writes]
+                assert(f:step(y,dt));local after=f.writes[#f.writes]
+                if before then
+                    local moved,turned=travel(before,after)
+                    assert(moved<=1*math.max(dt,1/240)+1e-9 and turned<=math.rad(360)*math.max(dt,1/240)+1e-9,'authored motion exceeded the guard at '..rate)
+                end
+            end
+        end
+        run(.5,0);run(1,3);f.sprint=true;run(1,7);f.sprint=false;f.shoulder=true;run(.6,2)
+        f.ads=true;run(.5,1);f.ads=false;run(.4,2);f.shoulder=false;f.sprint=true;run(.6,7)
+        f.sprint=false;f.ads=true;run(.3,0);f.ads=false;run(.5,0)
+        equal(f.runtime:result().softened,0)
+    end
+end)
+test('a failed sample eases a held sprint and aim pose to neutral instead of dropping it',function()
+    for _,fault in ipairs({'read_failure','convert_failure','bad_rotation'})do
+        local f=fixture();f.options={enabled=true,scale=1,sprint_strength=1};f:step();f.sprint=true
+        for i=1,120 do assert(f:step(i*.1))end
+        local held=f.writes[#f.writes];local _,pose=travel(held,{dx=0,dy=0,dz=0,qx=0,qy=0,qz=0,qw=1})
+        assert(pose>math.rad(15))
+        f[fault]=true;local previous,steps=held,0
+        repeat
+            assert(f:step(f.y+.1));steps=steps+1;local now=f.writes[#f.writes]
+            local _,turned=travel(previous,now);assert(turned<pose*.3,'pose dropped in one Update');previous=now
+            equal(f.runtime:result().phase,'neutral')
+        until now.qw==1 or steps>30
+        neutral(previous);assert(steps>=5 and steps<=9);equal(f.runtime:result().softened,1)
+        equal(f.controller.enabled,true)
+        -- Recovery starts from neutral and eases back in; nothing is replayed.
+        f[fault]=nil;assert(f:step(f.y+.1));local back=f.writes[#f.writes]
+        local _,turned=travel(previous,back);assert(turned<pose*.3)
+    end
+end)
+test('a refused write or a new lease is never softened from the old pose',function()
+    local f=fixture();f.options={enabled=true,scale=1,sprint_strength=1};f:step();f.sprint=true
+    for i=1,120 do assert(f:step(i*.1))end
+    local lease={request=300};f.controller.lease=lease;f.backend.alignment_lease=lease
+    assert(f:step(f.y+.1));neutral(f.writes[#f.writes]);equal(f.runtime:result().softened,0)
+    f.refuse=true;assert(f:step(f.y+.1));equal(f.runtime:result().phase,'unavailable')
+    f.refuse=false;assert(f:step(f.y+.1));equal(f.runtime:result().softened,0)
+end)
+test('a slow frame stretches an unshared ADS fade instead of finishing it',function()
+    local f=fixture();f.rotation_only=.4;f:step();local prior=f.writes[#f.writes]
+    f.rotation_only=nil;f.ads=true;assert(f.runtime:update())
+    assert(f:step(nil,.2));local slow=f.writes[#f.writes]
+    assert(slow.qx>prior.qx*.5 and slow.qx<prior.qx)
+    assert(f:step(nil,.2));assert(f.writes[#f.writes].qx>0 and f.writes[#f.writes].qx<slow.qx)
+    assert(f:step(nil,.2));neutral(f.writes[#f.writes])
+end)
+test('a placement target that moves after its phase finished eases in while a new lease lands at once',function()
+    local f=profile_fixture();local packet={epoch=1,progress=1,ads=false}
+    f.backend.presentation_transition=function()return packet end
+    f.placement={x=0,y=0,z=0,yaw=0,pitch=0,roll=0}
+    -- First placement of a lease: the rig appears where it belongs.
+    assert(f:step());equal(f.placement.x,.12);equal(f.placement.z,-.03)
+    -- Target moves with the phase already complete: no jump, exact arrival.
+    f.shoulder=true;assert(f:step());assert(f.placement.x<.12 and f.placement.x>.09)
+    local previous=f.placement.x
+    for _=1,120 do assert(f:step());assert(f.placement.x<=previous);previous=f.placement.x end
+    equal(f.placement.x,0);equal(f.placement.z,0)
+    -- A running phase still drives the blend exactly.
+    f.shoulder=false;packet={epoch=2,progress=0,ads=false};assert(f:step());equal(f.placement.x,0)
+    packet.progress=.5;assert(f:step());near(f.placement.x,.06)
+    packet.progress=1;assert(f:step());equal(f.placement.x,.12)
+end)
+test('a large authored rotation blend is not mistaken for a pop at its fastest point',function()
+    for _,rate in ipairs({60,100,144})do
+        -- 0.9 rad through a shared 180 ms phase peaks near 430 degrees a second.
+        local f=fixture();f.rotation_only=.9;f:step(nil,1/rate);local prior=f.writes[#f.writes]
+        local packet={epoch=1,progress=0,ads=true}
+        f.backend.presentation_transition=function()return packet end
+        f.rotation_only=nil;f.ads=true;assert(f:step(nil,1/rate));local previous=f.writes[#f.writes]
+        local fastest=0
+        while packet.progress<1 do
+            packet.progress=math.min(1,packet.progress+(1/rate)/.18);assert(f:step(nil,1/rate))
+            local now=f.writes[#f.writes];local _,turned=travel(previous,now)
+            fastest=math.max(fastest,turned*rate);assert(now.qx<=previous.qx);previous=now
+        end
+        neutral(previous);assert(fastest>math.rad(360));equal(f.runtime:result().softened,0)
+        -- The same holds for the unshared timer on an ADS release.
+        f.backend.presentation_transition=nil;f.rotation_only=.9;f.ads=false
+        for _=1,math.ceil(.2*rate)+2 do assert(f:step(nil,1/rate))end
+        near(f.writes[#f.writes].qx,math.sin(.45));equal(f.runtime:result().softened,0)
     end
 end)
 print('Native ADS motion runtime fixtures: '..passed..' passed')

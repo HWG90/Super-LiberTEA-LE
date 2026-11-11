@@ -86,15 +86,45 @@ static int handoff_fail(HD2PucState *P,const HD2PucApi *api,const char *message)
 HD2ENV_API int HD2_NATIVE_ABI luaopen_hd2_luajit_boot(HD2PucState *P) {
     HD2SteamHost host;HD2PucApi api;
     if(handoff_env)return 0; /* one handoff per process */
-    if(!hd2env_current_steam_host(&host)){handoff_log("handoff refused: host identity (build 26251122 required)");return 0;}
+    if(!hd2env_current_steam_host(&host)){handoff_log("handoff refused: host identity (build 26568081 required)");return 0;}
     if(!hd2puc_bind(&api,&host)){handoff_log("handoff refused: PUC API witnesses");return 0;}
-    unsigned char code[sizeof(handoff_getter_witness)];uintptr_t getter=host.image_base+0x9fbd0;
-    if(host.callable(host.context,getter)!=1||host.read(host.context,getter,code,sizeof(code))!=1||
-       memcmp(code,handoff_getter_witness,sizeof(code)))return handoff_fail(P,&api,"LuaEnvironment getter witness");
-    uintptr_t environment=(uintptr_t)((void *(HD2_NATIVE_ABI *)(void *))getter)(P);
+    /* With --use-d3d11 the boot script can run before code on the vector ports'
+     * pages has (2026-11-04: Vector2 refused on the pool allocator's page
+     * +0x9f000, the getter's). Calling each original vector native once makes
+     * the game decrypt those pages, as stock scripts would moments later; every
+     * witness below is then checked as on a normal start. */
+    {
+        char why[256];int failed=0,ran=hd2puc_warm_vectors(&api,P,&failed,why,sizeof(why));
+        if(ran<0)handoff_log("vector warm-up skipped: %s",why);
+        else handoff_log("vector warm-up: %d original calls, %d raised",ran,failed);
+    }
+    /* The LuaEnvironment getter exe+0x9fc00 is registry[1] as a userdata pointer
+     * (hd2puc_lua_environment, through the witnessed API). The game decrypts code
+     * on first use, and with --use-d3d11 the getter's page can still be no-access
+     * when the boot script runs (reported 2026-11-03). A resident getter must
+     * match its witness and agree with registry[1]; a page not yet decrypted
+     * leaves registry[1] alone, whose layout the resource reader checks next. */
+    char reason[256],message[320];uintptr_t getter=host.image_base+0x9fc00;
+    uintptr_t environment=(uintptr_t)hd2puc_lua_environment(&api,P);
+    switch(hd2env_check_code(&host,getter,handoff_getter_witness,sizeof(handoff_getter_witness),reason,sizeof(reason))){
+    case HD2_CODE_MATCH:
+        if((uintptr_t)((void *(HD2_NATIVE_ABI *)(void *))getter)(P)!=environment)
+            return handoff_fail(P,&api,"LuaEnvironment getter and registry[1] differ");
+        handoff_log("LuaEnvironment: getter witness matches and agrees with registry[1]");
+        break;
+    case HD2_CODE_NOT_RESIDENT:
+        handoff_log("LuaEnvironment getter %s: environment taken from registry[1] through the PUC API",reason);
+        break;
+    default:
+        snprintf(message,sizeof(message),"LuaEnvironment getter witness: %s",reason);
+        return handoff_fail(P,&api,message);
+    }
     if(!environment)return handoff_fail(P,&api,"native LuaEnvironment unavailable");
     HD2EngineResources *resources=hd2resources_open(&host,environment);
-    if(!resources)return handoff_fail(P,&api,"engine resource reader refused");
+    if(!resources){
+        snprintf(message,sizeof(message),"engine resource reader refused: %s",hd2resources_error(NULL));
+        return handoff_fail(P,&api,message);
+    }
     HD2Backend backend={0};
     if(!hd2resources_bind(resources,&backend))return handoff_fail(P,&api,hd2resources_error(resources));
     char error[2048];

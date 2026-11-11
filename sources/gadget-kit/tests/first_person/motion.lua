@@ -144,10 +144,56 @@ test('ADS removes every procedural output while retaining continuous movement hi
 end)
 test('owner changes teleports and long gaps reset motion instead of carrying inertia',function()
     local m=Motion.new({shoulder_aim_enabled=true});m:update(sample(),1/60)
-    local s=sample(30,0);equal(m:update(s,1/60).reset,'discontinuity')
+    local s=sample(30,0);local out=m:update(s,1/60)
+    equal(out.reset,false);equal(out.rebased,'discontinuity');is_zero(out);equal(out.speed,0)
     s.owner='replacement-body';equal(m:update(s,1/60).reset,'owner_changed')
-    equal(m:update(s,1).reset,'time_gap');is_zero(m:update(s,0))
+    out=m:update(s,1);equal(out.reset,false);equal(out.rebased,'time_gap')
+    equal(m:update(s,2).reset,'time_gap');is_zero(m:update(s,0))
     is_zero(m:update({owner='x',x=0/0,y=0,z=0,yaw=0,pitch=0},1/60))
+end)
+test('hitches teleports and launches keep the aim stance and ease the remaining bob',function()
+    for _,fault in ipairs({'time_gap','teleport','spin'})do
+        local m=Motion.new({shoulder_aim_enabled=true});m:update(sample(),1/60)
+        local s,out=sample(),nil;s.shoulder_aim=true
+        for i=1,120 do s.y=i*.05;out=m:update(s,1/60)end
+        equal(out.shoulder_weight,1);local before=out;assert(out.bob_weight==0)
+        if fault=='time_gap'then out=m:update(s,.5)
+        elseif fault=='teleport'then s.x=400;out=m:update(s,1/60)
+        else s.yaw=3;out=m:update(s,1/60)end
+        equal(out.reset,false);assert(out.rebased);equal(out.shoulder_weight,1)
+        near(out.dx,before.dx,.004);near(out.dy,before.dy,.004)
+        -- The next ordinary frame continues from the new place without a kick.
+        s.y=s.y+.05;local after=m:update(s,1/60)
+        equal(after.rebased,false);equal(after.shoulder_weight,1);near(after.dx,out.dx,.004)
+    end
+    -- Walking bob fades over the following frames instead of vanishing.
+    local m=Motion.new();m:update(sample(),1/60);local out
+    for i=1,120 do out=m:update(sample(0,i*.05),1/60)end
+    local size=math.abs(out.dx)+math.abs(out.dz);assert(size>.001)
+    out=m:update(sample(0,6),.5);equal(out.rebased,'time_gap')
+    local kept=math.abs(out.dx)+math.abs(out.dz);assert(kept>0 and kept<=size*1.5)
+    for _=1,240 do out=m:update(sample(0,6),1/60)end;is_zero(out)
+end)
+test('pressing and releasing aim while walking fades the gait offset instead of switching it',function()
+    for _,placement in ipairs({true,false})do
+        local m=Motion.new({shoulder_aim_enabled=placement,bob_strength=3,sway_strength=3});m:update(sample(),1/144)
+        local y,out,previous=0,nil,nil
+        local function walk(frames,aim)
+            for _=1,frames do
+                y=y+4/144;local s=sample(0,y);s.shoulder_aim=aim;out=m:update(s,1/144)
+                if previous then
+                    local moved=math.sqrt((out.dx-previous.dx)^2+(out.dy-previous.dy)^2+(out.dz-previous.dz)^2)
+                    assert(moved<.008,'gait offset jumped '..moved)
+                end
+                previous=out
+            end
+        end
+        walk(288,false);assert(out.bob_weight>.9)
+        walk(1,true);assert(out.bob_weight>.8 and out.bob_weight<1)
+        walk(287,true);equal(out.bob_weight,0)
+        walk(1,false);assert(out.bob_weight>0 and out.bob_weight<.2)
+        walk(287,false);assert(out.bob_weight>.9)
+    end
 end)
 test('slow frames do not inflate speed and vertical travel cannot advance walking phase',function()
     local m=Motion.new({shoulder_aim_enabled=true});m:update(sample(),.1)

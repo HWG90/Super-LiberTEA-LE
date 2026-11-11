@@ -1,4 +1,5 @@
--- The untouched native/input algorithms remain the exact restored source.
+-- The untouched native/input algorithms remain the exact restored source, ported to build26568081
+-- (reference/original-dbf-26568081 = the immutable reference/original-dbf through maps/dbf-modular/port.py).
 local changed = {
     entry = true,
     settings = true,
@@ -56,7 +57,7 @@ local checked = 0
 for _, name in ipairs(modules) do
     if not changed[name] then
         assert(
-            read("dbf_modular/src/" .. name .. ".lua") == read("reference/original-dbf/src/" .. name .. ".lua"),
+            read("dbf_modular/src/" .. name .. ".lua") == read("reference/original-dbf-26568081/src/" .. name .. ".lua"),
             "Native algorithm changed: " .. name
         )
         checked = checked + 1

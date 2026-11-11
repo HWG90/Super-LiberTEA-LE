@@ -18,12 +18,12 @@ static void finish(HD2FramePatch *p,size_t at,uint32_t resume){
 }
 int hd2env_plan_frame_patches(const void *image,size_t size,const HD2FrameTargets *targets,HD2FramePatch out[2]){
     const unsigned char *b=image;
-    if(!b||!targets||!out||size<0x6ce790||!targets->gc||!targets->update||!targets->render)return 0;
-    if(memcmp(b+0x6ce620,frame_update_witness,sizeof(frame_update_witness))||
-       memcmp(b+0x6ce730,frame_render_witness,sizeof(frame_render_witness)))return 0;
+    if(!b||!targets||!out||size<0x6ce850||!targets->gc||!targets->update||!targets->render)return 0;
+    if(memcmp(b+0x6ce6e0,frame_update_witness,sizeof(frame_update_witness))||
+       memcmp(b+0x6ce7f0,frame_render_witness,sizeof(frame_render_witness)))return 0;
     HD2FramePatch patches[2]={0};
-    patches[0].rva=0x6ce664;patches[0].size=0x6ce70e - 0x6ce664;
-    patches[1].rva=0x6ce734;patches[1].size=0x6ce770 - 0x6ce734;
+    patches[0].rva=0x6ce724;patches[0].size=0x6ce7ce - 0x6ce724;
+    patches[1].rva=0x6ce7f4;patches[1].size=0x6ce830 - 0x6ce7f4;
     for(unsigned i=0;i<2;i++){
         memcpy(patches[i].original,b+patches[i].rva,patches[i].size);
         memset(patches[i].replacement,0x90,patches[i].size);
@@ -33,10 +33,10 @@ int hd2env_plan_frame_patches(const void *image,size_t size,const HD2FrameTarget
     const unsigned char float_dt[]={0x0f,0x28,0xce}; /* movaps xmm1,xmm6 */
     emit(&patches[0],&at,env_from_rdi,sizeof(env_from_rdi));call(&patches[0],&at,targets->gc);
     emit(&patches[0],&at,env_from_rdi,sizeof(env_from_rdi));emit(&patches[0],&at,float_dt,sizeof(float_dt));
-    call(&patches[0],&at,targets->update);finish(&patches[0],at,0x6ce70e);
+    call(&patches[0],&at,targets->update);finish(&patches[0],at,0x6ce7ce);
     at=0;
     const unsigned char env_from_rcx[]={0x48,0x8d,0x89,0x90,0x01,0x00,0x00};
     emit(&patches[1],&at,env_from_rcx,sizeof(env_from_rcx));call(&patches[1],&at,targets->render);
-    finish(&patches[1],at,0x6ce770);
+    finish(&patches[1],at,0x6ce830);
     memcpy(out,patches,sizeof(patches));return 1;
 }

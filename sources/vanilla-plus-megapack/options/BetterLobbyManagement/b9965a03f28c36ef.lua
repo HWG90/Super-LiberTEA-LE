@@ -1435,61 +1435,61 @@ G.OP_EQUAL = 2
 
 -- Native entry points: the start of each function must match.
 G.NATIVES = {
-    kick_peer = {rva = 0xf1d8f0, type = 'LmKickPeer', bytes = nil},
-    start_join = {rva = 0xf206f0, type = 'LmStartJoin', bytes =
-        '\72\137\92\36\32\86\87\65\86\72\129\236\112\1\0\0\72\139\5\9\73\89\1'},
-    filter_string = {rva = 0xf25640, type = 'LmFilterString', bytes =
-        '\64\85\86\87\72\131\236\80\72\139\5\193\249\88\1\72\51\196\72\137\68\36\48'},
-    browser_start = {rva = 0xf24f60, type = 'LmBrowserStart', bytes =
-        '\76\139\17\77\133\210\116\100\72\139\5\169\208\219\1\128\120\9\0\116\28'},
-    browser_busy = {rva = 0xf24fd0, type = 'LmBrowserBusy', bytes =
-        '\72\131\236\40\76\139\1\77\133\192\117\7\50\192\72\131\196\40\195\72\139\5\46\208\219\1'},
-    browser_count = {rva = 0xf25070, type = 'LmBrowserCount', bytes =
-        '\76\139\1\77\133\192\117\3\51\192\195\72\139\5\150\207\219\1\128\120\9\0'},
-    browser_result = {rva = 0xf250e0, type = 'LmBrowserResult', bytes =
-        '\64\85\86\87\65\87\72\129\236\56\2\0\0\72\139\5\28\255\88\1'},
+    kick_peer = {rva = 0xf1da50, type = 'LmKickPeer', bytes = nil},
+    start_join = {rva = 0xf20850, type = 'LmStartJoin', bytes =
+        '\72\137\92\36\32\86\87\65\86\72\129\236\112\1\0\0\72\139\5\169\71\89\1'},
+    filter_string = {rva = 0xf257a0, type = 'LmFilterString', bytes =
+        '\64\85\86\87\72\131\236\80\72\139\5\97\248\88\1\72\51\196\72\137\68\36\48'},
+    browser_start = {rva = 0xf250c0, type = 'LmBrowserStart', bytes =
+        '\76\139\17\77\133\210\116\100\72\139\5\73\207\219\1\128\120\9\0\116\28'},
+    browser_busy = {rva = 0xf25130, type = 'LmBrowserBusy', bytes =
+        '\72\131\236\40\76\139\1\77\133\192\117\7\50\192\72\131\196\40\195\72\139\5\206\206\219\1'},
+    browser_count = {rva = 0xf251d0, type = 'LmBrowserCount', bytes =
+        '\76\139\1\77\133\192\117\3\51\192\195\72\139\5\54\206\219\1\128\120\9\0'},
+    browser_result = {rva = 0xf25240, type = 'LmBrowserResult', bytes =
+        '\64\85\86\87\65\87\72\129\236\56\2\0\0\72\139\5\188\253\88\1'},
     -- The kick message alone (the first half of kick_peer, without remove_peer).
-    send_kick = {rva = 0xc12380, type = 'LmSendKick', bytes =
+    send_kick = {rva = 0xc124f0, type = 'LmSendKick', bytes =
         '\72\139\209\69\51\201\185\45\55\134\247\69\51\192\233\61\168\254\255'},
-    is_friend = {rva = 0x12874b0, type = 'LmIsFriend', bytes =
-        '\72\131\236\88\72\139\5\61\160\165\1\76\139\194\128\120\40\0\116\56'},
+    is_friend = {rva = 0x1287610, type = 'LmIsFriend', bytes =
+        '\72\131\236\88\72\139\5\221\158\165\1\76\139\194\128\120\40\0\116\56'},
 }
 
 -- game.dll code that fixes the offsets above.
 G.CODE = {
     -- Per-frame network update: host sync, client sync, lobby and join component offsets.
-    {rva = 0x128ebe4, name = 'network components', bytes =
+    {rva = 0x128ed44, name = 'network components', bytes =
         '\73\141\159\32\34\201\1\72\141\139\0\180\0\0\232\73\60\239\255\72\141\139\176\89\1\0\232\237\191'
         .. '\200\255\72\141\139\200\98\1\0\232\177\77\200\255\72\141\139\120\212\1\0\232\149\83\201\255\72'
         .. '\141\139\208\113\1\0'},
     -- Host-left handling: game mode offset, context global, event ring and host peer.
-    {rva = 0xf13d3d, name = 'host-left check', bytes =
-        '\131\185\156\194\10\0\3\15\133\189\0\0\0\232\49\21\45\0\72\139\21\210\68\242\1\132\219\65\185\7'
+    {rva = 0xf13e9d, name = 'host-left check', bytes =
+        '\131\185\156\194\10\0\3\15\133\189\0\0\0\232\49\21\45\0\72\139\21\114\67\242\1\132\219\65\185\7'
         .. '\0\0\0\65\190\4\0\0\0\69\15\69\206\51\246\139\130\64\248\1\0\72\139\138\168\179\0\0'},
     -- Session peer list (count and 32-byte entries).
-    {rva = 0x11e5430, name = 'peer list', bytes =
+    {rva = 0x11e5590, name = 'peer list', bytes =
         '\72\137\92\36\16\86\72\131\236\32\51\219\72\139\241\57\153\144\99\1\0\118\119\72\137\124\36\48'
         .. '\15\31\64\0\139\195\72\193\224\5\72\139\188\48\152\99\1\0\72\59'},
     -- The two matchmaking requests and their state fields.
-    {rva = 0x11cd05c, name = 'quickplay request', bytes =
+    {rva = 0x11cd1bc, name = 'quickplay request', bytes =
         '\139\158\140\6\0\0\76\141\134\136\6\0\0'},
-    {rva = 0x11cd3ba, name = 'scanner request', bytes =
+    {rva = 0x11cd51a, name = 'scanner request', bytes =
         '\139\158\228\86\0\0\76\141\134\224\86\0\0'},
     -- The lobby browser handle in the network context.
-    {rva = 0x11d27a0, name = 'lobby browser', bytes =
-        '\64\83\72\131\236\64\72\139\13\123\90\198\1\72\139\218\72\129\193\48\240\1\0\232'},
+    {rva = 0x11d2900, name = 'lobby browser', bytes =
+        '\64\83\72\131\236\64\72\139\13\27\89\198\1\72\139\218\72\129\193\48\240\1\0\232'},
     -- The client synchronizer's party-join flag.
-    {rva = 0xf13853, name = 'party join flag', bytes =
+    {rva = 0xf139b3, name = 'party join flag', bytes =
         '\72\141\131\56\13\0\0\198\131\41\5\0\0\1'},
 }
 
 -- helldivers2.exe code: the PlayfabLobby layout (PlayfabLobby::kick_member).
 G.EXE_CODE = {
-    {rva = 0x9561b0, name = 'PlayFab lobby layout', bytes =
+    {rva = 0x956330, name = 'PlayFab lobby layout', bytes =
         '\72\139\70\24\139\207\72\139\12\200\72\139\89\16\72\99\131\24\1\0\0\131\248\3\15\133\81\1\0\0\73'
-        .. '\139\214\72\141\13\88\245\222\0\232\3\168\202\255\72\139\139\32\1\0\0\72\141\148\36\208\0\0\0'
+        .. '\139\214\72\141\13\96\242\222\0\232\35\167\202\255\72\139\139\32\1\0\0\72\141\148\36\208\0\0\0'
         .. '\76\137\188\36\208\0\0\0'},
-    {rva = 0x956232, name = 'PlayFab lobby members', bytes =
+    {rva = 0x9563b2, name = 'PlayFab lobby members', bytes =
         '\139\139\0\1\0\0\72\139\147\64\1\0\0'},
 }
 
@@ -1498,7 +1498,7 @@ G.ENGINE_SLOTS = {
     clear_filters = {slot = 0x198, type = 'LmHandleCall', bytes =
         '\51\192\137\129\180\0\0\0\137\129\184\37\0\0\195'},
     continent = {slot = 0x40, type = 'LmSelfCall', bytes =
-        '\72\139\5\153\204\171\1\72\139\136\168\0\0\0\51\192\72\133\201\116\10\72\131\193\68\56\1\72\15'
+        '\72\139\5\25\203\171\1\72\139\136\168\0\0\0\51\192\72\133\201\116\10\72\131\193\68\56\1\72\15'
         .. '\69\193\195'},
 }
 
@@ -1508,9 +1508,9 @@ G.ENGINE_SLOTS = {
 G.PACKAGE_API = 0x10
 G.PACKAGE_SLOTS = {
     unload_paused = {slot = 0x348, type = 'LmGetFlag', bytes =
-        '\72\139\5\193\108\124\1\72\139\136\0\4\0\0\15\182\129\36\50\0\0\195'},
+        '\72\139\5\33\108\124\1\72\139\136\0\4\0\0\15\182\129\36\50\0\0\195'},
     pause_unloads = {slot = 0x350, type = 'LmSetFlag', bytes =
-        '\72\139\5\161\108\124\1\133\201\15\149\194\72\139\136\0\4\0\0\136\145\36\50\0\0\195'},
+        '\72\139\5\1\108\124\1\133\201\15\149\194\72\139\136\0\4\0\0\136\145\36\50\0\0\195'},
 }
 
 G.PLAYFAB_DLL = 'PlayFabMultiplayerWin.dll' -- the test builds' recorder reads the lobby through it
@@ -2340,21 +2340,21 @@ R.WEIGHT = 0x42c80000
 R.KEY_WORDS = {0x673bc524, 0x5df5d36b}
 R.CONTINENTS = {{'AF', 0x9061bf63}, {'AN', 0xc59a4447}, {'AS', 0x617288e9}, {'EU', 0x0fab5b27},
                 {'NA', 0x29ce1e3f}, {'OC', 0xccc7bf91}, {'SA', 0xd044af30}}
-R.CONTINENT_IDS_RVA = 0x205d100   -- the game's own copy of the ids above
+R.CONTINENT_IDS_RVA = 0x205d3f0   -- the game's own copy of the ids above
 R.VERIFY_FRAMES = 120             -- how often the flags are checked while the option is on
 
 -- game.dll code this module depends on (Steam build 26088801 port; values: MAP.json).
 R.CODE = {
     -- Search builder: the pair key words, continent code and id tables, 7 continents.
-    {rva = 0x11d0443, name = 'continent filter', bytes = nil},
+    {rva = 0x11d05a3, name = 'continent filter', bytes = nil},
     -- ...looks the pair up in the config object and skips unless it is a false bool.
-    {rva = 0x11d04c9, name = 'continent flag check', bytes = nil},
+    {rva = 0x11d0629, name = 'continent flag check', bytes = nil},
     -- Lookup: peer-synced table (+0x12078) first, then +0xC050; open addressing.
-    {rva = 0x117a7a0, name = 'override lookup', bytes =
+    {rva = 0x117a900, name = 'override lookup', bytes =
         '\72\137\92\36\8\72\137\108\36\16\72\137\116\36\24\72\137\124\36\32\65\86\133\210\76\139\209\185'
         .. '\120\32\1\0\184\40\96\0\0\15\69\193\68\139\242\73\3\194\51\210'},
     -- Config download: replaces +0xC050 only when the stored checksum differs.
-    {rva = 0xecfd0d, name = 'override refresh', bytes =
+    {rva = 0xecfe6d, name = 'override refresh', bytes =
         '\139\131\112\32\1\0\65\139\141\32\96\0\0\137\68\36\40\137\76\36\44\59\193\116\62\65\139\69\20\72'
         .. '\141\139\112\192\0\0\137\131\100\192\0\0\73\141\85\32\65\139\69\24\65\184\0\96\0\0\137\131\104'
         .. '\192\0\0\232\240\1\5\1\65\139\133\32\96\0\0\137\131\112\32\1\0'},
@@ -2744,86 +2744,86 @@ M.MAIN_PRESENTER, M.PENDING_CLOSE = 0x4388, 16
 
 -- Native entry points (the start of each function must match).
 M.NATIVES = {
-    add_child = {rva = 0x12e42d0, type = 'LmAddChild', bytes =
+    add_child = {rva = 0x12e4430, type = 'LmAddChild', bytes =
         '\64\83\72\131\236\32\76\139\202\72\139\217\72\139\145\224'},
-    set_label = {rva = 0x12d3ca0, type = 'LmSetLabel', bytes =
+    set_label = {rva = 0x12d3e00, type = 'LmSetLabel', bytes =
         '\72\131\236\40\76\139\217\57\145\16\1\0\0\15\132\128'},
     -- The same for kind-8 (wrapped) text widgets.
-    set_label_wrapped = {rva = 0x12d9430, type = 'LmSetLabel', bytes =
+    set_label_wrapped = {rva = 0x12d9590, type = 'LmSetLabel', bytes =
         '\72\131\236\40\76\139\217\57\145\16\1\0\0\15\132\128\0\0\0\137\145\16\1\0\0\72\139\145\112\2\0\0'},
-    set_string_arg = {rva = 0x12d4660, type = 'LmSetStringArg', bytes =
+    set_string_arg = {rva = 0x12d47c0, type = 'LmSetStringArg', bytes =
         '\64\83\72\131\236\32\72\139\217\72\129\193\16\1\0\0'},
-    clear_args = {rva = 0x12d1e00, type = 'LmClearArgs', bytes =
+    clear_args = {rva = 0x12d1f60, type = 'LmClearArgs', bytes =
         '\128\185\88\1\0\0\0\198\129\88\1\0\0\0\15\151'},
-    measure_text = {rva = 0x12e5eb0, type = 'LmWidgetCall', bytes =
+    measure_text = {rva = 0x12e6010, type = 'LmWidgetCall', bytes =
         '\64\83\72\131\236\112\72\139\217\139\9\139\193\193\232\18'},
-    set_enabled = {rva = 0x12e85f0, type = 'LmSetEnabled', bytes =
+    set_enabled = {rva = 0x12e8750, type = 'LmSetEnabled', bytes =
         '\72\131\236\40\68\139\1\76\139\209\65\139\192\69\139\200'},
-    dialog_setup = {rva = 0x1621080, type = 'LmDialogSetup', bytes =
+    dialog_setup = {rva = 0x16211e0, type = 'LmDialogSetup', bytes =
         '\64\85\86\87\72\139\236\72\131\236\80\131\185\172\75\0\0\0'},
-    rebuild = {rva = 0x177d140, type = 'LmRebuild', bytes =
+    rebuild = {rva = 0x177d2a0, type = 'LmRebuild', bytes =
         '\72\137\92\36\16\86\72\131\236\32\50\219\72\139\241\56\153\216\79\27\0'},
     -- Marquee: text wider than the given width scrolls, as the game's own long labels do.
-    set_marquee = {rva = 0x12d4110, type = 'LmSetMarquee', bytes =
+    set_marquee = {rva = 0x12d4270, type = 'LmSetMarquee', bytes =
         '\72\131\236\40\128\137\160\2\0\0\32\76\139\201\243\15\17\137\140\2\0\0'},
     -- Focus a card or button, and open a card's player menu, as a click does.
-    focus = {rva = 0x177c420, type = 'LmFocus', bytes =
+    focus = {rva = 0x177c580, type = 'LmFocus', bytes =
         '\72\137\92\36\16\87\72\131\236\32\15\182\129\80\15\30\0\72\139\249\15\182\218\58'},
-    card_state = {rva = 0x1778f10, type = 'LmCardState', bytes =
-        '\72\137\92\36\32\85\72\139\236\72\131\236\64\72\139\5\236\192\211\0\72\51\196\72'},
+    card_state = {rva = 0x1779070, type = 'LmCardState', bytes =
+        '\72\137\92\36\32\85\72\139\236\72\131\236\64\72\139\5\140\191\211\0\72\51\196\72'},
 }
 
 -- game.dll code that fixes the layout above.
 M.CODE = {
     -- Escape screen update: the GAME content at screen+281480.
-    {rva = 0x130c3e6, name = 'GAME tab dispatch', bytes =
+    {rva = 0x130c546, name = 'GAME tab dispatch', bytes =
         '\72\141\143\136\75\4\0\232\158\243\70\0'},
     -- Select handler: type byte at +1789913, 14920-byte buttons, types 0-4 only.
-    {rva = 0x177bf56, name = 'GAME tab select', bytes =
+    {rva = 0x177c0b6, name = 'GAME tab select', bytes =
         '\131\250\4\15\130\162\2\0\0\141\66\252\72\137\188\36\160\0\0\0\15\182\188\8\217\79\27\0\139\208'
         .. '\76\105\194\72\58\0\0'},
-    {rva = 0x177bfc7, name = 'GAME tab select types', bytes =
+    {rva = 0x177c127, name = 'GAME tab select types', bytes =
         '\139\207\64\132\255\116\115\131\233\1\116\71\131\233\1\116\53\131\233\1\116\35\131\249\1'},
     -- Its dialog: confirm and cancel labels, hold to confirm.
-    {rva = 0x177c04c, name = 'GAME tab dialog', bytes =
+    {rva = 0x177c1ac, name = 'GAME tab dialog', bytes =
         '\198\68\36\48\0\72\141\139\112\16\30\0\198\68\36\40\1\65\185\8\118\75\217\199\68\36\32\10\212\54'
         .. '\138\232\16\80\234\255'},
     -- Dialog result: focus at +1970000, count +1789912, types 0, 2, 3, 4 only.
-    {rva = 0x177be35, name = 'GAME tab dialog result', bytes =
+    {rva = 0x177bf95, name = 'GAME tab dialog result', bytes =
         '\68\56\179\19\92\30\0\15\132\171\0\0\0\15\182\131\80\15\30\0\44\4\58\131\216\79\27\0\15\131\150'
         .. '\0\0\0\15\182\192\15\182\140\24\217\79\27\0\133\201\116\113\131\233\2\116\98\131\233\1\116\21'
         .. '\131\249\1\117\120'},
     -- Button list: label table, types, buttons, list container.
-    {rva = 0x177c69e, name = 'GAME tab buttons', bytes =
+    {rva = 0x177c7fe, name = 'GAME tab buttons', bytes =
         '\199\68\36\32\6\207\215\66\199\68\36\36\123\148\224\101\72\141\169\217\79\27\0\199\68\36\40\231'
         .. '\199\30\128\72\141\177\248\48\26\0\199\68\36\44\99\248\111\31\51\219\199\68\36\48\72\65\147\204'},
-    {rva = 0x177c6e0, name = 'GAME tab attach', bytes =
+    {rva = 0x177c840, name = 'GAME tab attach', bytes =
         '\15\182\135\216\79\27\0\59\216\15\141\152\0\0\0\72\99\195\72\141\151\112\41\26\0\72\105\200\72'
         .. '\58\0\0\72\3\209\72\141\143\96\40\26\0\232\193\123\182\255'},
     -- Content update: hidden flag +1989808 and dialog flags +1989648/+1989649.
-    {rva = 0x177b7d6, name = 'GAME tab dialog gate', bytes =
+    {rva = 0x177b936, name = 'GAME tab dialog gate', bytes =
         '\128\185\176\92\30\0\0\15\133\35\7\0\0\73\137\123\24\72\129\193\112\16\30\0\77\137\115\32\69\50'
         .. '\246\68\56\179\16\92\30\0'},
     -- game_kick: the dialog fade +1989812, the panel state +1832636, the focused card's popup.
-    {rva = 0x177b7b3, name = 'GAME tab fade gate', bytes =
+    {rva = 0x177b913, name = 'GAME tab fade gate', bytes =
         '\243\15\16\129\180\92\30\0\15\87\246\15\46\198\77\139\225\76\139\250\72\139\217\15\138\54\7\0\0'
         .. '\15\133\48\7\0\0'},
-    {rva = 0x177b80f, name = 'GAME tab panel gate', bytes =
+    {rva = 0x177b96f, name = 'GAME tab panel gate', bytes =
         '\131\187\188\246\27\0\2\116\125'},
-    {rva = 0x177b895, name = 'GAME tab player menu', bytes =
+    {rva = 0x177b9f5, name = 'GAME tab player menu', bytes =
         '\15\182\131\80\15\30\0\60\4\15\131\246\0\0\0\72\105\200\48\78\1\0\131\188\25\152\57\22\0\2\15'
         .. '\133\225\0\0\0\72\129\193\144\235\20\0\77\139\196\72\3\203\232\69\200\255\255'},
     -- The player menu's KICK: its hold timer +85520, then the kick of the card's peer +85504.
-    {rva = 0x17789c9, name = 'player menu kick hold', bytes =
+    {rva = 0x1778b29, name = 'player menu kick hold', bytes =
         '\243\15\88\134\16\78\1\0'},
-    {rva = 0x1778aa2, name = 'player menu kick', bytes =
-        '\72\139\158\0\78\1\0\72\141\21\120\88\151\0\72\139\61\113\247\107\1\72\141\13\58\81\151\0\76\139'
-        .. '\195\232\106\56\227\255\69\51\201\69\51\192\72\139\211\185\45\55\134\247\232\247\64\72\255\69\51'
+    {rva = 0x1778c02, name = 'player menu kick', bytes =
+        '\72\139\158\0\78\1\0\72\141\21\40\87\151\0\72\139\61\17\246\107\1\72\141\13\234\79\151\0\76\139'
+        .. '\195\232\106\56\227\255\69\51\201\69\51\192\72\139\211\185\45\55\134\247\232\7\65\72\255\69\51'
         .. '\201\72\141\143\176\89\1\0\72\139\211\69\141\65\1\232\97\78\122\255'},
     -- Esc: the presenter manager global, then its Main presenter +0x4388 and pending close +16.
-    {rva = 0x177b6da, name = 'escape menu close', bytes =
-        '\72\139\29\127\202\107\1\76\141\5\112\178\157\0\69\51'},
-    {rva = 0x177b705, name = 'escape menu pending close', bytes =
+    {rva = 0x177b83a, name = 'escape menu close', bytes =
+        '\72\139\29\31\201\107\1\76\141\5\32\177\157\0\69\51'},
+    {rva = 0x177b865, name = 'escape menu pending close', bytes =
         '\72\139\131\136\67\0\0\72\133\192\116\16\198\64\16\1'},
 }
 
@@ -3251,24 +3251,24 @@ local C = (function()
 local C = {}
 
 C.CHAT = 0xc418                -- network context -> the game's text chat; +0 enabled (byte)
-C.SEND = {rva = 0xf27db0, type = 'LmChatSend', bytes =
+C.SEND = {rva = 0xf27f10, type = 'LmChatSend', bytes =
         '\65\86\65\87\72\129\236\120\4\0\0\72\139\5\78\210\88\1\72\51\196\72\137\132\36\80\4\0\0\128\57\0'}
 -- The game's RPC send: (hash, target peer or -1 for every other peer, arguments, count).
-C.RPC = {rva = 0xbfcbd0, type = 'LmRpcSend', bytes =
-        '\64\83\85\86\87\65\86\65\87\72\129\236\152\0\0\0\72\139\5\41\132\139\1\72\51\196\72\137'}
+C.RPC = {rva = 0xbfcd40, type = 'LmRpcSend', bytes =
+        '\64\83\85\86\87\65\86\65\87\72\129\236\152\0\0\0\72\139\5\185\130\139\1\72\51\196\72\137'}
 C.CODE = {
     -- The chat box hands the context's chat and the typed text to the send.
-    {rva = 0x16e163d, name = 'chat box send', bytes =
-        '\72\139\13\228\107\117\1\76\141\135\212\22\0\0\72\129\193\24\196\0\0\232\89\103\132\255'},
+    {rva = 0x16e179d, name = 'chat box send', bytes =
+        '\72\139\13\132\106\117\1\76\141\135\212\22\0\0\72\129\193\24\196\0\0\232\89\103\132\255'},
     -- The send's message: rpc_ingame_chat_message with one argument.
-    {rva = 0xc09ac3, name = 'chat message RPC', bytes = nil},
+    {rva = 0xc09c33, name = 'chat message RPC', bytes = nil},
     -- The chat's 64-line history (first line, line count), read by diagnostic builds.
-    {rva = 0xf282cc, name = 'chat history', bytes =
+    {rva = 0xf2842c, name = 'chat history', bytes =
         '\139\135\148\149\0\0\139\143\144\149\0\0'},
     -- The game's own new-host notice: one argument of type 9 (8 bytes), to every peer (-1).
-    {rva = 0xf1aa8c, name = 'new host notice', bytes =
+    {rva = 0xf1abec, name = 'new host notice', bytes =
         '\72\141\69\103\72\137\93\103\65\185\1\0\0\0\72\137\69\231\76\141\69\223\199\69\223\9\0\0\0\72'
-        .. '\199\194\255\255\255\255\199\69\227\8\0\0\0\185\54\124\231\185\232\15\33\206\255'},
+        .. '\199\194\255\255\255\255\199\69\227\8\0\0\0\185\54\124\231\185\232\31\33\206\255'},
 }
 C.HISTORY_FIRST, C.HISTORY_COUNT = 0x9590, 0x9594
 C.MAX_TEXT = 512               -- the game sends at most 512 bytes and drops a line that is not valid UTF-8
@@ -3406,16 +3406,16 @@ M.REWRITE_LIMIT = 500
 -- Code this depends on, checked once per session before the first update.
 M.CODE = {
     -- On entering "recharging": countdown = (float)[[game.dll+0x347cee0] + 0x3ce4c].
-    {rva = 0x11cd238, name = 'recharge reader', bytes =
-        '\72\139\5\217\175\198\1\69\139\206\102\15\110\128\172\206\3\0\139\134\40\167\0\0\199\134\60\189'
+    {rva = 0x11cd398, name = 'recharge reader', bytes =
+        '\72\139\5\121\174\198\1\69\139\206\102\15\110\128\172\206\3\0\139\134\40\167\0\0\199\134\60\189'
         .. '\16\0\50\0\0\0\137\134\64\241\12\0\137\134\216\242\12\0\15\91\192\243\15\17\134\116\189\16\0'},
     -- Every frame: if countdown > 0 then countdown -= dt.
-    {rva = 0x11cc7be, name = 'countdown update', bytes =
+    {rva = 0x11cc91e, name = 'countdown update', bytes =
         '\243\15\16\129\116\189\16\0\15\47\198\118\12\243\15\92\199\243\15\17\129\116\189\16\0'},
     -- A scanner setter: the matchmaking global holds the object with the
     -- scanner fields (+0x10bd5d here, the countdown at +0x10bd74).
-    {rva = 0x11d3d30, name = 'matchmaking global', bytes =
-        '\72\139\5\129\68\198\1\136\144\93\189\16\0\195'},
+    {rva = 0x11d3e90, name = 'matchmaking global', bytes =
+        '\72\139\5\33\67\198\1\136\144\93\189\16\0\195'},
 }
 
 local function whole_seconds(value)
@@ -3614,16 +3614,16 @@ B.NO_LIMIT = 0xffffffff
 B.DEACTIVATE = {rva = 0x684660, type = 'LmSosCall', bytes =
         '\72\137\92\36\8\87\72\131\236\32\72\139\61\183\59\123\2\72\139\217\72\139\135\168\179\0\0\72\133'
         .. '\192\116\31\72\59\135\152\179\0\0\116\22\198\65\8\0\72\199\1\0\0\0\0\72\139\92\36\48\72\131\196'
-        .. '\32\95\195\69\51\192\72\141\143\120\212\1\0\65\141\80\8\232\206\230\137\0\72\139\5\79\206\101\2'
-        .. '\186\19\0\0\0\72\139\207\68\139\128\208\197\10\0\232\115\15\182\0\198\67\8\0\72\199\3\0\0\0\0\72'
+        .. '\32\95\195\69\51\192\72\141\143\120\212\1\0\65\141\80\8\232\46\232\137\0\72\139\5\79\206\101\2'
+        .. '\186\19\0\0\0\72\139\207\68\139\128\208\197\10\0\232\211\16\182\0\198\67\8\0\72\199\3\0\0\0\0\72'
         .. '\139\92\36\48\72\131\196\32\95\195'}
 -- The game's lobby key setter for numbers (the lobby wrapper, key, value): the
 -- value as text in the cache and the key's bits when it changed (0x10924D0).
-B.SET_KEY = {rva = 0xf22d80, type = 'LmLobbySetInt', bytes =
-        '\76\139\220\73\137\91\32\87\72\129\236\192\0\0\0\72\139\5\122\34\89\1\72\51\196\72\137\132\36'
-        .. '\176\0\0\0\15\87\192\139\250\15\17\68\36\48\72\139\217\69\139\200\15\17\68\36\64\76\141\5\103\239'
+B.SET_KEY = {rva = 0xf22ee0, type = 'LmLobbySetInt', bytes =
+        '\76\139\220\73\137\91\32\87\72\129\236\192\0\0\0\72\139\5\26\33\89\1\72\51\196\72\137\132\36'
+        .. '\176\0\0\0\15\87\192\139\250\15\17\68\36\48\72\139\217\69\139\200\15\17\68\36\64\76\141\5\23\238'
         .. '\26\1\186\128\0\0\0\15\17\68\36\80\72\141\76\36\48\15\17\68\36\96\15\17\68\36\112\65\15\17\67'
-        .. '\184\65\15\17\67\200\65\15\17\67\216\232\54\45\93\255\72\141\76\36\48\72\199\192\255\255\255\255'
+        .. '\184\65\15\17\67\200\65\15\17\67\216\232\214\43\93\255\72\141\76\36\48\72\199\192\255\255\255\255'
         .. '\72\255\192\128\60\1\0\117\247\137\68\36\32\76\141\68\36\32\72\141\68\36\48\139\215\72\137\68\36'
         .. '\40\72\139\203\15\40\68\36\32\102\15\127\68\36\32\232\89\254\255\255'}
 
@@ -3633,27 +3633,27 @@ B.CODE = {
     {rva = 0x6845e0, name = 'SOS activate', bytes =
         '\72\137\92\36\8\87\72\131\236\32\72\139\29\55\60\123\2\72\139\249\72\139\131\168\179\0\0\72\133'
         .. '\192\116\24\72\59\131\152\179\0\0\116\15\198\65\8\1\72\139\92\36\48\72\131\196\32\95\195\186\8\0'
-        .. '\0\0\72\141\139\120\212\1\0\68\141\66\249\232\83\231\137\0\69\51\192\72\139\203\65\141\80\19\232'
-        .. '\4\16\182\0\72\139\5\181\206\101\2\72\139\92\36\48\72\139\72\16\72\137\15\198\71\8\1\72\131\196'
+        .. '\0\0\72\141\139\120\212\1\0\68\141\66\249\232\179\232\137\0\69\51\192\72\139\203\65\141\80\19\232'
+        .. '\100\17\182\0\72\139\5\181\206\101\2\72\139\92\36\48\72\139\72\16\72\137\15\198\71\8\1\72\131\196'
         .. '\32\95\195'},
     -- The beacon's activation: the SOS system global, then "SOS on" while the session has fewer than 4 peers.
     {rva = 0x520750, name = 'SOS activation event', bytes =
         '\128\58\0\116\34\72\139\13\84\22\124\2\72\139\5\197\122\145\2\72\199\1\0\0\0\0\131\184\144\99\1'
         .. '\0\4\15\130\105\62\22\0\195'},
     -- The re-arms: "SOS on" again when S+24 > 0 and S+8 == 0, after a player left and after a new host.
-    {rva = 0xb7bd77, name = 'SOS re-arm after a leave', bytes =
-        '\72\139\137\168\32\0\0\68\57\121\24\118\11\68\56\121\8\117\5\232\81\136\176\255'},
-    {rva = 0xf179f7, name = 'SOS re-arm after a new host', bytes =
-        '\72\139\137\168\32\0\0\68\57\105\24\118\11\68\56\105\8\117\5\232\209\203\118\255'},
+    {rva = 0xb7bee7, name = 'SOS re-arm after a leave', bytes =
+        '\72\139\137\168\32\0\0\68\57\121\24\118\11\68\56\121\8\117\5\232\225\134\176\255'},
+    {rva = 0xf17b57, name = 'SOS re-arm after a new host', bytes =
+        '\72\139\137\168\32\0\0\68\57\105\24\118\11\68\56\105\8\117\5\232\113\202\118\255'},
     -- The lobby key setter: the text cache (+56, 257 bytes per key) and the per-key bits (+0x20, +0x18).
-    {rva = 0xf22c96, name = 'lobby key setter', bytes =
+    {rva = 0xf22df6, name = 'lobby key setter', bytes =
         '\72\141\89\56\72\105\197\1\1\0\0\73\139\240\72\139\249\72\3\216\65\139\0\133\192\117\4\56\3\116'
         .. '\92\72\139\78\8\76\139\192\72\139\211\232\188\171\3\1\133\192\116\73\72\139\71\32\72\139\203\72'
         .. '\15\171\232\72\137\71\32\72\139\71\24\72\15\171\232\72\137\71\24'},
     -- The lobby update: the post countdown at +0x1B80, restarted from the online config's seconds.
-    {rva = 0xf2496d, name = 'lobby post countdown', bytes =
-        '\243\15\16\135\128\27\0\0\72\139\5\124\203\219\1\243\15\92\0\15\47\240\243\15\17\135\128\27\0\0'
-        .. '\15\147\195\132\219\116\26\72\139\5\127\56\241\1\102\15\110\128\200\206\3\0\15\91\192\243\15\17'
+    {rva = 0xf24acd, name = 'lobby post countdown', bytes =
+        '\243\15\16\135\128\27\0\0\72\139\5\28\202\219\1\243\15\92\0\15\47\240\243\15\17\135\128\27\0\0'
+        .. '\15\147\195\132\219\116\26\72\139\5\31\55\241\1\102\15\110\128\200\206\3\0\15\91\192\243\15\17'
         .. '\135\128\27\0\0'},
     -- A stratagem's uses left: the slot's type and uses (+0x188/+0x18C from record+0x38), the settings table
     -- 0x37CB600, the shared flag +0x94 and the uses per mission +0x50 (-1: no limit).
@@ -4756,4 +4756,4 @@ return {
     },
 }
 end)()
-install(function() return create_api(runtime_memory.new(runtime)) end, G, L, R, M, C, S, B, T, locales, {version = 'v1.2.1', game_sha256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF', exe_sha256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D', runtime = runtime})
+install(function() return create_api(runtime_memory.new(runtime)) end, G, L, R, M, C, S, B, T, locales, {version = 'v1.2.1', game_sha256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F', exe_sha256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB', runtime = runtime})

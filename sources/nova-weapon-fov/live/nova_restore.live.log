@@ -1,8 +1,0 @@
-13:01:06 batch 6116: 1 commands
-13:01:06 > eval local f=assert(io.open('Z:/home/goose/Projects/Linux HD2 Mods/.claude/worktrees/transmog-armor-equip-bug-c59577/builds/26251122/mods/nova-weapon-fov/live/nova_restore.lua','rb'));local s=f:read('*a');f:close();local c=assert(loadstring(s,'@nova_restore.lua'));setfenv(c,getfenv(1));return c()
-13:01:06 ENTITY 745 row 2 restore ok C 0.6/0.6/0.6 N 0/0.1
-13:01:06 rows restored 1
-13:01:06 = 1
-13:01:06 < 3.00 ms of work over 1 frame
-13:01:06 batch 6116 done
-

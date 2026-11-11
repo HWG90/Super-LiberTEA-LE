@@ -13,7 +13,7 @@ env.setdefault('ZIG_GLOBAL_CACHE_DIR',str(ROOT.parent/'zig-global-cache'))
 env.setdefault('ZIG_LOCAL_CACHE_DIR',str(ROOT.parent/'zig-local-cache'))
 inputs=[HERE/'native_ads_zoom.cpp',HERE/'native_ads_zoom.h',HERE.parent/'first_person/native_memory.h']+sorted(p for p in VENDOR.rglob('*') if p.is_file())
 stamp=hashlib.sha256(b''.join(p.read_bytes() for p in inputs)).hexdigest()[:12]
-dll=OUT/f'native_ads_zoom_26251122_{stamp}.dll'
+dll=OUT/f'native_ads_zoom_26568081_{stamp}.dll'
 fixture=OUT/'zoom_fixture.exe'
 smoke=OUT/'zoom_minhook_smoke.exe'
 
@@ -50,7 +50,7 @@ result={'name':'zoom','file':str(dll),'sha256':hashlib.sha256(dll.read_bytes()).
         'fixture_passed':passed,'fixture_log':str(OUT/'zoom_fixture.log'),'real_minhook_smoke_passed':passed,
         'minhook_smoke_log':str(OUT/'zoom_minhook_smoke.log'),
         'source_sha256':hashlib.sha256((HERE/'native_ads_zoom.cpp').read_bytes()).hexdigest(),
-        'target_build':26251122,'in_game_tested':False,
+        'target_build':26568081,'in_game_tested':False,
         'minhook_license':str(VENDOR/'LICENSE.txt')}
 (OUT/'zoom-build.json').write_text(json.dumps(result,indent=2)+'\n')
 print(json.dumps(result,indent=2))

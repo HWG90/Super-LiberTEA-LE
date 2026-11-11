@@ -12,7 +12,7 @@
 -- input interval.
 local GUARDS = mod.require("src/terminal_guards.lua")
 local MANAGER, REGISTRY, INVALID_ID = 0x2ce18b0, 0x2ce41b8, 0x2e3f0d4
-local CONTROLS, ARROW_INPUT, ARROW_UPDATE = 0x2e38250, 0x3fc8, 0x99b400
+local CONTROLS, ARROW_INPUT, ARROW_UPDATE = 0x2e38250, 0x3fc8, 0x99b430
 local ARROW_ACTION = { 3, 2, 4, 1 } -- code direction (1 up, 2 right, 3 down, 4 left) -> controls action
 local PRESS_MISSES = 3
 local INSTANCE_SIZE, STATE_BASE, STATE_SIZE = 0x1470, 0x410, 0x104

@@ -22,11 +22,11 @@ static uint64_t fixture_foreign_value=0;
 static bool fixture_slot_unreadable=false,fixture_slot_readonly=false,fixture_fail_rollback=false;
 static HANDLE fixture_before_arm_reached=nullptr,fixture_continue_arm=nullptr;
 #endif
-static constexpr uint32_t POSITION=0x1f2520,ROTATION=0x1f2680;
-static constexpr uint32_t CALLS[2]={0x111a6a9,0x111a6c9};
+static constexpr uint32_t POSITION=0x1f25e0,ROTATION=0x1f2740;
+static constexpr uint32_t CALLS[2]={0x111a809,0x111a829};
 static constexpr const char* PREFIX[2]={
-    "48895c24084889742410574883ec20498bf08bfa8bd9e865e1eaff4c8b5018b801000000f0410fc182380017008bc04c",
-    "48895c24084889742410574883ec20498bf08bfa8bd9e805e0eaff4c8b5018b801000000f0410fc182380017008bc04c"};
+    "48895c24084889742410574883ec20498bf08bfa8bd9e8d5e0eaff4c8b5018b801000000f0410fc182380017008bc04c",
+    "48895c24084889742410574883ec20498bf08bfa8bd9e875dfeaff4c8b5018b801000000f0410fc182380017008bc04c"};
 enum Error:uint32_t { OK=0,INVALID_CONFIG=1,BUSY=2,READ_FAILED=3,IMAGE_MISMATCH=4,
     CODE_MISMATCH=5,API_MISMATCH=6,OWNER_MISMATCH=7,UNIT_MISMATCH=8,PIN_FAILED=9,
     SLOT_NOT_WRITABLE=10,CAS_MISMATCH=11,CAS_FAULT=12,CLEANUP_PENDING=13 };
@@ -141,7 +141,7 @@ static bool cas(uint64_t slot,uint64_t expected,uint64_t desired,uint64_t& obser
     } __except(EXCEPTION_EXECUTE_HANDLER) {return false;}
 }
 static bool contract(const NADS_Config& c,Setter (&out)[2],uint64_t (&addresses)[2]) {
-    if(!image(c.game,0x6ae0e5ff,0x3382000) || !image(c.exe,0x6ae0964a,0x29fe000))return reject(IMAGE_MISMATCH);
+    if(!image(c.game,0x6af322c1,0x3382000) || !image(c.exe,0x6af2d5e6,0x29fe000))return reject(IMAGE_MISMATCH);
     if(!bytes(c.game+CALLS[0],"41ff5138") || !bytes(c.game+CALLS[1],"41ff5148"))return reject(CODE_MISMATCH);
     uint64_t root=0,api=0,position=0,rotation=0;
     if(!pointer(c.game+0x2ce14c8,root) || !pointer(root+0x18,api))return reject(API_MISMATCH);

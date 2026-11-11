@@ -18,6 +18,9 @@ static_assert(sizeof(NADSC_Config)==88,"NADSC_Config ABI");
 static_assert(sizeof(NADSC_Stats)==80,"NADSC_Stats ABI");
 NADSC_EXPORT uint32_t NADSC_Validate(const NADSC_Config*);
 // Begin0: output0/no own lease; Begin1: armed; Begin2: token owns cleanup.
+// Owner-data error3 is an actual failed/short RPM whose span is committed
+// and readable at fault classification. It grants no retry itself: End ACK and fresh Lua owner proof
+// remain mandatory. Invalid/unreadable addresses and semantic faults stay unsafe.
 // Arming permits mask0/2; observed vault mask0x20 is an already-owned normal4 fallback only.
 // Normal4 head anchoring accepts known mission state36, or bridge state3 only
 // with the fresh scene3/combat-role2 predicate; ordinary ship role4 is excluded.

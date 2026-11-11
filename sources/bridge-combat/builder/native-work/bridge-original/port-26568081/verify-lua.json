@@ -1,0 +1,8352 @@
+[
+ {
+  "text": "4883ec483b15c60048024c8b15d72832020f297424200f28",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 10219520,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/ammo_console.lua",
+    "line": 88
+   }
+  ],
+  "new_rva": 10219520,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4883ec483b15c60048024c8b15d72832020f297424200f28"
+ },
+ {
+  "text": "931e336d7646cc26",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/animation_clips.lua",
+    "line": 6
+   },
+   {
+    "file": "src/animation_idle.lua",
+    "line": 178
+   },
+   {
+    "file": "src/animation_pose.lua",
+    "line": 182
+   }
+  ]
+ },
+ {
+  "text": "4053574883ec384c8bd9498bf84881c1e80200004c8bd2e8",
+  "bytes": 24,
+  "module": "exe",
+  "old_rva": 6501520,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_clips.lua",
+    "line": 10
+   }
+  ],
+  "new_rva": 6501520,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4053574883ec384c8bd9498bf84881c1e80200004c8bd2e8"
+ },
+ {
+  "text": "48895c241848896c242056415441564881ecb0000000448b",
+  "bytes": 24,
+  "module": "exe",
+  "old_rva": 6507072,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_clips.lua",
+    "line": 12
+   }
+  ],
+  "new_rva": 6507072,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c241848896c242056415441564881ecb0000000448b"
+ },
+ {
+  "text": "4585c00f84090200005541564883ec3848895c24504c8bf2",
+  "bytes": 24,
+  "module": "exe",
+  "old_rva": 6522176,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_clips.lua",
+    "line": 14
+   }
+  ],
+  "new_rva": 6522176,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4585c00f84090200005541564883ec3848895c24504c8bf2"
+ },
+ {
+  "text": "48895424105556415441564157488dac24e0feffff4881ec",
+  "bytes": 24,
+  "module": "exe",
+  "old_rva": 6510304,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_clips.lua",
+    "line": 16
+   }
+  ],
+  "new_rva": 6510304,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895424105556415441564157488dac24e0feffff4881ec"
+ },
+ {
+  "text": "4585c00f848000000048895c241048896c24184889742420",
+  "bytes": 24,
+  "module": "exe",
+  "old_rva": 5656864,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_idle.lua",
+    "line": 8
+   },
+   {
+    "file": "src/animation_pose.lua",
+    "line": 9
+   }
+  ],
+  "new_rva": 5656864,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4585c00f848000000048895c241048896c24184889742420"
+ },
+ {
+  "text": "759c08277f1296d0",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/animation_idle.lua",
+    "line": 11
+   }
+  ]
+ },
+ {
+  "text": "c2c16b9f0c49b54a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/animation_idle.lua",
+    "line": 11
+   }
+  ]
+ },
+ {
+  "text": "4d1c334d294dfa97",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/animation_idle.lua",
+    "line": 61
+   },
+   {
+    "file": "src/animation_pose.lua",
+    "line": 61
+   }
+  ]
+ },
+ {
+  "text": "0000000000000000",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/animation_idle.lua",
+    "line": 176
+   },
+   {
+    "file": "src/animation_pose.lua",
+    "line": 177
+   },
+   {
+    "file": "src/equipment_hold.lua",
+    "line": 47
+   }
+  ]
+ },
+ {
+  "text": "48895c2408574883ec20488b05????????488bd1488bf9488b9800040000488b8b08020000e8",
+  "bytes": 38,
+  "module": "exe",
+  "old_rva": 3082496,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_io.lua",
+    "line": 10
+   }
+  ],
+  "new_rva": 3082496,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c2408574883ec20488b05????????488bd1488bf9488b9800040000488b8b08020000e8"
+ },
+ {
+  "text": "4885c97471488b05cc677e02448bc14c8b900840f10048b8",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 5233120,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_io.lua",
+    "line": 36
+   }
+  ],
+  "new_rva": 5233120,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4885c97471488b05cc677e02448bc14c8b900840f10048b8"
+ },
+ {
+  "text": "4883ec284c8bd14885c9750733c04883c428c38b41083b05",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 5234336,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_io.lua",
+    "line": 37
+   }
+  ],
+  "new_rva": 5234336,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4883ec284c8bd14885c9750733c04883c428c38b41083b05"
+ },
+ {
+  "text": "48895c240848896c2410488974241848897c242041564883",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 10320960,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_io.lua",
+    "line": 38
+   }
+  ],
+  "new_rva": 10320960,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c240848896c2410488974241848897c242041564883"
+ },
+ {
+  "text": "48896c2410488974241848897c242041564883ec20498bf0",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 5233264,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_io.lua",
+    "line": 39
+   }
+  ],
+  "new_rva": 5233264,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48896c2410488974241848897c242041564883ec20498bf0"
+ },
+ {
+  "text": "40564881ec00010000488b05e074fb014833c448898424e0",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 5233440,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_io.lua",
+    "line": 40
+   }
+  ],
+  "new_rva": 5233440,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "40564881ec00010000488b05e074fb014833c448898424e0"
+ },
+ {
+  "text": "48895c2408488b058c657c0233d24533c04c8bd9488b9860",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 5364768,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_io.lua",
+    "line": 41
+   }
+  ],
+  "new_rva": 5364768,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c2408488b058c657c0233d24533c04c8bd9488b9860"
+ },
+ {
+  "text": "48895c240848896c24104889742418574883ec208b5a0449",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 5364896,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_io.lua",
+    "line": 42
+   }
+  ],
+  "new_rva": 5364896,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c240848896c24104889742418574883ec208b5a0449"
+ },
+ {
+  "text": "4585c00f8475010000415641574883ec3848895c24504c8b",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 18420816,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_packages.lua",
+    "line": 9
+   },
+   {
+    "file": "src/equipment_hold.lua",
+    "line": 14
+   },
+   {
+    "file": "src/support_weapons.lua",
+    "line": 7
+   },
+   {
+    "file": "src/ui_package_lease.lua",
+    "line": 4
+   }
+  ],
+  "new_rva": 18420816,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4585c00f8475010000415641574883ec3848895c24504c8b"
+ },
+ {
+  "text": "4585c00f8460010000415641574883ec3848895c24504c8b",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 18421216,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/animation_packages.lua",
+    "line": 10
+   },
+   {
+    "file": "src/equipment_hold.lua",
+    "line": 15
+   },
+   {
+    "file": "src/ui_package_lease.lua",
+    "line": 5
+   }
+  ],
+  "new_rva": 18421216,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4585c00f8460010000415641574883ec3848895c24504c8b"
+ },
+ {
+  "text": "48895c2408574883ec20488b1a488bfa4c8b89980f00004c",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 11257264,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/backend.lua",
+    "line": 17
+   }
+  ],
+  "new_rva": 11257264,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c2408574883ec20488b1a488bfa4c8b89980f00004c"
+ },
+ {
+  "text": "48895c2418574883ec20488bb9880f00004c8bc94c8b5a10",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 11257536,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/backend.lua",
+    "line": 19
+   },
+   {
+    "file": "src/ship_return.lua",
+    "line": 48
+   }
+  ],
+  "new_rva": 11257536,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c2418574883ec20488bb9880f00004c8bc94c8b5a10"
+ },
+ {
+  "text": "405355574883ec203b1532056002418bf88bda488be90f84",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 8645520,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/backend.lua",
+    "line": 21
+   }
+  ],
+  "new_rva": 8645520,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "405355574883ec203b1532056002418bf88bda488be90f84"
+ },
+ {
+  "text": "48895c240848896c24104889742418574883ec204c8bd94c",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 18417952,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/backend.lua",
+    "line": 23
+   }
+  ],
+  "new_rva": 18417952,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c240848896c24104889742418574883ec204c8bd94c"
+ },
+ {
+  "text": "48895c240848896c2410488974241848897c242041544156",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 18416464,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/backend.lua",
+    "line": 25
+   }
+  ],
+  "new_rva": 18416464,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c240848896c2410488974241848897c242041544156"
+ },
+ {
+  "text": "48896c2418564883ec204c8bd94c8bca488bcae898e33fff",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 18416816,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/backend.lua",
+    "line": 27
+   }
+  ],
+  "new_rva": 18416816,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48896c2418564883ec204c8bd94c8bca488bcae898e33fff"
+ },
+ {
+  "text": "e0a48d0be9a7453f",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/equipment_hold.lua",
+    "line": 17
+   },
+   {
+    "file": "src/support_weapons.lua",
+    "line": 5
+   }
+  ]
+ },
+ {
+  "text": "0014a4ba255675bd",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 5
+   }
+  ]
+ },
+ {
+  "text": "0089bbe3e284fcaa",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 5
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 27
+   }
+  ]
+ },
+ {
+  "text": "03b4b7a46856ccb2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 5
+   }
+  ]
+ },
+ {
+  "text": "047c26f2f11d253e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 5
+   }
+  ]
+ },
+ {
+  "text": "055f887c3bc616fe",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 5
+   }
+  ]
+ },
+ {
+  "text": "05656b4b5b893ab8",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 5
+   }
+  ]
+ },
+ {
+  "text": "0601a2f91ec178a9",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 6
+   }
+  ]
+ },
+ {
+  "text": "0827284b048bed82",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 6
+   }
+  ]
+ },
+ {
+  "text": "0a557495e6c95ea7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 6
+   }
+  ]
+ },
+ {
+  "text": "0b831a7dd55e8736",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 6
+   }
+  ]
+ },
+ {
+  "text": "0bdf199f7ac14f43",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 6
+   }
+  ]
+ },
+ {
+  "text": "0cbb8fc14f7d3433",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 6
+   }
+  ]
+ },
+ {
+  "text": "0cd732d5fc2c3a87",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 7
+   }
+  ]
+ },
+ {
+  "text": "0e6452d74d3a9dd3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 7
+   }
+  ]
+ },
+ {
+  "text": "0edad8ddec238bd9",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 7
+   }
+  ]
+ },
+ {
+  "text": "1045338fe7559a16",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 7
+   }
+  ]
+ },
+ {
+  "text": "10a7605527187ef5",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 7
+   }
+  ]
+ },
+ {
+  "text": "12ce4bc7cddaf51c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 7
+   }
+  ]
+ },
+ {
+  "text": "131fe264b7380717",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 8
+   }
+  ]
+ },
+ {
+  "text": "149f685717737cae",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 8
+   }
+  ]
+ },
+ {
+  "text": "149fdb737443c5fe",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 8
+   }
+  ]
+ },
+ {
+  "text": "154bd6143819df7d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 8
+   }
+  ]
+ },
+ {
+  "text": "15eb7241c3616351",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 8
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 30
+   }
+  ]
+ },
+ {
+  "text": "1721eee4581a9c54",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 8
+   }
+  ]
+ },
+ {
+  "text": "18466005ef235d2b",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 9
+   }
+  ]
+ },
+ {
+  "text": "187866959c3bb809",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 9
+   }
+  ]
+ },
+ {
+  "text": "1982853d15d996da",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 9
+   }
+  ]
+ },
+ {
+  "text": "1b006880ac88d1cd",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 9
+   }
+  ]
+ },
+ {
+  "text": "1b8308d020ce682d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 9
+   }
+  ]
+ },
+ {
+  "text": "1c1678e034c76ca8",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 9
+   }
+  ]
+ },
+ {
+  "text": "1c81d72c6bcb72f0",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 10
+   }
+  ]
+ },
+ {
+  "text": "1d7063b43d82eb6b",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 10
+   }
+  ]
+ },
+ {
+  "text": "1dfe6f7a3c7ebefb",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 10
+   }
+  ]
+ },
+ {
+  "text": "1f0273265bf3875e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 10
+   }
+  ]
+ },
+ {
+  "text": "1fd8a63a89ab865e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 10
+   }
+  ]
+ },
+ {
+  "text": "21e90918df69eff7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 10
+   }
+  ]
+ },
+ {
+  "text": "22427242698f51a0",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 11
+   }
+  ]
+ },
+ {
+  "text": "22749a294788af66",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 11
+   }
+  ]
+ },
+ {
+  "text": "2350348a9acf49c4",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 11
+   }
+  ]
+ },
+ {
+  "text": "2404fa21fe49c32d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 11
+   }
+  ]
+ },
+ {
+  "text": "25a04f6d9707d2cc",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 11
+   }
+  ]
+ },
+ {
+  "text": "26e18a495385517e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 11
+   }
+  ]
+ },
+ {
+  "text": "272519d2e9bf5324",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 12
+   }
+  ]
+ },
+ {
+  "text": "27a21978b9089c60",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 12
+   }
+  ]
+ },
+ {
+  "text": "2844da91583db0f4",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 12
+   }
+  ]
+ },
+ {
+  "text": "28569b6c8c641298",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 12
+   }
+  ]
+ },
+ {
+  "text": "28812689506a3e9c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 12
+   }
+  ]
+ },
+ {
+  "text": "2947afe42093062f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 12
+   }
+  ]
+ },
+ {
+  "text": "2a5298e1c2f70c82",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "2a9fb8f5d0576eae",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 13
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 16
+   }
+  ]
+ },
+ {
+  "text": "2ab752f65427a44c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "2cb3f69ab9bc1297",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "2cee40dfbd0b174d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "2d821486db99d8cb",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "2eb0fbe82bd8e228",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 14
+   }
+  ]
+ },
+ {
+  "text": "2ecd1248e0696796",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 14
+   }
+  ]
+ },
+ {
+  "text": "2f1147605182c6ab",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 14
+   }
+  ]
+ },
+ {
+  "text": "2fe755e42b659f64",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 14
+   }
+  ]
+ },
+ {
+  "text": "31894c33c4ed1e2a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 14
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 43
+   }
+  ]
+ },
+ {
+  "text": "32cb44321da1b5a0",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 14
+   }
+  ]
+ },
+ {
+  "text": "335a97fa3774906e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 15
+   }
+  ]
+ },
+ {
+  "text": "346d785d6ca13ff4",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 15
+   }
+  ]
+ },
+ {
+  "text": "351506bb55187cf9",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 15
+   }
+  ]
+ },
+ {
+  "text": "35f4ca4fa00d380a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 15
+   }
+  ]
+ },
+ {
+  "text": "39012af699fbc3fb",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 15
+   }
+  ]
+ },
+ {
+  "text": "393f7ce48d9515de",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 15
+   }
+  ]
+ },
+ {
+  "text": "3968938b8147df7c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 16
+   }
+  ]
+ },
+ {
+  "text": "39b3e89338c6ae66",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 16
+   }
+  ]
+ },
+ {
+  "text": "39c7982ba8ea2f8c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 16
+   }
+  ]
+ },
+ {
+  "text": "39ddd2e6f131c873",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 16
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 19
+   }
+  ]
+ },
+ {
+  "text": "3a3cde32420b1fb4",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 16
+   }
+  ]
+ },
+ {
+  "text": "3a49b4448eaa94fe",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 16
+   }
+  ]
+ },
+ {
+  "text": "3bf0844097ab595f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 17
+   }
+  ]
+ },
+ {
+  "text": "3c14455d53db72fe",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 17
+   }
+  ]
+ },
+ {
+  "text": "3cfc68e6bf19f67d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 17
+   }
+  ]
+ },
+ {
+  "text": "3d8ffc158042f62f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 17
+   }
+  ]
+ },
+ {
+  "text": "3e78581fdab81a73",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 17
+   }
+  ]
+ },
+ {
+  "text": "3e98cd4b147320f3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 17
+   }
+  ]
+ },
+ {
+  "text": "40f2a2ce5c20418f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 18
+   }
+  ]
+ },
+ {
+  "text": "414feae0e1b4ce15",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 18
+   }
+  ]
+ },
+ {
+  "text": "418322d5ff8b13bc",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 18
+   }
+  ]
+ },
+ {
+  "text": "41ce78fe8f96bebe",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 18
+   }
+  ]
+ },
+ {
+  "text": "4307bf2d275eec1d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 18
+   }
+  ]
+ },
+ {
+  "text": "44dd33af0ef2b0d1",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 18
+   }
+  ]
+ },
+ {
+  "text": "45730e588f30a508",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 19
+   }
+  ]
+ },
+ {
+  "text": "464dc7f48516a446",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 19
+   }
+  ]
+ },
+ {
+  "text": "4709331e1a3c3ac9",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 19
+   }
+  ]
+ },
+ {
+  "text": "47b43a883caae42c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 19
+   }
+  ]
+ },
+ {
+  "text": "487bcf38276eb725",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 19
+   }
+  ]
+ },
+ {
+  "text": "48a3312a8c002dcd",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 19
+   }
+  ]
+ },
+ {
+  "text": "4911594c67c24c66",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 20
+   }
+  ]
+ },
+ {
+  "text": "49875503e219e80d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 20
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 14
+   }
+  ]
+ },
+ {
+  "text": "49de16e1343250e4",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 20
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 20
+   }
+  ]
+ },
+ {
+  "text": "49f1972458f7ccec",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 20
+   }
+  ]
+ },
+ {
+  "text": "49fd919a67a5db66",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 20
+   }
+  ]
+ },
+ {
+  "text": "4f1aeae93aeb9527",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 20
+   }
+  ]
+ },
+ {
+  "text": "4fee9cc13c0b4cec",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 21
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 29
+   }
+  ]
+ },
+ {
+  "text": "4ff64273030e87d6",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 21
+   }
+  ]
+ },
+ {
+  "text": "515ddabd01bd0c64",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 21
+   }
+  ]
+ },
+ {
+  "text": "519980a75ebd50ad",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 21
+   }
+  ]
+ },
+ {
+  "text": "522be23400cc6086",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 21
+   }
+  ]
+ },
+ {
+  "text": "5238bd7b9eca7c3f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 21
+   }
+  ]
+ },
+ {
+  "text": "52ebdf76131c8f38",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 22
+   }
+  ]
+ },
+ {
+  "text": "530bb611a14b6ce3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 22
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 25
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 25
+   }
+  ]
+ },
+ {
+  "text": "534c2c49ca10d168",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 22
+   }
+  ]
+ },
+ {
+  "text": "5354a9ac5770888c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 22
+   }
+  ]
+ },
+ {
+  "text": "53b9d10729fc26ee",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 22
+   }
+  ]
+ },
+ {
+  "text": "543ff1ff0bd82b44",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 22
+   }
+  ]
+ },
+ {
+  "text": "54dc633a67baa93d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 23
+   }
+  ]
+ },
+ {
+  "text": "55788a7ebd929436",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 23
+   }
+  ]
+ },
+ {
+  "text": "55938279f6ef8664",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 23
+   }
+  ]
+ },
+ {
+  "text": "56aa04adbbeea69f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 23
+   }
+  ]
+ },
+ {
+  "text": "57240a76af850923",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 23
+   }
+  ]
+ },
+ {
+  "text": "5795e99a988d10b7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 23
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 44
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 44
+   }
+  ]
+ },
+ {
+  "text": "57f3b4c04762cb1e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 24
+   }
+  ]
+ },
+ {
+  "text": "58038f21c4334481",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 24
+   }
+  ]
+ },
+ {
+  "text": "58bdcd1c444b0981",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 24
+   }
+  ]
+ },
+ {
+  "text": "59e86f7c0601a2e2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 24
+   }
+  ]
+ },
+ {
+  "text": "5c404005f63b0e8c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 24
+   }
+  ]
+ },
+ {
+  "text": "5c8058963f766439",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 24
+   }
+  ]
+ },
+ {
+  "text": "5d5c93ef05a46880",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 25
+   }
+  ]
+ },
+ {
+  "text": "5d68e55823acd1bf",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 25
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 24
+   }
+  ]
+ },
+ {
+  "text": "5df489abbe211839",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 25
+   }
+  ]
+ },
+ {
+  "text": "5e264395c66c0013",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 25
+   }
+  ]
+ },
+ {
+  "text": "601d726de9c3962f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 25
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 46
+   }
+  ]
+ },
+ {
+  "text": "63bd4fd7d65199fe",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 25
+   }
+  ]
+ },
+ {
+  "text": "64c37a90c0d906de",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 26
+   },
+   {
+    "file": "src/wall_terminal_assets.lua",
+    "line": 6
+   }
+  ]
+ },
+ {
+  "text": "64f56a84b883af7d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 26
+   }
+  ]
+ },
+ {
+  "text": "650a24debc71e5c7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 26
+   }
+  ]
+ },
+ {
+  "text": "65ee777b72347cb4",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 26
+   }
+  ]
+ },
+ {
+  "text": "661c5c71cc017b97",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 26
+   }
+  ]
+ },
+ {
+  "text": "6657e3ccf2960f28",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 26
+   }
+  ]
+ },
+ {
+  "text": "6723e952d71531eb",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 27
+   }
+  ]
+ },
+ {
+  "text": "67b87368042c8b99",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 27
+   }
+  ]
+ },
+ {
+  "text": "686c085d91781491",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 27
+   }
+  ]
+ },
+ {
+  "text": "68aa9a343aa4333c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 27
+   }
+  ]
+ },
+ {
+  "text": "68e80476c1c602f5",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 27
+   }
+  ]
+ },
+ {
+  "text": "68ebdce3f7498179",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 27
+   }
+  ]
+ },
+ {
+  "text": "68f670405a504f68",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 28
+   }
+  ]
+ },
+ {
+  "text": "695ba4a2683b4ce3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 28
+   }
+  ]
+ },
+ {
+  "text": "6a9026cd7318c9bd",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 28
+   }
+  ]
+ },
+ {
+  "text": "6ad7cc21015a5f85",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 28
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 14
+   }
+  ]
+ },
+ {
+  "text": "6aedc8963a6c1eae",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 28
+   }
+  ]
+ },
+ {
+  "text": "6aeebfbdb87d1d5f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 28
+   }
+  ]
+ },
+ {
+  "text": "6ca87637eaeb5923",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 29
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 30
+   }
+  ]
+ },
+ {
+  "text": "6db0c562c2bc10b3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 29
+   }
+  ]
+ },
+ {
+  "text": "6f09a6ce25c8ca77",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 29
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 47
+   }
+  ]
+ },
+ {
+  "text": "6f605198a099fcf2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 29
+   }
+  ]
+ },
+ {
+  "text": "70d708e5fd627493",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 29
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 42
+   }
+  ]
+ },
+ {
+  "text": "7160179c08dd7d81",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 29
+   }
+  ]
+ },
+ {
+  "text": "722311fbee58cae2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 30
+   }
+  ]
+ },
+ {
+  "text": "731acec30a1a6fac",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 30
+   }
+  ]
+ },
+ {
+  "text": "7356dd3333111570",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 30
+   }
+  ]
+ },
+ {
+  "text": "73cfbbf2e883af96",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 30
+   }
+  ]
+ },
+ {
+  "text": "750605cfc0173701",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 30
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 45
+   }
+  ]
+ },
+ {
+  "text": "754f8570c7a383a6",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 30
+   }
+  ]
+ },
+ {
+  "text": "7580e5ae368440ae",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 31
+   }
+  ]
+ },
+ {
+  "text": "75cf73a0819bf767",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 31
+   }
+  ]
+ },
+ {
+  "text": "76ecb634596a82f3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 31
+   }
+  ]
+ },
+ {
+  "text": "77214a2dec1d0518",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 31
+   }
+  ]
+ },
+ {
+  "text": "784671f2b3a4da79",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 31
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 26
+   }
+  ]
+ },
+ {
+  "text": "7909cf8aa0513800",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 31
+   }
+  ]
+ },
+ {
+  "text": "793a472e127520d3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 32
+   }
+  ]
+ },
+ {
+  "text": "7aecfc5c8a82a7b8",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 32
+   }
+  ]
+ },
+ {
+  "text": "7af5df78217fd645",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 32
+   }
+  ]
+ },
+ {
+  "text": "7b523d4ef1c8f4ee",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 32
+   }
+  ]
+ },
+ {
+  "text": "7be04adb392a3045",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 32
+   }
+  ]
+ },
+ {
+  "text": "7d678bb75cfb937b",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 32
+   }
+  ]
+ },
+ {
+  "text": "7f37db9b767844c2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 33
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 41
+   }
+  ]
+ },
+ {
+  "text": "7f927f50fa6c50e8",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 33
+   }
+  ]
+ },
+ {
+  "text": "7ffcb7b7b850152c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 33
+   }
+  ]
+ },
+ {
+  "text": "81558b003da7ae40",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 33
+   }
+  ]
+ },
+ {
+  "text": "81da0125a3af89ee",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 33
+   }
+  ]
+ },
+ {
+  "text": "82751a054bdfd075",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 33
+   }
+  ]
+ },
+ {
+  "text": "82dcd83d81a385f3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 34
+   }
+  ]
+ },
+ {
+  "text": "82ec28278bf9b79a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 34
+   }
+  ]
+ },
+ {
+  "text": "838a0fde641bb2b0",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 34
+   }
+  ]
+ },
+ {
+  "text": "8475f912fb83a589",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 34
+   }
+  ]
+ },
+ {
+  "text": "86565de78333128f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 34
+   }
+  ]
+ },
+ {
+  "text": "899923de5ebeb3a2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 34
+   }
+  ]
+ },
+ {
+  "text": "8b23d93db6312d96",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 35
+   }
+  ]
+ },
+ {
+  "text": "8b430445e4323b7c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 35
+   }
+  ]
+ },
+ {
+  "text": "8c3b838d05731044",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 35
+   }
+  ]
+ },
+ {
+  "text": "8f295b4d04c3a06c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 35
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 34
+   }
+  ]
+ },
+ {
+  "text": "8f67c47bf021d580",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 35
+   }
+  ]
+ },
+ {
+  "text": "902c54afb4ed396f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 35
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 35
+   }
+  ]
+ },
+ {
+  "text": "914e182a431a53a6",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 36
+   }
+  ]
+ },
+ {
+  "text": "933148104d23a322",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 36
+   }
+  ]
+ },
+ {
+  "text": "935050dc44dee3da",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 36
+   }
+  ]
+ },
+ {
+  "text": "93fa804787551c15",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 36
+   }
+  ]
+ },
+ {
+  "text": "9494c346e564d15f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 36
+   }
+  ]
+ },
+ {
+  "text": "94b554570b12c088",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 36
+   }
+  ]
+ },
+ {
+  "text": "94eaeaffd878dd6d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 37
+   }
+  ]
+ },
+ {
+  "text": "950461b424956775",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 37
+   }
+  ]
+ },
+ {
+  "text": "9514615d563612f1",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 37
+   }
+  ]
+ },
+ {
+  "text": "981a0bf27dd6a546",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 37
+   }
+  ]
+ },
+ {
+  "text": "992d325d88de5fbf",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 37
+   }
+  ]
+ },
+ {
+  "text": "9974f498c67d5e20",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 37
+   }
+  ]
+ },
+ {
+  "text": "99f20df1c4cf885a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 38
+   }
+  ]
+ },
+ {
+  "text": "9a58aa87e9da0172",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 38
+   }
+  ]
+ },
+ {
+  "text": "9b0e4447df81f72e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 38
+   }
+  ]
+ },
+ {
+  "text": "9b856579552160e5",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 38
+   }
+  ]
+ },
+ {
+  "text": "9ceed8ae1331d7bf",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 38
+   }
+  ]
+ },
+ {
+  "text": "9d4eb484c405e7a2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 38
+   }
+  ]
+ },
+ {
+  "text": "9e7172866dcca25d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 39
+   }
+  ]
+ },
+ {
+  "text": "9effc1c882578baf",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 39
+   }
+  ]
+ },
+ {
+  "text": "9f064aefede28fb3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 39
+   }
+  ]
+ },
+ {
+  "text": "a14f1a98c80575af",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 39
+   }
+  ]
+ },
+ {
+  "text": "a193a00ce4bbd529",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 39
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 47
+   }
+  ]
+ },
+ {
+  "text": "a1adc0bfb7feec90",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 39
+   }
+  ]
+ },
+ {
+  "text": "a275324ae43dfd50",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 40
+   }
+  ]
+ },
+ {
+  "text": "a37891d879cb3b1d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 40
+   }
+  ]
+ },
+ {
+  "text": "a4946425b2c70017",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 40
+   }
+  ]
+ },
+ {
+  "text": "a4cbde513bfe9e5d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 40
+   }
+  ]
+ },
+ {
+  "text": "a66d7cf238070ca7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 40
+   }
+  ]
+ },
+ {
+  "text": "a7b23b55209766ae",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 40
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 39
+   }
+  ]
+ },
+ {
+  "text": "a7d864a49aaa62b3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 41
+   }
+  ]
+ },
+ {
+  "text": "a952bd560a4b1e0d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 41
+   }
+  ]
+ },
+ {
+  "text": "aaa4485c0b8a76ed",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 41
+   }
+  ]
+ },
+ {
+  "text": "ab37d0554198acc8",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 41
+   }
+  ]
+ },
+ {
+  "text": "ab44d0cd03a6004d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 41
+   }
+  ]
+ },
+ {
+  "text": "abb5be515c9e779c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 41
+   }
+  ]
+ },
+ {
+  "text": "ad393286210eef73",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 42
+   }
+  ]
+ },
+ {
+  "text": "ae4f2e79b546847c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 42
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "aedc4c57e8239d58",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 42
+   }
+  ]
+ },
+ {
+  "text": "b15cd2256a2e677b",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 42
+   }
+  ]
+ },
+ {
+  "text": "b29a2fa06fdd99d2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 42
+   }
+  ]
+ },
+ {
+  "text": "b2c627b3ba7e0c0a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 42
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 33
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 33
+   }
+  ]
+ },
+ {
+  "text": "b2d139f78a2e2120",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 43
+   }
+  ]
+ },
+ {
+  "text": "b32472b150d4fa9b",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 43
+   }
+  ]
+ },
+ {
+  "text": "b3983aa88d96fa0a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 43
+   }
+  ]
+ },
+ {
+  "text": "b47514ae19a494f0",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 43
+   }
+  ]
+ },
+ {
+  "text": "b4b38c1e20bdecd3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 43
+   }
+  ]
+ },
+ {
+  "text": "b60a5080bcdc100f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 43
+   }
+  ]
+ },
+ {
+  "text": "b75f652bed19144a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 44
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 37
+   }
+  ]
+ },
+ {
+  "text": "b779a2f9d0928e03",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 44
+   }
+  ]
+ },
+ {
+  "text": "b902854bbc65cd9b",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 44
+   }
+  ]
+ },
+ {
+  "text": "b9c02bb092fca9d1",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 44
+   }
+  ]
+ },
+ {
+  "text": "ba40a2814d01bda0",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 44
+   }
+  ]
+ },
+ {
+  "text": "bba76437a1c00c1e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 44
+   }
+  ]
+ },
+ {
+  "text": "bbb6c58f04e815b4",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 45
+   }
+  ]
+ },
+ {
+  "text": "bc80aeb7d13ac9ad",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 45
+   }
+  ]
+ },
+ {
+  "text": "bd7a9742157b96d2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 45
+   }
+  ]
+ },
+ {
+  "text": "bd90b4fccb70622c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 45
+   }
+  ]
+ },
+ {
+  "text": "bdea01a4245e2aae",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 45
+   }
+  ]
+ },
+ {
+  "text": "be36d9447219f1b2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 45
+   }
+  ]
+ },
+ {
+  "text": "be6c260fadcb8719",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 46
+   }
+  ]
+ },
+ {
+  "text": "bf2250de0b17285c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 46
+   }
+  ]
+ },
+ {
+  "text": "c0052e5b38e18c33",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 46
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 38
+   }
+  ]
+ },
+ {
+  "text": "c024a2e8ae639757",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 46
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 36
+   }
+  ]
+ },
+ {
+  "text": "c1a50175e4faa831",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 46
+   }
+  ]
+ },
+ {
+  "text": "c26c3ee3cb998a3d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 46
+   }
+  ]
+ },
+ {
+  "text": "c40e3b3fa79052ec",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 47
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 18
+   }
+  ]
+ },
+ {
+  "text": "c46cf24278594a7d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 47
+   }
+  ]
+ },
+ {
+  "text": "c51f160470b34ae3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 47
+   }
+  ]
+ },
+ {
+  "text": "c5a05d09369d0670",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 47
+   }
+  ]
+ },
+ {
+  "text": "c5de422eed100414",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 47
+   }
+  ]
+ },
+ {
+  "text": "c630d7c0ea6ceaca",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 47
+   }
+  ]
+ },
+ {
+  "text": "c7c2d638edffd06d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 48
+   }
+  ]
+ },
+ {
+  "text": "c922b8940f7f5162",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 48
+   }
+  ]
+ },
+ {
+  "text": "c97c859c01d50fcf",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 48
+   }
+  ]
+ },
+ {
+  "text": "ca8d89f4fb0ce5ef",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 48
+   }
+  ]
+ },
+ {
+  "text": "cae3f1e8a44a80b3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 48
+   }
+  ]
+ },
+ {
+  "text": "cd83cb2e73d4fba6",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 48
+   }
+  ]
+ },
+ {
+  "text": "cf1acde501ccfa1b",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 49
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 31
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 32
+   }
+  ]
+ },
+ {
+  "text": "cfa471cb7c3a2d94",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 49
+   }
+  ]
+ },
+ {
+  "text": "d1968909ea085527",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 49
+   }
+  ]
+ },
+ {
+  "text": "d4aa75d30a8d7773",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 49
+   }
+  ]
+ },
+ {
+  "text": "d678f7b4e7c3901a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 49
+   }
+  ]
+ },
+ {
+  "text": "d6d42eefe4936690",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 49
+   }
+  ]
+ },
+ {
+  "text": "d6e442e0741b6c5f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 50
+   }
+  ]
+ },
+ {
+  "text": "d85cf8192edbddc1",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 50
+   }
+  ]
+ },
+ {
+  "text": "dbd9381f9ea9788f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 50
+   }
+  ]
+ },
+ {
+  "text": "dbf00f1b8761aba5",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 50
+   }
+  ]
+ },
+ {
+  "text": "ddcea5fdd4071767",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 50
+   }
+  ]
+ },
+ {
+  "text": "de96cd7cc69628bc",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 50
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 22
+   }
+  ]
+ },
+ {
+  "text": "df16f5c644edc2b1",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 51
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 17
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 17
+   }
+  ]
+ },
+ {
+  "text": "df59f9c78a184bd5",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 51
+   }
+  ]
+ },
+ {
+  "text": "dfb81f9917285965",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 51
+   }
+  ]
+ },
+ {
+  "text": "e0807831d6f456c8",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 51
+   }
+  ]
+ },
+ {
+  "text": "e0d35fe7ce80e3f0",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 51
+   }
+  ]
+ },
+ {
+  "text": "e12f82d7c0c7bc63",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 51
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 40
+   }
+  ]
+ },
+ {
+  "text": "e1ce0be08c5d7193",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 52
+   }
+  ]
+ },
+ {
+  "text": "e241b72c495c6d20",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 52
+   }
+  ]
+ },
+ {
+  "text": "e4aca30d86b21463",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 52
+   }
+  ]
+ },
+ {
+  "text": "e566e3aaf90db459",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 52
+   }
+  ]
+ },
+ {
+  "text": "e62ab45bad7f6ca3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 52
+   }
+  ]
+ },
+ {
+  "text": "e829d44fb5653ec4",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 52
+   }
+  ]
+ },
+ {
+  "text": "e9b3f74dc7aeeaef",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 53
+   }
+  ]
+ },
+ {
+  "text": "ea1b5bcaaf3eef23",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 53
+   }
+  ]
+ },
+ {
+  "text": "ea6967f8565a2d76",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 53
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 15
+   }
+  ]
+ },
+ {
+  "text": "eaada9de4cd60356",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 53
+   }
+  ]
+ },
+ {
+  "text": "eb94fd6a9c4b7522",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 53
+   }
+  ]
+ },
+ {
+  "text": "ebc7888cf3886e91",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 53
+   }
+  ]
+ },
+ {
+  "text": "eeebc5fd26fe0f40",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 54
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 21
+   }
+  ]
+ },
+ {
+  "text": "ef8edb7b47d8f0b3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 54
+   }
+  ]
+ },
+ {
+  "text": "f111fa26003c0de9",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 54
+   }
+  ]
+ },
+ {
+  "text": "f230d2d2adcc034a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 54
+   }
+  ]
+ },
+ {
+  "text": "f24cfa612428175b",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 54
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 28
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 28
+   }
+  ]
+ },
+ {
+  "text": "f3174ef31b118a55",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 54
+   }
+  ]
+ },
+ {
+  "text": "f3c65eaab75f1fc2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 55
+   }
+  ]
+ },
+ {
+  "text": "f5014993c8402d87",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 55
+   }
+  ]
+ },
+ {
+  "text": "f5142161602a58af",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 55
+   }
+  ]
+ },
+ {
+  "text": "f590569dbbc6fe2d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 55
+   }
+  ]
+ },
+ {
+  "text": "f62f312ac22f4914",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 55
+   }
+  ]
+ },
+ {
+  "text": "f7646e79610c124d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 55
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 40
+   }
+  ]
+ },
+ {
+  "text": "f79b65e482594bef",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 56
+   }
+  ]
+ },
+ {
+  "text": "f8d841ae320e62bf",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 56
+   }
+  ]
+ },
+ {
+  "text": "f90a06c6e291692d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 56
+   }
+  ]
+ },
+ {
+  "text": "f9a5bf9ffcfd28b7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 56
+   }
+  ]
+ },
+ {
+  "text": "fae34acb79502f53",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 56
+   }
+  ]
+ },
+ {
+  "text": "fb48de3e9d5f187c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 56
+   }
+  ]
+ },
+ {
+  "text": "fc1a5bf2f3ff15df",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 57
+   }
+  ]
+ },
+ {
+  "text": "fd3eef9a0329b2c2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 57
+   }
+  ]
+ },
+ {
+  "text": "fde8230c79315087",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 57
+   },
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 23
+   }
+  ]
+ },
+ {
+  "text": "fe712728dec82bc7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 57
+   }
+  ]
+ },
+ {
+  "text": "ff0ada8dd2ee32cc",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/equipment_packages.lua",
+    "line": 57
+   }
+  ]
+ },
+ {
+  "text": "7ed1f941859987b4",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 5
+   }
+  ]
+ },
+ {
+  "text": "a8193123526fad64",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 6
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 7
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 8
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 9
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 10
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 11
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 12
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 13
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 14
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 15
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 16
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 17
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 18
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 19
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 20
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 21
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 22
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 23
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 33
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 34
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 66
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 67
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 69
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 70
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 73
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 74
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 79
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 81
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 82
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 87
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 88
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 95
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 98
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 99
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 100
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 101
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 103
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 104
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 105
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 107
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 108
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 109
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 110
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 111
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 112
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 114
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 116
+   }
+  ]
+ },
+ {
+  "text": "095f2231d5f8e3e4",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 6
+   }
+  ]
+ },
+ {
+  "text": "0c9a1af72a72d1e2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 7
+   }
+  ]
+ },
+ {
+  "text": "3568ba327c88146f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 8
+   }
+  ]
+ },
+ {
+  "text": "424c1f35637c1b0a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 9
+   }
+  ]
+ },
+ {
+  "text": "44db1768e72c6da0",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 10
+   }
+  ]
+ },
+ {
+  "text": "63f1364a83530e17",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 11
+   }
+  ]
+ },
+ {
+  "text": "80a1ad700404e92c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 12
+   }
+  ]
+ },
+ {
+  "text": "83ab1ce65d33fdab",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "8fc3104408a764e5",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 14
+   }
+  ]
+ },
+ {
+  "text": "957ab7ec83261ce7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 15
+   }
+  ]
+ },
+ {
+  "text": "9dcb76948192dcd9",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 16
+   }
+  ]
+ },
+ {
+  "text": "a4a16c4c10fb0556",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 17
+   }
+  ]
+ },
+ {
+  "text": "ac72d15d5f91acce",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 18
+   }
+  ]
+ },
+ {
+  "text": "bac26ab3fb11c9ae",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 19
+   }
+  ]
+ },
+ {
+  "text": "c1eb7a87e37176ac",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 20
+   }
+  ]
+ },
+ {
+  "text": "c9ecfed4638ad729",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 21
+   }
+  ]
+ },
+ {
+  "text": "cfd63c93246ddbb0",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 22
+   }
+  ]
+ },
+ {
+  "text": "e335b1f1cd341c21",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 23
+   }
+  ]
+ },
+ {
+  "text": "cd4238c6a0c69e32",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 24
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 25
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 26
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 27
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 28
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 29
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 30
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 38
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 39
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 40
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 43
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 44
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 46
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 49
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 50
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 53
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 57
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 58
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 78
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 89
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 102
+   },
+   {
+    "file": "src/ui_atlas_readiness.lua",
+    "line": 43
+   }
+  ]
+ },
+ {
+  "text": "0fb4682f413b84f4",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 24
+   }
+  ]
+ },
+ {
+  "text": "9663cb9f725507f4",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 25
+   }
+  ]
+ },
+ {
+  "text": "9c5191fb9eea4bf7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 26
+   }
+  ]
+ },
+ {
+  "text": "a0bb634ed5dc661e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 27
+   }
+  ]
+ },
+ {
+  "text": "de89f01fc88b8287",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 28
+   }
+  ]
+ },
+ {
+  "text": "f48b19c0a6ba9889",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 29
+   }
+  ]
+ },
+ {
+  "text": "f4ef9bef746c4944",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 30
+   }
+  ]
+ },
+ {
+  "text": "0591c96415837062",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 32
+   }
+  ]
+ },
+ {
+  "text": "62e478acf4347b9c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 33
+   }
+  ]
+ },
+ {
+  "text": "3f3ff771be9ed5cb",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 34
+   }
+  ]
+ },
+ {
+  "text": "eac0b497876adedf",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 35
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 36
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 37
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 45
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 47
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 48
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 51
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 52
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 54
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 68
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 71
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 72
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 75
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 76
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 77
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 80
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 83
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 84
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 85
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 86
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 90
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 91
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 92
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 93
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 94
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 96
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 97
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 106
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 113
+   },
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 115
+   },
+   {
+    "file": "src/ui_material_readiness.lua",
+    "line": 8
+   },
+   {
+    "file": "src/wall_terminal_assets.lua",
+    "line": 8
+   }
+  ]
+ },
+ {
+  "text": "08ef612bd25100e3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 35
+   }
+  ]
+ },
+ {
+  "text": "1587479ddb5baadd",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 36
+   }
+  ]
+ },
+ {
+  "text": "9548d9f0452104dc",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 37
+   }
+  ]
+ },
+ {
+  "text": "70b34afeb8915ffe",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 38
+   }
+  ]
+ },
+ {
+  "text": "be376b2b07a5a360",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 39
+   }
+  ]
+ },
+ {
+  "text": "d5ed357196ac96e7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 40
+   }
+  ]
+ },
+ {
+  "text": "6e990d86d43dfe8b",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 42
+   }
+  ]
+ },
+ {
+  "text": "92b9150d8ac67bb3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 43
+   }
+  ]
+ },
+ {
+  "text": "dc23cd776287ed17",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 44
+   }
+  ]
+ },
+ {
+  "text": "2174759f96a08b61",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 45
+   }
+  ]
+ },
+ {
+  "text": "f542e41f8a1295ad",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 46
+   }
+  ]
+ },
+ {
+  "text": "db2bb1241f3ee3ad",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 47
+   }
+  ]
+ },
+ {
+  "text": "fda90652b6a8d1e5",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 48
+   }
+  ]
+ },
+ {
+  "text": "1a833401707673cb",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 49
+   }
+  ]
+ },
+ {
+  "text": "3b5bd2295cdf8a22",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 50
+   }
+  ]
+ },
+ {
+  "text": "cfd27911514144fa",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 51
+   }
+  ]
+ },
+ {
+  "text": "6d07a67b2581fe8a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 52
+   }
+  ]
+ },
+ {
+  "text": "e50821f14a4df1fc",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 53
+   }
+  ]
+ },
+ {
+  "text": "866abcda19e31dad",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 54
+   }
+  ]
+ },
+ {
+  "text": "7bb9ecf8ac258c77",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 56
+   }
+  ]
+ },
+ {
+  "text": "ddc4608fe36caaf3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 57
+   }
+  ]
+ },
+ {
+  "text": "2f043dc09b2641cb",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 58
+   }
+  ]
+ },
+ {
+  "text": "f6fb08cc02d24255",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 60
+   }
+  ]
+ },
+ {
+  "text": "535a7bd3e650d799",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 61
+   },
+   {
+    "file": "src/fx_resource_readiness.lua",
+    "line": 4
+   }
+  ]
+ },
+ {
+  "text": "3543b29a8a90b1be",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 61
+   }
+  ]
+ },
+ {
+  "text": "762903c2b412d13b",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 65
+   }
+  ]
+ },
+ {
+  "text": "7a08448a271498b2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 66
+   }
+  ]
+ },
+ {
+  "text": "9564cb08604815e8",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 67
+   }
+  ]
+ },
+ {
+  "text": "27778e58f4f90f83",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 68
+   }
+  ]
+ },
+ {
+  "text": "69d8f1041e272259",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 69
+   }
+  ]
+ },
+ {
+  "text": "ec17c28d86328ac5",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 70
+   }
+  ]
+ },
+ {
+  "text": "6d0b8f01b43c7e5b",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 71
+   }
+  ]
+ },
+ {
+  "text": "1622bc876295ad8a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 72
+   }
+  ]
+ },
+ {
+  "text": "687162bc5cc9c72a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 73
+   }
+  ]
+ },
+ {
+  "text": "960e2042950486e7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 74
+   }
+  ]
+ },
+ {
+  "text": "5465676f479f5062",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 75
+   }
+  ]
+ },
+ {
+  "text": "8d395c4f22b5fe96",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 76
+   }
+  ]
+ },
+ {
+  "text": "32ba688a4c828dba",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 77
+   }
+  ]
+ },
+ {
+  "text": "8f4ad2ff4031bed5",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 78
+   }
+  ]
+ },
+ {
+  "text": "6337653565e6a999",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 79
+   }
+  ]
+ },
+ {
+  "text": "f50238d15f381035",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 80
+   }
+  ]
+ },
+ {
+  "text": "54cb267fc41368b0",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 81
+   }
+  ]
+ },
+ {
+  "text": "afcfab893cd6c6c2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 82
+   }
+  ]
+ },
+ {
+  "text": "d705bdda34d2885e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 83
+   }
+  ]
+ },
+ {
+  "text": "8b7a232f70adfcad",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 84
+   }
+  ]
+ },
+ {
+  "text": "7b07275046ef7b6a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 85
+   }
+  ]
+ },
+ {
+  "text": "897aecc87718f602",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 86
+   }
+  ]
+ },
+ {
+  "text": "9a1aae99441a8519",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 87
+   }
+  ]
+ },
+ {
+  "text": "fbd53aab7e2860c7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 88
+   }
+  ]
+ },
+ {
+  "text": "28ee5d613dd17a1d",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 89
+   }
+  ]
+ },
+ {
+  "text": "1c2c3954c6514c65",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 90
+   }
+  ]
+ },
+ {
+  "text": "697af0f55e6b76e5",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 91
+   }
+  ]
+ },
+ {
+  "text": "804317041c0a0595",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 92
+   }
+  ]
+ },
+ {
+  "text": "6abab9992740b2d2",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 93
+   }
+  ]
+ },
+ {
+  "text": "76bb910e5b356c77",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 94
+   }
+  ]
+ },
+ {
+  "text": "3b412f43d446d3c6",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 95
+   }
+  ]
+ },
+ {
+  "text": "f9cea8fec830fc5c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 96
+   }
+  ]
+ },
+ {
+  "text": "3623a782ba5f10da",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 97
+   }
+  ]
+ },
+ {
+  "text": "b0a54476950d8ba1",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 98
+   }
+  ]
+ },
+ {
+  "text": "2954d02d93c426ad",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 99
+   }
+  ]
+ },
+ {
+  "text": "665ae9508bebe78e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 100
+   }
+  ]
+ },
+ {
+  "text": "24dabda935cc1278",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 101
+   }
+  ]
+ },
+ {
+  "text": "8a7eeb1c2fc8dd74",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 102
+   }
+  ]
+ },
+ {
+  "text": "cf55a69c09f0bf93",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 103
+   }
+  ]
+ },
+ {
+  "text": "7cd6dc8739613404",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 104
+   }
+  ]
+ },
+ {
+  "text": "36a0b83d5c4563ae",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 105
+   }
+  ]
+ },
+ {
+  "text": "cbeff2d901660fbb",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 106
+   }
+  ]
+ },
+ {
+  "text": "6cfd45d33b7bf5ae",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 107
+   }
+  ]
+ },
+ {
+  "text": "34438292dee20516",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 108
+   }
+  ]
+ },
+ {
+  "text": "ca7c8d37187d92ff",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 109
+   }
+  ]
+ },
+ {
+  "text": "c56e9bb4e8062f1f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 110
+   }
+  ]
+ },
+ {
+  "text": "c2b04ed3fed8c44c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 111
+   }
+  ]
+ },
+ {
+  "text": "61161946fde1639f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 112
+   }
+  ]
+ },
+ {
+  "text": "0dae82b27af4012c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 113
+   }
+  ]
+ },
+ {
+  "text": "d1cc5e9fcd272902",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 114
+   }
+  ]
+ },
+ {
+  "text": "90afd2bf9dfb66bb",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 115
+   }
+  ]
+ },
+ {
+  "text": "0a5436fc4e15bb86",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/fx_assets_catalog.lua",
+    "line": 116
+   }
+  ]
+ },
+ {
+  "text": "4053415641574883ec30488b02488bd98b89c00200004533",
+  "bytes": 24,
+  "module": "exe",
+  "old_rva": 6496528,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/fx_resource_readiness.lua",
+    "line": 6
+   },
+   {
+    "file": "src/support_weapons.lua",
+    "line": 8
+   },
+   {
+    "file": "src/ui_atlas_readiness.lua",
+    "line": 6
+   },
+   {
+    "file": "src/ui_material_readiness.lua",
+    "line": 11
+   }
+  ],
+  "new_rva": 6496528,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4053415641574883ec30488b02488bd98b89c00200004533"
+ },
+ {
+  "text": "4c894424184889542410535556574155415641574883ec30",
+  "bytes": 24,
+  "module": "exe",
+  "old_rva": 6496832,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/fx_resource_readiness.lua",
+    "line": 8
+   },
+   {
+    "file": "src/support_weapons.lua",
+    "line": 9
+   },
+   {
+    "file": "src/ui_material_readiness.lua",
+    "line": 14
+   }
+  ],
+  "new_rva": 6496832,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4c894424184889542410535556574155415641574883ec30"
+ },
+ {
+  "text": "415641574883ec283b1502c35f02458bf1458bf84c8bd90f",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 8662464,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/runtime.lua",
+    "line": 196
+   }
+  ],
+  "new_rva": 8662464,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "415641574883ec283b1502c35f02458bf1458bf84c8bd90f"
+ },
+ {
+  "text": "488bc444894018535541554881ec800000003b15182a4802418b",
+  "bytes": 26,
+  "module": "game",
+  "old_rva": 10208928,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/runtime.lua",
+    "line": 208
+   },
+   {
+    "file": "src/support_weapons.lua",
+    "line": 6
+   }
+  ],
+  "new_rva": 10208928,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "488bc444894018535541554881ec800000003b15182a4802418b"
+ },
+ {
+  "text": "4053415641574883ec403b1530de6a02458bf9458bf08bda",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 7934608,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/runtime.lua",
+    "line": 224
+   },
+   {
+    "file": "src/support_weapons.lua",
+    "line": 6
+   }
+  ],
+  "new_rva": 7934608,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4053415641574883ec403b1530de6a02458bf9458bf08bda"
+ },
+ {
+  "text": "4c8bdc55534156498d6ba84881ec40010000488b056757be01",
+  "bytes": 25,
+  "module": "game",
+  "old_rva": 9238672,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/runtime.lua",
+    "line": 266
+   }
+  ],
+  "new_rva": 9238672,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4c8bdc55534156498d6ba84881ec40010000488b056757be01"
+ },
+ {
+  "text": "48895c2408574883ec208bfae8ef90eaff488bc8488bd84c",
+  "bytes": 24,
+  "module": "exe",
+  "old_rva": 2061776,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/runtime.lua",
+    "line": 284
+   }
+  ],
+  "new_rva": 2061776,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c2408574883ec208bfae8ef90eaff488bc8488bd84c"
+ },
+ {
+  "text": "48895c2408574883ec208bda8bf9e8fd8eeaff448bc38bd7",
+  "bytes": 24,
+  "module": "exe",
+  "old_rva": 2062272,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/runtime.lua",
+    "line": 286
+   }
+  ],
+  "new_rva": 2062272,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c2408574883ec208bda8bf9e8fd8eeaff448bc38bd7"
+ },
+ {
+  "text": "40574883ec20f30f104144488bf90f2ec17a237521f70100",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 19794240,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/ship_visibility.lua",
+    "line": 7
+   }
+  ],
+  "new_rva": 19794240,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "40574883ec20f30f104144488bf90f2ec17a237521f70100"
+ },
+ {
+  "text": "6cfcc7f8801a0266",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "a8cffb316f0b5c5f",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 14
+   }
+  ]
+ },
+ {
+  "text": "e60ae045e0090f4c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 14
+   }
+  ]
+ },
+ {
+  "text": "89c5493e08ca4207",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 15
+   }
+  ]
+ },
+ {
+  "text": "96de9cd50f7306e6",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 16
+   }
+  ]
+ },
+ {
+  "text": "78a8185f63a70795",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 17
+   }
+  ]
+ },
+ {
+  "text": "43eb1c3c1a1860e0",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 17
+   }
+  ]
+ },
+ {
+  "text": "b0f1b354ba1d38d8",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 18
+   }
+  ]
+ },
+ {
+  "text": "5f3ec9bda2bd8553",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 19
+   }
+  ]
+ },
+ {
+  "text": "e85e623f93f96fb3",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 20
+   }
+  ]
+ },
+ {
+  "text": "bf4cfd2aeabfb5a4",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 21
+   }
+  ]
+ },
+ {
+  "text": "80932fa0ed6901d3",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 22
+   }
+  ]
+ },
+ {
+  "text": "7617642765ac38c7",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 23
+   }
+  ]
+ },
+ {
+  "text": "b2b5e0d185605f9e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 24
+   }
+  ]
+ },
+ {
+  "text": "25aa2fd4643cf4ee",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 25
+   }
+  ]
+ },
+ {
+  "text": "8ec3026b5f2e579a",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 25
+   }
+  ]
+ },
+ {
+  "text": "39ab99895147a3bf",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 26
+   }
+  ]
+ },
+ {
+  "text": "02eecd0b1fa49630",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 27
+   }
+  ]
+ },
+ {
+  "text": "88c2d09ad85a7c9f",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 28
+   }
+  ]
+ },
+ {
+  "text": "bb4b15b588f974fd",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 28
+   }
+  ]
+ },
+ {
+  "text": "fe3b29b2cfa63f9b",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 29
+   }
+  ]
+ },
+ {
+  "text": "9f80d67a12a7e40f",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 30
+   }
+  ]
+ },
+ {
+  "text": "96dfc6542aa22980",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 30
+   }
+  ]
+ },
+ {
+  "text": "d54b9505c0f72873",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 31
+   }
+  ]
+ },
+ {
+  "text": "35a61296619cc47e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 32
+   }
+  ]
+ },
+ {
+  "text": "43a58cb89cfa197c",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 33
+   }
+  ]
+ },
+ {
+  "text": "056de1c5e21e723e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 33
+   }
+  ]
+ },
+ {
+  "text": "a6a735accb4a327f",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 34
+   }
+  ]
+ },
+ {
+  "text": "2152d5147b0ac418",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 35
+   }
+  ]
+ },
+ {
+  "text": "11c27d3babb38956",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 36
+   }
+  ]
+ },
+ {
+  "text": "b16c9d490aa59b77",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 37
+   }
+  ]
+ },
+ {
+  "text": "5990123d142b16cb",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 38
+   }
+  ]
+ },
+ {
+  "text": "e8d5f49ad7780e54",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 39
+   }
+  ]
+ },
+ {
+  "text": "26e40437ea275296",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 40
+   }
+  ]
+ },
+ {
+  "text": "e75cd68e858a12ac",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 40
+   }
+  ]
+ },
+ {
+  "text": "2e9d0bdc48b09e60",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 41
+   }
+  ]
+ },
+ {
+  "text": "3828e2051aa9e897",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 42
+   }
+  ]
+ },
+ {
+  "text": "52071f49263415e4",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 43
+   }
+  ]
+ },
+ {
+  "text": "cc786f6491fe7e65",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 44
+   }
+  ]
+ },
+ {
+  "text": "b8feb0cc191c1ef3",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 44
+   }
+  ]
+ },
+ {
+  "text": "88f61afff48ac8a4",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 45
+   }
+  ]
+ },
+ {
+  "text": "43b2d7766120203b",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 45
+   }
+  ]
+ },
+ {
+  "text": "73d84eaae8c75342",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 46
+   }
+  ]
+ },
+ {
+  "text": "b814eece17533bc4",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 47
+   }
+  ]
+ },
+ {
+  "text": "0949eeb3dc920324",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/support_catalogue.lua",
+    "line": 47
+   }
+  ]
+ },
+ {
+  "text": "48895c241848896c24204889542410564883ec30443b0585",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 10224432,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/support_weapons.lua",
+    "line": 6
+   }
+  ],
+  "new_rva": 10224432,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c241848896c24204889542410564883ec30443b0585"
+ },
+ {
+  "text": "4885d20f84d50500004c8bdc5641554881ecf8000000488b",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 15126304,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/support_weapons.lua",
+    "line": 6
+   }
+  ],
+  "new_rva": 15126304,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4885d20f84d50500004c8bdc5641554881ecf8000000488b"
+ },
+ {
+  "text": "40535741564883ec200f57c0488bca410f11004d8bf0488b",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 7694512,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/support_weapons.lua",
+    "line": 6
+   }
+  ],
+  "new_rva": 7694512,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "40535741564883ec200f57c0488bca410f11004d8bf0488b"
+ },
+ {
+  "text": "40535541554883ec4048897c2468418be84c896424708bda",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 10222720,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/support_weapons.lua",
+    "line": 6
+   }
+  ],
+  "new_rva": 10222720,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "40535541554883ec4048897c2468418be84c896424708bda"
+ },
+ {
+  "text": "48895c2408574883ec303b157c30fd018bda488bf90f84d4000000",
+  "bytes": 27,
+  "module": "game",
+  "old_rva": 15125008,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/support_weapons.lua",
+    "line": 7
+   }
+  ],
+  "new_rva": 15125008,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c2408574883ec303b157c30fd018bda488bf90f84d4000000"
+ },
+ {
+  "text": "4c8bdc49895b1049897320574881eca0000000488b05e6b7",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 15112208,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/support_weapons.lua",
+    "line": 10
+   }
+  ],
+  "new_rva": 15112208,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "4c8bdc49895b1049897320574881eca0000000488b05e6b7"
+ },
+ {
+  "text": "415641574883ec283b15024f4b02450fb6f1458bf84c8bd1",
+  "bytes": 24,
+  "module": "game",
+  "old_rva": 10002880,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/support_weapons.lua",
+    "line": 11
+   }
+  ],
+  "new_rva": 10002880,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "415641574883ec283b15024f4b02450fb6f1458bf84c8bd1"
+ },
+ {
+  "text": "0000000000000000",
+  "bytes": 8,
+  "status": "ambiguous",
+  "uses": [
+   {
+    "file": "src/support_weapons.lua",
+    "line": 16
+   }
+  ],
+  "hits": [
+   "exe+0x10000",
+   "exe+0x10000 rev",
+   "exe+0x1000000",
+   "exe+0x1000000 rev"
+  ]
+ },
+ {
+  "text": "07f10cad298067ec",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 3
+   }
+  ]
+ },
+ {
+  "text": "d88cc00669d53c0c",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 4
+   }
+  ]
+ },
+ {
+  "text": "0dd93b99d3cfb84e",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 6
+   }
+  ]
+ },
+ {
+  "text": "127a9aea3916c70e",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 7
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 61
+   }
+  ]
+ },
+ {
+  "text": "131742904d846798",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 8
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 62
+   }
+  ]
+ },
+ {
+  "text": "1531a83ae6acf7c1",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 9
+   }
+  ]
+ },
+ {
+  "text": "16413ee2e6725687",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 10
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 63
+   }
+  ]
+ },
+ {
+  "text": "1642b756b5e3256b",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 11
+   }
+  ]
+ },
+ {
+  "text": "1fc3c735d4547c90",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 12
+   }
+  ]
+ },
+ {
+  "text": "2f1a665b82767b50",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "30b2bcb6cfe3bbc6",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 14
+   }
+  ]
+ },
+ {
+  "text": "39b642e2d4b0f90c",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 15
+   }
+  ]
+ },
+ {
+  "text": "3cd6dce4b2a84e19",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 16
+   }
+  ]
+ },
+ {
+  "text": "3efff09cd12fb89a",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 17
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 64
+   }
+  ]
+ },
+ {
+  "text": "3fab81775081a774",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 18
+   }
+  ]
+ },
+ {
+  "text": "46271d0b4ce4136c",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 19
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 65
+   }
+  ]
+ },
+ {
+  "text": "51b9819adc9b6031",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 20
+   }
+  ]
+ },
+ {
+  "text": "52bbfc5a70359393",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 21
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 66
+   }
+  ]
+ },
+ {
+  "text": "539b02dea265b55a",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 22
+   }
+  ]
+ },
+ {
+  "text": "53b39f258f7b2919",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 23
+   }
+  ]
+ },
+ {
+  "text": "5e08e4cf83c91b49",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 24
+   }
+  ]
+ },
+ {
+  "text": "6115051c9558c50e",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 25
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 67
+   }
+  ]
+ },
+ {
+  "text": "619cc8745e58477e",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 26
+   }
+  ]
+ },
+ {
+  "text": "6713a2b647ee5435",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 27
+   }
+  ]
+ },
+ {
+  "text": "6be28cced767bb52",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 28
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 68
+   }
+  ]
+ },
+ {
+  "text": "6f2155498295e98a",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 29
+   }
+  ]
+ },
+ {
+  "text": "74c597255c088245",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 30
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 69
+   }
+  ]
+ },
+ {
+  "text": "7e06d072a58d172d",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 31
+   }
+  ]
+ },
+ {
+  "text": "829c48e52035e63e",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 32
+   }
+  ]
+ },
+ {
+  "text": "84c0542299fb4884",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 33
+   }
+  ]
+ },
+ {
+  "text": "8c37e52e722473d9",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 34
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 71
+   }
+  ]
+ },
+ {
+  "text": "90aaa55682d80bb3",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 35
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 72
+   }
+  ]
+ },
+ {
+  "text": "917efd49156f676b",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 36
+   }
+  ]
+ },
+ {
+  "text": "93b43ada76587340",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 37
+   }
+  ]
+ },
+ {
+  "text": "9444f481d0c82fff",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 38
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 73
+   }
+  ]
+ },
+ {
+  "text": "9a5154d9d0484d5c",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 39
+   }
+  ]
+ },
+ {
+  "text": "a00c87f76a14b13e",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 40
+   }
+  ]
+ },
+ {
+  "text": "a2ab43e85546f79a",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 41
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 74
+   }
+  ]
+ },
+ {
+  "text": "a38d2f23d203d764",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 42
+   }
+  ]
+ },
+ {
+  "text": "a9f9bf81827c51e5",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 43
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 75
+   }
+  ]
+ },
+ {
+  "text": "ad2ec8830fa5a193",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 44
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 76
+   }
+  ]
+ },
+ {
+  "text": "b3fa2dbb309b3fa4",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 45
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 77
+   }
+  ]
+ },
+ {
+  "text": "bc0abaee48d8e9a1",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 46
+   }
+  ]
+ },
+ {
+  "text": "c1028550c62fc4fa",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 47
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 79
+   }
+  ]
+ },
+ {
+  "text": "c64f92c5c78ccf3b",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 48
+   }
+  ]
+ },
+ {
+  "text": "c7546fc9c7b6db4e",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 49
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 80
+   }
+  ]
+ },
+ {
+  "text": "c99891cc3dd4e438",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 50
+   }
+  ]
+ },
+ {
+  "text": "cd0f47943c2c3ef0",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 51
+   }
+  ]
+ },
+ {
+  "text": "e109fa5ca9246b55",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 52
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 81
+   }
+  ]
+ },
+ {
+  "text": "ed7930efd2e5a89c",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 53
+   }
+  ]
+ },
+ {
+  "text": "f03c671b15d01a6b",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 54
+   },
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 82
+   }
+  ]
+ },
+ {
+  "text": "f1f9f8e6d2cbb499",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 55
+   }
+  ]
+ },
+ {
+  "text": "f4510d62673ff445",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 56
+   }
+  ]
+ },
+ {
+  "text": "f51b1f520e772eab",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 57
+   }
+  ]
+ },
+ {
+  "text": "f9e800b8ac76e96f",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 58
+   }
+  ]
+ },
+ {
+  "text": "88e84da134d3d4d4",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 70
+   }
+  ]
+ },
+ {
+  "text": "bc8ac3eabfc0f878",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets_catalog.lua",
+    "line": 78
+   }
+  ]
+ },
+ {
+  "text": "aa25349fce5d3eb3",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets.lua",
+    "line": 12
+   }
+  ]
+ },
+ {
+  "text": "9c16bf1bb2d8de88",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets.lua",
+    "line": 12
+   }
+  ]
+ },
+ {
+  "text": "b90233362aed21cc",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets.lua",
+    "line": 12
+   }
+  ]
+ },
+ {
+  "text": "6891e0f589169f6b",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets.lua",
+    "line": 12
+   }
+  ]
+ },
+ {
+  "text": "c8ecaf38dbfa3bad",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "57fcf14ad069020b",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "87fafa265a2aac61",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "358512d85e35b47d",
+  "bytes": 8,
+  "status": "resource-id",
+  "uses": [
+   {
+    "file": "src/ui_assets.lua",
+    "line": 13
+   }
+  ]
+ },
+ {
+  "text": "48895c2410488b05cc4a7a0133db4d8bc848895c24084c8b",
+  "bytes": 24,
+  "module": "exe",
+  "old_rva": 3222880,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/ui_atlas_readiness.lua",
+    "line": 4
+   }
+  ],
+  "new_rva": 3222880,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c2410488b05cc4a7a0133db4d8bc848895c24084c8b"
+ },
+ {
+  "text": "488bd1488b0d7e757c01488b8900040000e98a333500",
+  "bytes": 22,
+  "module": "exe",
+  "old_rva": 3080832,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/ui_package_lease.lua",
+    "line": 6
+   },
+   {
+    "file": "src/ui_package_recovery.lua",
+    "line": 5
+   }
+  ],
+  "new_rva": 3080832,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "488bd1488b0d7e757c01488b8900040000e98a333500"
+ },
+ {
+  "text": "488bd1488b0d1e737c01488b8900040000e93a353500",
+  "bytes": 22,
+  "module": "exe",
+  "old_rva": 3081440,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/ui_package_lease.lua",
+    "line": 7
+   }
+  ],
+  "new_rva": 3081440,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "488bd1488b0d1e737c01488b8900040000e93a353500"
+ },
+ {
+  "text": "48895c2408574883ec20488b05f76e7c01488bd1488bf948",
+  "bytes": 24,
+  "module": "exe",
+  "old_rva": 3082496,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/ui_package_lease.lua",
+    "line": 8
+   }
+  ],
+  "new_rva": 3082496,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "48895c2408574883ec20488b05f76e7c01488bd1488bf948"
+ },
+ {
+  "text": "48895c2408574883ec60",
+  "bytes": 10,
+  "status": "ambiguous",
+  "uses": [
+   {
+    "file": "src/wall_camera.lua",
+    "line": 5
+   }
+  ],
+  "hits": [
+   "game+0x197a80",
+   "game+0x198eb0",
+   "game+0x1aa8a0",
+   "game+0x28d280",
+   "game+0x31f0a0",
+   "game+0x363cb0",
+   "game+0x365ae0",
+   "game+0x366880",
+   "game+0x366ae0",
+   "game+0x3679a0",
+   "game+0x36d8c0",
+   "game+0x36e730",
+   "game+0x371c00",
+   "game+0x372c30",
+   "game+0x3790b0",
+   "game+0x379930",
+   "exe+0x12ced0",
+   "exe+0x12d230",
+   "exe+0x2572d0",
+   "exe+0x2576a0",
+   "exe+0x2d8250",
+   "exe+0x2dd5a0",
+   "exe+0x2dd730",
+   "exe+0x2ddab0",
+   "exe+0x305e00",
+   "exe+0x3138a0",
+   "exe+0x313a50",
+   "exe+0x3f74e0",
+   "exe+0x3f75b0",
+   "exe+0x437180",
+   "exe+0x4372b0",
+   "exe+0x4a53d0"
+  ]
+ },
+ {
+  "text": "488bc448895808488968104889701857",
+  "bytes": 16,
+  "status": "ambiguous",
+  "uses": [
+   {
+    "file": "src/wall_camera.lua",
+    "line": 6
+   }
+  ],
+  "hits": [
+   "game+0x4eca80",
+   "game+0x5ab3f0",
+   "game+0x5c6a60",
+   "game+0x676370",
+   "game+0x6a8410",
+   "game+0x8e5bf0",
+   "game+0x8f52b0",
+   "game+0x8f7920",
+   "game+0x9458d0",
+   "game+0xbc78d0",
+   "game+0xbdf6e0",
+   "game+0xc23ad0",
+   "game+0xdc2260",
+   "game+0xe16800",
+   "game+0xe24110",
+   "game+0xe5adf0",
+   "exe+0xb8df0",
+   "exe+0x186ef0",
+   "exe+0x221320",
+   "exe+0x2a4870",
+   "exe+0x2b2ad0",
+   "exe+0x39e8a0",
+   "exe+0x44a8c0",
+   "exe+0x464230",
+   "exe+0x464480",
+   "exe+0x4646c0",
+   "exe+0x464d30",
+   "exe+0x4d8300",
+   "exe+0x675fa0",
+   "exe+0x6dd310",
+   "exe+0x7c8e70",
+   "exe+0x83a520"
+  ]
+ },
+ {
+  "text": "488b471848c1e206418be948035028e8ba461900",
+  "bytes": 20,
+  "module": "exe",
+  "old_rva": 5079906,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/wall_camera.lua",
+    "line": 7
+   }
+  ],
+  "new_rva": 5079906,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "488b471848c1e206418be948035028e8ba461900"
+ },
+ {
+  "text": "09fb77881b4cc43e",
+  "bytes": 8,
+  "status": "nowhere",
+  "uses": [
+   {
+    "file": "src/wall_terminal_assets.lua",
+    "line": 7
+   }
+  ]
+ },
+ {
+  "text": "c340adc34885c974",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 5230652,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 4
+   }
+  ],
+  "new_rva": 5230652,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c340adc34885c974"
+ },
+ {
+  "text": "c3adc3535748895c",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 5361787,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 5
+   }
+  ],
+  "new_rva": 5361787,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3adc3535748895c"
+ },
+ {
+  "text": "c3adc34883ec5048",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 7693269,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 6
+   }
+  ],
+  "new_rva": 7693269,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3adc34883ec5048"
+ },
+ {
+  "text": "c3adc3ec3849c743",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 7934595,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 7
+   }
+  ],
+  "new_rva": 7934595,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3adc3ec3849c743"
+ },
+ {
+  "text": "c3ec20e8f7ffffff",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 8642675,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 8
+   }
+  ],
+  "new_rva": 8642675,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3ec20e8f7ffffff"
+ },
+ {
+  "text": "c3adc3178bc7c1e8",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 8659511,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 9
+   }
+  ],
+  "new_rva": 8659511,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3adc3178bc7c1e8"
+ },
+ {
+  "text": "c348adc338488b5c",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 9236562,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 10
+   }
+  ],
+  "new_rva": 9236562,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c348adc338488b5c"
+ },
+ {
+  "text": "c3adc34424205740",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 10002617,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 11
+   }
+  ],
+  "new_rva": 10002617,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3adc34424205740"
+ },
+ {
+  "text": "c348adc324385748",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 10208640,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 12
+   }
+  ],
+  "new_rva": 10208640,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c348adc324385748"
+ },
+ {
+  "text": "c3adc3d957405748",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 10220235,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 13
+   }
+  ],
+  "new_rva": 10220235,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3adc3d957405748"
+ },
+ {
+  "text": "c33bc70f85f6fdff",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 10223974,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 14
+   }
+  ],
+  "new_rva": 10223974,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c33bc70f85f6fdff"
+ },
+ {
+  "text": "c3adc3d65748895c",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 10318315,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 15
+   }
+  ],
+  "new_rva": 10318315,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3adc3d65748895c"
+ },
+ {
+  "text": "c39080c1a60086c1",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 10928714,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 16
+   }
+  ],
+  "new_rva": 10928714,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c39080c1a60086c1"
+ },
+ {
+  "text": "c341adc383ec2048",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 11256418,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 17
+   }
+  ],
+  "new_rva": 11256418,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c341adc383ec2048"
+ },
+ {
+  "text": "c3c34883ec28488b",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 11331438,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 18
+   }
+  ],
+  "new_rva": 11331438,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3c34883ec28488b"
+ },
+ {
+  "text": "c33bc275d5418b43",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 15110678,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 19
+   }
+  ],
+  "new_rva": 15110678,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c33bc275d5418b43"
+ },
+ {
+  "text": "c34c8bdc55535741",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 15123007,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 20
+   }
+  ],
+  "new_rva": 15123007,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c34c8bdc55535741"
+ },
+ {
+  "text": "c341544883ec2065",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 18334176,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 21
+   }
+  ],
+  "new_rva": 18334176,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c341544883ec2065"
+ },
+ {
+  "text": "c3c34c8bdc415648",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 18339150,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 22
+   }
+  ],
+  "new_rva": 18339150,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3c34c8bdc415648"
+ },
+ {
+  "text": "c36690a5f21701c2",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 18347717,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 23
+   }
+  ],
+  "new_rva": 18347717,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c36690a5f21701c2"
+ },
+ {
+  "text": "c3c6adc320015756",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 18367736,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 24
+   }
+  ],
+  "new_rva": 18367736,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3c6adc320015756"
+ },
+ {
+  "text": "c3c348895c240848",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 18416094,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 25
+   }
+  ],
+  "new_rva": 18416094,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3c348895c240848"
+ },
+ {
+  "text": "c3b001ebde415657",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 18420296,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 26
+   }
+  ],
+  "new_rva": 18420296,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3b001ebde415657"
+ },
+ {
+  "text": "c30040000074fe33",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 18956727,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 27
+   }
+  ],
+  "new_rva": 18956727,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c30040000074fe33"
+ },
+ {
+  "text": "c383adc301488983",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 19751300,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 28
+   }
+  ],
+  "new_rva": 19751300,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c383adc301488983"
+ },
+ {
+  "text": "c3807c24650074fe",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 19784053,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 29
+   }
+  ],
+  "new_rva": 19784053,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3807c24650074fe"
+ },
+ {
+  "text": "c34883ec38b90100",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 19792246,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 30
+   }
+  ],
+  "new_rva": 19792246,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c34883ec38b90100"
+ },
+ {
+  "text": "c348895424205757",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 19808646,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 31
+   }
+  ],
+  "new_rva": 19808646,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c348895424205757"
+ },
+ {
+  "text": "c341adc357488bce",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 19812388,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 32
+   }
+  ],
+  "new_rva": 19812388,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c341adc357488bce"
+ },
+ {
+  "text": "c3488b7424485757",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 19821110,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 33
+   }
+  ],
+  "new_rva": 19821110,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3488b7424485757"
+ },
+ {
+  "text": "c3899178040000c3",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 19825186,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 34
+   }
+  ],
+  "new_rva": 19825186,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3899178040000c3"
+ },
+ {
+  "text": "c3b8ffffffff57e9",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 23287673,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 35
+   }
+  ],
+  "new_rva": 23287673,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3b8ffffffff57e9"
+ },
+ {
+  "text": "c3adc34883ec20e9",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 23295785,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 36
+   }
+  ],
+  "new_rva": 23295785,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3adc34883ec20e9"
+ },
+ {
+  "text": "c30f57c00f2fc176",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 23688223,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 37
+   }
+  ],
+  "new_rva": 23688223,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c30f57c00f2fc176"
+ },
+ {
+  "text": "c30f1f00d97e6901",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 23700988,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 38
+   }
+  ],
+  "new_rva": 23700988,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c30f1f00d97e6901"
+ },
+ {
+  "text": "c348894424285748",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 23723778,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 39
+   }
+  ],
+  "new_rva": 23723778,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c348894424285748"
+ },
+ {
+  "text": "c333adc38bcf33f6",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 23740968,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 40
+   }
+  ],
+  "new_rva": 23740968,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c333adc38bcf33f6"
+ },
+ {
+  "text": "c348adc324204889",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 23751658,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 41
+   }
+  ],
+  "new_rva": 23751658,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c348adc324204889"
+ },
+ {
+  "text": "c33bc80f8561ffff",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 23761356,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 42
+   }
+  ],
+  "new_rva": 23761356,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c33bc80f8561ffff"
+ },
+ {
+  "text": "c30f1f00b4a26a01",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 23766560,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 43
+   }
+  ],
+  "new_rva": 23766560,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c30f1f00b4a26a01"
+ },
+ {
+  "text": "c3adc38df0000000",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 23770503,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 44
+   }
+  ],
+  "new_rva": 23770503,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3adc38df0000000"
+ },
+ {
+  "text": "c3adc3836f080148",
+  "bytes": 8,
+  "module": "game",
+  "old_rva": 23781539,
+  "reversed": false,
+  "uses": [
+   {
+    "file": "src/code_warmup_sites.lua",
+    "line": 45
+   }
+  ],
+  "new_rva": 23781539,
+  "rva_evidence": "verify",
+  "status": "same",
+  "notes": [],
+  "new_text": "c3adc3836f080148"
+ }
+]

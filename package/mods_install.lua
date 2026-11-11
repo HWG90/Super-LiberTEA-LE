@@ -6,9 +6,10 @@ do -- Super LiberTEA - LE @VERSION@: LLL's folder mods travel in this boot patch
  -- Backups/<id>-shim-<time> as it is, and the mod installed. A file is written through a .tmp file and read
  -- back; manifest.json is written last. SuperLiberTEA/<id>.txt records what this package wrote (size and
  -- Adler-32 per file), so a later release can tell its own files from yours: a file an earlier release wrote
- -- and this one no longer ships is removed while it is unchanged. The two DBF providers cannot run together: the
- -- variant of this patch installs one and moves the other to Backups/<id>-superlibertea-<time> when this package
- -- wrote its manifest; one installed another way is left alone and reported.
+ -- and this one no longer ships is removed while it is unchanged. Two DBF providers cannot run together: this
+ -- patch installs one and moves a DBF it does not ship (1.0.4's Diver's Best Friend R46 LE) to
+ -- Backups/<id>-superlibertea-<time> when this package wrote its manifest; one installed another way is left
+ -- alone and reported.
  -- Outcome: LLL/Helldivers2/Logs/SuperLiberTEA-files.log. A failure is reported and never stops the boot.
  if rawget(_G,'jit')==nil then
   local home=os.getenv('LOCALAPPDATA')
@@ -111,9 +112,9 @@ do -- Super LiberTEA - LE @VERSION@: LLL's folder mods travel in this boot patch
    local to='Backups/'..id..'-superlibertea-'..os.date('%Y%m%d-%H%M%S')
    local moved=os.rename(base..dir,base..to)
    if not moved then mkdir('Backups') moved=os.rename(base..dir,base..to) end
-   if not moved then problems[#problems+1]=id..': cannot move the other DBF choice to '..to return end
+   if not moved then problems[#problems+1]=id..': cannot move the DBF this release does not ship to '..to return end
    os.remove(base..receipt)
-   aside[#aside+1]=id..' (the other DBF choice, now '..to..')'
+   aside[#aside+1]=id..' (a DBF this release does not ship, now '..to..')'
   end
   if base then
    local ok,why=pcall(function()

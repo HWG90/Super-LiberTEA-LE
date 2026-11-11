@@ -68,7 +68,7 @@ local function native_backend()
     local pe=u32(header,60)
     assert(pe>=64 and pe<4096,'Invalid PE offset')
     header=assert(read(base+pe,32))
-    assert(header:sub(1,4)=='PE\0\0' and u32(header,8)==1793123839,'Unsupported game build')
+    assert(header:sub(1,4)=='PE\0\0' and u32(header,8)==1794319041,'Unsupported game build')
     -- Signatures include the native constructor/update layout witnesses as
     -- well as every called entry point. No executable bytes are changed.
     -- The protection runtime decrypts game code pages on first execution, so
@@ -132,9 +132,9 @@ local function native_backend()
         return call
     end
     local specs={
-        position={offset=4,rva=0x12df3b0}, size={offset=12,rva=0x12dee70},
-        scale={offset=20,rva=0x12dfbe0}, anchor={offset=44,rva=0x12e6e70},
-        pivot={offset=60,rva=0x12e6de0},
+        position={offset=4,rva=0x12df510}, size={offset=12,rva=0x12defd0},
+        scale={offset=20,rva=0x12dfd40}, anchor={offset=44,rva=0x12e6fd0},
+        pivot={offset=60,rva=0x12e6f40},
         animation_a={offset=0x3738}, animation_b={offset=0x3740},
     }
     for _,spec in pairs(specs) do
@@ -201,7 +201,7 @@ local function native_backend()
         return true
     end
     -- Guarded widget_opacity stores its scalar at +0x44 (signature above).
-    local opacity_call=bind('void (*)(uintptr_t, float)',0x12e07e0)
+    local opacity_call=bind('void (*)(uintptr_t, float)',0x12e0940)
     local opacity_value=ffi.new('float[1]')
     function backend.opacity_targets(card)
         -- These native containers own only the name, status and arrow strip.
@@ -234,7 +234,7 @@ local function native_backend()
         opacity_call(address,value)
     end
     local colour_value=ffi.new('float[3]')
-    local colour_call=bind('void (*)(uintptr_t, const float *)',0x12e03a0)
+    local colour_call=bind('void (*)(uintptr_t, const float *)',0x12e0500)
     -- The widget setters (position/size/scale/anchor/pivot, opacity, colour).
     function backend.widgets_ready()
         for _,spec in pairs(specs)do if spec.call and not backend.callable(spec.call)then return false end end
@@ -478,7 +478,7 @@ local function native_backend()
         end
         if address then
             if backend.valid(identity) and pointer(address+0xf0)==parent then
-                release_ui=release_ui or bind('void (*)(uintptr_t)',0x12e5a80)
+                release_ui=release_ui or bind('void (*)(uintptr_t)',0x12e5be0)
                 release_ui(address)
             end
             if linked(address) then return false,'Native UI root did not detach; restart required' end
@@ -487,13 +487,13 @@ local function native_backend()
     end
     backend.read=read; backend.pointer=pointer; backend.u32=u32; backend.base=base
     backend.read_u32=read_u32; backend.read_u64=read_u64; backend.read_u8=read_u8
-    local input_handler=bind('void (*)(uintptr_t)',0xaabb30)
+    local input_handler=bind('void (*)(uintptr_t)',0xaabb60)
     -- Parse anonymous function types once: repeated ffi.cast strings exhaust LuaJIT's type table.
-    local open_input=bind('uint8_t (*)(uintptr_t)',0xaaa2b0)
-    local close_input=bind('void (*)(uintptr_t)',0xaab5b0)
-    local ui_sound=bind('void (*)(uintptr_t, uint32_t)',0x11bbaf0)
-    local scramble_effect=bind('uintptr_t (*)(uintptr_t, uint32_t *, uint32_t, uint32_t, uintptr_t, uintptr_t)',0xa23710)
-    local request_slot=bind('void (*)(uintptr_t, uint32_t)',0xaaf960)
+    local open_input=bind('uint8_t (*)(uintptr_t)',0xaaa2e0)
+    local close_input=bind('void (*)(uintptr_t)',0xaab5e0)
+    local ui_sound=bind('void (*)(uintptr_t, uint32_t)',0x11bbc50)
+    local scramble_effect=bind('uintptr_t (*)(uintptr_t, uint32_t *, uint32_t, uint32_t, uintptr_t, uintptr_t)',0xa23740)
+    local request_slot=bind('void (*)(uintptr_t, uint32_t)',0xaaf990)
     local byte=ffi.new('uint8_t[1]')
     -- verified: the caller checked its own witnesses for this address (terminal).
     function backend.pulse_byte(address,value,verified)

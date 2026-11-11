@@ -17,7 +17,7 @@ enum Error:uint32_t {OK=0,INVALID_CONFIG=1,BUSY=2,READ_FAILED=3,IMAGE_MISMATCH=4
     SLOT_NOT_WRITABLE=10,CAS_MISMATCH=11,CAS_FAULT=12,CLEANUP_PENDING=13,
     EXPIRED=14,TOKEN_MISMATCH=15};
 constexpr uint32_t START=0x6bd9c5e3,END=0x8bcd9161;
-constexpr uint64_t API_RVA=0x28703e0,EVENT_RVA=0x1f7700;
+constexpr uint64_t API_RVA=0x28703e0,EVENT_RVA=0x1f77c0;
 static SRWLOCK control_lock=SRWLOCK_INIT,policy_lock=SRWLOCK_INIT;
 static std::atomic<Event> original{nullptr};
 static std::atomic<uint32_t> armed{0},installed{0},last_error{0};
@@ -106,13 +106,13 @@ static void event_hook(uint32_t unit,uint32_t hash);
 static uint64_t callback(){return reinterpret_cast<uint64_t>(&event_hook);}
 static bool pin(const void* at){HMODULE m=nullptr;return GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_PIN,reinterpret_cast<LPCWSTR>(at),&m)!=0;}
 static bool code(const NADSHF_Config& c) {
-    if(!image(c.game,0x6ae0e5ff,0x3382000)||!image(c.exe,0x6ae0964a,0x29fe000))return reject(IMAGE_MISMATCH)!=0;
-    if(!bytes(c.exe+EVENT_RVA,"48895c2408574883ec208bda8bf9e88d8feaff448bc38bd7488b4818488b5c24304883c4205fe99547f3ff")
-        ||!bytes(c.exe+0x12bf35,"b801000000f00fc186380017008bc0486bc858c784318800010003000000899c313800010089ac313c000100")
+    if(!image(c.game,0x6af322c1,0x3382000)||!image(c.exe,0x6af2d5e6,0x29fe000))return reject(IMAGE_MISMATCH)!=0;
+    if(!bytes(c.exe+EVENT_RVA,"48895c2408574883ec208bda8bf9e8fd8eeaff448bc38bd7488b4818488b5c24304883c4205fe90547f3ff")
+        ||!bytes(c.exe+0x12bf65,"b801000000f00fc186380017008bc0486bc858c784318800010003000000899c313800010089ac313c000100")
         ||!bytes(c.game+0x83c37f,"4e85a433807854000f84a6000000488b0534514a02bae3c5d96b8bcf4c8b401841ff9070030000")
         ||!bytes(c.game+0x83c782,"4a8b843380785400480fbae0260f83ac0000004380bc37d16a5400000f85d8000000480fbae0120f82cd000000bae3c5d96be9af000000")
         ||!bytes(c.game+0x83c842,"430f108437f86a5400440f2ff8722bf3410f58c4410f2fc77620480fbae0127219ba6191cd8b488b05594c4a028bcf4c8b401841ff9070030000")
-        ||!bytes(c.game+0xa6be81,"48b900000400400000008b50488bc341899504e95300486bd078488b8432807854004823c148b90000000040000000483bc1751b488b050c562702bae3c5d96b418b4f0c4c8b401841ff9070030000"))return reject(CODE_MISMATCH)!=0;
+        ||!bytes(c.game+0xa6beb1,"48b900000400400000008b50488bc341899504e95300486bd078488b8432807854004823c148b90000000040000000483bc1751b488b05dc552702bae3c5d96b418b4f0c4c8b401841ff9070030000"))return reject(CODE_MISMATCH)!=0;
     return true;
 }
 static bool api(const NADSHF_Config& c,uint64_t& address) {
@@ -213,7 +213,7 @@ static bool effective(Policy& p,uint64_t now) {
         &&tick()<p.deadline&&armed.load(std::memory_order_acquire);
 }
 static bool candidate(uint64_t caller,uint32_t hash,const NADSHF_Config& c) {
-    if(hash==START)return caller==c.game+0x83c3a6||caller==c.game+0x83c87c||caller==c.game+0xa6bed0;
+    if(hash==START)return caller==c.game+0x83c3a6||caller==c.game+0x83c87c||caller==c.game+0xa6bf00;
     return hash==END&&caller==c.game+0x83c87c;
 }
 struct Flight {Flight(){in_flight.fetch_add(1,std::memory_order_acq_rel);}~Flight(){in_flight.fetch_sub(1,std::memory_order_acq_rel);}};

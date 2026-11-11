@@ -1,17 +1,17 @@
 {
  "name": "Super LiberTEA - LE (Linux Edition)",
- "version": "1.0.4",
- "game_build": "26251122",
+ "version": "1.0.5",
+ "game_build": "26568081",
  "guid": "ead4c7da-b11f-5bd3-ad93-9fadca551cda",
  "branch": "main",
- "created": "2026-11-09 03:05",
- "zip": "Super-LiberTEA-LE-1.0.4-26251122.zip",
- "zip_sha256": "de5be5bfef1d7ae95d531f8d19609de62193a8321ad2e3dc9db6952b60372be9",
- "zip_bytes": 20555595,
+ "created": "2026-11-11 16:45",
+ "zip": "Super-LiberTEA-LE-1.0.5-26568081.zip",
+ "zip_sha256": "138d690cd4cfd509a32047be6b7eaad6d4035ba15b09032eaf6f6257c79bc1e0",
+ "zip_bytes": 14840785,
  "variants": {
   "modular": {
    "option": "with DBF Modular",
-   "folder": "LLL/DBF Modular",
+   "folder": "LLL",
    "mods": [
     "dbf_mcm",
     "dbf_modular",
@@ -23,64 +23,30 @@
    "sets_aside": [
     "divers_best_friend"
    ],
-   "patch_sha256": "b19f15621a9aa6eae1b5b1e397c552c1cadb83e279a51ec53104e61e078c0b19",
-   "patch_bytes": 14989264,
-   "chunk_bytes": 14989062,
+   "patch_sha256": "5f0cca780f007218deb13991a92084597485ecea3b0c22327e3104a9e6d1bc83",
+   "patch_bytes": 13908096,
+   "chunk_bytes": 13907888,
    "boot": {
-    "lll_release": "R38-26251122-luajit.2",
-    "lll_install_block_sha256": "9837435bae69f237c96b005d62b2f152ab6f332b8fd06408991afc63b6bb78d8",
-    "mods_block_sha256": "0c7523d135c89b3df9262aa533c7e4ad7f015956c09690f10650d5d413dd674f",
+    "lll_release": "R38-26568081-luajit.1",
+    "lll_install_block_sha256": "f2dc27f1474dbbc0ab9c9f83aa2df79b0a55c73c31da15a9f9678beea24fdbca",
+    "mods_block_sha256": "be630ac1cb2ce04115f7bf9b9af88ed00f1a01be3af9f9feef1facc672a22c45",
     "prologue_sha256": "3aad53105c0c383524bc898956de5e2eb41213d178388e6f3acf2ef9eecae376",
-    "lll_source_sha256": "57fa4dc3ef1b48df37c86a39b90e1bd3fffd186c34492caa4f395eed86a8837b",
+    "lll_source_sha256": "6be284a830612486be9c4ac5680cc7c7af2858b0db77724159cee707ca45e6ea",
     "lll_files": {
-     "Native/hd2_cffi_915da533d47a3f9c.dll": "915da533d47a3f9c2b09e3715032ce821d9ebbc69e1c9d8d02b01bc50238315c",
-     "Native/hd2_luajit_runtime_9a596e2f766ff92c.dll": "9a596e2f766ff92ca3a7234f4fc7a9add5e2b0e5d1bb1c02acb65b2b1c68ef64",
-     "Native/hd2_nativeinfo_8d03e036881e4ddc.dll": "8d03e036881e4ddcee663c25b75dcd0caf12789f82a97d7c294fabb88ca62b9b",
-     "Service/lll_steam_launcher_e8a5c0fffbc8d802.exe": "e8a5c0fffbc8d802a3936e9e5ceecfcc8ad9d55f26f863cc9b6739cb8d441ef9",
-     "Service/lll_steam_service_580905da64a3642d.exe": "580905da64a3642d1bdef358c7de38f7e10bc34163594c5d0e5e885f94e1cdb1"
+     "Native/hd2_cffi_35ee9bb9bedfeaf9.dll": "35ee9bb9bedfeaf92bfd52ccdd855a2ae5713096c6aa39a6d3bf71ea6d3e3917",
+     "Native/hd2_luajit_runtime_d6c1aec33706b30e.dll": "d6c1aec33706b30ead9d335f0ae759219141af1322770a383e09c6d32b28b309",
+     "Native/hd2_nativeinfo_f375fc4798c33ad5.dll": "f375fc4798c33ad560a5ef0dd7bb2c51c6299e27518377394184625a489b2fef",
+     "Service/lll_steam_launcher_aa4e9d2ad66fc88a.exe": "aa4e9d2ad66fc88a75417f889030e1b2edd3339099745accffd17e8bbbd40fe8",
+     "Service/lll_steam_service_a0263f613a8cc031.exe": "a0263f613a8cc03189a4818908342fda1cecd48819ba924c1a272730043a3ce3"
     },
-    "marker": "hd2_luajit_runtime_9a596e2f766ff92c.dll",
-    "lll_luajit2_patch_sha256": "1dc502e733fc9dc41e0e46fe28dcd49fc94d76e72c64fc42274e1c8a92fdd672"
-   }
-  },
-  "r46": {
-   "option": "with Diver's Best Friend R46 LE",
-   "folder": "LLL/DBF R46 LE",
-   "mods": [
-    "dbf_mcm",
-    "divers_best_friend",
-    "goose_bridge_combat",
-    "dbf_freecam",
-    "goose_temporary_unlocks",
-    "goose_nova_weapon_fov"
-   ],
-   "sets_aside": [
-    "dbf_modular"
-   ],
-   "patch_sha256": "50970af5e4881d2086a0684587257a719f70ffed009b344bfb708352f2fb926c",
-   "patch_bytes": 14494400,
-   "chunk_bytes": 14494186,
-   "boot": {
-    "lll_release": "R38-26251122-luajit.2",
-    "lll_install_block_sha256": "9837435bae69f237c96b005d62b2f152ab6f332b8fd06408991afc63b6bb78d8",
-    "mods_block_sha256": "d2b26ef38d620bf9d94f61b586f2985664294bea84a76c9c675a4c336d2455b3",
-    "prologue_sha256": "3aad53105c0c383524bc898956de5e2eb41213d178388e6f3acf2ef9eecae376",
-    "lll_source_sha256": "57fa4dc3ef1b48df37c86a39b90e1bd3fffd186c34492caa4f395eed86a8837b",
-    "lll_files": {
-     "Native/hd2_cffi_915da533d47a3f9c.dll": "915da533d47a3f9c2b09e3715032ce821d9ebbc69e1c9d8d02b01bc50238315c",
-     "Native/hd2_luajit_runtime_9a596e2f766ff92c.dll": "9a596e2f766ff92ca3a7234f4fc7a9add5e2b0e5d1bb1c02acb65b2b1c68ef64",
-     "Native/hd2_nativeinfo_8d03e036881e4ddc.dll": "8d03e036881e4ddcee663c25b75dcd0caf12789f82a97d7c294fabb88ca62b9b",
-     "Service/lll_steam_launcher_e8a5c0fffbc8d802.exe": "e8a5c0fffbc8d802a3936e9e5ceecfcc8ad9d55f26f863cc9b6739cb8d441ef9",
-     "Service/lll_steam_service_580905da64a3642d.exe": "580905da64a3642d1bdef358c7de38f7e10bc34163594c5d0e5e885f94e1cdb1"
-    },
-    "marker": "hd2_luajit_runtime_9a596e2f766ff92c.dll",
-    "lll_luajit2_patch_sha256": "1dc502e733fc9dc41e0e46fe28dcd49fc94d76e72c64fc42274e1c8a92fdd672"
+    "marker": "hd2_luajit_runtime_d6c1aec33706b30e.dll",
+    "lll_dropin_patch_sha256": "425edeb2d65a904c75f1a8e4daa969dd306a97df00f220cfca8a3bcb0eff68b9"
    }
   }
  },
  "options": [
   "War Journalist assets 1.2.0",
-  "DiverKit 8.14.31 r10",
+  "DiverKit 8.14.31 r11",
   "Guard Dogs · Smarter Guard Dogs and Sentries",
   "Guard Dogs · Guard Dogs",
   "Guard Dogs · Sentries",
@@ -181,139 +147,110 @@
    "options/StratagemHeroExpanded/9ba626afa44a3aa3.patch_0"
   ]
  },
- "ass_weapon_readout_removed": [
-  "src/weapon_status.lua",
-  "src/weapon_status_memory.lua",
-  "src/weapon_status_layouts.lua",
-  "src/weapon_status_ammo.lua",
-  "src/weapon_status_reader.lua",
-  "src/weapon_status_strip.lua"
- ],
+ "not_ported": {
+  "divers_best_friend": "Diver's Best Friend (ASS) R46 LE, the second DBF choice of 1.0.4 (R46-luajit.2-26251122-le.2)",
+  "hud-plus": "HudPlusPlus Modular r1 (LuaJIT 26251122), a separate download of 1.0.3 and 1.0.4"
+ },
  "mods": {
   "dbf_mcm": {
-   "version": "0.1.74-luajit.7",
+   "version": "0.1.74-luajit.8",
    "files": 27,
    "bytes": 296613,
-   "manifest_sha256": "e3662cb159c342646b5fc8eb82e923a0525b85b29b39c1e98cc65e3df6a7f7fb"
-  },
-  "divers_best_friend": {
-   "version": "R46-luajit.2-26251122-le.2",
-   "files": 35,
-   "bytes": 323676,
-   "manifest_sha256": "639e4275b9aa7375f3f715a4a5bead4c4c6d3f5e9d1afaef868c86ca78616bc5"
+   "manifest_sha256": "7529ca55e7139e131cb9af1635fa26e0d6aa72f24f15b9391738f61c4be9c139"
   },
   "dbf_modular": {
-   "version": "0.1.0-dev.23-26251122",
+   "version": "0.1.0-dev.25-26568081",
    "files": 68,
-   "bytes": 832575,
-   "manifest_sha256": "b530c2ac10f8ca513fd9ae1e4c4d5cf4465892b73cabeeab36ae4fd931e171c8"
+   "bytes": 832687,
+   "manifest_sha256": "fc9b66da26baca16df761e039b5bd9da18bb0caa6a66fcf03e21bad1308d104f"
   },
   "goose_bridge_combat": {
-   "version": "0.1.17-experimental-26251122.12",
+   "version": "0.1.17-experimental-26568081.1",
    "files": 54,
-   "bytes": 1323421,
-   "manifest_sha256": "1f25ff6ce5df9be11b4af65d7a97a1faebc6f0c1237339059098a4f1dcdd6810"
+   "bytes": 1323483,
+   "manifest_sha256": "70bbf6772be9cacddc4fc4564250c6a4e0f127cacfa7f38f12c6ff694d26e016"
   },
   "dbf_freecam": {
    "version": "1.4.0-proton",
    "files": 88,
    "bytes": 2612347,
-   "manifest_sha256": "3c8f7eb2bcb5a0fbd248061ce75fa1b728d38642a12cbb8202ffc304e2fd71fb"
+   "manifest_sha256": "641cbfc9a3983599434919711a613febd1f343c93fd401036c1a034d0e2e861a"
   },
   "goose_temporary_unlocks": {
-   "version": "0.5.38-cffi-26251122-le.1",
-   "files": 100,
-   "bytes": 5027889,
-   "manifest_sha256": "0d9c2b1dcc1d187613656885c15fa99158ecced1ae837997c43824727feeab6f"
+   "version": "0.5.42-shear.1-cffi-26568081-le.1",
+   "files": 99,
+   "bytes": 3922803,
+   "manifest_sha256": "4b986270730056bb8999d5c55768bfc26feb80fa6e88eca9bf45d50bc2aa5f21"
   },
   "goose_nova_weapon_fov": {
-   "version": "0.1.0-26251122",
+   "version": "0.1.0-26568081",
    "files": 5,
    "bytes": 13324,
-   "manifest_sha256": "88f1a8f9942b24ff82e5e468cad7cc3259efcd4634cad44f4bef7eb4f0cc82cc"
+   "manifest_sha256": "6eedd5712e0e9f5bc4fc87b6556e34e3432ff60b38f3dafbb3f961fe3998078e"
   }
  },
- "zip_contents": 384,
+ "zip_contents": 381,
  "separate": {
-  "Super-LiberTEA-LE-1.0.4-26251122-Live-Lua-Loader-R38-LuaJIT.zip": {
-   "sha256": "269cd5a18c5dca969066a747ae434b01c1a00c65d0d1d9edf2a21457102cb11e",
-   "bytes": 3463353,
+  "Super-LiberTEA-LE-1.0.5-26568081-Live-Lua-Loader-R38-LuaJIT.zip": {
+   "sha256": "8fe16239516a8d326d28f539e89fdf409eb6301cf582da773cee67832a92a00b",
+   "bytes": 1998807,
    "files": 18
   },
-  "Super-LiberTEA-LE-1.0.4-26251122-War-Journalist-Assets.zip": {
-   "sha256": "bbc3db251eca9ba668bd9c37546b0858aadad4b999825585ad7df0b7691361f4",
-   "bytes": 349307,
+  "Super-LiberTEA-LE-1.0.5-26568081-War-Journalist-Assets.zip": {
+   "sha256": "d49c86a8928170f99f903308bcba6d9f62766e672fcf8bdb6ed3c532da4db066",
+   "bytes": 349308,
    "files": 10
   },
-  "Super-LiberTEA-LE-1.0.4-26251122-DiverKit.zip": {
-   "sha256": "01ebf7131c2c24cab654d16182d0f7e649c3c9bc398348debf8e0da77c03acd4",
-   "bytes": 516986,
+  "Super-LiberTEA-LE-1.0.5-26568081-DiverKit.zip": {
+   "sha256": "b6e80f56f206863f56b84432d37066ec046c8947832cc5521d1e14cb77c7a83a",
+   "bytes": 516831,
    "files": 9
   },
-  "Super-LiberTEA-LE-1.0.4-26251122-Smarter-Guard-Dogs.zip": {
-   "sha256": "51b32e805582a30e795af0120be52c065c39034601cf9806d57386aad358dadf",
-   "bytes": 1490684,
+  "Super-LiberTEA-LE-1.0.5-26568081-Smarter-Guard-Dogs.zip": {
+   "sha256": "2ac8478d3c86ac2d4bf136e720cc40a16b140bd266bdd00fd6d7c379803c45bf",
+   "bytes": 1491164,
    "files": 143
   },
-  "Super-LiberTEA-LE-1.0.4-26251122-Vanilla-Plus-Megapack.zip": {
-   "sha256": "18404169998284a142473924582e892e9b337cd9a38d9de6dfe363a4860258e7",
-   "bytes": 5906303,
+  "Super-LiberTEA-LE-1.0.5-26568081-Vanilla-Plus-Megapack.zip": {
+   "sha256": "d584e1358d346cab3126b567ccc5068d4d4e2621c6235a63b8f580f3ea039777",
+   "bytes": 5906542,
    "files": 160
   },
-  "Super-LiberTEA-LE-1.0.4-26251122-Transmog.zip": {
-   "sha256": "244bba5b4df69516784f186d249c12bb29ebf1285178fd7e42b512c03ce3b471",
-   "bytes": 1647402,
+  "Super-LiberTEA-LE-1.0.5-26568081-Transmog.zip": {
+   "sha256": "715362df2c20a78cd526d4813ab5a00f1d28ca579a3f27f9e9c8c5b33f5a5ff5",
+   "bytes": 1648957,
    "files": 52
   },
-  "Super-LiberTEA-LE-1.0.4-26251122-HudPlusPlus.zip": {
-   "sha256": "e19933255908890dc12f33bbf42d556609ce89f7aab3d73d3d3f7a78188220eb",
-   "bytes": 785620,
-   "files": 7
-  },
-  "Super-LiberTEA-LE-1.0.4-26251122-DBF-MCM.zip": {
-   "sha256": "273459aeb923900a87befd4d76e9b827be5aee794c680793c59b7eae450b1ee6",
-   "bytes": 86461,
+  "Super-LiberTEA-LE-1.0.5-26568081-DBF-MCM.zip": {
+   "sha256": "d52100fb29e358db9ad45d227291ba4aa7dfa25bdc8352456f1921379462ff3c",
+   "bytes": 86463,
    "files": 28
   },
-  "Super-LiberTEA-LE-1.0.4-26251122-Divers-Best-Friend.zip": {
-   "sha256": "9f2698b2868f07e305086ec28730ae162671cd37036fdbd6f9869854ac3a7eb8",
-   "bytes": 106959,
-   "files": 36
-  },
-  "Super-LiberTEA-LE-1.0.4-26251122-DBF-Modular.zip": {
-   "sha256": "f82fe429aa66c23ab5d14176a00d1a08044630e14b471d791243f4b85777fcb8",
-   "bytes": 230545,
+  "Super-LiberTEA-LE-1.0.5-26568081-DBF-Modular.zip": {
+   "sha256": "bea6397b8493c174bf52bda4b88556c53478a9be7150c1b635a616ad9f9a7b75",
+   "bytes": 230583,
    "files": 69
   },
-  "Super-LiberTEA-LE-1.0.4-26251122-Bridge-Combat.zip": {
-   "sha256": "4dc2e9f983438213791b4f5c16c768834b710bf9b291e1f65e63a1bb9485ece7",
-   "bytes": 466210,
+  "Super-LiberTEA-LE-1.0.5-26568081-Bridge-Combat.zip": {
+   "sha256": "d01a4ccbb5c28222bf61bb2e92a01a3cbfb48208d4708b10f74a8453bb7cd943",
+   "bytes": 466300,
    "files": 55
   },
-  "Super-LiberTEA-LE-1.0.4-26251122-War-Journalist-Proton.zip": {
-   "sha256": "477999245fc1c6a2ae73ffae775960a5b20be6d6595b20c3f6fdfe175390559d",
-   "bytes": 821686,
+  "Super-LiberTEA-LE-1.0.5-26568081-War-Journalist-Proton.zip": {
+   "sha256": "cb66745b653bddf964e8f2867bccf4f6c7226002d78ff0717a4580e9cd5acf97",
+   "bytes": 821692,
    "files": 89
   },
-  "Super-LiberTEA-LE-1.0.4-26251122-Gadget-Kit-LE.zip": {
-   "sha256": "5814f48bd7b7517f8b9e53ab97a550a1f3de6a84b66fb234b3e5e2b8682b91de",
-   "bytes": 2016794,
-   "files": 101
+  "Super-LiberTEA-LE-1.0.5-26568081-Gadget-Kit-LE.zip": {
+   "sha256": "f350a1fd3cc24866267f0d9b644e5649ac8d359a168228e9623594ae95c4b004",
+   "bytes": 1541570,
+   "files": 100
   },
-  "Super-LiberTEA-LE-1.0.4-26251122-Nova-Weapon-FOV.zip": {
-   "sha256": "a41b73917a86411e1343b36eecbceb55e669a38743a3bfced8d1c747b304a3e4",
-   "bytes": 6555,
+  "Super-LiberTEA-LE-1.0.5-26568081-Nova-Weapon-FOV.zip": {
+   "sha256": "0db223ed93334a4e5fb45f5b5c3c369463add57944ecb058255da962852d3998",
+   "bytes": 6557,
    "files": 6
   }
  },
- "live_acceptance": "pending",
- "offline_checks": {
-  "build_reproducible": "two builds, the same 15 zip sha256s",
-  "wine_install_checks": "20 of 20 pass (test_install.py): both DBF variants, a DBF installed beside the choice, switching both ways",
-  "gadget_kit_le": "cut from the installed Gadget Kit 0.5.38 (Codex's work, snapshot 2026-11-09 03:05 at the user's word); LE MCM test passes",
-  "undeclared_modules": "none in any folder mod"
- },
- "live_runs": [
-  "none of 1.0.4 as a package. In the user's own sessions: DBF-MCM luajit.7, WJ 1.4.0-proton, DBF Modular dev.23, Nova Weapon FOV, DiverKit r10 / Transmog fix and the Know Your Constellation layout were installed and loaded (11-05 to 11-09); Gadget Kit 0.5.38 is Codex's latest (FPS acceptance pending); the DBF Arsenal choice and Gadget Kit LE 0.5.38 have not run in game"
- ]
+ "live_acceptance": "pending"
 }

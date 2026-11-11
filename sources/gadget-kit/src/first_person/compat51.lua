@@ -4,7 +4,7 @@ local native_type,native_number=type,tonumber
 local function userdata_address(value)
  local native=package.loaded.hd2_nativeinfo
  if not native or native_type(native.userdata_address)~='function'then
-  local path=assert(mod and mod.dir,'Engine userdata bridge directory unavailable')..'/port51/hd2_nativeinfo_8d03e036881e4ddc.dll'
+  local path=assert(mod and mod.dir,'Engine userdata bridge directory unavailable')..'/port51/hd2_nativeinfo_f375fc4798c33ad5.dll'
   local open,why=package.loadlib(path,'luaopen_hd2_nativeinfo');assert(open,why)
   native=assert(open(),'Engine userdata bridge refused current host')
   assert(native_type(native.userdata_address)=='function','Engine userdata bridge API differs')
@@ -155,7 +155,7 @@ local function function_info(fn)
  end
  local native=package.loaded.hd2_nativeinfo
  if not native and tostring(fn)=='[function]' then
-  local path=assert(mod and mod.dir,'Native binding module directory unavailable')..'/port51/hd2_nativeinfo_8d03e036881e4ddc.dll'
+  local path=assert(mod and mod.dir,'Native binding module directory unavailable')..'/port51/hd2_nativeinfo_f375fc4798c33ad5.dll'
   local open,why=package.loadlib(path,'luaopen_hd2_nativeinfo')
   assert(open,why);native=assert(open(),'Native binding helper refused current host')
   assert(native_type(native.function_address)=='function','Native binding helper API differs')

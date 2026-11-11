@@ -7,13 +7,13 @@ local TYPE='931e336d7646cc26'
 local ZERO=string.rep('\0',8)
 local END,EMPTY=0x7FFFFFFF,0xFFFFFFFE
 local routes={
-    query={0x6333f0,'4053574883ec384c8bd9498bf84881c1e80200004c8bd2e8',
+    query={0x633490,'4053574883ec384c8bd9498bf84881c1e80200004c8bd2e8',
         'uintptr_t (*)(void *, const uint64_t *, const uint64_t *)'},
-    request={0x6349a0,'48895c241848896c242056415441564881ecb0000000448b',
+    request={0x634a40,'48895c241848896c242056415441564881ecb0000000448b',
         'void (*)(void *, uint64_t, const uint64_t *, const uint64_t *, void *, uint32_t *)'},
-    finalize={0x638490,'4585c00f84090200005541564883ec3848895c24504c8bf2',
+    finalize={0x638540,'4585c00f84090200005541564883ec3848895c24504c8bf2',
         'void (*)(void *, const uint64_t *, uint32_t)'},
-    release={0x635640,'48895424105556415441564157488dac24e0feffff4881ec',
+    release={0x6356e0,'48895424105556415441564157488dac24e0feffff4881ec',
         'void (*)(void *, const uint64_t *, const uint64_t *, void *)'},
 }
 local function hex(s)return(s:gsub('.',function(c)return('%02x'):format(c:byte())end))end
@@ -53,7 +53,7 @@ function M.new(injected)
         function ctx:n(at)return u(self:r(at,4),0)end
         function ctx:identity()
             local A=assert(io.addresses());local game=io.game();local exe,_,stamp=io.module('helldivers2.exe')
-            assert(A.base==game and A.stamp==0x6AE0E5FF and game==s.game and exe==s.exe and stamp==0x6AE0964A,
+            assert(A.base==game and A.stamp==0x6AF322C1 and game==s.game and exe==s.exe and stamp==0x6AF2D5E6,
                 'Lease game or executable changed')
             if retirement then
                 assert(type(io.retired)=='function','Lease positive Unit-retirement validator is unavailable')

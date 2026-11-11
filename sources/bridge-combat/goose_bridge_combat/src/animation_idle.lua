@@ -42,8 +42,8 @@ function M.new(clip_lease_guard, injected)
     local function p(at, optional) local value=pointer(r(at,8),0); assert(optional or value~=0,'Pose pointer is absent'); return value end
     local function u(at) return n(r(at,4),0) end
     local function observe()
-        local A=assert(io.addresses()); local game=io.game(); assert(A.base==game and A.stamp==0x6ae0e5ff,'Unsupported pose game build')
-        local exe,_,stamp=io.module('helldivers2.exe'); assert(exe and stamp==0x6ae0964a,'Unsupported pose executable')
+        local A=assert(io.addresses()); local game=io.game(); assert(A.base==game and A.stamp==0x6af322c1,'Unsupported pose game build')
+        local exe,_,stamp=io.module('helldivers2.exe'); assert(exe and stamp==0x6af2d5e6,'Unsupported pose executable')
         local state=p(game+A.GAME_STATE); assert(u(state+A.STATE_VALUE)==3,'Pose actor left the ship')
         local world,player=p(game+A.WORLD),p(game+A.PLAYER)
         local local_unit=u(player+0x3A8)
@@ -61,7 +61,7 @@ function M.new(clip_lease_guard, injected)
         assert(hex(r(unit+0x358,8):reverse())=='4d1c334d294dfa97','Pose body graph resource differs')
         local animator=p(unit+0x178); local graph=p(animator+0x28); local gh=r(graph,0x30)
         assert(n(gh,4)==31,'Pose graph layer count differs')
-        assert(hex(r(exe+0x565080,#FP/2))==FP,'Pose setter fingerprint differs')
+        assert(hex(r(exe+0x565120,#FP/2))==FP,'Pose setter fingerprint differs')
         local states=p(animator+0x50)
         return {game=game,exe=exe,A=A,state=state,world=world,player=player,local_unit=local_unit,
             avatar=avatar,pm=pm,row=row,descriptor=descriptor,desc=desc,
@@ -228,7 +228,7 @@ function M.new(clip_lease_guard, injected)
     local function invoke(s,array,before)
         assert(#s.clips==0 or clip_lease_guard(s,s.clips)==true,'Pose exact clip lease guard refused')
         recheck(s,before)
-        local call=assert(io.native(s.exe+0x565080,'void (*)(void *, const int32_t *, uint32_t)',FP,'BRIDGE_EXIT_STATE'))
+        local call=assert(io.native(s.exe+0x565120,'void (*)(void *, const int32_t *, uint32_t)',FP,'BRIDGE_EXIT_STATE'))
         recheck(s,before)
         self.journal.uncertain_call=true
         call(require('ffi').cast('void *',s.animator),array,1)

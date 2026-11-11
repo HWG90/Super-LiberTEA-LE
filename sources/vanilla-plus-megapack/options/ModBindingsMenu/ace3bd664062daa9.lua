@@ -3806,15 +3806,15 @@ end
 translation.tr = translation.T.new(mbm_text.locales.en, mbm_text.locales.bundled,
                                    function(message) note('Text: ' .. message) end)
 
-local GAME_SHA256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'
-local EXE_SHA256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D'
+local GAME_SHA256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'
+local EXE_SHA256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB'
 local INPUT_OWNER_PTR_RVA = 0x2e38250
 local MENU_SYSTEM_PTR_RVA = 0x2e38170
 local UI_STATE_PTR_RVA = 0x2e38160
 -- The menu system pointer's first 32-bit word in a read at the UI state pointer.
 local MENU_WORD = (MENU_SYSTEM_PTR_RVA - UI_STATE_PTR_RVA) / 4
 local ACTION_LABELS_RVA = 0x24bc8a0
-local BUILD_ROWS_RVA = 0x1693b90
+local BUILD_ROWS_RVA = 0x1693cf0
 local ACTION_STATE_OFFSET, ACTION_STATE_STRIDE = 808, 32
 local MODS_TITLE_PTR_RVA = 0x2ce3680
 local MODS_TITLE_ID = 0x781e104c
@@ -3826,7 +3826,7 @@ local MISSION_MODE_PTR_RVA, MISSION_CHECK_FRAMES = 0x2ce1850, 60
 -- The game's routine that consumes an input action until it is released
 -- (Clickable Scrollbars calls it for select): the extended panel's key capture
 -- consumes the page's UI actions with it (src/panel.lua).
-local INPUT_CONSUME_RVA = 0x1190e30
+local INPUT_CONSUME_RVA = 0x1190f90
 -- Native actions of developer-only input groups (Debugmenu 12, CinematicCamera
 -- 10, DebugAvatar 11, Freeflight 9). They are in the game's 235-action list, so
 -- the game evaluates every trigger type for them on any device and saves their
@@ -3893,8 +3893,8 @@ local ROW_LIST_OFFSET = 338344
 local ROW_STRIDE, ROW_START = 24784, 7856
 -- Native tab bar shared by the keyboard and controller binding pages. The
 -- widget has eight tab buttons; the page asks for three at initialisation.
-local SET_TAB_LABELS_RVA = 0x162bee0
-local LIST_RESET_RVA = 0x1695020
+local SET_TAB_LABELS_RVA = 0x162c040
+local LIST_RESET_RVA = 0x1695180
 local TAB_LABELS_RVA = 0x2cc8bb0
 local SELECTED_TAB_OFFSET = 8
 local TAB_BAR_OFFSET = 1248
@@ -4164,7 +4164,7 @@ local NATIVE_CODE = {
                       'tab bar label setter changed', 'void (__fastcall *)(void *, const void *, int)'},
     reset_list = {LIST_RESET_RVA, '\x40\x53\x48\x83\xec\x20\x48\x8b\xd9\x85\xd2\x74\x30\x83\xea\x01',
                   'binding list reset changed', 'void (__fastcall *)(void *, int)'},
-    consume = {INPUT_CONSUME_RVA, '\x40\x53\x48\x83\xec\x20\x4c\x8b\xd1\x4c\x8b\xca\x48\x8b\xca\xe8\x1c\xda\x3f\xff',
+    consume = {INPUT_CONSUME_RVA, '\x40\x53\x48\x83\xec\x20\x4c\x8b\xd1\x4c\x8b\xca\x48\x8b\xca\xe8\xbc\xd8\x3f\xff',
                'input consume routine changed', 'MBM_consume_action'},
 }
 local native_fn = {}

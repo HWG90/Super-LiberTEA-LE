@@ -612,14 +612,14 @@ local OPTIONS_PAGES = {
     [26] = {menu = 208, list = 338344, route = 'bindings'},
 }
 local GRID_SOLVER, SCROLL_SET, POSITION_SET, ANIMATION_STOP =
-    0x1753dc0, 0x16157c0, 0x12df3b0, 0x12d1a50
-local INPUT_CONSUME, INPUT_STATE, UI_SELECT = 0x1190e30, 0x2e38250, 0xA00000000
+    0x1753f20, 0x1615920, 0x12df510, 0x12d1bb0
+local INPUT_CONSUME, INPUT_STATE, UI_SELECT = 0x1190f90, 0x2e38250, 0xA00000000
 module.native_signatures = {
     {GRID_SOLVER, '488bc45355565741544155415641574881ecf800000083b9'},
-    {SCROLL_SET, '0f57d20f2fd1770cf30f1015e40dc300f30f5dd1f30f1081'},
+    {SCROLL_SET, '0f57d20f2fd1770cf30f1015940cc300f30f5dd1f30f1081'},
     {POSITION_SET, '48895c241848896c24204889542410565741574883ec20f3'},
-    {ANIMATION_STOP, '40534883ec40488b05b3351e014833c448894424300fb601'},
-    {INPUT_CONSUME, '40534883ec204c8bd14c8bca488bcae81cda3fff'},
+    {ANIMATION_STOP, '40534883ec40488b0553341e014833c448894424300fb601'},
+    {INPUT_CONSUME, '40534883ec204c8bd14c8bca488bcae8bcd83fff'},
 }
 
 local function native_key(pointer)
@@ -1850,8 +1850,8 @@ local bingus_memory = cs.bingus_memory
 -- ---------------------------------------------------------------- build gate
 
 -- Build 26088801's module hashes: helldivers2.exe and game.dll.
-module.BUILD = {exe_sha256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D',
-                game_sha256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'}
+module.BUILD = {exe_sha256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB',
+                game_sha256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'}
 
 -- Bingus Shared Runtime's read side (bingus_memory.lua, vendored), used only
 -- for the build check.
@@ -1867,7 +1867,7 @@ function module.verify_build(memory)
     end)
     if not ran then return false, tostring(verified) end
     if verified then return true end
-    if why == 'unsupported game build' then return false, 'unsupported game build (needs Steam build 26251122)' end
+    if why == 'unsupported game build' then return false, 'unsupported game build (needs Steam build 26568081)' end
     return false, tostring(why)
 end
 

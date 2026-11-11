@@ -19,15 +19,15 @@ function M.new(options)
         local v=self.view
         if not v or v.can_start~=true or v.photo or v.fixed_pose or v.menu_closed~=true or not v.base then return false end
         if options.can_request then return options.can_request(v)==true end
-        return v.base.scene==3 and v.base.stamp==0x6AE0E5FF and v.base.pm and options.backend:u32(v.base.pm+0x70)==1
+        return v.base.scene==3 and v.base.stamp==0x6AF322C1 and v.base.pm and options.backend:u32(v.base.pm+0x70)==1
     end
     local function attach()
         local io={};for k,v in pairs(source_io)do io[k]=v end
         local function meta()
             local m,why=source_io.meta();assert(type(m)=='table',why or 'FX metadata unavailable')
             local exe,reason,stamp=source_io.module('helldivers2.exe')
-            assert(exe and stamp==0x6AE0964A,reason or 'FX executable changed')
-            assert(m.A and m.A.stamp==0x6AE0E5FF,'FX game build changed')
+            assert(exe and stamp==0x6AF2D5E6,reason or 'FX executable changed')
+            assert(m.A and m.A.stamp==0x6AF322C1,'FX game build changed')
             return {game=m.game,exe=exe,A=m.A}
         end
         io.meta=meta;io.can_request=allowed;local identity=meta()

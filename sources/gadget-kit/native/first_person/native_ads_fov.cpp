@@ -18,7 +18,7 @@ static std::atomic<uint32_t> installed{0},armed{0},reserved{0},last_error{0};
 static std::atomic<uint64_t> seen{0},forwarded{0},replaced{0},immediate_applies{0},binds{0},ads_forwarded{0},return_address{0};
 static uint64_t slot=0,slot_image=0,generation_counter=0,owned_generation=0,retired_generation=0;
 static bool possible=false;
-static constexpr uint32_t SETTER=0x2dcfd0,GETTER=0x2dcfc0,CALL=0x110be7a;
+static constexpr uint32_t SETTER=0x2dd080,GETTER=0x2dd070,CALL=0x110bfda;
 static constexpr float RAD_PER_DEG=0.01745329251994329577f;
 enum Error:uint32_t { OK=0,INVALID_CONFIG=1,BUSY=2,READ_FAILED=3,IMAGE_MISMATCH=4,
     CODE_MISMATCH=5,API_MISMATCH=6,OWNER_MISMATCH=7,UNIT_MISMATCH=8,PIN_FAILED=9,
@@ -72,6 +72,9 @@ static uint32_t fixture_cas_calls=0,fixture_cas_fail_at=0,fixture_foreign_cas_at
 static uint64_t fixture_foreign_value=0;
 static bool fixture_slot_unreadable=false,fixture_slot_readonly=false;
 static HANDLE fixture_before_arm_reached=nullptr,fixture_continue_arm=nullptr;
+static uint64_t fixture_rpm_failure_at=0,fixture_rpm_failures=0,fixture_failure_queries=0;
+static uint32_t fixture_rpm_failure_remaining=0;
+static bool fixture_rpm_restore_readable=true;
 static double fixture_now=0;static uint64_t fixture_clock_reads=0;
 static bool fixture_clock_ok=true;
 #endif
@@ -175,12 +178,68 @@ static float handoff_lens(Policy& p,float target,bool ads) {
     }
     p.lens_last=result;return result;
 }
+// Fault evidence belongs to one explicit owner-data guard. Successful reads
+// take the original RPM path; only an actual failure queries memory mappings.
+// Optional history/code/diagnostic reads outside this scope cannot taint it.
+struct OwnerReadProbe;
+static thread_local OwnerReadProbe* owner_read_probe=nullptr;
+struct OwnerReadProbe {
+    OwnerReadProbe* previous;bool transport=false,unsafe=false;
+    OwnerReadProbe():previous(owner_read_probe){owner_read_probe=this;}
+    ~OwnerReadProbe(){owner_read_probe=previous;}
+    OwnerReadProbe(const OwnerReadProbe&)=delete;
+    OwnerReadProbe& operator=(const OwnerReadProbe&)=delete;
+};
+static bool readable_span(uint64_t at,size_t length) {
+    const uint64_t end=at+length;uint64_t cursor=at;
+    for(unsigned regions=0;cursor<end && regions<4;++regions) {
+#if defined(NADSF_FIXTURE)
+        ++fixture_failure_queries;
+#endif
+        MEMORY_BASIC_INFORMATION region{};
+        if(VirtualQuery(reinterpret_cast<const void*>(cursor),&region,sizeof region)!=sizeof region
+            || region.State!=MEM_COMMIT || (region.Protect&(PAGE_GUARD|PAGE_NOACCESS)))return false;
+        const DWORD protection=region.Protect&0xff;
+        if(protection!=PAGE_READONLY && protection!=PAGE_READWRITE && protection!=PAGE_WRITECOPY
+            && protection!=PAGE_EXECUTE_READ && protection!=PAGE_EXECUTE_READWRITE && protection!=PAGE_EXECUTE_WRITECOPY)return false;
+        const uint64_t base=reinterpret_cast<uint64_t>(region.BaseAddress),next=base+region.RegionSize;
+        if(base>cursor || next<=cursor || next>0x800000000000ULL)return false;
+        cursor=next<end?next:end;
+    }
+    return cursor==end;
+}
 static bool read(uint64_t at,void* out,size_t length) {
-    if(at<65536 || at>=0x800000000000ULL || length>1024 || at+length>=0x800000000000ULL)return false;
-    SIZE_T actual=0;return ReadProcessMemory(GetCurrentProcess(),reinterpret_cast<const void*>(at),out,length,&actual)!=0 && actual==length;
+    if(at<65536 || at>=0x800000000000ULL || length==0 || length>1024 || at+length>=0x800000000000ULL) {
+        if(owner_read_probe)owner_read_probe->unsafe=true;return false;
+    }
+#if defined(NADSF_FIXTURE)
+    // Real OS failure on a private fixture data page, never the game/stack.
+    DWORD fixture_old_protection=0;
+    const bool fixture_fault=fixture_rpm_failure_remaining && at==fixture_rpm_failure_at;
+    const bool fixture_protected=fixture_fault && (--fixture_rpm_failure_remaining,
+        VirtualProtect(reinterpret_cast<void*>(at),length,PAGE_NOACCESS,&fixture_old_protection)!=0);
+#endif
+    SIZE_T actual=0;
+    const bool complete=ReadProcessMemory(GetCurrentProcess(),reinterpret_cast<const void*>(at),out,length,&actual)!=0 && actual==length;
+#if defined(NADSF_FIXTURE)
+    if(fixture_protected) {
+        if(!complete)++fixture_rpm_failures;
+        if(fixture_rpm_restore_readable) {DWORD ignored=0;VirtualProtect(reinterpret_cast<void*>(at),length,fixture_old_protection,&ignored);}
+    }
+#endif
+    if(complete)return true;
+    if(owner_read_probe) {
+        if(readable_span(at,length))owner_read_probe->transport=true;
+        else owner_read_probe->unsafe=true;
+    }
+    return false;
 }
 template<class T> static bool value(uint64_t at,T& out) {return read(at,&out,sizeof out);}
-static bool pointer(uint64_t at,uint64_t& out) {return value(at,out) && out>=65536 && out<0x800000000000ULL;}
+static bool pointer(uint64_t at,uint64_t& out) {
+    if(!value(at,out))return false;
+    if(out>=65536 && out<0x800000000000ULL)return true;
+    if(owner_read_probe)owner_read_probe->unsafe=true;return false;
+}
 static void error(uint32_t code) {last_error.store(code,std::memory_order_release);}
 static uint32_t reject(uint32_t code) {error(code);return 0;}
 static bool image(uint64_t base,uint32_t stamp,uint32_t length) {
@@ -231,6 +290,16 @@ static bool owner(Policy& p,bool capture) {
     p.shoulder_aim=!p.full_ads && (flags[10]&4)!=0 && (flags[15]&32)!=0;
     p.safe=(mask==0 || mask==2) && controls[5]==0 && (flags[14]&4)==0;
     return true;
+}
+// Only an invocation-local owner-data failure may produce retryable code3.
+// Code, source, dispatch, configuration and diagnostic reads are unclassified.
+static uint32_t owner_status(Policy& p,bool capture) {
+    OwnerReadProbe probe;
+    if(owner(p,capture))return OK;
+    return probe.transport && !probe.unsafe?READ_FAILED:OWNER_MISMATCH;
+}
+static bool checked_owner(Policy& p,bool capture,uint32_t& failure) {
+    failure=owner_status(p,capture);return failure==OK;
 }
 static bool current_request(const Policy& p,uint64_t& at,uint32_t (&r)[4],bool& queued) {
     uint32_t head=0,tail=0;
@@ -307,7 +376,7 @@ static bool validate_fird_request_field(const Policy& p) {
 static bool restore_fird_request(Policy& p);
 // policy_lock owns the ledger. A new native evaluation can replace our value;
 // keep its freshest finite value for End, and compare before every data write.
-static bool normalize_fird_request(Policy& p,bool post_evaluation=false) {
+static bool normalize_fird_request(Policy& p,bool post_evaluation=false,uint32_t* owner_failure=nullptr) {
     uint64_t at=0,tag=0,tail_tag=0;uint32_t native=0,fixed=0;
     if(!fird_request_field(p,at,tag,tail_tag)) {error(REQUEST_SOURCE_MISMATCH);return false;}
     if(!value(at,native) || !finite_request_lens(native) || !writable_request_field(at)) {error(REQUEST_FIELD_INVALID);return false;}
@@ -328,9 +397,11 @@ static bool normalize_fird_request(Policy& p,bool post_evaluation=false) {
     // Bind do not evaluate and can preserve their existing restoration value.
     const uint32_t before=!post_evaluation && l.active && native==l.last?l.before:native;
     uint64_t checked_at=0,checked_tag=0,checked_tail=0;
-    if(!owner(p,false) || p.full_ads || !p.safe || !fird_request_field(p,checked_at,checked_tag,checked_tail)
+    const uint32_t failure=owner_status(p,false);
+    if(owner_failure)*owner_failure=failure;
+    if(failure!=OK || p.full_ads || !p.safe || !fird_request_field(p,checked_at,checked_tag,checked_tail)
         || checked_at!=at || checked_tag!=tag || checked_tail!=tail_tag) {
-        error(OWNER_MISMATCH);return false;
+        error(failure==OK?OWNER_MISMATCH:failure);return false;
     }
     uint32_t observed=0;
     if(!request_cas(at,native,fixed,observed)) {error(CAS_FAULT);return false;}
@@ -393,8 +464,8 @@ static bool cas(uint64_t expected,uint64_t desired,uint64_t& observed) {
     } __except(EXCEPTION_EXECUTE_HANDLER) {return false;}
 }
 static bool binary_contract(const NADSF_Config& c) {
-    if(!image(c.game,0x6ae0e5ff,0x3382000) || !image(c.exe,0x6ae0964a,0x29fe000))return reject(IMAGE_MISMATCH)!=0;
-    if(!bytes(c.game+CALL,"ff9280000000") || !bytes(c.exe+SETTER,"f30f114934c7415000000000e9ff6b1f00")
+    if(!image(c.game,0x6af322c1,0x3382000) || !image(c.exe,0x6af2d5e6,0x29fe000))return reject(IMAGE_MISMATCH)!=0;
+    if(!bytes(c.game+CALL,"ff9280000000") || !bytes(c.exe+SETTER,"f30f114934c7415000000000e92f6c1f00")
         || !bytes(c.exe+GETTER,"f30f104134c3"))return reject(CODE_MISMATCH)!=0;
     return true;
 }
@@ -402,12 +473,12 @@ static bool fird_input_contract(const NADSF_Config& c) {
     // Current-build evaluator dispatch precedes the shared CameraAPI setter.
     // Normal4 publishes radians at3C after its input read; the next input pass
     // selects the first kind4 and scales by radians*RAD2DEG/live TP degrees.
-    if(!bytes(c.game+0x110b37b,"e8e0fc0000")
-        || !bytes(c.game+0x111e26e,"f3450f119c24c4000000f3450f115c243c")
-        || !bytes(c.game+0x111b8fe,"f3410f1044243c")
-        || !bytes(c.game+0x111b910,"448bc14969c0e8000000664283bc300002000004740bffc183e11f3bca75e1eb11")
-        || !bytes(c.game+0x111b931,"4969c0e8000000f3420f1084303c020000")
-        || !bytes(c.game+0x111b942,"f30f590556b61201488d55a0488b05b35bbc01f30f5e8088c40a00f30f59d8f30f59d0f30f59c8"))
+    if(!bytes(c.game+0x110b4db,"e8e0fc0000")
+        || !bytes(c.game+0x111e3ce,"f3450f119c24c4000000f3450f115c243c")
+        || !bytes(c.game+0x111ba5e,"f3410f1044243c")
+        || !bytes(c.game+0x111ba70,"448bc14969c0e8000000664283bc300002000004740bffc183e11f3bca75e1eb11")
+        || !bytes(c.game+0x111ba91,"4969c0e8000000f3420f1084303c020000")
+        || !bytes(c.game+0x111baa2,"f30f590506b51201488d55a0488b05535abc01f30f5e8088c40a00f30f59d8f30f59d0f30f59c8"))
         return reject(CODE_MISMATCH)!=0;
     return true;
 }
@@ -433,12 +504,12 @@ static bool dispatch_owned(const Policy& p) {
         && pointer(api+0x78,getter) && getter==p.c.exe+GETTER && slot_read(slot,target) && target==callback();
 }
 // Called under policy_lock. It invokes the pinned original, never the API slot.
-static bool apply_immediately(Policy& p) {
-    if(!owner(p,false) || !request_matches(p) || !p.safe || !dispatch_owned(p))return false;
+static bool apply_immediately(Policy& p,uint32_t& failure) {
+    if(!checked_owner(p,false,failure) || !request_matches(p) || !p.safe || !dispatch_owned(p))return false;
     if(p.full_ads) {reset_shoulder(p);return true;}
     float radians=p.captured_radians;
     if(!p.fird) {if(!source(p,radians))return false;radians=shoulder_lens(p,radians);}
-    else if(!normalize_fird_request(p))return false;
+    else if(!normalize_fird_request(p,false,&failure))return false;
     radians=handoff_lens(p,radians,false);
     original.load(std::memory_order_acquire)(reinterpret_cast<void*>(p.c.camera),radians);
     p.last_applied=radians;immediate_applies.fetch_add(1,std::memory_order_relaxed);return true;
@@ -452,7 +523,8 @@ static void setter_hook(void* camera,float native) {
     struct Unlock {~Unlock(){ReleaseSRWLockExclusive(&policy_lock);}} unlock;
     float applied=native;bool diagnostics_changed=false;
     if(armed.load(std::memory_order_acquire) && reinterpret_cast<uint64_t>(camera)==policy.c.camera) {
-        if(!owner(policy,false)) {armed.store(0,std::memory_order_release);error(OWNER_MISMATCH);}
+        const uint32_t failure=owner_status(policy,false);
+        if(failure!=OK) {armed.store(0,std::memory_order_release);error(failure);}
         else if(!dispatch_owned(policy)) {armed.store(0,std::memory_order_release);error(API_MISMATCH);}
         else {
         if(policy.fird && (native_ads_request(policy) || (policy.full_ads && request_matches(policy)))) {
@@ -541,19 +613,21 @@ NADSF_EXPORT uint32_t NADSF_Validate(const NADSF_Config* input) {
     AcquireSRWLockExclusive(&control_lock);struct Unlock {~Unlock(){ReleaseSRWLockExclusive(&control_lock);}} unlock;
     NADSF_Config c{};if(!config(input,c))return 0;if(reserved.load())return reject(BUSY);
     Policy next{};next.c=c;Setter target=nullptr;uint64_t address=0;float radians=0;
-    if(!owner(next,true) || !next.safe || !request_matches(next,true))return reject(OWNER_MISMATCH);
+    uint32_t failure=OK;
+    if(!checked_owner(next,true,failure) || !next.safe || !request_matches(next,true))return reject(failure==OK?OWNER_MISMATCH:failure);
     if(!contract(c,target,address))return 0;if(!source(next,radians))return reject(SOURCE_INVALID);
-    if(!owner(next,false) || !next.safe || !request_matches(next,true))return reject(OWNER_MISMATCH);
+    if(!checked_owner(next,false,failure) || !next.safe || !request_matches(next,true))return reject(failure==OK?OWNER_MISMATCH:failure);
     error(OK);return 1;
 }
 NADSF_EXPORT uint32_t NADSF_ValidateFird(const NADSF_Config* input) {
     AcquireSRWLockExclusive(&control_lock);struct Unlock {~Unlock(){ReleaseSRWLockExclusive(&control_lock);}} unlock;
     NADSF_Config c{};if(!config(input,c,true))return 0;if(reserved.load())return reject(BUSY);
     Policy next{};next.c=c;next.fird=true;Setter target=nullptr;uint64_t address=0;
-    if(!owner(next,true) || !next.safe || next.full_ads || !request_matches(next))return reject(OWNER_MISMATCH);
+    uint32_t failure=OK;
+    if(!checked_owner(next,true,failure) || !next.safe || next.full_ads || !request_matches(next))return reject(failure==OK?OWNER_MISMATCH:failure);
     if(!contract(c,target,address) || !fird_input_contract(c))return 0;
     if(!validate_fird_request_field(next))return reject(REQUEST_FIELD_INVALID);
-    if(!owner(next,false) || !next.safe || next.full_ads || !request_matches(next))return reject(OWNER_MISMATCH);
+    if(!checked_owner(next,false,failure) || !next.safe || next.full_ads || !request_matches(next))return reject(failure==OK?OWNER_MISMATCH:failure);
     error(OK);return 1;
 }
 static uint32_t begin_policy(const NADSF_Config* input,uint64_t* output,bool fird,float captured) {
@@ -563,7 +637,8 @@ static uint32_t begin_policy(const NADSF_Config* input,uint64_t* output,bool fir
     Policy next{};next.c=c;Setter target=nullptr;uint64_t address=0;float radians=0;
     next.fird=fird;next.captured_radians=captured;
     if(fird) {if(!captured_lens(captured))return reject(SOURCE_INVALID);next.source_degrees=captured/RAD_PER_DEG;}
-    if(!owner(next,true) || !next.safe || (fird && next.full_ads) || !request_matches(next))return reject(OWNER_MISMATCH);
+    uint32_t failure=OK;
+    if(!checked_owner(next,true,failure) || !next.safe || (fird && next.full_ads) || !request_matches(next))return reject(failure==OK?OWNER_MISMATCH:failure);
     if(!contract(c,target,address))return 0;
     if(fird && (!fird_input_contract(c) || !validate_fird_request_field(next)))return reject(REQUEST_FIELD_INVALID);
     if(!fird && !source(next,radians))return reject(SOURCE_INVALID);
@@ -584,8 +659,8 @@ static uint32_t begin_policy(const NADSF_Config* input,uint64_t* output,bool fir
     if(!dispatch_owned(next))return failed_begin(CAS_MISMATCH,output);
     AcquireSRWLockExclusive(&policy_lock);
     policy=next;seen.store(0);forwarded.store(0);replaced.store(0);immediate_applies.store(0);binds.store(0);ads_forwarded.store(0);
-    const bool applied=apply_immediately(policy);
-    const bool stable=applied && owner(policy,false) && request_matches(policy) && policy.safe && (!fird || !policy.full_ads) && dispatch_owned(policy);
+    const bool applied=apply_immediately(policy,failure);
+    const bool stable=applied && checked_owner(policy,false,failure) && request_matches(policy) && policy.safe && (!fird || !policy.full_ads) && dispatch_owned(policy);
     publish_diagnostics(policy);
     return_address.store(c.game+CALL+6,std::memory_order_relaxed);
 #if defined(NADSF_FIXTURE)
@@ -593,7 +668,7 @@ static uint32_t begin_policy(const NADSF_Config* input,uint64_t* output,bool fir
 #endif
     if(stable)armed.store(1,std::memory_order_release);
     ReleaseSRWLockExclusive(&policy_lock);
-    if(!stable)return failed_begin(OWNER_MISMATCH,output);
+    if(!stable)return failed_begin(failure==OK?OWNER_MISMATCH:failure,output);
     error(OK);return 1;
 }
 NADSF_EXPORT uint32_t NADSF_Begin(const NADSF_Config* input,uint64_t* output) {
@@ -609,9 +684,10 @@ NADSF_EXPORT uint32_t NADSF_Bind(uint64_t generation,uint64_t request,uint32_t w
     AcquireSRWLockExclusive(&policy_lock);struct UnlockPolicy {~UnlockPolicy(){ReleaseSRWLockExclusive(&policy_lock);}} unlock_policy;
     if(!armed.load() || policy.fird)return reject(OWNER_MISMATCH);
     Policy next=policy;next.c.request=request;next.c.weapon=weapon;
-    if(!owner(next,false) || !next.safe || !request_matches(next))return reject(OWNER_MISMATCH);
+    uint32_t failure=OK;
+    if(!checked_owner(next,false,failure) || !next.safe || !request_matches(next))return reject(failure==OK?OWNER_MISMATCH:failure);
     if(!binary_contract(next.c) || !dispatch_owned(next))return reject(API_MISMATCH);
-    if(!apply_immediately(next) || !owner(next,false) || !request_matches(next) || !next.safe || !dispatch_owned(next))return reject(OWNER_MISMATCH);
+    if(!apply_immediately(next,failure) || !checked_owner(next,false,failure) || !request_matches(next) || !next.safe || !dispatch_owned(next))return reject(failure==OK?OWNER_MISMATCH:failure);
     policy=next;publish_diagnostics(policy);binds.fetch_add(1,std::memory_order_relaxed);error(OK);return 1;
 }
 NADSF_EXPORT uint32_t NADSF_BindFird(uint64_t generation,uint64_t request) {
@@ -621,13 +697,14 @@ NADSF_EXPORT uint32_t NADSF_BindFird(uint64_t generation,uint64_t request) {
     AcquireSRWLockExclusive(&policy_lock);struct UnlockPolicy {~UnlockPolicy(){ReleaseSRWLockExclusive(&policy_lock);}} unlock_policy;
     if(!armed.load() || !policy.fird)return reject(OWNER_MISMATCH);
     Policy next=policy;next.c.request=request;
-    if(!owner(next,false) || !next.safe || next.full_ads || !request_matches(next))return reject(OWNER_MISMATCH);
+    uint32_t failure=OK;
+    if(!checked_owner(next,false,failure) || !next.safe || next.full_ads || !request_matches(next))return reject(failure==OK?OWNER_MISMATCH:failure);
     if(!binary_contract(next.c) || !fird_input_contract(next.c) || !dispatch_owned(next))return reject(API_MISMATCH);
     // Persist the ledger before the immediate setter: a racing owner change
     // after its data CAS still leaves this generation responsible for cleanup.
     policy=next;
-    if(!apply_immediately(policy) || !owner(policy,false) || !request_matches(policy) || !policy.safe || policy.full_ads || !dispatch_owned(policy)) {
-        armed.store(0,std::memory_order_release);return reject(OWNER_MISMATCH);
+    if(!apply_immediately(policy,failure) || !checked_owner(policy,false,failure) || !request_matches(policy) || !policy.safe || policy.full_ads || !dispatch_owned(policy)) {
+        armed.store(0,std::memory_order_release);return reject(failure==OK?OWNER_MISMATCH:failure);
     }
     publish_diagnostics(policy);binds.fetch_add(1,std::memory_order_relaxed);error(OK);return 1;
 }
@@ -636,7 +713,8 @@ NADSF_EXPORT uint32_t NADSF_SetTransition(uint64_t generation,uint64_t epoch,flo
     if(!generation || !reserved.load() || generation!=owned_generation)return reject(TOKEN_MISMATCH);
     if(!epoch || !std::isfinite(progress) || progress<0 || progress>1 || ads>1)return reject(INVALID_CONFIG);
     AcquireSRWLockExclusive(&policy_lock);struct UnlockPolicy {~UnlockPolicy(){ReleaseSRWLockExclusive(&policy_lock);}} unlock_policy;
-    if(!armed.load() || policy.fird || !policy.c.reserved || !owner(policy,false))return reject(OWNER_MISMATCH);
+    if(!armed.load() || policy.fird || !policy.c.reserved)return reject(OWNER_MISMATCH);
+    const uint32_t failure=owner_status(policy,false);if(failure!=OK)return reject(failure);
     if(!dispatch_owned(policy))return reject(API_MISMATCH);
     if(epoch<policy.shared_epoch || (epoch==policy.shared_epoch && (progress<policy.shared_progress || (ads!=0)!=policy.shared_ads)))
         return reject(INVALID_CONFIG);

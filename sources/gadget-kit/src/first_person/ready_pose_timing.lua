@@ -3,17 +3,17 @@
 -- Caller must run inside the existing backend Update frame; this module owns
 -- no callbacks, frames, SDK getters, native invocations, FFI casts or writes.
 local M={pins={
-    {name='instance_getter',rva=0x28d460,hex='488b8178010000c3'},
-    {name='resource_getter',rva=0x28d470,hex='488b8158030000488902488bc2c3'},
-    {name='native_World_manager_instance',rva=0x12b2a9,hex='488b03488bcbff90b0010000488b4b18488bd0448b4704488b8950002300e804bb4300'},
-    {name='manager_group90_membership',rva=0x566dea,hex='488b8998000000beffffffff8b87900000004c8d04c1493bc8743848391974154883c108493bc875f24881c7a8000000e9d6000000'},
-    {name='manager_groupA8_membership',rva=0x566e49,hex='488b91b00000008b81a8000000488d0cc2488bc2483bd1740e48391874094883c008483bc175f2'},
-    {name='vector_count_capacity_pointer',rva=0x566ef5,hex='8b0f8b57048d41013bc2761b488d04550a000000488bcf483bc6480f47c68bd0e8e6e3c4ff8b0f488b470833d2488b742438488914c88b0f488b470848891cc8'},
-    {name='batch_completion_initialization',rva=0x56696d,hex='488b837001000041c64403f800'},
-    {name='batch_count_capacity',rva=0x56698b,hex='8b83f40000003bf8763383f808720a8bc848d1e94803c8eb05b9080000008bc7483bc8720a493bcf488bc1490f47c78bd0488d8bf0000000e838a8b2ff89bbf000000041b9010000004c8b83f8000000488b9358010000488b8b88000000'},
-    {name='batch_wait_inputs',rva=0x566c88,hex='8b99f0000000488bf1488b9170010000448bc3488b8988000000c744242001000000e8613e0000'},
-    {name='batch_count_clear',rva=0x566dc1,hex='89bef0000000'},
-    {name='completion_poll',rva=0x56ad9e,hex='410fb6042441b901000000488b55df84c00f84dbfdffff488b4dd7bad8010000'},
+    {name='instance_getter',rva=0x28d510,hex='488b8178010000c3'},
+    {name='resource_getter',rva=0x28d520,hex='488b8158030000488902488bc2c3'},
+    {name='native_World_manager_instance',rva=0x12b2d9,hex='488b03488bcbff90b0010000488b4b18488bd0448b4704488b8950002300e864bb4300'},
+    {name='manager_group90_membership',rva=0x566e7a,hex='488b8998000000beffffffff8b87900000004c8d04c1493bc87437488d51084839197414488bca493bd075ef4881c7a8000000e9d2000000'},
+    {name='manager_groupA8_membership',rva=0x566ed8,hex='488b91b00000008b81a8000000488d0cc2488bc2483bd1740e48391874094883c008483bc175f2'},
+    {name='vector_count_capacity_pointer',rva=0x566f84,hex='8b0f8b57048d41013bc2761b488d04550a000000488bcf483bc6480f47c68bd0e807e4c4ff8b0f488b470833d2488b742438488914c88b0f488b470848891cc8'},
+    {name='batch_completion_initialization',rva=0x5669fd,hex='488b837001000041c64403f800'},
+    {name='batch_count_capacity',rva=0x566a1b,hex='8b83f40000003bf8763383f808720a8bc848d1e94803c8eb05b9080000008bc7483bc8720a493bcf488bc1490f47c78bd0488d8bf0000000e8d8a7b2ff89bbf000000041b9010000004c8b83f8000000488b9358010000488b8b88000000'},
+    {name='batch_wait_inputs',rva=0x566d18,hex='8b99f0000000488bf1488b9170010000448bc3488b8988000000c744242001000000e8613e0000'},
+    {name='batch_count_clear',rva=0x566e51,hex='89bef0000000'},
+    {name='completion_poll',rva=0x56ae2e,hex='410fb6042441b901000000488b55df84c00f84dbfdffff488b4dd7bad8010000'},
 }}
 local MAX_INSTANCES,MAX_BATCHES=16384,256
 local function u32(raw,o)
@@ -80,8 +80,8 @@ function M.new(b)
                     'Quiescence code contract changed: '..pin.name)
             end
             local vt=p(c.object,'body vtable')
-            assert(p(vt+0x1b0,'body instance getter')==c.exe+0x28d460
-                and p(vt+0x1b8,'body resource getter')==c.exe+0x28d470,'Quiescence body interface changed')
+            assert(p(vt+0x1b0,'body instance getter')==c.exe+0x28d510
+                and p(vt+0x1b8,'body resource getter')==c.exe+0x28d520,'Quiescence body interface changed')
             local resource=read(c.object+0x358,8,'body resource')
             assert(resource==unhex('97fa4d294d331c4d')and b:_u32(c.object+0x70)==107,'Quiescence body resource changed')
             local instance=p(c.object+0x178,'body instance');assert(instance~=0,'Quiescence body instance absent')

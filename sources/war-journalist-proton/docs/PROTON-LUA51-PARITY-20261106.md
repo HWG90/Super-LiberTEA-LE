@@ -1,6 +1,6 @@
 # Lua 5.1 changes in the Proton candidate, 2026-11-06
 
-This is a local review candidate, not an installed or published release. The live game and its mod profile were not changed.
+This is an offline-verified candidate, not a published or live-game-accepted release. The scoped deployment follow-up below records installation after the initial review.
 
 ## Source boundary
 
@@ -62,4 +62,30 @@ Offline checks cannot certify game ABI, render output or live input cleanup. Bef
 5. Test Handycam aim lock and ADS handoff, held left/right modifiers, numeric fields, screenshot capture and settings persistence.
 6. Measure closed idle and open menu behavior. Keep existing scene-effect/numeric-DoF and decorative-overlay qualification gates; this port does not visually qualify them.
 
-No game launch, live deployment, Git push, tag or release was performed.
+At initial candidate completion, no game launch, live deployment, Git push, tag or release had been performed. The subsequent scoped installation is recorded below.
+
+
+## Scoped installation follow-up
+
+At 2026-11-06 03:59:30 UTC, candidate source commit `71eec8a`, build `20261106.0355-71eec8a`, was installed into the active WORMHOLE Proton prefix's `LLL/Helldivers2/Mods/dbf_freecam` folder. The initial process check reported no game, but later review found that check was PID-namespaced and could not independently prove host closure. The selected and deployed Arsenal profile was `LuaJIT Proton`; LLL explicitly enabled this folder. Its prior 86 files matched the known Proton dev.6 candidate byte-for-byte before replacement.
+
+The old folder was moved intact to `Port-Candidate-Backups/war-journalist-before-parity-71eec8a-20261106T035929Z/dbf_freecam`. That backup also contains a verified copy of the separate WJ settings and `LLL.cfg`. Settings, Arsenal metadata, `LLL.cfg`, shared boot files, native bridges outside this mod and all other mods were left unchanged. DBF and MCM deployment owners confirmed no overlapping work.
+
+The installed folder matches all candidate hashes. `verify_installed_modules.py` passed against the actual installed directory with 79 declared/actual modules, and all 80 installed Lua chunks compile under both Lua 5.1 and LuaJIT 2.1. The disabled Proton archive remains disabled. The existing Chef asset/core row refuses under LLL before creating its runtime, as its source and current loader log confirm; it was not changed.
+
+Installation receipt: `dist/validation/INSTALL-RECEIPT-71eec8a.json`. Actual installed audit: `dist/validation/installed-71eec8a-audit.json`. Roll back with the game closed by moving the installed folder aside and restoring the backed-up `dbf_freecam` folder to its original `Mods` location. No settings rollback is needed because settings were unchanged.
+
+The installation task did not launch the game. Live acceptance remains the checklist above, not a completed claim. No Git push, tag or release was performed.
+
+
+## Post-install session and obsolete Chef cleanup
+
+The next recorded session ran 2026-11-06 04:12:23–05:00:21 UTC and ended with normal engine shutdown. `LiveLuaLoader.log` recorded the obsolete Chef archive refusing at line 51, then the installed `live/dbf_freecam` loading at lines 161–165 and reporting `Photo Mode ready on LuaJIT 2.1.ROLLING; settings in MCM` at line 271. Its normal shutdown appears at line 886. The Chef host assertion occurs before constructing its runtime, so it did not create a second camera owner. This proves Proton startup, not Photo Mode/pose/screenshot acceptance.
+
+A separate native subject backend probe refused at line 270 (`host_native.lua:56`, CClosure ABI/closure check). Its guard was not changed, relaxed or bypassed. The runtime remained available through its existing fallback paths; native subject behavior still needs live acceptance.
+
+At 07:29:39 UTC the obsolete Chef dev.16 row `7b18fc08-a506-4cd3-a506-dbed18445576` was disabled only in the `LuaJIT Proton` profile. Its exact script-only `9ba626afa44a3aa3.patch_48` and empty sidecars were moved out of `data` to a same-disk rollback folder. Source package, other profiles, every other deployment file, Proton WJ folder, settings, LLL configuration and dedicated WJ assets stayed unchanged. The separate assets were verified by deployed hashes. No full Arsenal deployment or game launch was performed, and the Chef/source host gate remains intact.
+
+This cleanup used a reviewed host-level process check with more than 700 host processes visible and no Helldivers process before or after. The first attempt only created metadata backups: cross-device rename failed before moving anything; the successful attempt used a same-disk backup. Corrected lesson: ordinary sandbox `/proc`/`pgrep` is not a valid host-game-closure check. The initial installation's historical process-check assertion should not be treated as independently verified.
+
+Cleanup receipt: `dist/validation/RETIRE-CHEF-PROTON-RECEIPT.json`. Metadata backup: `~/.config/hd2arsenal/repair-backups/wj-chef-proton-only-20261106T072939Z`. Patch backup: game root `War-Journalist-Backups/chef-proton-only-20261106T072939Z`. The cleanup is verified on disk, not yet on a subsequent launch; Arsenal's existing UI may need its normal page change to refresh the cached row.

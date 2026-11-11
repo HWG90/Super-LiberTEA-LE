@@ -4,10 +4,10 @@ local PORT51=mod.require('src/first_person/compat51.lua')
 local M,Adapter={},{}
 Adapter.__index=Adapter
 local checks={
-    {0x12e4cc0,'4883ec28448b014c8bd1418bc0458bc883e0ef4183c91084d2440f44c8448909'},
-    {0x1635b6f,'4d8da510010000'}, -- fixed crosshair group
-    {0x1635c01,'498db520020000'}, -- moving aiming-circle group
-    {0x117c72d,'498d8f78a61900e887934b00498d9778a61900'},
+    {0x12e4e20,'4883ec28448b014c8bd1418bc0458bc883e0ef4183c91084d2440f44c8448909'},
+    {0x1635ccf,'4d8da510010000'}, -- fixed crosshair group
+    {0x1635d61,'498db520020000'}, -- moving aiming-circle group
+    {0x117c88d,'498d8f78a61900e887934b00498d9778a61900'},
 }
 local function hex(bytes)return(bytes:gsub('.',function(c)return string.format('%02x',c:byte())end))end
 local function valid_key(key)
@@ -52,7 +52,7 @@ function Adapter:show(identity,widget,value)
     assert(same(self:probe(false),identity),'Aiming HUD changed before write')
     if self.setter then self.setter(widget,value)
     else
-        local w=self.b:_windows();local address=identity.game+0x12e4cc0;local r=w.region
+        local w=self.b:_windows();local address=identity.game+0x12e4e20;local r=w.region
         assert(PORT51.number(w.k.NativeADS_Query(w.ffi.cast('const void *',address),r,w.ffi.sizeof(r)))==w.ffi.sizeof(r)
             and r.state==0x1000 and (r.kind==0x1000000 or (r.kind==0x40000 and w.wine
                 and PORT51.number(r.allocation)==identity.game))

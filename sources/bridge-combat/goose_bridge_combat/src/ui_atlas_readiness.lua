@@ -1,8 +1,8 @@
 -- Read-only native atlas/actual TEXTURE checks. Import/new are inert.
 local M={}
-local RESOLVE={0x312cb0,'uint32_t (*)(uint64_t, uint64_t *, float *)',
-    '48895c2410488b057c4b7a0133db4d8bc848895c24084c8b'}
-local PRESENT={0x632070,'uint8_t (*)(void *, const uint64_t *, const uint64_t *)',
+local RESOLVE={0x312d60,'uint32_t (*)(uint64_t, uint64_t *, float *)',
+    '48895c2410488b05cc4a7a0133db4d8bc848895c24084c8b'}
+local PRESENT={0x632110,'uint8_t (*)(void *, const uint64_t *, const uint64_t *)',
     '4053415641574883ec30488b02488bd98b89c00200004533'}
 local function bytes(s)return(s:gsub('%x%x',function(x)return string.char(tonumber(x,16))end)):reverse()end
 local function key(s)
@@ -18,7 +18,7 @@ function M.new(io,b)
     local function raw(at,n)local s,why=b:read(at,n);assert(type(s)=='string'and #s==n,why or 'Atlas memory unavailable');return s end
     local function capture()
         local game,_,gs=io.module('game.dll');local exe,_,es=io.module('helldivers2.exe')
-        assert(game and exe and gs==0x6AE0E5FF and es==0x6AE0964A,'Unsupported atlas modules')
+        assert(game and exe and gs==0x6AF322C1 and es==0x6AF2D5E6,'Unsupported atlas modules')
         assert(not bound_game or bound_game==game and bound_exe==exe,'Atlas module identity changed')
         for _,s in ipairs({RESOLVE,PRESENT})do assert(raw(exe+s[1],#s[3]/2)==bytes(s[3]):reverse(),'Atlas native fingerprint changed')end
         local root=pointer(exe+0x1AB7838);local manager=pointer(root+0x3F8)

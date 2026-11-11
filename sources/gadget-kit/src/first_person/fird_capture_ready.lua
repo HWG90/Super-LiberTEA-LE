@@ -13,7 +13,7 @@ function M.scene_lens(b,s)
     local ok,value=pcall(function()
         assert(PORT51.kind(s)=='table'and finite(s.camera),'First-person camera unavailable')
         local exe=b:_alignment_executable()
-        assert(b:_read(exe+0x2dcfc0,6)=='\243\015\016\065\052\195','First-person FOV getter changed')
+        assert(b:_read(exe+0x2dd070,6)=='\243\015\016\065\052\195','First-person FOV getter changed')
         local out=PORT51.ffi.new('float[1]');PORT51.ffi.copy(out,b:_read(s.camera+0x34,4),4)
         local radians=PORT51.number(out[0]);assert(lens(radians),'First-person display lens is outside10..170degrees')
         return radians

@@ -1,3 +1,11 @@
+# Current performance acceptance — 0.5.39
+
+The user accepted0.5.38 after a same-scene F11 comparison: **FPS drop is gone; motion natural**. A read-only active runtime check confirmed the expected helper identities and2641steady/23full Head observations without a model-shadow error. F8 arms/gun-only preview and cancel were also accepted. No temporary profiler is attached.
+
+0.5.39 retains the steady visibility/phase optimizations and native animation/camera math. Its camera read-fault correction preserves the measured healthy64reads/651bytes native6 and102reads/1197bytes normal4, with no failure-only mapping query on success. This is an offline read-count comparison; fresh0.5.39 FPS/motion regression acceptance is still pending because native binaries change. FOV and scoped blur similarly query page mappings only after an actual owner-read failure.
+
+The following historical report records the original evidence and0.5.38 path changes. Its pending labels describe that earlier preparation, not the later user acceptance above.
+
 # First Person performance follow-up — 0.5.38
 
 The user confirmed107 FPS with F11 off and85 FPS with it on in0.5.36, including after all temporary profiling was removed. That is about21% lower FPS, or2.42ms more time per frame. The natural camera and animation baseline remains accepted. The remaining slowdown is not marked resolved.

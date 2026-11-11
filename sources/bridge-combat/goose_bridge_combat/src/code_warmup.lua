@@ -1,4 +1,4 @@
--- Build 26251122 keeps a game.dll code page encrypted (PAGE_NOACCESS) until the game first executes it,
+-- Builds since 26251122 keep a game.dll code page encrypted (PAGE_NOACCESS) until the game first executes it,
 -- so a function the ship never runs cannot be checked or called until a mission has run it. The game's
 -- own handler decrypts a page on any execute fault, so executing one `ret` on the page is enough
 -- (checked live 2026-10-30 03:04 on the ship: page +0x9c0000 went from protection 1 to 0x20 and read

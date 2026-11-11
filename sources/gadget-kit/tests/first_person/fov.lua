@@ -487,3 +487,51 @@ test('adapter captures fresh numeric native failure codes and clears zero or una
     adapter:_error('test');equal(adapter.last_failure_code,nil)
 end)
 print('Native ADS FOV manager/ABI fixtures: '..passed..' passed')
+
+test('FOV read cause survives pending cleanup and waiting-state health checks',function()
+ for _,waiting in ipairs({false,true})do
+  local f=fixture();assert(f.manager:update(f.controller));f.native_error=3;f.disarmed=true;f.end_failure=true
+  if waiting then f.controller.lease=nil;f.controller.phase='waiting'end
+  local finish=f.helper.finish
+  f.helper.finish=function(...)f.helper.last_failure_code=13;return finish(...)end
+  assert(not f.manager:update(f.controller));assert(not f.manager:is_clean())
+  local failure=f.manager:result();equal(failure.failure_native_error,3);equal(failure.failure_kind,'temporary_read')
+  local Recovery=dofile(root..'/src/recovery.lua')
+  local row=Recovery.new():failure('fov',failure,false,{fresh=true,safe=true,same_player=true,foreign=false},0)
+  equal(row.phase,'cleanup');equal(row.pending_classification,'retry');equal(f.begins,1)
+ end
+end)
+test('unknown waiting FOV health faults retain unsafe classification',function()
+ local f=fixture();assert(f.manager:update(f.controller));f.native_error=5;f.disarmed=true
+ f.controller.lease=nil;f.controller.phase='waiting'
+ assert(not f.manager:update(f.controller));equal(f.manager:result().failure_kind,'unsafe')
+ equal(f.manager:result().failure_native_error,5);assert(f.manager:is_clean())
+end)
+
+test('disarmed callback health is classified before phase publication can overwrite it',function()
+ for _,path in ipairs({'bound','waiting','binding'})do
+  local f=fixture();f.backend.presentation_transition=function()return {epoch=1,progress=1,ads=false}end
+  local transitions=0
+  f.helper.transition=function(self)
+   transitions=transitions+1
+   if f.disarmed then self.last_failure_code=7;return false,'Native transition rejects a disarmed handle'end
+   return true
+  end
+  assert(f.manager:update(f.controller));local before=transitions
+  f.native_error=3;f.disarmed=true
+  if path=='waiting'then f.controller.lease=nil;f.controller.phase='waiting'
+  elseif path=='binding'then f.controller.lease={request=200,weapon=22}end
+  assert(not f.manager:update(f.controller));equal(transitions,before)
+  equal(f.manager:result().failure_native_error,3);equal(f.manager:result().failure_kind,'temporary_read')
+  equal(f.begins,1);assert(f.manager:is_clean())
+ end
+end)
+
+test('a callback read fault immediately after fresh Begin precedes its first phase publish',function()
+ local f=fixture();f.backend.presentation_transition=function()return {epoch=1,progress=1,ads=false}end
+ local transitions=0;f.helper.transition=function(self)transitions=transitions+1;self.last_failure_code=7;return false,'Disarmed handle'end
+ f.disarmed=true;f.native_error=3
+ assert(not f.manager:update(f.controller));equal(transitions,0)
+ equal(f.manager:result().failure_native_error,3);equal(f.manager:result().failure_kind,'temporary_read')
+ assert(f.manager:is_clean());equal(f.begins,1)
+end)

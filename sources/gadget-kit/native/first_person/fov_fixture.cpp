@@ -9,9 +9,14 @@ static uint64_t active_generation=0,cases=0,calls=0;
 struct Record {void* camera;uint32_t bits;};static Record records[4096]{};
 static HANDLE setter_reached=nullptr,setter_continue=nullptr;
 static uint64_t mutation_address=0;static uint32_t mutation_value=0;
+static uint64_t fail_owner_after_original=0;
 __declspec(noinline) static void synthetic_setter(void* camera,float fov) {
     CHECK(calls<4096);records[calls].camera=camera;std::memcpy(&records[calls++].bits,&fov,4);
     if(mutation_address)std::memcpy(reinterpret_cast<void*>(mutation_address),&mutation_value,4);
+    if(fail_owner_after_original) {
+        fixture_rpm_failure_at=fail_owner_after_original;fixture_rpm_failure_remaining=1;
+        fixture_rpm_restore_readable=true;fail_owner_after_original=0;
+    }
     if(setter_reached) {SetEvent(setter_reached);WaitForSingleObject(setter_continue,INFINITE);}
 }
 __declspec(noinline) static void foreign_setter(void*,float) {}
@@ -46,14 +51,31 @@ static float lens(double degrees,double magnification) {
     return static_cast<float>(2*std::atan(std::tan(degrees*3.14159265358979323846/360)/magnification));
 }
 static void pass(const char* name) {++cases;std::printf("PASS %s\n",name);}
+
+// Real private VirtualAlloc pages only; production RPM executes unchanged.
+static void fail_rpm_once(uint64_t at,bool restore_readable=true) {
+    CHECK(fixture_rpm_failure_remaining==0);fixture_rpm_failure_at=at;
+    fixture_rpm_failure_remaining=1;fixture_rpm_restore_readable=restore_readable;
+}
+static void clear_rpm_failure() {
+    fixture_rpm_failure_at=0;fixture_rpm_failure_remaining=0;fixture_rpm_restore_readable=true;
+}
+static void recovery_event(const char* stage,uint32_t result,uint32_t native_error,uint64_t token,
+                           uint64_t cas_changes,bool exact_native=false,const NADSF_Stats* stats=nullptr) {
+    std::printf("RECOVERY_EVENT {\"stage\":\"%s\",\"result\":%u,\"native_error\":%u,\"token\":%llu,"
+        "\"cas_changes\":%llu,\"rpm_failures\":%llu,\"exact_native\":%s,\"armed\":%u,\"installed\":%u,\"reserved\":%u}\n",
+        stage,result,native_error,static_cast<unsigned long long>(token),static_cast<unsigned long long>(cas_changes),
+        static_cast<unsigned long long>(fixture_rpm_failures),exact_native?"true":"false",
+        stats?stats->armed:armed.load(),stats?stats->installed:installed.load(),reserved.load());
+}
 struct Fixture {
     NADSF_Config c{};uint64_t controller=0,descriptor=0,registry=0,units=0,generations=0,body_object=0,api=0,settings=0;
     Setter invoke=nullptr;
     Fixture() {
         c.size=sizeof c;c.abi=1;c.game=allocate(0x3382000,PAGE_EXECUTE_READWRITE);c.exe=allocate(0x29fe000);
-        fake_image(c.game,0x6ae0e5ff,0x3382000);fake_image(c.exe,0x6ae0964a,0x29fe000);
+        fake_image(c.game,0x6af322c1,0x3382000);fake_image(c.exe,0x6af2d5e6,0x29fe000);
         // Independent literal read-only capture from live-fov-api.txt.
-        literal(c.exe+0x2dcfd0,"f30f114934c7415000000000e9ff6b1f00");literal(c.exe+0x2dcfc0,"f30f104134c3");
+        literal(c.exe+0x2dd080,"f30f114934c7415000000000e92f6c1f00");literal(c.exe+0x2dd070,"f30f104134c3");
         c.context=allocate(0x3000);c.camera=allocate(0x1000);c.avatar_owner=allocate(0x540000);
         c.avatar_index=0;c.avatar=0x333;c.body=0x400003;c.weapon=0x444;
         controller=allocate(0x1000);descriptor=allocate(0x1000);registry=allocate(0x1000);units=allocate(0x1000);
@@ -68,18 +90,18 @@ struct Fixture {
         put<uint64_t>(c.game+0x2ce1508,settings);degrees(90);
         const uint64_t root=allocate(0x1000);api=allocate(0x1000);
         put<uint64_t>(c.game+0x2ce14c8,root);put<uint64_t>(root+0x20,api);
-        put<uint64_t>(api+0x78,c.exe+0x2dcfc0);put<uint64_t>(api+0x80,reinterpret_cast<uint64_t>(synthetic_setter));fixture_target=synthetic_setter;
+        put<uint64_t>(api+0x78,c.exe+0x2dd070);put<uint64_t>(api+0x80,reinterpret_cast<uint64_t>(synthetic_setter));fixture_target=synthetic_setter;
         // sub rsp,28; mov rdx,API; call [rdx+80]; add rsp,28; ret.
-        const uint64_t site=c.game+0x110be7a;literal(site-14,"4883ec2848ba");put<uint64_t>(site-8,api);
+        const uint64_t site=c.game+0x110bfda;literal(site-14,"4883ec2848ba");put<uint64_t>(site-8,api);
         literal(site,"ff92800000004883c428c3");CHECK(FlushInstructionCache(GetCurrentProcess(),reinterpret_cast<void*>(site-14),25));
         // Independent current-build normal4 capture: dispatch, late3C write,
         // first-kind4 input selection and radians/live-TP sensitivity ratio.
-        literal(c.game+0x110b37b,"e8e0fc0000");
-        literal(c.game+0x111e26e,"f3450f119c24c4000000f3450f115c243c");
-        literal(c.game+0x111b8fe,"f3410f1044243c");
-        literal(c.game+0x111b910,"448bc14969c0e8000000664283bc300002000004740bffc183e11f3bca75e1eb11");
-        literal(c.game+0x111b931,"4969c0e8000000f3420f1084303c020000");
-        literal(c.game+0x111b942,"f30f590556b61201488d55a0488b05b35bbc01f30f5e8088c40a00f30f59d8f30f59d0f30f59c8");
+        literal(c.game+0x110b4db,"e8e0fc0000");
+        literal(c.game+0x111e3ce,"f3450f119c24c4000000f3450f115c243c");
+        literal(c.game+0x111ba5e,"f3410f1044243c");
+        literal(c.game+0x111ba70,"448bc14969c0e8000000664283bc300002000004740bffc183e11f3bca75e1eb11");
+        literal(c.game+0x111ba91,"4969c0e8000000f3420f1084303c020000");
+        literal(c.game+0x111baa2,"f30f590506b51201488d55a0488b05535abc01f30f5e8088c40a00f30f59d8f30f59d0f30f59c8");
         invoke=reinterpret_cast<Setter>(site-14);normal();
     }
     void degrees(float f) {put<float>(settings+0xac488,f);}
@@ -99,6 +121,93 @@ struct Fixture {
     void sample(float f=.785398185f) {invoke(reinterpret_cast<void*>(c.camera),f);}
     NADSF_Stats stats() {NADSF_Stats s{};s.size=sizeof s;s.abi=1;CHECK(NADSF_ReadStats(reserved.load()?active_generation:0,&s)==1);return s;}
 };
+
+static void owner_read_failures(Fixture& f) {
+    f.normal();const uint64_t initial_cas=fixture_cas_calls,initial_failures=fixture_rpm_failures;
+    const uint64_t native_slot=*reinterpret_cast<const uint64_t*>(f.api+0x80);
+    fail_rpm_once(f.controller);
+    const auto validated=NADSF_Validate(&f.c),validate_error=NADSF_Error();
+    CHECK(validated==0 && validate_error==READ_FAILED && fixture_rpm_failure_remaining==0);
+    CHECK(fixture_rpm_failures==initial_failures+1 && fixture_failure_queries>0 && !reserved.load() && fixture_cas_calls==initial_cas);
+    CHECK(*reinterpret_cast<const uint64_t*>(f.api+0x80)==native_slot);
+    recovery_event("validate_read_failed",validated,validate_error,0,fixture_cas_calls-initial_cas);
+    clear_rpm_failure();CHECK(NADSF_Validate(&f.c)==1 && NADSF_Error()==OK);
+    f.fp();
+    fail_rpm_once(f.controller);uint64_t token=UINT64_MAX;
+    const auto began=NADSF_Begin(&f.c,&token),begin_error=NADSF_Error();
+    CHECK(began==0 && token==0 && begin_error==READ_FAILED && !reserved.load() && fixture_cas_calls==initial_cas);
+    recovery_event("begin_read_failed",began,begin_error,token,fixture_cas_calls-initial_cas);
+    clear_rpm_failure();pass("real owner RPM faults in Validate and Begin report3 without a token or dispatch change; later healthy validation clears the error");
+
+    for(uint64_t at:{f.controller,f.descriptor,f.generations+3}) {
+        f.begin();const uint64_t prior_queries=fixture_failure_queries,prior_failures=fixture_rpm_failures,prior_cas=fixture_cas_calls;
+        fail_rpm_once(at);f.sample(.271f);
+        const auto stats=f.stats();const bool exact=last()==.271f;
+        CHECK(exact && stats.error==READ_FAILED && stats.armed==0 && stats.installed==1 && reserved.load()==1);
+        CHECK(fixture_rpm_failure_remaining==0 && fixture_rpm_failures==prior_failures+1 && fixture_failure_queries>prior_queries);
+        CHECK(fixture_cas_calls==prior_cas);
+        if(at==f.controller)recovery_event("callback_read_failed",1,stats.error,active_generation,fixture_cas_calls-prior_cas,exact,&stats);
+        clear_rpm_failure();f.sample(.271f);
+        CHECK(fixture_failure_queries>prior_queries && fixture_cas_calls==prior_cas);
+        CHECK(end_current()==1 && !reserved.load() && NADSF_Error()==OK);
+    }
+    pass("callback owner faults pass the native value exactly and retain only cleanup; controller descriptor and Unit generation scopes are retryable");
+
+    f.begin();const auto healthy_queries=fixture_failure_queries;
+    for(unsigned i=0;i<10;++i){f.sample(.271f);}
+    CHECK(fixture_failure_queries==healthy_queries);CHECK(end_current()==1);
+    pass("healthy owner reads perform no failure-classification VirtualQuery");
+
+    f.normal();fail_rpm_once(f.controller,false);
+    CHECK(NADSF_Validate(&f.c)==0 && NADSF_Error()==OWNER_MISMATCH && fixture_rpm_failure_remaining==0);
+    DWORD discarded=0;CHECK(VirtualProtect(reinterpret_cast<void*>(f.controller),0x1000,PAGE_READWRITE,&discarded));clear_rpm_failure();
+    const auto unsafe_queries=fixture_failure_queries;
+    put<uint64_t>(f.c.game+0x2e381a8,1);CHECK(NADSF_Validate(&f.c)==0 && NADSF_Error()==OWNER_MISMATCH);
+    const uint64_t gone=allocate(0x1000);CHECK(VirtualFree(reinterpret_cast<void*>(gone),0,MEM_RELEASE));
+    put<uint64_t>(f.c.game+0x2e381a8,gone);CHECK(NADSF_Validate(&f.c)==0 && NADSF_Error()==OWNER_MISMATCH);
+    put<uint64_t>(f.c.game+0x2e381a8,f.controller);
+    put<uint32_t>(f.c.avatar_owner+0x6C,9);const auto semantic_queries=fixture_failure_queries;
+    CHECK(NADSF_Validate(&f.c)==0 && NADSF_Error()==OWNER_MISMATCH && fixture_failure_queries==semantic_queries);
+    put<uint32_t>(f.c.avatar_owner+0x6C,1);CHECK(fixture_failure_queries>=unsafe_queries);
+    CHECK(NADSF_Validate(&f.c)==1 && NADSF_Error()==OK);
+    pass("inaccessible unmapped invalid-numeric and readable semantic owners remain unsafe; no previous read fault can taint a later guard");
+
+    SYSTEM_INFO info{};GetSystemInfo(&info);const size_t page=info.dwPageSize;
+    const uint64_t split=allocate(page*2),crossing=split+page-12;
+    std::memcpy(reinterpret_cast<void*>(crossing),reinterpret_cast<void*>(f.descriptor),20);
+    put<uint64_t>(f.c.avatar_owner+0x110,crossing);f.begin();
+    CHECK(VirtualProtect(reinterpret_cast<void*>(split+page),page,PAGE_NOACCESS,&discarded));
+    const auto cross_queries=fixture_failure_queries;f.sample(.271f);
+    CHECK(f.stats().error==OWNER_MISMATCH && !armed.load() && fixture_failure_queries>=cross_queries+2);
+    CHECK(VirtualProtect(reinterpret_cast<void*>(split+page),page,PAGE_READWRITE,&discarded));
+    put<uint64_t>(f.c.avatar_owner+0x110,f.descriptor);CHECK(end_current()==1);
+    CHECK(VirtualFree(reinterpret_cast<void*>(split),0,MEM_RELEASE));
+    pass("a readable first page never certifies an attempted owner span crossing into an unreadable page");
+
+    f.normal();const auto nonowner_queries=fixture_failure_queries;
+    const uint64_t copy=allocate(0x1000);put(copy,f.c);fail_rpm_once(copy);
+    CHECK(NADSF_Validate(reinterpret_cast<const NADSF_Config*>(copy))==0 && NADSF_Error()==INVALID_CONFIG);
+    CHECK(fixture_rpm_failure_remaining==0 && fixture_failure_queries==nonowner_queries);clear_rpm_failure();
+    fail_rpm_once(f.c.exe+0x2dd080);CHECK(NADSF_Validate(&f.c)==0 && NADSF_Error()==CODE_MISMATCH);
+    CHECK(fixture_failure_queries==nonowner_queries);clear_rpm_failure();
+    fail_rpm_once(f.settings+0xac488);CHECK(NADSF_Validate(&f.c)==0 && NADSF_Error()==SOURCE_INVALID);
+    CHECK(fixture_failure_queries==nonowner_queries);clear_rpm_failure();
+    CHECK(VirtualFree(reinterpret_cast<void*>(copy),0,MEM_RELEASE));
+    f.begin();fail_rpm_once(f.api+0x80);f.sample(.271f);
+    CHECK(f.stats().error==API_MISMATCH && !armed.load() && fixture_failure_queries==nonowner_queries);
+    clear_rpm_failure();CHECK(NADSF_End(active_generation+1)==0 && NADSF_Error()==TOKEN_MISMATCH);
+    CHECK(end_current()==1);
+    pass("actual RPM failures in config code source and dispatch and invalid tokens never become retryable owner3");
+
+    f.fp();
+    fail_owner_after_original=f.controller;token=UINT64_MAX;const auto after_cas=fixture_cas_calls;
+    const auto after_result=NADSF_Begin(&f.c,&token),after_error=NADSF_Error();
+    CHECK(after_result==0 && token==0 && after_error==READ_FAILED && !reserved.load() && !armed.load());
+    CHECK(fixture_rpm_failure_remaining==0 && fixture_cas_calls==after_cas+2);
+    recovery_event("post_call_begin_read_failed",after_result,after_error,token,fixture_cas_calls-after_cas);
+    clear_rpm_failure();CHECK(NADSF_Validate(&f.c)==1 && NADSF_Error()==OK);
+    pass("an owner RPM failure after the actual immediate setter rolls Begin back with its fresh causal3");
+}
 int main() {
     Fixture f;CHECK(f.stats().installed==0);CHECK(NADSF_Validate(&f.c)==1 && fixture_cas_calls==0);
     CHECK(begin_current(&f.c)==0 && reserved.load()==0);pass("normal4 read-only preflight; Begin requires owned6");
@@ -252,7 +361,7 @@ int main() {
         if(failure==4)put<uint64_t>(f.c.game+0x2e287d0,f.c.context);
     }pass("avatar descriptor/body generation/object/current camera lifetime changes disarm and forward");
     f.normal();
-    for(uint64_t address:{f.c.game+0x110be7a,f.c.exe+0x2dcfd0,f.c.exe+0x2dcfc0,f.c.exe+0x88}) {
+    for(uint64_t address:{f.c.game+0x110bfda,f.c.exe+0x2dd080,f.c.exe+0x2dd070,f.c.exe+0x88}) {
         uint8_t old=0;CHECK(value(address,old));put<uint8_t>(address,old^1);fixture_cas_calls=0;
         CHECK(NADSF_Validate(&f.c)==0 && begin_current(&f.c)==0 && fixture_cas_calls==0);put<uint8_t>(address,old);
     }pass("literal callsite getter setter and PE drift refuse before CAS");
@@ -453,7 +562,7 @@ int main() {
     f.normal();put<float>(f.c.request+0x3C,NAN);fixture_cas_calls=0;
     CHECK(NADSF_ValidateFird(&f.c)==0 && begin_fird(&f.c,captured)==0 && fixture_cas_calls==0);
     put<float>(f.c.request+0x3C,.7f);
-    for(uint64_t address:{f.c.game+0x110b37b,f.c.game+0x111e278,f.c.game+0x111b8fe,f.c.game+0x111b91a,f.c.game+0x111b931,f.c.game+0x111b955}) {
+    for(uint64_t address:{f.c.game+0x110b4db,f.c.game+0x111e3d8,f.c.game+0x111ba5e,f.c.game+0x111ba7a,f.c.game+0x111ba91,f.c.game+0x111bab5}) {
         uint8_t old=0;CHECK(value(address,old));put<uint8_t>(address,old^1);fixture_cas_calls=0;
         CHECK(NADSF_ValidateFird(&f.c)==0 && begin_fird(&f.c,captured)==0 && fixture_cas_calls==0);
         put<uint8_t>(address,old);
@@ -534,6 +643,7 @@ int main() {
     f.normal();f.c.reserved=0;CHECK(begin_fird(&f.c,captured)==1);CHECK(NADSF_SetTransition(active_generation,20,.5f,0)==0);
     CHECK(end_current()==1);f.c.reserved=0;
     pass("Fird captured projection rejects the TrueFP shared-phase control");
+    owner_read_failures(f);
     uint8_t code_after[64]{};CHECK(read(reinterpret_cast<uint64_t>(synthetic_setter),code_after,64));CHECK(std::memcmp(code_before,code_after,64)==0);
     pass("setter executable bytes unchanged");std::printf("Native FOV fixture PASS: %llu cases\n",static_cast<unsigned long long>(cases));return 0;
 }

@@ -7,22 +7,22 @@ sys.path.insert(0,str(ROOT.parent/'vm-trace'))
 from trace import Image
 
 def prepare():
-    im=Image('early');want='6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c'
+    im=Image('early');want='1932b56a7670a62ab1dd432dc05ca5dbcfd12e7fa49637068b16512ea75602a7'
     assert hashlib.sha256(im.data).hexdigest()==want
-    newpath=Path('/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin');new=newpath.read_bytes()
-    assert hashlib.sha256(new).hexdigest()=='6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c'
-    start,end=0x6cd510,0x6cd90b;code=im.data[start:end];assert code==new[start:end]
+    newpath=Path('/home/goose/Projects/Linux HD2 Mods/builds/26568081/runtime/images/exe-26568081.bin');new=newpath.read_bytes()
+    assert hashlib.sha256(new).hexdigest()=='1932b56a7670a62ab1dd432dc05ca5dbcfd12e7fa49637068b16512ea75602a7'
+    start,end=0x6cd4a0,0x6cd89b;code=im.data[start:end];assert code==new[start:end]
     ins={i.address:i for i in im.cs.disasm(code,start)};assert ins[end-1].mnemonic=='ret'
-    patches=[('named_shutdown',0x6cd54d,0x6cd569),('full_collection',0x6cd569,0x6cd5fa),('threshold_store',0x6cd601,0x6cd605)]
+    patches=[('named_shutdown',0x6cd4dd,0x6cd4f9),('full_collection',0x6cd4f9,0x6cd58a),('threshold_store',0x6cd591,0x6cd595)]
     for _,a,b in patches:assert a in ins and b in ins
     for i in ins.values():
         if i.mnemonic.startswith('j') and i.operands[0].type==X86_OP_IMM:
             for _,a,b in patches:assert not (a<i.operands[0].imm<b and not a<=i.address<b),(hex(i.address),hex(i.operands[0].imm))
-    calls={0x6cd564:0x4f03a0,0x6cd5a3:0x7a0f30,0x6cd5b1:0x7a0bc0,0x6cd5c3:0x7a0f30,0x6cd73a:0x1c4c30,
-           0x6cd755:0x7d4530,0x6cd77f:0x7cb790,0x6cd801:0x7d09b0,0x6cd8a0:0x12aee70,0x6cd8b5:0x6cf010,
-           0x6cd8ce:0x4ed4c0,0x6cd8da:0x602070,0x6cd8e6:0x602070,0x6cd8ef:0x602070}
+    calls={0x6cd4f4:0x4f0470,0x6cd533:0x7a0f80,0x6cd541:0x7a0c10,0x6cd553:0x7a0f80,0x6cd6ca:0x1c4ce0,
+           0x6cd6e5:0x7d47d0,0x6cd70f:0x7cba30,0x6cd791:0x7d0c50,0x6cd830:0x12af030,0x6cd845:0x6cf0d0,
+           0x6cd85e:0x4ed590,0x6cd86a:0x602110,0x6cd876:0x602110,0x6cd87f:0x602110}
     for at,target in calls.items():assert ins[at].mnemonic=='call' and ins[at].operands[0].imm==target
-    assert ins[0x6cd5fa].mnemonic=='cmp' and ins[0x6cd601].mnemonic=='mov' and ins[0x6cd605].mnemonic=='je'
+    assert ins[0x6cd58a].mnemonic=='cmp' and ins[0x6cd591].mnemonic=='mov' and ins[0x6cd595].mnemonic=='je'
     (ROOT/'work/shutdown_witnesses.h').write_text('/* Pinned local captured game destructor. */\nstatic const unsigned char shutdown_game_witness[]={'+','.join(map(str,code))+'};\n')
     evidence={'capture':str(im.path),'capture_sha256':want,'newer_capture':str(newpath),'newer_capture_sha256':hashlib.sha256(new).hexdigest(),
         'function':{'entry':hex(start),'end':hex(end),'size':len(code),'sha256':hashlib.sha256(code).hexdigest(),'same_in_both_captures':True},

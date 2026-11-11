@@ -1,7 +1,7 @@
 -- Composite control/animation/visibility owner. Import and construction do not access the
 -- game. Saved MCM intent survives ordinary menu, actor and Photo Mode pauses.
 local M = {}
-local STAMP, EXE_STAMP = 0x6ae0e5ff, 0x6ae0964a
+local STAMP, EXE_STAMP = 0x6af322c1, 0x6af2d5e6
 local BODY = string.char(0x97,0xFA,0x4D,0x29,0x4D,0x33,0x1C,0x4D)
 local function word(bytes,offset)
     offset=offset or 0
@@ -204,8 +204,8 @@ function M.new(options)
         assert(ptr(descriptors+row*8)==view.ep,'Unarmed actor changed')
         if u32(rows+row*0x30+0x1C)~=0 then
             assert(not lease.unarmed_calling and not lease.unarmed_returned,'Unarmed acknowledgement pending; no repeated setter')
-            select_unarmed=select_unarmed or assert(io.native(view.game+0x9bc670,'void (*)(void *, uint32_t, uint32_t)',
-                '488bc444894018535541554881ec800000003b15482a4802418b','BRIDGE_CLEANUP_UNARMED'))
+            select_unarmed=select_unarmed or assert(io.native(view.game+0x9bc6a0,'void (*)(void *, uint32_t, uint32_t)',
+                '488bc444894018535541554881ec800000003b15182a4802418b','BRIDGE_CLEANUP_UNARMED'))
             unarmed_ffi=unarmed_ffi or require('ffi');lease.unarmed_calling=true
             select_unarmed(unarmed_ffi.cast('void *',inventory),view.avatar,0)
             lease.unarmed_calling=nil;lease.unarmed_returned=true
@@ -273,17 +273,17 @@ function M.new(options)
         end
         -- Restore the ordinary bridge graph route even if slot zero was already
         -- selected. Release of our partial layer leases does not emit this event.
-        local exe,_,stamp=io.module('helldivers2.exe');assert(exe and stamp==0x6AE0964A,'Cleanup executable changed')
+        local exe,_,stamp=io.module('helldivers2.exe');assert(exe and stamp==0x6AF2D5E6,'Cleanup executable changed')
         local reference=lease.render;local index=reference%0x400000;local registry=ptr(exe+0x1ab76f8)
         assert(index<u32(registry+0x98) and read(ptr(registry+0xA0)+index,1):byte()==math.floor(reference/0x400000),'Cleanup body generation changed')
         local body=ptr(ptr(registry+0x88)+index*8);assert(u32(body+8)==reference,'Cleanup body reference changed')
         assert(ptr(body+0x178)>=65536,'Cleanup animator unavailable')
         if not lease.normal_animation_returned then
             assert(not lease.normal_animation_attempted,'Normal animation result unknown; no repeated event')
-            has_bridge_event=has_bridge_event or assert(io.native(exe+0x1f7510,'uint8_t (*)(uint32_t, uint32_t)',
-                '48895c2408574883ec208bfae87f91eaff488bc8488bd84c','BRIDGE_CLEANUP_HAS_NORMAL_ANIMATION'))
-            send_bridge_event=send_bridge_event or assert(io.native(exe+0x1f7700,'void (*)(uint32_t, uint32_t)',
-                '48895c2408574883ec208bda8bf9e88d8feaff448bc38bd7','BRIDGE_CLEANUP_NORMAL_ANIMATION'))
+            has_bridge_event=has_bridge_event or assert(io.native(exe+0x1f75d0,'uint8_t (*)(uint32_t, uint32_t)',
+                '48895c2408574883ec208bfae8ef90eaff488bc8488bd84c','BRIDGE_CLEANUP_HAS_NORMAL_ANIMATION'))
+            send_bridge_event=send_bridge_event or assert(io.native(exe+0x1f77c0,'void (*)(uint32_t, uint32_t)',
+                '48895c2408574883ec208bda8bf9e8fd8eeaff448bc38bd7','BRIDGE_CLEANUP_NORMAL_ANIMATION'))
             assert(has_bridge_event(reference,0x712947D6)~=0,'Normal bridge animation event unavailable')
             lease.normal_animation_attempted=true
             send_bridge_event(reference,0x712947D6)

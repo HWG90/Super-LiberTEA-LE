@@ -3,7 +3,7 @@
 A new, separate LLL mod based on the verified Original DBF R46. The first HUD is the saved Quiet
 Bracket: ammo to the right of the crosshair, a thicker health bar and thin stamina track to the left, fixed supply
 slots, and brief reload/ready cues. Quiet aiming hides routine detail. It is an editable source
-candidate for **Steam Helldivers2 build26251122, LuaJIT LLL on Linux/Proton**.
+candidate for **Steam Helldivers2 build26568081, LuaJIT LLL on Linux/Proton**.
 
 Original DBF is backed up; its routines run inside DBF Modular. The separate standalone addon is
 disabled to prevent duplicate input owners. The discarded DBF++ merger remains archived. Current

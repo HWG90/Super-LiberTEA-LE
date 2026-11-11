@@ -19,7 +19,7 @@ static std::atomic<uint64_t> callback_generation{0};
 static std::atomic<uint64_t> seen{0},forwarded{0},replaced{0},native6_forwarded{0},resets{0},return_address{0};
 static uint64_t slot=0,slot_image=0,generation_counter=0,owned_generation=0,retired_generation=0;
 static bool possible=false;
-static constexpr uint32_t SETTER=0x2dd4f0,CALL=0x110be95,GRAPH_GETTER=0x28d310;
+static constexpr uint32_t SETTER=0x2dd5a0,CALL=0x110bff5,GRAPH_GETTER=0x28d3c0;
 enum Error:uint32_t {OK=0,INVALID_CONFIG=1,BUSY=2,READ_FAILED=3,IMAGE_MISMATCH=4,
     CODE_MISMATCH=5,API_MISMATCH=6,OWNER_MISMATCH=7,UNIT_MISMATCH=8,PIN_FAILED=9,
     SLOT_NOT_WRITABLE=10,CAS_MISMATCH=11,CAS_FAULT=12,CLEANUP_PENDING=13,
@@ -73,6 +73,9 @@ static uint64_t fixture_bridge_mutation=0;static uint32_t fixture_bridge_value=0
 static uint64_t fixture_before_commit_mutation=0;static uint32_t fixture_before_commit_value=0;
 static uint64_t fixture_before_history_mutation=0;static uint32_t fixture_before_history_value=0;
 static uint64_t fixture_registry_close_mutation=0;static uint32_t fixture_registry_close_value=0;
+static uint64_t fixture_rpm_failure_at=0,fixture_rpm_failures=0;
+static uint32_t fixture_rpm_failure_remaining=0;
+static bool fixture_rpm_restore_readable=true;
 static bool fixture_slot_unreadable=false,fixture_slot_readonly=false;
 static HANDLE fixture_before_policy_reached=nullptr,fixture_continue_policy=nullptr;
 static HANDLE fixture_begin_display_reached=nullptr,fixture_continue_begin=nullptr;
@@ -90,12 +93,65 @@ static double now() {
         :static_cast<double>(GetTickCount64());
 #endif
 }
+// Fault evidence belongs to one explicit owner-data guard. Successful reads
+// take the original RPM path; only an actual failure queries memory mappings.
+// Optional history/code/diagnostic reads outside this scope cannot taint it.
+struct OwnerReadProbe;
+static thread_local OwnerReadProbe* owner_read_probe=nullptr;
+struct OwnerReadProbe {
+    OwnerReadProbe* previous;bool transport=false,unsafe=false;
+    OwnerReadProbe():previous(owner_read_probe){owner_read_probe=this;}
+    ~OwnerReadProbe(){owner_read_probe=previous;}
+    OwnerReadProbe(const OwnerReadProbe&)=delete;
+    OwnerReadProbe& operator=(const OwnerReadProbe&)=delete;
+};
+static bool readable_span(uint64_t at,size_t length) {
+    const uint64_t end=at+length;uint64_t cursor=at;
+    for(unsigned regions=0;cursor<end && regions<4;++regions) {
+        MEMORY_BASIC_INFORMATION region{};
+        if(VirtualQuery(reinterpret_cast<const void*>(cursor),&region,sizeof region)!=sizeof region
+            || region.State!=MEM_COMMIT || (region.Protect&(PAGE_GUARD|PAGE_NOACCESS)))return false;
+        const DWORD protection=region.Protect&0xff;
+        if(protection!=PAGE_READONLY && protection!=PAGE_READWRITE && protection!=PAGE_WRITECOPY
+            && protection!=PAGE_EXECUTE_READ && protection!=PAGE_EXECUTE_READWRITE && protection!=PAGE_EXECUTE_WRITECOPY)return false;
+        const uint64_t base=reinterpret_cast<uint64_t>(region.BaseAddress),next=base+region.RegionSize;
+        if(base>cursor || next<=cursor || next>0x800000000000ULL)return false;
+        cursor=next<end?next:end;
+    }
+    return cursor==end;
+}
 static bool read(uint64_t at,void* out,size_t length) {
-    if(at<65536 || at>=0x800000000000ULL || length>4096 || at+length>=0x800000000000ULL)return false;
-    SIZE_T actual=0;return ReadProcessMemory(GetCurrentProcess(),reinterpret_cast<const void*>(at),out,length,&actual)!=0 && actual==length;
+    if(at<65536 || at>=0x800000000000ULL || length==0 || length>4096 || at+length>=0x800000000000ULL) {
+        if(owner_read_probe)owner_read_probe->unsafe=true;return false;
+    }
+#if defined(NADSC_FIXTURE)
+    // Real OS failure on a private fixture data page, never the game/stack.
+    DWORD fixture_old_protection=0;
+    const bool fixture_fault=fixture_rpm_failure_remaining && at==fixture_rpm_failure_at;
+    const bool fixture_protected=fixture_fault && (--fixture_rpm_failure_remaining,
+        VirtualProtect(reinterpret_cast<void*>(at),length,PAGE_NOACCESS,&fixture_old_protection)!=0);
+#endif
+    SIZE_T actual=0;
+    const bool complete=ReadProcessMemory(GetCurrentProcess(),reinterpret_cast<const void*>(at),out,length,&actual)!=0 && actual==length;
+#if defined(NADSC_FIXTURE)
+    if(fixture_protected) {
+        if(!complete)++fixture_rpm_failures;
+        if(fixture_rpm_restore_readable) {DWORD ignored=0;VirtualProtect(reinterpret_cast<void*>(at),length,fixture_old_protection,&ignored);}
+    }
+#endif
+    if(complete)return true;
+    if(owner_read_probe) {
+        if(readable_span(at,length))owner_read_probe->transport=true;
+        else owner_read_probe->unsafe=true;
+    }
+    return false;
 }
 template<class T> static bool value(uint64_t at,T& out) {return read(at,&out,sizeof out);}
-static bool pointer(uint64_t at,uint64_t& out) {return value(at,out) && out>=65536 && out<0x800000000000ULL;}
+static bool pointer(uint64_t at,uint64_t& out) {
+    if(!value(at,out))return false;
+    if(out>=65536 && out<0x800000000000ULL)return true;
+    if(owner_read_probe)owner_read_probe->unsafe=true;return false;
+}
 static void error(uint32_t code) {last_error.store(code,std::memory_order_release);}
 static uint32_t reject(uint32_t code) {error(code);return 0;}
 static bool image(uint64_t base,uint32_t stamp,uint32_t length) {
@@ -182,6 +238,13 @@ static bool owner(Policy& p,bool capture) {
     p.fallback_safe=(mask==0 || mask==2 || mask==0x20) && available;
     return true;
 }
+// Only this guard can translate an observed transport failure into code3.
+// Semantic identity mismatches and invalid/unreadable address spans stay unsafe.
+static uint32_t owner_status(Policy& p,bool capture) {
+    OwnerReadProbe probe;
+    if(owner(p,capture))return OK;
+    return probe.transport && !probe.unsafe?READ_FAILED:OWNER_MISMATCH;
+}
 static bool top(Policy& p,uint32_t& kind) {
     uint32_t ring[2]{},r[4]{};
     if(!read(p.c.context+0x1F8,ring,sizeof ring) || ring[0]>=32 || ring[1]>=32)return false;
@@ -226,7 +289,7 @@ static bool points(Policy& p,float* root,float* head,float* root_basis=nullptr) 
 static bool on_foot(Policy& p) {
     uint64_t vt=0,getter=0,resource=0,instance=0,g=0,array=0,current=0;
     uint32_t layers=0,table_offset=0,layer_offset=0,count=0,state_offset=0;
-    if(!pointer(p.body_object,vt) || !pointer(vt+0x1B0,getter) || getter!=p.c.exe+0x28d460
+    if(!pointer(p.body_object,vt) || !pointer(vt+0x1B0,getter) || getter!=p.c.exe+0x28d510
         || !bytes(getter,"488b8178010000c3") || !value(p.body_object+0x358,resource) || resource!=0x4D1C334D294DFA97ULL
         || !pointer(p.body_object+0x178,instance) || !pointer(instance+0x28,g) || !value(g+4,layers) || layers!=31
         || !value(g+8,table_offset) || table_offset<12 || table_offset>0x10000)return false;
@@ -381,9 +444,9 @@ static bool direct_camera_parent(Policy& p,FreeAim::Q& out,float* position=nullp
 }
 // Read-only native6 reference. The FP parent is current-generation proven;
 // the pre-setter camera world matrix is deliberately never used as history.
-// Returns false only for loss of the lease owner/dispatch. Unsupported or
+// Returns an explicit fault only for loss of the lease owner/dispatch. Unsupported or
 // changing parent/request spaces merely discard optional positional history.
-static bool remember_native(Policy& p,const float* native,double tick,bool capture=true) {
+static uint32_t remember_native(Policy& p,const float* native,double tick,bool capture=true) {
     FreeAim::Q parent{};float parent_position[3]{},local[3]{},root[16]{},parent_basis[9]{};uint64_t matrices=0;ParentProof proof{};
     const uint32_t weapon=p.current_weapon;uint8_t full_ads=0;
     const bool sampled=capture && value(p.controller+4,full_ads)
@@ -397,31 +460,33 @@ static bool remember_native(Policy& p,const float* native,double tick,bool captu
     // Read-only sample addresses belong to this lease but may have retired.
     // Nothing is admitted until a single complete fresh owner/dispatch proof;
     // passive owner-loss health is retained even when optional sampling fails.
-    if(!owner(p,false) || !dispatch_owned(p)) {p.correction.reset();return false;}
+    const uint32_t ownership=owner_status(p,false);
+    if(ownership!=OK || !dispatch_owned(p)) {p.correction.reset();return ownership!=OK?ownership:OWNER_MISMATCH;}
     uint64_t again=0;uint32_t kind=0;
     if(!sampled || !p.safe || !top(p,kind) || kind!=6 || p.current_weapon!=weapon || p.full_ads!=(full_ads!=0)
-        || !pointer(p.body_object+0x88,again) || again!=matrices || !parent_current(p,proof)) {p.correction.reset();return true;}
+        || !pointer(p.body_object+0x88,again) || again!=matrices || !parent_current(p,proof)) {p.correction.reset();return OK;}
     float offset[3]{},relative[3]{};
     for(unsigned component=0;component<3;++component)for(unsigned axis=0;axis<3;++axis)
         offset[component]+=local[axis]*parent_basis[axis*3+component];
     for(unsigned axis=0;axis<3;++axis)for(unsigned component=0;component<3;++component)
         relative[axis]+=(parent_position[component]+offset[component]-root[12+component])*root[axis*4+component];
-    p.correction.remember(relative,p.current_weapon,tick);return true;
+    p.correction.remember(relative,p.current_weapon,tick);return OK;
 }
 // Final mutable proof; code/vtable fingerprints were already checked during
 // this callback. Repeat owner/generation/request checks and the sampled graph
 // identity, topology and world-space parent immediately before fallback use.
-static bool commit_current(Policy& p,uint32_t expected_kind) {
+static bool commit_current(Policy& p,uint32_t expected_kind,uint32_t& failure) {
 #if defined(NADSC_FIXTURE)
     if(fixture_before_commit_mutation) {std::memcpy(reinterpret_cast<void*>(fixture_before_commit_mutation),&fixture_before_commit_value,4);fixture_before_commit_mutation=0;}
 #endif
     uint32_t kind=0,count=0,hash=0,link=0,parent_hash=0;uint64_t hashes=0,links=0,matrices=0,parent=1;
-    uint8_t header[56]{};uint64_t foot=0;
+    uint8_t header[56]{};uint64_t foot=0;failure=OWNER_MISMATCH;
     if(!pointer(p.body_object+0x178,foot) || foot!=p.foot_instance
         || !pointer(p.foot_instance+0x28,foot) || foot!=p.foot_graph
         || !pointer(p.foot_instance+0x50,foot) || foot!=p.foot_array
-        || !pointer(p.foot_array+13*8,foot) || foot!=p.foot_current
-        || !owner(p,false) || !p.fallback_safe || !dispatch_owned(p) || !top(p,kind) || kind!=expected_kind
+        || !pointer(p.foot_array+13*8,foot) || foot!=p.foot_current)return false;
+    const uint32_t ownership=owner_status(p,false);if(ownership!=OK){failure=ownership;return false;}
+    if(!p.fallback_safe || !dispatch_owned(p) || !top(p,kind) || kind!=expected_kind
         || !read(p.body_object+0x70,header,sizeof header))return false;
     std::memcpy(&count,header,4);std::memcpy(&matrices,header+0x18,8);
     std::memcpy(&links,header+0x28,8);std::memcpy(&hashes,header+0x30,8);
@@ -466,13 +531,13 @@ static void setter_hook(void* camera,uint32_t unit,const float* native) {
         if(supported && kind==6) {
             // Read-only sampling can precede the terminal lease proof because
             // this branch ALWAYS forwards the game's entire native frame.
-            const bool current=remember_native(policy,native,tick,policy.presentation_enabled);
+            const uint32_t current=remember_native(policy,native,tick,policy.presentation_enabled);
             native6_forwarded.fetch_add(1,std::memory_order_relaxed);
-            if(!current){armed.store(0,std::memory_order_release);reset(policy);error(OWNER_MISMATCH);}
+            if(current!=OK){armed.store(0,std::memory_order_release);reset(policy);error(current);}
             else {reset(policy,true);policy.native6_seen=true;policy.native6_at=tick;
                 observe_camera_parent(policy,tick);error(OK);}
-        }else if(!owner(policy,false) || !dispatch_owned(policy)) {
-            armed.store(0,std::memory_order_release);reset(policy);error(OWNER_MISMATCH);
+        }else if(const uint32_t current=owner_status(policy,false);current!=OK || !dispatch_owned(policy)) {
+            armed.store(0,std::memory_order_release);reset(policy);error(current!=OK?current:OWNER_MISMATCH);
         }else if(!supported){policy.free_aim.reset();policy.free_previous=0;reset(policy);}
         else if(!policy.fallback_safe){policy.free_aim.reset();policy.free_previous=0;reset(policy);}
         else if(!on_foot(policy)) {reset(policy);error(ON_FOOT_REQUIRED);}
@@ -532,7 +597,8 @@ static void setter_hook(void* camera,uint32_t unit,const float* native) {
                     }else std::memcpy(relative,desired_relative,12);
                     // Revalidate mutable ownership, request and graph after all
                     // sampling, directly before making a corrected native call.
-                    if(!commit_current(policy,kind)) {reset(policy);error(OWNER_MISMATCH);}
+                    uint32_t commit_error=OWNER_MISMATCH;
+                    if(!commit_current(policy,kind,commit_error)) {reset(policy);if(commit_error==READ_FAILED)armed.store(0,std::memory_order_release);error(commit_error);}
                     else {std::memcpy(policy.last_relative,relative,12);policy.last_relative_tick=tick;policy.relative_valid=true;
                         output=adjusted;replaced.fetch_add(1,std::memory_order_relaxed);error(OK);}
                 }
@@ -550,10 +616,10 @@ static void setter_hook(void* camera,uint32_t unit,const float* native) {
 }
 static uint64_t callback() {return reinterpret_cast<uint64_t>(setter_hook);}
 static bool contract(const NADSC_Config& c,Setter& setter,uint64_t& address) {
-    if(!image(c.game,0x6ae0e5ff,0x3382000) || !image(c.exe,0x6ae0964a,0x29fe000))return reject(IMAGE_MISMATCH)!=0;
-    if(!bytes(c.game+CALL,"41ff5120") || !bytes(c.exe+SETTER,"48895c2408574883ec60488bd9498bf88bcae89931dcff4c8b4b184c8bd04c6343208b4708498bd048c1e206498b4920")
-        || !bytes(c.exe+0x1f3020,"40534883ec204863dae872d6eaff488bc84c8b0041ff90e8000000488bcb48c1e10648034828488bc14883c4205bc3")
-        || !bytes(c.exe+GRAPH_GETTER,"488d4160c3") || !bytes(c.exe+0x28d460,"488b8178010000c3"))return reject(CODE_MISMATCH)!=0;
+    if(!image(c.game,0x6af322c1,0x3382000) || !image(c.exe,0x6af2d5e6,0x29fe000))return reject(IMAGE_MISMATCH)!=0;
+    if(!bytes(c.game+CALL,"41ff5120") || !bytes(c.exe+SETTER,"48895c2408574883ec60488bd9498bf88bcae81931dcff4c8b4b184c8bd04c6343208b4708498bd048c1e206498b4920")
+        || !bytes(c.exe+0x1f30e0,"40534883ec204863dae8e2d5eaff488bc84c8b0041ff90e8000000488bcb48c1e10648034828488bc14883c4205bc3")
+        || !bytes(c.exe+GRAPH_GETTER,"488d4160c3") || !bytes(c.exe+0x28d510,"488b8178010000c3"))return reject(CODE_MISMATCH)!=0;
     uint64_t root=0,api=0,target=0;
     if(!pointer(c.game+0x2ce14c8,root) || !pointer(root+0x20,api) || !slot_read(api+0x20,target))return reject(API_MISMATCH)!=0;
     address=api+0x20;if(!writable_slot(address,c.exe))return reject(SLOT_NOT_WRITABLE)!=0;
@@ -574,7 +640,8 @@ static bool config(const NADSC_Config* input,NADSC_Config& c) {
 }
 static bool prepared(Policy& next) {
     uint32_t kind=0;float root[3]{},head[3]{},f[3]{},u[3]{};
-    if(!owner(next,true) || !next.safe || !top(next,kind) || (kind!=4 && kind!=6))return reject(OWNER_MISMATCH)!=0;
+    const uint32_t current=owner_status(next,true);if(current!=OK)return reject(current)!=0;
+    if(!next.safe || !top(next,kind) || (kind!=4 && kind!=6))return reject(OWNER_MISMATCH)!=0;
     if(!graph(next,true) || !points(next,root,head))return reject(GRAPH_MISMATCH)!=0;
     if(kind==4 && !unparented(next))return reject(SPACE_INVALID)!=0;
     if(!basis(next,f,u))return reject(POSE_INVALID)!=0;return true;
@@ -605,7 +672,7 @@ NADSC_EXPORT uint32_t NADSC_Validate(const NADSC_Config* input) {
     NADSC_Config c{};if(!config(input,c))return 0;if(reserved.load())return reject(BUSY);
     Policy next{};next.c=c;Setter target=nullptr;uint64_t address=0;
     if(!prepared(next) || !contract(c,target,address))return 0;
-    if(!owner(next,false))return reject(OWNER_MISMATCH);error(OK);return 1;
+    const uint32_t current=owner_status(next,false);if(current!=OK)return reject(current);error(OK);return 1;
 }
 NADSC_EXPORT uint32_t NADSC_Begin(const NADSC_Config* input,uint64_t* output) {
     AcquireSRWLockExclusive(&control_lock);struct Unlock {~Unlock(){ReleaseSRWLockExclusive(&control_lock);}} unlock;
@@ -631,7 +698,8 @@ NADSC_EXPORT uint32_t NADSC_Begin(const NADSC_Config* input,uint64_t* output) {
     if(observed!=reinterpret_cast<uint64_t>(target)) {possible=false;return failed_begin(CAS_MISMATCH,output);}
     installed.store(1,std::memory_order_release);
     AcquireSRWLockExclusive(&policy_lock);uint32_t kind=0;
-    const bool stable=owner(next,false) && top(next,kind) && (kind==4 || kind==6) && next.safe && graph(next,false) && dispatch_owned(next)
+    const uint32_t current=owner_status(next,false);
+    const bool stable=current==OK && top(next,kind) && (kind==4 || kind==6) && next.safe && graph(next,false) && dispatch_owned(next)
         && (kind!=4 || unparented(next));
     if(stable) {
         policy=next;seen.store(0);forwarded.store(0);replaced.store(0);native6_forwarded.store(0);resets.store(0);
@@ -639,7 +707,7 @@ NADSC_EXPORT uint32_t NADSC_Begin(const NADSC_Config* input,uint64_t* output) {
         return_address.store(c.game+CALL+4,std::memory_order_relaxed);
         callback_generation.store(owned_generation,std::memory_order_release);armed.store(1,std::memory_order_release);
     }
-    ReleaseSRWLockExclusive(&policy_lock);if(!stable)return failed_begin(OWNER_MISMATCH,output);error(OK);return 1;
+    ReleaseSRWLockExclusive(&policy_lock);if(!stable)return failed_begin(current!=OK?current:OWNER_MISMATCH,output);error(OK);return 1;
 }
 NADSC_EXPORT uint32_t NADSC_End(uint64_t generation) {
     AcquireSRWLockExclusive(&control_lock);struct Unlock {~Unlock(){ReleaseSRWLockExclusive(&control_lock);}} unlock;
@@ -656,7 +724,7 @@ NADSC_EXPORT uint32_t NADSC_ReadStats(uint64_t generation,NADSC_Stats* output) {
     read_diagnostics(s);
     s.reserved=0;s.padding=0;s.installed=installed.load();s.armed=armed.load();s.error=last_error.load();
     s.seen=seen.load();s.forwarded=forwarded.load();s.replaced=replaced.load();s.native6_forwarded=native6_forwarded.load();s.resets=resets.load();
-    SIZE_T actual=0;return WriteProcessMemory(GetCurrentProcess(),output,&s,sizeof s,&actual)!=0 && actual==sizeof s;
+    SIZE_T actual=0;return WriteProcessMemory(GetCurrentProcess(),output,&s,sizeof s,&actual)!=0 && actual==sizeof s?1:reject(INVALID_CONFIG);
 }
 NADSC_EXPORT uint32_t NADSC_Error(void) {return last_error.load(std::memory_order_acquire);}
 
@@ -667,15 +735,15 @@ NADSC_EXPORT uint32_t NADSC_SetOffsets(uint64_t generation,float right,float for
     struct Unlock {~Unlock(){ReleaseSRWLockExclusive(&control_lock);}} unlock;
     if(!reserved.load()||!armed.load()||generation!=owned_generation)return reject(OWNER_MISMATCH);
     AcquireSRWLockExclusive(&policy_lock);
-    const bool current=owner(policy,false);
-    if(current){
+    const uint32_t current=owner_status(policy,false);
+    if(current==OK){
         if(policy.presentation_enabled && policy.tracking && policy.relative_valid
            && (policy.side!=right || policy.c.forward!=forward || policy.c.up!=up))
             policy.correction.remember(policy.last_relative,policy.current_weapon,policy.last_relative_tick);
         policy.side=right;policy.c.forward=forward;policy.c.up=up;
     }
     ReleaseSRWLockExclusive(&policy_lock);
-    if(!current)return reject(OWNER_MISMATCH);
+    if(current!=OK)return reject(current);
     error(OK);return 1;
 }
 
@@ -690,31 +758,31 @@ NADSC_EXPORT uint32_t NADSC_FreeAim(uint64_t generation,uint32_t milliseconds) {
 }
 NADSC_EXPORT uint32_t NADSC_FreeAimStats(uint64_t generation,NADSC_FreeStats* out) {
     AcquireSRWLockExclusive(&control_lock);struct Unlock{~Unlock(){ReleaseSRWLockExclusive(&control_lock);}}unlock;
-    if(!reserved.load()||generation!=owned_generation)return 0;
+    if(!reserved.load()||generation!=owned_generation)return reject(TOKEN_MISMATCH);
     // One explicit diagnostic call, never a frame-loop subscription.
     AcquireSRWLockShared(&policy_lock);
     const double tick=now();
     NADSC_FreeStats s{sizeof(NADSC_FreeStats),policy.free_gate,policy.free_applied,policy.free_ads,
       policy.free_until>tick?static_cast<uint64_t>(policy.free_until-tick):0,policy.free_aim.offset_yaw,policy.free_aim.offset_pitch,policy.free_measured,policy.free_total_us,policy.free_max_us};
     ReleaseSRWLockShared(&policy_lock);
-    SIZE_T done=0;return WriteProcessMemory(GetCurrentProcess(),out,&s,sizeof s,&done)&&done==sizeof s;
+    SIZE_T done=0;return WriteProcessMemory(GetCurrentProcess(),out,&s,sizeof s,&done)&&done==sizeof s?1:reject(INVALID_CONFIG);
 }
 
 NADSC_EXPORT uint32_t NADSC_ObserveParent(uint64_t generation,uint32_t milliseconds) {
-    if(milliseconds>3000)return 0;
+    if(milliseconds>3000)return reject(INVALID_CONFIG);
     AcquireSRWLockExclusive(&control_lock);struct Unlock{~Unlock(){ReleaseSRWLockExclusive(&control_lock);}}unlock;
-    if(!reserved.load()||!armed.load()||generation!=owned_generation)return 0;
+    if(!reserved.load()||!armed.load()||generation!=owned_generation)return reject(TOKEN_MISMATCH);
     AcquireSRWLockExclusive(&policy_lock);
-    const bool safe=policy.free_until==0&&owner(policy,false);
+    const uint32_t current=policy.free_until==0?owner_status(policy,false):BUSY;const bool safe=current==OK;
     if(safe){policy.observe_until=milliseconds?now()+milliseconds:0;policy.observe_samples=policy.observe_rejected=0;policy.observe_max_degrees=0;}
-    ReleaseSRWLockExclusive(&policy_lock);return safe?1:0;
+    ReleaseSRWLockExclusive(&policy_lock);return safe?1:reject(current);
 }
 NADSC_EXPORT uint32_t NADSC_ParentStats(uint64_t generation,NADSC_ParentStats45* out) {
     AcquireSRWLockExclusive(&control_lock);struct Unlock{~Unlock(){ReleaseSRWLockExclusive(&control_lock);}}unlock;
-    if(!reserved.load()||generation!=owned_generation)return 0;
+    if(!reserved.load()||generation!=owned_generation)return reject(TOKEN_MISMATCH);
     AcquireSRWLockShared(&policy_lock);
     const double tick=now();NADSC_ParentStats45 s{policy.observe_samples,policy.observe_rejected,policy.observe_until>tick?static_cast<uint64_t>(policy.observe_until-tick):0,policy.observe_max_degrees,0};
-    ReleaseSRWLockShared(&policy_lock);SIZE_T done=0;return WriteProcessMemory(GetCurrentProcess(),out,&s,sizeof s,&done)&&done==sizeof s;
+    ReleaseSRWLockShared(&policy_lock);SIZE_T done=0;return WriteProcessMemory(GetCurrentProcess(),out,&s,sizeof s,&done)&&done==sizeof s?1:reject(INVALID_CONFIG);
 }
 
 NADSC_EXPORT uint32_t NADSC_SetKick46(uint64_t generation,uint32_t enabled) {
@@ -726,37 +794,41 @@ NADSC_EXPORT uint32_t NADSC_SetKick46(uint64_t generation,uint32_t enabled) {
 }
 NADSC_EXPORT uint32_t NADSC_KickStats46(uint64_t generation,NADSC_KickStats46Data* out) {
     AcquireSRWLockExclusive(&control_lock);struct Unlock{~Unlock(){ReleaseSRWLockExclusive(&control_lock);}}unlock;
-    if(!reserved.load()||generation!=owned_generation)return 0;
+    if(!reserved.load()||generation!=owned_generation)return reject(TOKEN_MISMATCH);
     AcquireSRWLockShared(&policy_lock);
     NADSC_KickStats46Data s{policy.kick_pulses,policy.kick_frames,policy.kick_enabled?1U:0U,policy.kick_angle};
-    ReleaseSRWLockShared(&policy_lock);SIZE_T done=0;return WriteProcessMemory(GetCurrentProcess(),out,&s,sizeof s,&done)&&done==sizeof s;
+    ReleaseSRWLockShared(&policy_lock);SIZE_T done=0;return WriteProcessMemory(GetCurrentProcess(),out,&s,sizeof s,&done)&&done==sizeof s?1:reject(INVALID_CONFIG);
 }
 
 NADSC_EXPORT uint32_t NADSC_SetPresentation47(uint64_t generation) {
  AcquireSRWLockExclusive(&control_lock);struct Unlock{~Unlock(){ReleaseSRWLockExclusive(&control_lock);}}unlock;
- if(!reserved.load()||!armed.load()||generation!=owned_generation)return 0;
+ if(!reserved.load()||!armed.load()||generation!=owned_generation)return reject(TOKEN_MISMATCH);
  AcquireSRWLockExclusive(&policy_lock);
- const bool ok=owner(policy,false)&&dispatch_owned(policy)&&bytes(policy.c.game+0x110be87,"4c8d45c08b5308488b0b4c8b482041ff5120488b052856bd014c8d45008b5308488b0b4c8b482041ff5128");
- if(ok){policy.presentation_enabled=true;policy.correction.reset();}
- ReleaseSRWLockExclusive(&policy_lock);return ok?1:0;
+ const uint32_t current=owner_status(policy,false);
+ uint32_t failure=current;
+ if(failure==OK && !dispatch_owned(policy))failure=API_MISMATCH;
+ if(failure==OK && !bytes(policy.c.game+0x110bfe7,"4c8d45c08b5308488b0b4c8b482041ff5120488b05c854bd014c8d45008b5308488b0b4c8b482041ff5128"))failure=CODE_MISMATCH;
+ if(failure==OK){policy.presentation_enabled=true;policy.correction.reset();}
+ ReleaseSRWLockExclusive(&policy_lock);return failure==OK?1:reject(failure);
 }
+
 NADSC_EXPORT uint32_t NADSC_SetCameraMotion47(uint64_t generation,float x,float y,float z,float pitch,float yaw,float roll){
  const float values[6]{x,y,z,pitch,yaw,roll};for(float v:values)if(!std::isfinite(v)||v!=0)return reject(INVALID_CONFIG);
  AcquireSRWLockExclusive(&control_lock);struct Unlock{~Unlock(){ReleaseSRWLockExclusive(&control_lock);}}unlock;
- if(!reserved.load()||!armed.load()||generation!=owned_generation)return 0;
+ if(!reserved.load()||!armed.load()||generation!=owned_generation)return reject(TOKEN_MISMATCH);
  AcquireSRWLockExclusive(&policy_lock);std::memcpy(policy.motion,values,sizeof values);ReleaseSRWLockExclusive(&policy_lock);return 1;
 }
 
 NADSC_EXPORT uint32_t NADSC_Profile47(uint64_t generation,uint32_t count){
- if(!count||count>1000)return 0;AcquireSRWLockExclusive(&control_lock);struct Unlock{~Unlock(){ReleaseSRWLockExclusive(&control_lock);}}unlock;
- if(!reserved.load()||!armed.load()||generation!=owned_generation)return 0;
+ if(!count||count>1000)return reject(INVALID_CONFIG);AcquireSRWLockExclusive(&control_lock);struct Unlock{~Unlock(){ReleaseSRWLockExclusive(&control_lock);}}unlock;
+ if(!reserved.load()||!armed.load()||generation!=owned_generation)return reject(TOKEN_MISMATCH);
  AcquireSRWLockExclusive(&policy_lock);policy.profile_count=0;policy.profile_remaining=count;QueryPerformanceFrequency(&policy.profile_frequency);ReleaseSRWLockExclusive(&policy_lock);return 1;
 }
 NADSC_EXPORT uint32_t NADSC_ProfileStats47(uint64_t generation,NADSC_Profile47Data* out){
  AcquireSRWLockExclusive(&control_lock);struct Unlock{~Unlock(){ReleaseSRWLockExclusive(&control_lock);}}unlock;
- if(!reserved.load()||generation!=owned_generation)return 0;
+ if(!reserved.load()||generation!=owned_generation)return reject(TOKEN_MISMATCH);
  double times[1000]{};NADSC_Profile47Data s{};AcquireSRWLockShared(&policy_lock);
  s.remaining=policy.profile_remaining;s.count=policy.profile_count;std::memcpy(times,policy.profile_times,s.count*sizeof(double));ReleaseSRWLockShared(&policy_lock);
  if(s.count){std::sort(times,times+s.count);for(unsigned i=0;i<s.count;++i)s.mean_us+=times[i];s.mean_us/=s.count;s.max_us=times[s.count-1];s.p99_us=times[(s.count-1)*99/100];}
- SIZE_T done=0;return WriteProcessMemory(GetCurrentProcess(),out,&s,sizeof s,&done)&&done==sizeof s;
+ SIZE_T done=0;return WriteProcessMemory(GetCurrentProcess(),out,&s,sizeof s,&done)&&done==sizeof s?1:reject(INVALID_CONFIG);
 }

@@ -563,15 +563,15 @@ local Holster = (function()
 -- kept addresses still belong to the local Helldiver. A press or a re-stow first finds everything again from the
 -- game's registries (about 25 reads), then makes the three calls. No page query, no write, no allocation per
 -- frame.
-local Holster = {VERSION = '1.0-26251122'}
+local Holster = {VERSION = '1.0-26568081'}
 Holster.REVISION = 'v' .. Holster.VERSION
 
 local ffi = require('ffi')
 local bit = require('bit')
 local band, format = bit.band, string.format
 
-Holster.GAME_SHA256 = '61DCFCD201DACBF3545C97BEB8A5A6186E9850D2670BF60B0E058320B477F6DF'
-Holster.EXE_SHA256 = '257FD7DE21A04E8668E02E5C820EDF3435176FBDE3569765255CC52A5EA20F9D'
+Holster.GAME_SHA256 = '08B756F535CDB9BDD1B4953FBA53C3DFACD25730A155EA6593E5DE63211ACF5F'
+Holster.EXE_SHA256 = 'B434F6F326B7759978265F5863EF72E3C5EDD4AA5315CC1EF4B640D204EAE0BB'
 
 -- Build 26088801 (remapped from build 25480438; evidence: native-work/megapack-port/HolsterYourShield/MAP.json).
 Holster.LAYOUT = {
@@ -582,9 +582,9 @@ Holster.LAYOUT = {
     equipment = 0x2CE1F88, -- per-entity EquipmentComponent copies: map +80, 232-byte records at +144
     none_item = 0x2E3F0FC, -- the game's "nothing held" id (0 in this build)
     none_slot = 0x2E3F10C, -- the id 0xA95A90 compares an empty held carryable with (0 in this build)
-    set_item = 0x9BD850,   -- (inventory, avatar entity, item): sets the held carryable
-    set_mode = 0x9BE500,   -- (inventory, avatar entity, mode): 2 held, 1 put away
-    send_held = 0xC008B0,  -- (peer, avatar entity, item, mode): rpc_set_held_carryable, peer -2 = everyone
+    set_item = 0x9BD880,   -- (inventory, avatar entity, item): sets the held carryable
+    set_mode = 0x9BE530,   -- (inventory, avatar entity, mode): 2 held, 1 put away
+    send_held = 0xC00A20,  -- (peer, avatar entity, item, mode): rpc_set_held_carryable, peer -2 = everyone
 }
 -- The first 16 bytes of each function, checked once per session before anything is called.
 Holster.PROLOGUES = {set_item = '48895c241848894c2408555657415441', set_mode = '48895c24204489442418555657415441',
@@ -1113,7 +1113,7 @@ function Holster.install(runtime, memory, options)
         local game = memory.module('game.dll')
         need(game ~= nil and memory.module(nil) ~= nil, 'game modules unavailable')
         local ok, why = memory.verify_build({exe_sha256 = Holster.EXE_SHA256, game_sha256 = Holster.GAME_SHA256})
-        need(ok, why == 'unsupported game build' and 'unsupported game build (needs Steam build 26251122)'
+        need(ok, why == 'unsupported game build' and 'unsupported game build (needs Steam build 26568081)'
              or tostring(why))
         local api = (options.adapter or Holster.adapter)()
         local base = memory.address(game)

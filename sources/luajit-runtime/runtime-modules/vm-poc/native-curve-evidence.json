@@ -1,60 +1,60 @@
 {
   "image_size": "0x29fe000",
-  "timestamp": "0x6ae0964a",
+  "timestamp": "0x6af2d5e6",
   "machine": "0x8664",
   "unit_api_table_rva": "0x28703e0",
   "curve_slot": "0x430",
-  "curve_entry_rva": "0x1f82f0",
+  "curve_entry_rva": "0x1f83b0",
   "native_calls_performed": false,
   "witnesses": [
     {
-      "rva": "0x3f23da",
+      "rva": "0x3f24ba",
       "hex": "488d15dfd9320141b819000000",
       "meaning": "Lua registration name",
-      "note": "26088801 site; informational on 26251122 (not checked by the runtime)"
+      "note": "older build's bytes; informational on 26568081 (not checked by the runtime)"
     },
     {
-      "rva": "0x3f242a",
+      "rva": "0x3f250a",
       "hex": "488d0d7f140000",
       "meaning": "Lua closure entry",
-      "note": "26088801 site; informational on 26251122 (not checked by the runtime)"
+      "note": "older build's bytes; informational on 26568081 (not checked by the runtime)"
     },
     {
-      "rva": "0x3f38b0",
+      "rva": "0x3f3990",
       "hex": "488bd1e928faffff",
       "meaning": "Lua wrapper thunk",
-      "note": "26088801 site; informational on 26251122 (not checked by the runtime)"
+      "note": "older build's bytes; informational on 26568081 (not checked by the runtime)"
     },
     {
-      "rva": "0x3f3334",
+      "rva": "0x3f3414",
       "hex": "c1eb02",
       "meaning": "decode UnitRef with shr 2",
-      "note": "26088801 site; informational on 26251122 (not checked by the runtime)"
+      "note": "older build's bytes; informational on 26568081 (not checked by the runtime)"
     },
     {
-      "rva": "0x3f33b1",
+      "rva": "0x3f3491",
       "hex": "e85a1d22004c8bf049c1ee20",
       "meaning": "name hash upper 32 bits",
-      "note": "26088801 site; informational on 26251122 (not checked by the runtime)"
+      "note": "older build's bytes; informational on 26568081 (not checked by the runtime)"
     },
     {
-      "rva": "0x1f82f0",
-      "hex": "48895c240848896c24104889742418574883ec20418bf9418be88bf2e88f83ea",
+      "rva": "0x1f83b0",
+      "hex": "48895c240848896c24104889742418574883ec20418bf9418be88bf2e8ff82ea",
       "meaning": "C API function prologue"
     },
     {
-      "rva": "0x1f835e",
-      "hex": "488d8848010000490fafd1e8c27d3000",
+      "rva": "0x1f841e",
+      "hex": "488d8848010000490fafd1e8d27d3000",
       "meaning": "curve lookup and helper"
     },
     {
-      "rva": "0x1f837a",
+      "rva": "0x1f843a",
       "hex": "84c0488b7424400f95c18bc14883c4205fc3",
       "meaning": "boolean return"
     }
   ],
-  "function_hex": "48895c240848896c24104889742418574883ec20418bf9418be88bf2e88f83eaff488bc8488bd84c8b1041ff92a80100004c8b13488bcb41ff92a801000049b995e9d15b93a7a4c6448bc74d0fafc18bd648c1e220498bc848c1e92f480bd54933c84c8b442450490fafc94833d1488d8848010000490fafd1e8c27d3000488b5c243033c9488b6c243884c0488b7424400f95c18bc14883c4205fc3",
-  "function_sha256": "e333564e8ee1fe8d99c7b8e554da9acaf5909a36a2fe73c17364894a9a5470d6",
+  "function_hex": "48895c240848896c24104889742418574883ec20418bf9418be88bf2e8ff82eaff488bc8488bd84c8b1041ff92a80100004c8b13488bcb41ff92a801000049b995e9d15b93a7a4c6448bc74d0fafc18bd648c1e220498bc848c1e92f480bd54933c84c8b442450490fafc94833d1488d8848010000490fafd1e8d27d3000488b5c243033c9488b6c243884c0488b7424400f95c18bc14883c4205fc3",
+  "function_sha256": "af5c528d3bdcad36e22bdca6cf0e8f865ea6bf799b17b24179dded165b73fcb8",
   "signature": "int(uint32_t unit, uint32_t object_id32, uint32_t parameter_id32, uint32_t float_index, float *out_value)",
-  "port_note": "26251122: curve function moved -0xa0 with an identical masked body; slot table 0x2870810 unchanged"
+  "port_note": "26568081: curve function moved +0xc0 with an identical masked body; slot table 0x2870810 unchanged"
 }

@@ -1,11 +1,11 @@
 -- Private exact-provider journal. Import/new do no reads or native calls.
 -- The caller supplies a proven package ID and1..64 exact material keys.
 local M={}
-local REQUEST={0x11912f0,'4585c00f8475010000415641574883ec3848895c24504c8b'}
-local RELEASE={0x1191480,'4585c00f8460010000415641574883ec3848895c24504c8b'}
-local APP={{0x2F0,0x2f01e0,'488bd1488b0d1e767c01488b8900040000e97a333500'},
-    {0x300,0x2f0440,'488bd1488b0dbe737c01488b8900040000e92a353500'},
-    {0x328,0x2f0860,'48895c2408574883ec20488b05976f7c01488bd1488bf948'}}
+local REQUEST={0x1191450,'4585c00f8475010000415641574883ec3848895c24504c8b'}
+local RELEASE={0x11915e0,'4585c00f8460010000415641574883ec3848895c24504c8b'}
+local APP={{0x2F0,0x2f0280,'488bd1488b0d7e757c01488b8900040000e98a333500'},
+    {0x300,0x2f04e0,'488bd1488b0d1e737c01488b8900040000e93a353500'},
+    {0x328,0x2f0900,'48895c2408574883ec20488b05f76e7c01488bd1488bf948'}}
 local ZERO=string.rep('\0',8)
 local function u32(s,o)local a,b,c,d=s:byte(o+1,o+4);assert(d,'integer unreadable');return a+b*256+c*65536+d*16777216 end
 local function ptr(s,o)o=o or 0;local p=u32(s,o)+u32(s,o+4)*4294967296;assert(p>=65536 and p<140737488355328,'pointer unavailable');return p end
@@ -26,7 +26,7 @@ function M.new(io)
             local s=assert(io.read(at,n),'memory unavailable');assert(type(s)=='string'and #s==n,'short read');return s
         end
         local function p(at)return ptr(r(at,8))end
-        for _,m in ipairs({{meta.game,0x6AE0E5FF},{meta.exe,0x6AE0964A}})do
+        for _,m in ipairs({{meta.game,0x6AF322C1},{meta.exe,0x6AF2D5E6}})do
             assert(r(m[1],2)=='MZ','module unavailable');local pe=u32(r(m[1]+0x3C,4),0)
             assert(pe>=64 and pe<=4096 and r(m[1]+pe,4)=='PE\0\0'and u32(r(m[1]+pe+8,4),0)==m[2],'module build changed')
         end

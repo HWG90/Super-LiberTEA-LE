@@ -2,15 +2,15 @@
 -- gameplay update/activation: those dispatch emotes rather than stratagems.
 local function emote_wheel(b,scope,input)
     local ffi=require('ffi')
-    local ctor=b.fn('void (*)(uintptr_t, uintptr_t, uint32_t, uint32_t, uint8_t)',0x16aa7e0)
-    local attach=b.fn('void (*)(uintptr_t, uintptr_t)',0x12e42d0)
-    local finish=b.fn('void (*)(uintptr_t)',0x12e3fd0)
-    local visible=b.fn('void (*)(uintptr_t, uint8_t)',0x12e4cc0)
-    local opacity=b.fn('void (*)(uintptr_t, float)',0x12e07e0)
-    local rotation=b.fn('void (*)(uintptr_t, float)',0x12e0c00)
-    local label=b.fn('void (*)(uintptr_t, uint32_t)',0x12d9430)
-    local timer_label=b.fn('void (*)(uintptr_t, uint32_t)',0x12d3ca0)
-    local timer_number=b.fn('void (*)(uintptr_t, uint32_t, int32_t, uint32_t)',0x12d46e0)
+    local ctor=b.fn('void (*)(uintptr_t, uintptr_t, uint32_t, uint32_t, uint8_t)',0x16aa940)
+    local attach=b.fn('void (*)(uintptr_t, uintptr_t)',0x12e4430)
+    local finish=b.fn('void (*)(uintptr_t)',0x12e4130)
+    local visible=b.fn('void (*)(uintptr_t, uint8_t)',0x12e4e20)
+    local opacity=b.fn('void (*)(uintptr_t, float)',0x12e0940)
+    local rotation=b.fn('void (*)(uintptr_t, float)',0x12e0d60)
+    local label=b.fn('void (*)(uintptr_t, uint32_t)',0x12d9590)
+    local timer_label=b.fn('void (*)(uintptr_t, uint32_t)',0x12d3e00)
+    local timer_number=b.fn('void (*)(uintptr_t, uint32_t, int32_t, uint32_t)',0x12d4840)
     local storage,address,identity,parent,signature
     local retired,content={},{}
     local previous={}

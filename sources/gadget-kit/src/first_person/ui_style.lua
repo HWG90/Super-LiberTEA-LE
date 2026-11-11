@@ -1,4 +1,4 @@
--- The Helldivers mod UI for engine-Gui (Lua) mods: HD2-UI-Style/DESIGN.md says how it should look; this draws it.
+-- HellForge drawing helpers, plus separately scoped original Gadget Kit editor tokens.
 -- Copy this file into your mod. Plain Lua 5.1: no FFI, no globals, so it runs on Boot Mod Loader, Chef, LLL and MDL3.
 --
 --   local style = <load this file>
@@ -63,6 +63,20 @@ M.tokens = {
   },
 }
 -- END GENERATED TOKENS
+
+-- Non-HellForge Gadget Kit keeps its original F8 presentation. These scoped
+-- palette tokens are copied verbatim from its pre0.5.35 editor; they are not
+-- the HellForge theme above. Keep colour values out of the drawing code.
+M.editor_legacy_tokens={
+  colors={
+    panel={15,18,20},
+    text={234,235,228},
+    accent={244,202,53},
+    text_dim={181,187,188},
+    field={41,44,46},
+  },
+  opacity={panel=.92,solid=1},
+}
 
 local SEGMENTS = 4 -- triangles per rounded corner
 

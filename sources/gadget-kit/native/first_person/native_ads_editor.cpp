@@ -10,6 +10,7 @@
 #include <cmath>
 #include "native_ads_editor.h"
 #include "presentation_phase.h"
+#include "zoom_gain_math.h"
 using Setter=void (*)(uint32_t,uint32_t,const float*);
 using Getter=const float* (*)(uint32_t,uint32_t);
 static SRWLOCK control_lock=SRWLOCK_INIT,policy_lock=SRWLOCK_INIT;
@@ -23,6 +24,30 @@ static std::atomic<uint32_t> watched_viewmodel{0};
 static std::atomic<uint64_t> weapon_updates{0},zero_restores{0};
 static uint64_t slots[SLOT_COUNT]{},slot_image=0;
 static bool possible[SLOT_COUNT]{};
+extern "C" const float* NADSE_Input90Thunk(uint32_t,uint32_t);
+extern "C" const float* NADSE_Input00Thunk(uint32_t,uint32_t);
+extern "C" uint32_t NADSE_InputCompareExchange(uint64_t,uint32_t,uint32_t,uint32_t*);
+extern "C" void NADSE_InputCASFault(),NADSE_InputCASRecovery();
+extern "C" EXCEPTION_DISPOSITION NADSE_InputCASException(EXCEPTION_RECORD* exception,void*,CONTEXT* context,void*) {
+    // Static unwind metadata covers exactly our DLL's single atomic write.
+    // Other faults continue through the normal Windows exception machinery.
+    if(exception&&context&&exception->ExceptionCode==EXCEPTION_ACCESS_VIOLATION
+        &&exception->ExceptionFlags==0&&exception->NumberParameters>=2
+        &&exception->ExceptionInformation[0]<=1
+        &&exception->ExceptionAddress==reinterpret_cast<void*>(&NADSE_InputCASFault)
+        &&context->Rip==reinterpret_cast<uint64_t>(&NADSE_InputCASFault)
+        &&exception->ExceptionInformation[1]>=context->Rcx&&exception->ExceptionInformation[1]<context->Rcx+4) {
+        context->Rip=reinterpret_cast<uint64_t>(&NADSE_InputCASRecovery);
+        return ExceptionContinueExecution;
+    }
+    return ExceptionContinueSearch;
+}
+static std::atomic<Getter> input_original{nullptr};
+static uint64_t input_slot=0;
+static bool input_possible=false;
+static std::atomic<bool> input_mode{false};
+static std::atomic<uint64_t> input_return{0};
+static std::atomic<uint64_t> input_watched_request{0},input_lease_generation{0};
 // control_lock protects the lease generation and prevents stale GUI handles
 // from changing or ending a later preview. Counter zero is never issued.
 static uint64_t generation_counter=0,owned_generation=0,retired_generation=0;
@@ -40,20 +65,21 @@ static HANDLE fixture_rotation_before_policy_reached=nullptr,fixture_rotation_co
 static uint64_t* fixture_output_to_check=nullptr;
 static bool fixture_generation_published=true;
 static uint64_t fixture_reads=0;
+static uint64_t fixture_read_bytes=0;
 static uint64_t fixture_depth_frame=0;
 static uint64_t fixture_depth_mutation=0;
 static uint8_t fixture_depth_mutation_byte=0;
 #endif
-static constexpr uint32_t POSITION=0x1f2520,ROTATION=0x1f2680,BRANCH_ROTATION=0x1f25a0,LOCAL_POSITION=0x1f2250;
-static constexpr uint32_t CALLS[2]={0x111a6a9,0x111a6c9};
-static constexpr uint32_t RIG_CALL=0x111a300,ROTATION_CALL=0x111afbb,OBSERVE_CALL=0x1119921,GRAPH_GETTER=0x28d310,RIG_NODE=5;
+static constexpr uint32_t POSITION=0x1f25e0,ROTATION=0x1f2740,BRANCH_ROTATION=0x1f2660,LOCAL_POSITION=0x1f2310;
+static constexpr uint32_t CALLS[2]={0x111a809,0x111a829};
+static constexpr uint32_t RIG_CALL=0x111a460,ROTATION_CALL=0x111b11b,OBSERVE_CALL=0x1119a81,GRAPH_GETTER=0x28d3c0,RIG_NODE=5;
 static constexpr uint32_t API_OFFSETS[SLOT_COUNT]={0x38,0x48,0x40,0};
 static constexpr uint32_t WRAPPERS[SLOT_COUNT]={POSITION,ROTATION,BRANCH_ROTATION,LOCAL_POSITION};
 static constexpr const char* PREFIX[SLOT_COUNT]={
-    "48895c24084889742410574883ec20498bf08bfa8bd9e865e1eaff4c8b5018b801000000f0410fc182380017008bc04c",
-    "48895c24084889742410574883ec20498bf08bfa8bd9e805e0eaff4c8b5018b801000000f0410fc182380017008bc04c",
-    "48895c24084889742410574881eca0000000440f29b42490000000498bd84863fae8dae0eaff488bc8488bf04c8b0841",
-    "40534883ec204863dae842e4eaff488bc84c8b0041ff90e8000000488bcb48c1e1064883c124488b40204803c14883c4205bc3"};
+    "48895c24084889742410574883ec20498bf08bfa8bd9e8d5e0eaff4c8b5018b801000000f0410fc182380017008bc04c",
+    "48895c24084889742410574883ec20498bf08bfa8bd9e875dfeaff4c8b5018b801000000f0410fc182380017008bc04c",
+    "48895c24084889742410574881eca0000000440f29b42490000000498bd84863fae84ae0eaff488bc8488bf04c8b0841",
+    "40534883ec204863dae8b2e3eaff488bc84c8b0041ff90e8000000488bcb48c1e1064883c124488b40204803c14883c4205bc3"};
 enum Error:uint32_t { OK=0,INVALID_CONFIG=1,BUSY=2,READ_FAILED=3,IMAGE_MISMATCH=4,
     CODE_MISMATCH=5,API_MISMATCH=6,OWNER_MISMATCH=7,UNIT_MISMATCH=8,PIN_FAILED=9,
     SLOT_NOT_WRITABLE=10,CAS_MISMATCH=11,CAS_FAULT=12,CLEANUP_PENDING=13,SIGHT_NODE_UNAVAILABLE=14,
@@ -121,6 +147,7 @@ static bool read(uint64_t at,void* out,size_t length) {
     if(at<65536 || at>=0x800000000000ULL || length>1024 || at+length>=0x800000000000ULL)return false;
 #if defined(NADSE_FIXTURE)
     ++fixture_reads;
+    fixture_read_bytes+=length;
 #endif
     SIZE_T actual=0;return ReadProcessMemory(GetCurrentProcess(),reinterpret_cast<const void*>(at),out,length,&actual)!=0 && actual==length;
 }
@@ -274,7 +301,7 @@ static bool cas(uint64_t slot,uint64_t expected,uint64_t desired,uint64_t& obser
     } __except(EXCEPTION_EXECUTE_HANDLER) {return false;}
 }
 static bool contract(const NADSE_Config& c,Setter (&out)[SLOT_COUNT],uint64_t (&addresses)[SLOT_COUNT]) {
-    if(!image(c.game,0x6ae0e5ff,0x3382000) || !image(c.exe,0x6ae0964a,0x29fe000))return reject(IMAGE_MISMATCH);
+    if(!image(c.game,0x6af322c1,0x3382000) || !image(c.exe,0x6af2d5e6,0x29fe000))return reject(IMAGE_MISMATCH);
     if(!bytes(c.game+CALLS[0],"41ff5138") || !bytes(c.game+CALLS[1],"41ff5148")
         || !bytes(c.game+RIG_CALL,"41ff5138") || !bytes(c.game+ROTATION_CALL,"41ff5140")
         || !bytes(c.game+OBSERVE_CALL,"41ffd0"))return reject(CODE_MISMATCH);
@@ -419,11 +446,11 @@ static bool depth_code(const NADSE_Config& c) {
         && bytes(c.game+0x511b3f,"4c8b90a046f10048b80fdf6f49a121b3af48f7e148c1ea09")
         && bytes(c.game+0x511b57,"69c2ea020000442bc0")
         && bytes(c.game+0x511bb1,"4869c1d80400004805a02e00004903c2c3")
-        && bytes(c.game+0x1119293,"f30f1044245cf30f1015ef251301")
-        && bytes(c.game+0x11192b9,"f30f5c4424600f54c2f30f5ec1")
-        && bytes(c.game+0x1119971,"f3450f58fb")
-        && bytes(c.game+0x1119a23,"f30f59faf3410f59cff3")
-        && bytes(c.game+0x1119ae4,"f3410f11774cf3450f114750");
+        && bytes(c.game+0x11193f3,"f30f1044245cf30f10159f241301")
+        && bytes(c.game+0x1119419,"f30f5c4424600f54c2f30f5ec1")
+        && bytes(c.game+0x1119ad1,"f3450f58fb")
+        && bytes(c.game+0x1119b83,"f30f59faf3410f59cff3")
+        && bytes(c.game+0x1119c44,"f3410f11774cf3450f114750");
 }
 static bool depth_reference(const DepthData& d,uint32_t selected,float distance,float& reference) {
     constexpr float rad=.01745329238474369f;
@@ -521,24 +548,344 @@ static float depth_delta(Policy& p,const DepthObservation& observation,uint64_t 
     s.observed.target_fov=target;s.observed.current_fov=lens;s.observed.gain=gain;
     return delta;
 }
+// Optional native input policy. The only engine datum it changes is DWORD80
+// of the exact owned camera6 request. All backing records remain pinned.
+enum InputReason:uint32_t {INPUT_READY=0,INPUT_DISABLED=1,INPUT_CODE_UNAVAILABLE=2,
+    INPUT_SDK_UNAVAILABLE=3,INPUT_OWNER=4,INPUT_SAMPLE=5,INPUT_MATH=6,INPUT_POOL=7,
+    INPUT_FOREIGN=8,INPUT_REENTRY=9,INPUT_PENDING=10,INPUT_SOURCE_CHANGED=11};
+struct InputClone {
+    uint64_t game=0,address=0;uint32_t original=0,index=0;
+    uint8_t source[144]{};bool used=false,busy=false,quarantined=false;
+};
+static constexpr unsigned INPUT_CLONES=32;
+static InputClone input_clones[INPUT_CLONES];
+struct InputPending {
+    bool ready=false,published=false,poisoned=false,interrupted=false,input_dependent=false;
+    uint64_t generation=0,native_stack=0,request=0,camera=0;
+    uint32_t thread=0,header[4]{},original=0,index=0,clone=0;
+    NADSE_Config c{};float expected_history[3]{};
+};
+struct InputState {
+    bool requested=false,code_ok=false,failed_closed=false;uint64_t retry_at=0;
+    NADSE_InputStats stats{};InputPending pending{};
+};
+static InputState input_state;
+#if defined(NADSE_FIXTURE)
+static ZoomGainMath::ExpFn fixture_input_exp=nullptr;
+static bool fixture_input_fail_read=false;
+static uint32_t fixture_input_fault_after_query=0;
+#endif
+struct InputPin {uint32_t offset,length;uint64_t fnv;bool exe;};
+// Whole evaluator plus both outer preset consumers close the synthetic-index
+// domain. The second FOV copy cannot interpret the changed gain fields.
+static constexpr InputPin INPUT_PINS[]={
+    {0x1118370,9688,0xac98356760db02c9ULL,false},
+    {0x111a948,24,0xded70c3fd0eba95cULL,false},
+    {0x1114950,1724,0x3690803fb2e8bcedULL,false},
+    {0x1f8ff70,1013,0xe4a380a8807b6ec2ULL,false},
+    {0x1109110,1328,0xabb508e82158f3f1ULL,false},
+    {0x1109640,0x1a0,0xf17ad9ae58e57ab0ULL,false},
+    {0x110b830,0x5b0,0xd77b549041450f76ULL,false},
+    {0x111f860,0x124,0x23ae2b71a5e0f871ULL,false},
+    {0xe69ca0,0xdc,0x91b780e54d5bb826ULL,false},
+    {0x110fcf0,0xbb0,0x32dc74e3dc6a26e9ULL,false},
+    {0x11108a0,0x1dd0,0x1a26ca7b7bbba077ULL,false},
+    {0x1f3050,51,0xdafbc85ae8dffa23ULL,true},
+    {0x1f3090,76,0x9f25c14a58784f1fULL,true},
+    {0x1f30e0,47,0xd34dcd5634fed114ULL,true},
+    {0x1f2310,51,0x542e94a63b7ebae6ULL,true},
+    {0x28d3c0,5,0x86a7f411c046a30cULL,true}};
+static bool input_code(const NADSE_Config& c) {
+    for(const auto& pin:INPUT_PINS) {
+        uint64_t hash=0xcbf29ce484222325ULL;uint32_t done=0;
+        while(done<pin.length) {
+            uint8_t block[512];uint32_t length=pin.length-done;if(length>sizeof block)length=sizeof block;
+            if(!read((pin.exe?c.exe:c.game)+pin.offset+done,block,length))return false;
+            for(uint32_t i=0;i<length;++i)hash=(hash^block[i])*0x100000001b3ULL;
+            done+=length;
+        }
+        if(hash!=pin.fnv)return false;
+    }
+    const struct {uint32_t offset,bits;} constants[]={
+        {0x22465c4,0x3f800000},{0x2247894,0xbf800000},{0x2246fb0,0x42652ee0},
+        {0x22478c8,0xbfc90fdb},{0x2246774,0x3fc90fdb},{0x2247ab0,0xc2960000}};
+    for(const auto& row:constants){uint32_t bits=0;if(!value(c.game+row.offset,bits)||bits!=row.bits)return false;}
+    uint64_t one=0;return value(c.game+0x2246900,one)&&one==0x3ff0000000000000ULL;
+}
+static void input_check_code() {
+    if(!input_mode || input_state.failed_closed || input_state.code_ok || tick()<input_state.retry_at)return;
+    input_state.retry_at=tick()+250;
+    input_state.code_ok=input_code(policy.c);
+    input_state.stats.active=input_state.code_ok?1:0;
+    input_state.stats.reason=input_state.code_ok?INPUT_READY:INPUT_CODE_UNAVAILABLE;
+}
+static bool input_sdk(const NADSE_Config& c,Getter& original,uint64_t& slot) {
+    uint64_t root=0,api=0,current=0;
+    if(!pointer(c.game+0x2ce14c8,root)||!pointer(root+0x18,api))return false;
+    slot=api+0x90;
+    if(!writable_slot(slot,c.exe)||!slot_read(slot,current))return false;
+#if defined(NADSE_FIXTURE)
+    if(current!=reinterpret_cast<uint64_t>(fixture_targets[3]))return false;
+#else
+    if(current!=c.exe+0x1f30e0)return false;
+#endif
+    // The native callsite is covered by the lazy whole-evaluator fingerprint.
+    // Reading it here would prevent automatic activation on a cold code page.
+    if(!bytes(c.exe+0x1f30e0,"40534883ec204863dae8e2d5eaff488bc84c8b0041ff90e8000000488bcb48c1e10648034828488bc14883c4205bc3"))return false;
+    original=reinterpret_cast<Getter>(current);return executable(current);
+}
+static bool input_dispatch() {
+    uint64_t root=0,api=0,current=0;
+    return pointer(policy.c.game+0x2ce14c8,root)&&pointer(root+0x18,api)
+        &&api+0x90==input_slot&&slot_read(input_slot,current)
+        &&current==reinterpret_cast<uint64_t>(&NADSE_Input90Thunk)&&dispatch_owned(policy.c);
+}
+// Bounded native uint32-key open-address lookup. Missing keys never synthesize
+// a sentinel index, because that would make the native read unbounded.
+static bool input_map(uint64_t owner,uint32_t offset,uint32_t key,uint32_t& result) {
+    uint8_t header[20];if(!read(owner+offset,header,sizeof header))return false;
+    DepthProbe proof;return depth_map(header,key,proof,result)&&result!=UINT32_MAX;
+}
+static bool input_steering(const NADSE_Config& c,float (&out)[2]) {
+    uint64_t player=0;uint32_t count=0,avatar=0,disabled=0;
+    if(!pointer(c.game+0x2ce1618,player)||!value(player+0x88,count)||!value(c.game+0x2e3fcb8,disabled))return false;
+    if(count) {
+        uint32_t entity=0;if(!value(player+0x3a8,entity))return false;
+        if(entity==0x7fff){if(!value(c.game+0x2e3fa9c,avatar))return false;}
+        else {
+            uint64_t world=0;uint32_t row=0;
+            if(!pointer(c.game+0x2ce41b8,world)||!input_map(world,0xf24990,entity,row)||row>0x100000
+                ||!value(world+0xf349e8+static_cast<uint64_t>(row)*24,avatar))return false;
+        }
+    } else if(!value(c.game+0x2e3f0e4,avatar))return false;
+    if(avatar==disabled){out[0]=out[1]=0;return true;}
+    uint32_t index=0;if(avatar!=c.avatar||!input_map(c.avatar_owner,0xf8,avatar,index)||index!=c.avatar_index)return false;
+    return read(c.avatar_owner+0x53e9ac+static_cast<uint64_t>(index)*0x1240,out,sizeof out);
+}
+struct InputSample {
+    ZoomGainMath::Input math{};uint32_t original=0;uint8_t preset[144]{};
+    uint64_t context=0,index=0,input_owner=0,settings=0,time=0;
+    uint8_t flags[0x5c]{};uint32_t device=0;
+};
+static bool input_sample(uint64_t native_stack,InputSample& s) {
+#if defined(NADSE_FIXTURE)
+    if(fixture_input_fail_read)return false;
+#endif
+    const auto& c=policy.c;uint8_t inhibit=0,gate=0;
+    if(!value(native_stack+0x80,s.context)||s.context!=c.context||!value(native_stack+0x48,s.index)||s.index!=c.avatar_index
+        ||!value(native_stack+0xa0,s.math.dt_eval)||!value(c.context+0x1a9,inhibit)||inhibit
+        ||!read(c.avatar_owner+0xa7c24+s.index*0xa7aec,s.math.raw,sizeof s.math.raw)
+        ||!read(c.request+0x3c,s.math.history,sizeof s.math.history)||!value(c.request+0x80,s.original)
+        ||!value(c.request+0x84,s.math.lens_radians)||!value(c.request+0x8c,gate)
+        ||!pointer(c.game+0x2e38250,s.input_owner)||!value(s.input_owner+0x324,s.device)
+        ||!read(s.input_owner+0xa7af8,s.flags,sizeof s.flags)
+        ||!pointer(c.game+0x2ce1508,s.settings)||!value(s.settings+0xac488,s.math.tpv_degrees)
+        ||!pointer(c.game+0x2ce14f8,s.time)||!value(s.time,s.math.dt_global)
+        ||!read(c.context+0x15c,s.math.context,sizeof s.math.context)||!input_steering(c,s.math.steering))return false;
+    // Only original native presets are admitted. A foreign/private selector is
+    // never recursively cloned; our own cache has a separate backing domain.
+    if(s.original>255)return false;
+    const uint64_t preset=c.game+0x2cb2140+static_cast<uint64_t>(s.original)*144;
+    if(!read(preset,s.preset,sizeof s.preset))return false;
+    std::memcpy(s.math.native_gain,s.preset+4,sizeof s.math.native_gain);s.math.pitch_gate=gate!=0;
+    const bool pad=s.device==1||s.device==2;
+    for(unsigned axis=0;axis<2;++axis) {
+        const unsigned first=(pad?0:2)+axis,second=(pad?4:8)+axis;
+        s.math.sign[axis]=(s.flags[first]? -1.0f:1.0f)*(s.flags[second]? -1.0f:1.0f);
+    }
+    s.math.device=field<float>(s.flags,pad?0x4c:0x58);return true;
+}
+static bool input_same(const InputSample& a,const InputSample& b) {
+    // Deliberately exclude C++ padding from the scalar transaction proof.
+    const auto& x=a.math;const auto& y=b.math;
+    return a.original==b.original&&a.context==b.context&&a.index==b.index&&a.input_owner==b.input_owner
+        &&a.settings==b.settings&&a.time==b.time&&a.device==b.device
+        &&std::memcmp(a.preset,b.preset,sizeof a.preset)==0&&std::memcmp(a.flags,b.flags,sizeof a.flags)==0
+        &&std::memcmp(x.raw,y.raw,sizeof x.raw)==0&&std::memcmp(x.history,y.history,sizeof x.history)==0
+        &&std::memcmp(&x.dt_eval,&y.dt_eval,sizeof(float)*4)==0
+        &&std::memcmp(x.sign,y.sign,sizeof x.sign)==0&&std::memcmp(x.steering,y.steering,sizeof x.steering)==0
+        &&std::memcmp(x.context,y.context,sizeof x.context)==0&&std::memcmp(x.native_gain,y.native_gain,sizeof x.native_gain)==0
+        &&std::memcmp(&x.dt_global,&y.dt_global,sizeof(float))==0&&x.pitch_gate==y.pitch_gate;
+}
+static InputClone* input_clone(const InputSample& s,unsigned& selected) {
+    const auto& c=policy.c;
+    for(unsigned i=0;i<INPUT_CLONES;++i) {
+        auto& clone=input_clones[i];
+        if(clone.used&&clone.game==c.game&&clone.original==s.original&&std::memcmp(clone.source,s.preset,144)==0
+            &&!clone.busy&&!clone.quarantined){selected=i;return &clone;}
+    }
+    unsigned free=INPUT_CLONES;for(unsigned i=0;i<INPUT_CLONES;++i)if(!input_clones[i].used){free=i;break;}
+    if(free==INPUT_CLONES)return nullptr;
+    const uint64_t table=c.game+0x2cb2140,limit=table+0x9000000000ULL;
+    uint64_t at=(table+0x1ffff)&~0xffffULL;
+    for(unsigned tries=0;tries<4096&&at+0x10000<limit;++tries) {
+        MEMORY_BASIC_INFORMATION region{};
+        if(VirtualQuery(reinterpret_cast<void*>(at),&region,sizeof region)!=sizeof region)return nullptr;
+        uint64_t end=reinterpret_cast<uint64_t>(region.BaseAddress)+region.RegionSize;
+        if(end<=at)return nullptr;
+        if(region.State==MEM_FREE) {
+            const uint64_t base=(at+0xffff)&~0xffffULL;
+            if(base+0x10000<=end) {
+                void* memory=VirtualAlloc(reinterpret_cast<void*>(base),0x10000,MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
+                if(memory) {
+                    const uint64_t start=reinterpret_cast<uint64_t>(memory);
+                    const uint64_t record=start+(144-(start-table)%144)%144;
+                    const uint64_t index=(record-table)/144;
+                    if(record<table||record+144>start+0x10000||index>UINT32_MAX||table+index*144!=record)return nullptr;
+                    auto& clone=input_clones[free];clone.game=c.game;clone.address=record;clone.original=s.original;
+                    clone.index=static_cast<uint32_t>(index);std::memcpy(clone.source,s.preset,144);
+                    std::memcpy(reinterpret_cast<void*>(record),s.preset,144);clone.used=true;
+                    ++input_state.stats.cache_entries;selected=free;return &clone;
+                }
+            }
+        }
+        at=(end+0xffff)&~0xffffULL;
+    }
+    return nullptr;
+}
+static bool input_cas32(uint64_t at,uint32_t expected,uint32_t desired,uint32_t& observed) {
+    if((at&3)||!address(at))return false;
+    MEMORY_BASIC_INFORMATION region{};
+    if(VirtualQuery(reinterpret_cast<void*>(at),&region,sizeof region)!=sizeof region||region.State!=MEM_COMMIT
+        ||!writable_pe_protection(region.Protect)||at+4>reinterpret_cast<uint64_t>(region.BaseAddress)+region.RegionSize)return false;
+#if defined(NADSE_FIXTURE)
+    if(fixture_input_fault_after_query) {
+        const uint32_t mode=fixture_input_fault_after_query;fixture_input_fault_after_query=0;DWORD old=0;
+        if(mode==3){if(!VirtualFree(reinterpret_cast<void*>(at&~0xfffULL),0,MEM_RELEASE))return false;}
+        else if(!VirtualProtect(reinterpret_cast<void*>(at&~0xfffULL),0x1000,mode==2?PAGE_NOACCESS:PAGE_READONLY,&old))return false;
+    }
+#endif
+    return NADSE_InputCompareExchange(at,expected,desired,&observed)!=0;
+}
+// Cleanup is narrower than admission: changing the equipped gun does not
+// revoke an old live row's exact-owned index. No unit/weapon memory is written.
+static bool input_row(const InputPending& p) {
+    uint64_t context=0;uint32_t ring[2]{},header[4]{};
+    if(!pointer(p.c.game+0x2e287d0,context)||context!=p.c.context
+        ||!read(context+0x1f8,ring,sizeof ring)||ring[0]>=32||ring[1]>=32)return false;
+    const uint64_t first=context+0x200;
+    if(p.request<first||p.request>=first+32*0xe8||(p.request-first)%0xe8)return false;
+    const uint32_t row=static_cast<uint32_t>((p.request-first)/0xe8),count=(ring[1]+32-ring[0])%32;
+    if(!count||((row+32-ring[0])%32)>=count)return false;
+    return read(p.request,header,sizeof header)&&std::memcmp(header,p.header,sizeof header)==0;
+}
+static bool input_abort(InputPending& p,bool native_witness=false) {
+    if(!p.published)return true;
+    if(!native_witness)p.interrupted=true;
+    uint32_t current=0;if(!value(p.request+0x80,current))return false;
+    if(current!=p.index){p.published=false;++input_state.stats.foreign_wins;return true;}
+    if(native_witness) {
+        uint32_t header[4]{};if(!read(p.request,header,sizeof header)||std::memcmp(header,p.header,sizeof header)!=0)return false;
+    } else if(!input_row(p))return false;
+    uint32_t observed=0;if(!input_cas32(p.request+0x80,p.index,p.original,observed))return false;
+    p.published=false;
+    if(observed==p.index)++input_state.stats.restored;else ++input_state.stats.foreign_wins;
+    return true;
+}
+static void input_quarantine(InputPending& p) {
+    auto& clone=input_clones[p.clone];
+    if(!clone.quarantined){clone.quarantined=true;++input_state.stats.quarantined;}
+}
+static void input_complete(uint64_t generation,uint64_t native_stack,uint64_t request) {
+    auto& p=input_state.pending;
+    if(!p.ready||p.poisoned||generation!=p.generation||p.thread!=GetCurrentThreadId()
+        ||p.native_stack!=native_stack||p.request!=request)return;
+    uint64_t context=0;if(!value(native_stack+0x80,context)||context!=p.c.context)return;
+    uint32_t current_index=0;
+    const bool counted=p.published&&!p.interrupted&&value(p.request+0x80,current_index)&&current_index==p.index;
+    if(!input_abort(p,true)){input_quarantine(p);input_state.stats.reason=INPUT_PENDING;return;}
+    float history[3]{};
+    if(!read(p.request+0x3c,history,sizeof history)||std::memcmp(history,p.expected_history,sizeof history)!=0) {
+        ++input_state.stats.unsupported;input_state.stats.reason=INPUT_SOURCE_CHANGED;
+        if(p.input_dependent){input_state.failed_closed=true;input_state.code_ok=false;input_state.stats.active=0;}
+    } else if(counted)++input_state.stats.normalized;
+    else ++input_state.stats.unsupported;
+    input_clones[p.clone].busy=false;p=InputPending{};input_state.stats.pending=0;
+}
+extern "C" const float* NADSE_Input90Call(uint32_t unit,uint32_t node,uint64_t request,uint64_t native_stack,uint64_t caller) {
+    const Getter original=input_original.load(std::memory_order_acquire);
+    const uint64_t generation=active_generation.load(std::memory_order_acquire);
+    const uint64_t lease_generation=input_lease_generation.load(std::memory_order_acquire);
+    const bool eligible=input_mode.load(std::memory_order_acquire)&&caller==input_return.load(std::memory_order_relaxed)
+        &&request==input_watched_request.load(std::memory_order_relaxed);
+    const float* result=original(unit,node);
+    if(!eligible)return result; // No lock, counters or RPM for unrelated SDK calls.
+    AcquireSRWLockExclusive(&policy_lock);struct Unlock{~Unlock(){ReleaseSRWLockExclusive(&policy_lock);}}unlock;
+    if(!lease_generation||lease_generation!=input_lease_generation.load(std::memory_order_relaxed))return result;
+    ++input_state.stats.observed;
+    auto& pending=input_state.pending;
+    if(pending.ready) {
+        if(!input_abort(pending))input_quarantine(pending);
+        if(pending.thread==GetCurrentThreadId()&&pending.native_stack==native_stack) {
+            pending.poisoned=true;input_quarantine(pending);
+        }
+        ++input_state.stats.unsupported;input_state.stats.reason=INPUT_REENTRY;return result;
+    }
+    if(!armed.load(std::memory_order_acquire)||generation!=active_generation.load(std::memory_order_relaxed))return result;
+    input_check_code();
+    if(!input_state.code_ok||input_state.failed_closed)return result;
+    if(request!=policy.c.request||!native_stack||(policy.deadline&&tick()>=policy.deadline)) {
+        ++input_state.stats.unsupported;input_state.stats.reason=INPUT_OWNER;return result;
+    }
+    InputSample sample{};if(!input_sample(native_stack,sample)) {
+        ++input_state.stats.unsupported;input_state.stats.reason=INPUT_SAMPLE;return result;
+    }
+    ZoomGainMath::Prepared prepared{};
+    auto exp=reinterpret_cast<ZoomGainMath::ExpFn>(policy.c.game+0x1f8ff70);
+#if defined(NADSE_FIXTURE)
+    exp=fixture_input_exp;
+#endif
+    const auto reason=ZoomGainMath::prepare(sample.math,exp,prepared);
+    input_state.stats.ratio=prepared.ratio;
+    if(!ZoomGainMath::accepted(reason)) {++input_state.stats.unsupported;input_state.stats.reason=0x100+static_cast<uint32_t>(reason);return result;}
+    if(!prepared.changed){input_state.stats.reason=INPUT_READY;return result;}
+    unsigned selected=0;auto* clone=input_clone(sample,selected);
+    if(!clone){++input_state.stats.unsupported;input_state.stats.reason=INPUT_POOL;return result;}
+    // Nongain bytes are never repurposed, even after completion: outer camera
+    // readers can still have captured this private index and consume +8C.
+    std::memcpy(reinterpret_cast<void*>(clone->address+4),prepared.gains,sizeof prepared.gains);
+    // Allocation and math precede the terminal proof. The index-only policy
+    // does not edit a rig, so pose callbacks keep their own graph guards.
+    InputSample closing{};
+    if(!input_sample(native_stack,closing)||!input_same(sample,closing)
+        ||!ownership(policy,false)||!input_dispatch()) {
+        ++input_state.stats.unsupported;input_state.stats.reason=INPUT_SOURCE_CHANGED;return result;
+    }
+    InputPending next{};next.ready=true;next.input_dependent=prepared.input_dependent;next.generation=generation;next.native_stack=native_stack;next.request=request;
+    next.thread=GetCurrentThreadId();next.camera=policy.camera;next.c=policy.c;next.original=sample.original;
+    next.index=clone->index;next.clone=selected;std::memcpy(next.expected_history,prepared.native_history,sizeof next.expected_history);
+    if(!read(request,next.header,sizeof next.header)||!input_row(next)||!armed.load(std::memory_order_acquire)
+        ||generation!=active_generation.load(std::memory_order_relaxed))return result;
+    uint32_t observed=0;if(!input_cas32(request+0x80,next.original,next.index,observed)||observed!=next.original) {
+        ++input_state.stats.foreign_wins;input_state.stats.reason=INPUT_FOREIGN;return result;
+    }
+    next.published=true;clone->busy=true;pending=next;input_state.stats.pending=1;
+    input_state.stats.yaw_gain=prepared.gains[0];input_state.stats.pitch_gain=prepared.gains[1];input_state.stats.reason=INPUT_READY;
+    return result;
+}
+
 // No counters, locks or memory walks for unrelated getter callers. The narrow
 // observation forwards the original arguments/return pointer exactly, under
 // the same drain lock as End. It reads the native lens locals BEFORE1287F41
 // reuses+5C for orientation scratch, and is consumed once by the paired setter.
-static const float* position_getter_hook(uint32_t unit,uint32_t node) {
-    const uint64_t caller=reinterpret_cast<uint64_t>(_ReturnAddress());
+static const float* position_getter_call(uint32_t unit,uint32_t node,uint64_t native_stack,uint64_t native_request,uint64_t caller) {
     const Getter original=reinterpret_cast<Getter>(originals[3].load(std::memory_order_acquire));
-    if(!armed.load(std::memory_order_acquire) || caller!=getter_return.load(std::memory_order_relaxed))return original(unit,node);
-    uint64_t native_stack=reinterpret_cast<uint64_t>(_AddressOfReturnAddress())+8;
-#if defined(NADSE_FIXTURE)
-    native_stack=fixture_depth_frame;
-#endif
+    if(caller!=getter_return.load(std::memory_order_relaxed)
+        ||(!armed.load(std::memory_order_acquire)&&!input_mode))return original(unit,node);
     const uint64_t generation=active_generation.load(std::memory_order_relaxed);
+    const uint64_t completion_generation=input_lease_generation.load(std::memory_order_relaxed);
     AcquireSRWLockExclusive(&policy_lock);
     struct Unlock {~Unlock(){ReleaseSRWLockExclusive(&policy_lock);}} unlock;
+    if(input_mode) {
+        // The pending generation survives End's disarm. Actual R15, not the
+        // current configured request, proves which evaluation reached post00.
+        input_complete(completion_generation,native_stack,native_request);
+    }
+    if(!armed.load(std::memory_order_acquire)||generation!=active_generation.load(std::memory_order_relaxed))return original(unit,node);
     policy.observation.ready=false;
     policy.carrier.ready=false;
     const float* result=original(unit,node);
+    if(input_mode)input_check_code();
     if(armed.load(std::memory_order_acquire) && generation==active_generation.load(std::memory_order_relaxed)
         && unit==policy.c.viewmodel && node==50 && native_stack) {
         auto& observation=policy.observation;
@@ -548,6 +895,16 @@ static const float* position_getter_hook(uint32_t unit,uint32_t node) {
             && read(policy.c.request+0x80,observation.request_state,sizeof observation.request_state);
     }
     return result;
+}
+static const float* position_getter_hook(uint32_t unit,uint32_t node) {
+    uint64_t native_stack=reinterpret_cast<uint64_t>(_AddressOfReturnAddress())+8;
+#if defined(NADSE_FIXTURE)
+    native_stack=fixture_depth_frame;
+#endif
+    return position_getter_call(unit,node,native_stack,0,reinterpret_cast<uint64_t>(_ReturnAddress()));
+}
+extern "C" const float* NADSE_Input00Call(uint32_t unit,uint32_t node,uint64_t request,uint64_t native_stack,uint64_t caller) {
+    return position_getter_call(unit,node,native_stack,request,caller);
 }
 // policy_lock is held. Never replay a cached pose into a different owner/rig.
 static void restore_rig_if_owned() {
@@ -607,9 +964,9 @@ static void carrier_position(uint64_t caller,uint32_t unit,uint32_t node,const f
     }
     if(!policy.carrier_checked) {
         policy.carrier_checked=true;
-        policy.carrier_code_ok=bytes(policy.c.game+0x1118215,"5556574154415541564157488dac24f0fcffff4881ec10040000")
-            && bytes(policy.c.game+0x111a66b,"4c8d8540010000f2410f11475433")
-            && bytes(policy.c.game+0x111a6b4,"4c8d8530010000");
+        policy.carrier_code_ok=bytes(policy.c.game+0x1118375,"5556574154415541564157488dac24f0fcffff4881ec10040000")
+            && bytes(policy.c.game+0x111a7cb,"4c8d8540010000f2410f11475433")
+            && bytes(policy.c.game+0x111a814,"4c8d8530010000");
     }
     if(!policy.carrier_code_ok || !sole_request(policy)) {forward_position(unit,node,pose);return;}
     uint32_t failure=OK;
@@ -842,12 +1199,26 @@ static bool pin(const void* address) {
         reinterpret_cast<LPCWSTR>(address),&module)!=0;
 }
 static uint64_t callback(unsigned which) {
-    if(which==3)return reinterpret_cast<uint64_t>(position_getter_hook);
+    if(which==3)return input_mode?reinterpret_cast<uint64_t>(&NADSE_Input00Thunk):reinterpret_cast<uint64_t>(position_getter_hook);
     return reinterpret_cast<uint64_t>(which==2?branch_rotation_hook:(which?rotation_hook:position_hook));
 }
 // control_lock is held; callbacks have already been disarmed and drained.
 static bool restore_slots() {
+    AcquireSRWLockExclusive(&policy_lock);
+    struct UnlockPolicy{~UnlockPolicy(){ReleaseSRWLockExclusive(&policy_lock);}}unlock_policy;
     bool pending=false;
+    // No callback is removed while a native evaluation can still read a
+    // private record or needs the matched post00 restoration callback.
+    if(input_state.pending.ready)return false;
+    if(input_possible) {
+        uint64_t current=0;
+        if(!slot_read(input_slot,current))pending=true;
+        else if(current==reinterpret_cast<uint64_t>(&NADSE_Input90Thunk)) {
+            uint64_t observed=0;
+            if(!writable_slot(input_slot,slot_image)||!cas(input_slot,current,reinterpret_cast<uint64_t>(input_original.load()),observed))pending=true;
+            else input_possible=false;
+        } else input_possible=false;
+    }
     for(unsigned i=0;i<SLOT_COUNT;++i)if(possible[i]) {
         uint64_t current=0;
         if(!slot_read(slots[i],current)) {pending=true;continue;}
@@ -864,6 +1235,8 @@ static bool restore_slots() {
         retired_generation=owned_generation;owned_generation=0;
         stats_deadline=0;
         reserved.store(0,std::memory_order_release);
+        input_mode=false;input_state.stats.installed=0;input_state.stats.active=0;
+        input_lease_generation.store(0,std::memory_order_relaxed);input_watched_request.store(0,std::memory_order_relaxed);
     }
     return !pending;
 }
@@ -899,7 +1272,7 @@ NADSE_EXPORT uint32_t NADSE_Validate(const NADSE_Config* input) {
     if(!graph(checked,false))return reject(GRAPH_MISMATCH);
     error(OK);return 1;
 }
-static uint32_t begin_pose(const NADSE_Config* input,uint64_t* output,bool steady) {
+static uint32_t begin_pose(const NADSE_Config* input,uint64_t* output,bool steady,bool normalize_input=false) {
     AcquireSRWLockExclusive(&control_lock);
     struct Unlock {~Unlock(){ReleaseSRWLockExclusive(&control_lock);}} unlock;
     if(!write_generation(output,0))return reject(INVALID_CONFIG);
@@ -909,15 +1282,26 @@ static uint32_t begin_pose(const NADSE_Config* input,uint64_t* output,bool stead
     if(!ownership(next,true))return reject(OWNER_MISMATCH);
     if(!graph(next,true))return reject(GRAPH_MISMATCH);
     if(!contract(c,verified,addresses))return 0;
+    Getter optional_original=nullptr;uint64_t optional_slot=0;
+    bool optional_sdk=normalize_input&&input_sdk(c,optional_original,optional_slot);
     for(unsigned i=0;i<SLOT_COUNT;++i)if(originals[i].load() && originals[i].load()!=verified[i])return reject(API_MISMATCH);
     if(!pin(reinterpret_cast<const void*>(&NADSE_Begin)))return reject(PIN_FAILED);
 #if !defined(NADSE_FIXTURE)
     if(!pin(reinterpret_cast<const void*>(c.exe)))return reject(PIN_FAILED);
+    if(optional_sdk&&!pin(reinterpret_cast<const void*>(c.game)))optional_sdk=false;
 #endif
+    AcquireSRWLockExclusive(&policy_lock);
+    input_mode.store(optional_sdk,std::memory_order_release);input_possible=false;input_state=InputState{};
+    input_state.requested=normalize_input;input_state.stats.size=sizeof(NADSE_InputStats);input_state.stats.abi=1;
+    for(const auto& clone:input_clones)if(clone.used)++input_state.stats.cache_entries;
+    input_state.stats.reason=normalize_input?(optional_sdk?INPUT_CODE_UNAVAILABLE:INPUT_SDK_UNAVAILABLE):INPUT_DISABLED;
+    ReleaseSRWLockExclusive(&policy_lock);
+    if(optional_sdk){input_original.store(optional_original,std::memory_order_release);input_slot=optional_slot;}
     for(unsigned i=0;i<SLOT_COUNT;++i) {originals[i].store(verified[i],std::memory_order_release);slots[i]=addresses[i];possible[i]=false;}
     if(++generation_counter==0)++generation_counter;
     if(!write_generation(output,generation_counter))return reject(INVALID_CONFIG);
     owned_generation=generation_counter;slot_image=c.exe;reserved.store(1,std::memory_order_release);
+    input_lease_generation.store(owned_generation,std::memory_order_relaxed);input_watched_request.store(c.request,std::memory_order_relaxed);
     stats_deadline=0;display_cache=Display{};publish_diagnostics(next);
     // Original callbacks are visible before either pointer is published. Until
     // the final arm store, even a cached or in-flight callback only forwards.
@@ -928,12 +1312,20 @@ static uint32_t begin_pose(const NADSE_Config* input,uint64_t* output,bool stead
         if(observed!=reinterpret_cast<uint64_t>(verified[i])) {possible[i]=false;return failed_begin(CAS_MISMATCH,output);}
         installed.store(1,std::memory_order_release);
     }
+    if(optional_sdk) {
+        input_possible=true;uint64_t observed=0;
+        if(!writable_slot(input_slot,c.exe))return failed_begin(SLOT_NOT_WRITABLE,output);
+        if(!cas(input_slot,reinterpret_cast<uint64_t>(optional_original),reinterpret_cast<uint64_t>(&NADSE_Input90Thunk),observed))return failed_begin(CAS_FAULT,output);
+        if(observed!=reinterpret_cast<uint64_t>(optional_original)){input_possible=false;return failed_begin(CAS_MISMATCH,output);}
+        input_state.stats.installed=1;
+    }
     if(!ownership(next,true))return failed_begin(OWNER_MISMATCH,output);
     if(!graph(next,false))return failed_begin(GRAPH_MISMATCH,output);
     for(unsigned i=0;i<SLOT_COUNT;++i) {
         uint64_t current=0;
         if(!slot_read(slots[i],current) || current!=callback(i))return failed_begin(CAS_MISMATCH,output);
     }
+    if(optional_sdk) {uint64_t current=0;if(!slot_read(input_slot,current)||current!=reinterpret_cast<uint64_t>(&NADSE_Input90Thunk))return failed_begin(CAS_MISMATCH,output);}
 #if defined(NADSE_FIXTURE)
     if(fixture_before_arm_reached) {SetEvent(fixture_before_arm_reached);WaitForSingleObject(fixture_continue_arm,INFINITE);}
 #endif
@@ -949,6 +1341,7 @@ static uint32_t begin_pose(const NADSE_Config* input,uint64_t* output,bool stead
     rig_return.store(c.game+RIG_CALL+4,std::memory_order_relaxed);
     rotation_return.store(c.game+ROTATION_CALL+4,std::memory_order_relaxed);
     getter_return.store(c.game+OBSERVE_CALL+3,std::memory_order_relaxed);
+    input_return.store(c.game+0x111863e,std::memory_order_relaxed);
     carrier_return.store(c.game+CALLS[0]+4,std::memory_order_relaxed);watched_viewmodel.store(c.viewmodel,std::memory_order_relaxed);
     active_generation.store(owned_generation,std::memory_order_relaxed);
     expired.store(0,std::memory_order_release);armed.store(1,std::memory_order_release);ReleaseSRWLockExclusive(&policy_lock);
@@ -956,6 +1349,9 @@ static uint32_t begin_pose(const NADSE_Config* input,uint64_t* output,bool stead
 }
 NADSE_EXPORT uint32_t NADSE_Begin(const NADSE_Config* input,uint64_t* output) {return begin_pose(input,output,false);}
 NADSE_EXPORT uint32_t NADSE_BeginSteady(const NADSE_Config* input,uint64_t* output) {return begin_pose(input,output,true);}
+NADSE_EXPORT uint32_t NADSE_ValidateInput(const NADSE_Config* input) {return NADSE_Validate(input);}
+NADSE_EXPORT uint32_t NADSE_BeginInput(const NADSE_Config* input,uint64_t* output) {return begin_pose(input,output,false,true);}
+NADSE_EXPORT uint32_t NADSE_BeginSteadyInput(const NADSE_Config* input,uint64_t* output) {return begin_pose(input,output,true,true);}
 NADSE_EXPORT uint32_t NADSE_SetTransition(uint64_t generation,uint64_t epoch,float progress,uint32_t ads) {
     AcquireSRWLockExclusive(&control_lock);struct UnlockControl{~UnlockControl(){ReleaseSRWLockExclusive(&control_lock);}}control;
     if(!generation||!reserved.load(std::memory_order_acquire)||generation!=owned_generation)return reject(TOKEN_MISMATCH);
@@ -1062,6 +1458,9 @@ NADSE_EXPORT uint32_t NADSE_End(uint64_t generation) {
     armed.store(0,std::memory_order_release);
     active_generation.store(0,std::memory_order_relaxed);
     AcquireSRWLockExclusive(&policy_lock);restore_rig_if_owned();
+    if(input_state.pending.ready) {
+        if(!input_abort(input_state.pending))input_quarantine(input_state.pending);
+    }
     policy.observation.ready=false;policy.depth.valid=false;
     std::memset(policy.motion,0,sizeof policy.motion);std::memset(policy.rotation,0,sizeof policy.rotation);policy.rotation[3]=1;
     ReleaseSRWLockExclusive(&policy_lock);
@@ -1100,4 +1499,18 @@ NADSE_EXPORT uint32_t NADSE_ReadDepthStats(uint64_t generation,NADSE_DepthStats*
     ReleaseSRWLockExclusive(&policy_lock);
     s.size=sizeof s;s.abi=1;s.installed=installed.load();s.armed=armed.load();
     SIZE_T actual=0;return WriteProcessMemory(GetCurrentProcess(),output,&s,sizeof s,&actual)!=0 && actual==sizeof s;
+}
+NADSE_EXPORT uint32_t NADSE_ReadInputStats(uint64_t generation,NADSE_InputStats* output) {
+    AcquireSRWLockExclusive(&control_lock);struct UnlockControl{~UnlockControl(){ReleaseSRWLockExclusive(&control_lock);}}control;
+    if(reserved.load(std::memory_order_acquire)?(!generation||generation!=owned_generation):generation!=0)return reject(TOKEN_MISMATCH);
+    NADSE_InputStats request{};
+    if(!read(reinterpret_cast<uint64_t>(output),&request,sizeof request)||request.size!=sizeof request||request.abi!=1||request.reserved)return reject(INVALID_CONFIG);
+    AcquireSRWLockExclusive(&policy_lock);NADSE_InputStats s=input_state.stats;
+    s.size=sizeof s;s.abi=1;s.pending=input_state.pending.ready?1:0;
+    uint64_t current=0;
+    s.installed=input_possible&&slot_read(input_slot,current)&&current==reinterpret_cast<uint64_t>(&NADSE_Input90Thunk)?1:0;
+    s.active=s.installed&&input_state.code_ok&&!input_state.failed_closed&&armed.load()?1:0;
+    if(input_possible&&!s.installed)s.reason=INPUT_SDK_UNAVAILABLE;
+    ReleaseSRWLockExclusive(&policy_lock);
+    SIZE_T actual=0;return WriteProcessMemory(GetCurrentProcess(),output,&s,sizeof s,&actual)!=0&&actual==sizeof s;
 }

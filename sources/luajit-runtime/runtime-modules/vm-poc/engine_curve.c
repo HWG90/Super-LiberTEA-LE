@@ -17,15 +17,15 @@ static int header_matches(const unsigned char *b) {
     if(b[0]!='M'||b[1]!='Z')return 0;
     uint32_t nt=read32(b+0x3c);
     if(nt>0x1000||memcmp(b+nt,"PE\0\0",4))return 0;
-    if(b[nt+4]!=0x64||b[nt+5]!=0x86||read32(b+nt+8)!=0x6ae0964a)return 0;
+    if(b[nt+4]!=0x64||b[nt+5]!=0x86||read32(b+nt+8)!=0x6af2d5e6)return 0;
     return b[nt+24]==0x0b && b[nt+25]==0x02 && read32(b+nt+24+56)==0x29fe000;
 }
 int hd2env_probe_curve_image(const void *image,size_t size,uintptr_t mapped_base) {
     const unsigned char *b=image;
     if(!b||size<0x29fe000||!header_matches(b))return 0;
     if(mapped_base>UINTPTR_MAX-0x29fe000)return 0;
-    if(read64(b+0x2870810)!=(uint64_t)mapped_base+0x1f82f0)return 0;
-    return !memcmp(b+0x1f82f0,curve_witness,sizeof(curve_witness));
+    if(read64(b+0x2870810)!=(uint64_t)mapped_base+0x1f83b0)return 0;
+    return !memcmp(b+0x1f83b0,curve_witness,sizeof(curve_witness));
 }
 
 #ifdef _WIN32
@@ -46,9 +46,9 @@ int hd2env_bind_current_curve(HD2Backend *backend) {
     uintptr_t start=(uintptr_t)base;
     if(start>UINTPTR_MAX-0x29fe000)return 0;
     if(!readable((const void *)(start+0x2870810),8,0)
-       ||!readable((const void *)(start+0x1f82f0),sizeof(curve_witness),1))return 0;
+       ||!readable((const void *)(start+0x1f83b0),sizeof(curve_witness),1))return 0;
     if(!hd2env_probe_curve_image(base,0x29fe000,(uintptr_t)base))return 0;
-    uintptr_t entry=(uintptr_t)base+0x1f82f0;
+    uintptr_t entry=(uintptr_t)base+0x1f83b0;
     _Static_assert(sizeof(backend->animation_curve)==sizeof(entry),"Win64 function pointer size");
     memcpy(&backend->animation_curve,&entry,sizeof(entry));
     return 1;

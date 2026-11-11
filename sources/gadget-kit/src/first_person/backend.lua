@@ -28,6 +28,7 @@ end
 function Backend.new(log, io, alignment, pose)
     return setmetatable({log=log or function() end,io=io,alignment=alignment or (io and io.alignment),
         pose=pose or (io and io.pose),frame_epoch=0,frame_active=false,
+        hold_transition=false,hold_limit=600,holds=0,
         frame_executable_checks={},frame_executable_bases={},frame_game_checks={}}, Backend)
 end
 -- Share only immutable image/code validation within one host update. Epochs
@@ -115,7 +116,7 @@ function Backend:_module(scope)
         if readable then assert(actual==bytes,'Native ADS fingerprint mismatch: '..tostring(check.name))end
     end
     if scope=='entry'then
-        assert(self:_read(base+0x110FB62,11)==unpack_hex('0f57d2488bcbe8a3860000'),
+        assert(self:_read(base+0x110FCC2,11)==unpack_hex('0f57d2488bcbe8a3860000'),
             'Native ADS warm entry evaluator call changed')
     end
     if self.frame_active then
@@ -531,11 +532,11 @@ function Backend:_invoke_presentation(expected,enabled)
         {game,0x833513,'4869d0401200004869c0b8010000498dbab06a54004c896c24784903d24c897c24704889542458'},
         {game,0x833540,'4c8daac0e95300498b84ca10010000418bd68b480c488b056cdf4a0244887770894c2434418b4d004c8b481841ff9158060000'},
         {game,0x833763,'41ff90f8000000488b0557dd4a02488d4c24344084f68bd3490f45cd4533ff4c8b50084533c944897c2420448b01488b0d200a4b02488b0941ff92d0000000'},
-        {game,0x110fe9e,'488b0d3b20bd0141b101450fb6c18bd70f10000f1144247ce8853572ff'},
-        {game,0x111088b,'418b560441b1014889b424600200'},
-        {game,0x11108e3,'e8582b72ff'},
-        {exe,0x1fb480,'48895c24084889742410574883ec20410fb6f08bfa8bd9e80452eaff4c8b5018b8'},
-        {exe,0x1fb4b4,'43c78411880001001500000043899c1138000100488b5c24304388b41144000100488b7424384389bc1140000100'},
+        {game,0x110fffe,'488b0ddb1ebd0141b101450fb6c18bd70f10000f1144247ce8253472ff'},
+        {game,0x11109eb,'418b560441b1014889b424600200'},
+        {game,0x1110a43,'e8f82972ff'},
+        {exe,0x1fb540,'48895c24084889742410574883ec20410fb6f08bfa8bd9e87451eaff4c8b5018b8'},
+        {exe,0x1fb574,'43c78411880001001500000043899c1138000100488b5c24304388b41144000100488b7424384389bc1140000100'},
     })do
         local wanted=unpack_hex(check[3]);assert(self:_read(check[1]+check[2],#wanted)==wanted,
             'FP presentation function contract changed')
@@ -737,13 +738,13 @@ function Backend:renderer_dof_value(getter,setter,setting)
         if not address then local util=PORT51.jit_util ;address=function(fn)return util.funcinfo(fn).addr end end
         local get,set=address(getter),address(setter)
         local base=self:_alignment_executable(Profile.pose)
-        assert(get==base+0x3d42f0 and set==base+0x3d3f10,'Renderer setting bindings changed')
+        assert(get==base+0x3d43d0 and set==base+0x3d3ff0,'Renderer setting bindings changed')
         local contract=self.renderer_dof_contract
         if not contract or contract.base~=base or contract.get~=getter or contract.set~=setter then
             assert(self:_read(get,8)=='\072\139\209\233\008\253\255\255'
                 and self:_read(set,8)=='\072\139\209\233\136\250\255\255'
-                and self:_read(base+0x3d40ba,7)=='\072\139\013\255\055\110\001'
-                and self:_read(base+0x3d412e,9)=='\131\248\004\117\026\065\056\113\008',
+                and self:_read(base+0x3d419a,7)=='\072\139\013\031\055\110\001'
+                and self:_read(base+0x3d420e,9)=='\131\248\004\117\026\065\056\113\008',
                 'Renderer setting observer contract changed')
             contract={base=base,get=getter,set=setter};self.renderer_dof_contract=contract
         end
@@ -1348,6 +1349,20 @@ function Backend:release(lease)
     if top.camera_kind~=6 or top.request_avatar~=origin.avatar or top.request_weapon~=origin.weapon
         or (lease.request and top.record~=lease.request) then
         lease.done=true;return true,'Native camera request was replaced'
+    end
+    -- Experimental, off unless the runtime enables it. The game keeps our
+    -- kind-6 request alive for the whole weapon put-away/draw inhibit mask, so
+    -- leaving it there keeps the first-person view up instead of cutting to
+    -- the head camera. The pose helper is already disarmed above; the normal
+    -- exit below runs on the first poll after the mask changes. The poll
+    -- bound keeps a stuck mask from holding a retired lease forever.
+    if self.hold_transition==true and (lease.hold_polls or 0)<self.hold_limit then
+        local read,bytes=pcall(function() return self:_read(self:_ptr(top.base+Profile.globals.controller),6) end)
+        if read and uint(bytes)==2 and bytes:byte(5)==0 and bytes:byte(6)==0 then
+            if not lease.hold_polls then self.holds=self.holds+1 end
+            lease.hold_polls=(lease.hold_polls or 0)+1
+            return false,'Holding the first-person view through a weapon transition'
+        end
     end
     local s,why=self:snapshot()
     if not s then

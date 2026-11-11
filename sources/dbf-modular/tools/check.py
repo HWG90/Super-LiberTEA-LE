@@ -33,7 +33,7 @@ def main():
     declared = set(manifest['lll']['modules']) | {manifest['lll']['entry']}
     actual = {p.relative_to(ROOT / 'dbf_modular').as_posix() for p in (ROOT / 'dbf_modular').rglob('*.lua')}
     assert declared == actual, (declared - actual, actual - declared)
-    assert manifest['id'] == 'dbf_modular' and manifest['target_build'] == '26251122'
+    assert manifest['id'] == 'dbf_modular' and manifest['target_build'] == '26568081'
     assert len(manifest['lll']['modules']) == len(set(manifest['lll']['modules']))
     receipt = ROOT / 'dist/native/heat-limiter/BUILD.json'
     native = json.loads(receipt.read_text()) if receipt.is_file() else {}

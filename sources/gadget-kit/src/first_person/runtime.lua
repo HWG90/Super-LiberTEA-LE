@@ -391,7 +391,22 @@ local function record_presentation(ok,why)
     local look=PORT51.kind(diagnostics_look)=='table'and diagnostics_look or{}
     local placement=controller and attempt(controller,'get_placement')or{}
     local movement=motion and attempt(motion,'result')or{}
+    -- While first person is on but the native view is not held, record what
+    -- the full snapshot says: this is the evidence for a slow return.
+    local control_mask,control_guard,weapon_ready,entry_block
+    if PORT51.kind(s.controller_bytes)=='string'and #s.controller_bytes==6 then
+        local a,b,c,d=s.controller_bytes:byte(1,4);control_mask,control_guard=a+b*256+c*65536+d*16777216,s.controller_bytes:byte(6)
+    end
+    if state.enabled==true and state.phase~='running'and backend then
+        local full,problem=attempt(backend,'snapshot')
+        if PORT51.kind(full)=='table'then weapon_ready=full.weapon_ready~=false;entry_block=full.reason
+        else entry_block=tostring(problem)end
+    end
+    local head_state=head and attempt(head,'result')or{}
     diagnostics:record(ready_context.tick,{time=recovery_time(),enabled=state.enabled==true,
+        control_mask=control_mask,control_guard=control_guard,safe=s.safe==true,aiming=s.aiming==true,
+        snapshot_reason=s.reason,weapon_ready=weapon_ready,entry_block=entry_block,action=movement.action,
+        softened=movement.softened,head_calls=cam.replaced,camera_gate=cam.error,head_phase=head_state.phase,
         player=s.player_identity,weapon=backend and backend.placement_weapon_key,request=s.record,
         camera_kind=s.camera_kind,ads=s.controller_active==true,foreign=foreign,editor=edit,
         phase=state.phase,transition_epoch=transition.epoch,transition_progress=transition.progress,
@@ -515,6 +530,8 @@ return {
         local NearClip=mod.require('src/first_person/near_clip.lua')
         local clock=monotonic_clock()
         backend=Backend.new(log)
+        -- Probe: keep the native first-person view through weapon put-away/draw.
+        backend.hold_transition=true
         runtime_clock=clock
         recovery=mod.require('src/first_person/recovery.lua').new()
         diagnostics=mod.require('src/first_person/diagnostics.lua').new({capacity=720})
@@ -933,7 +950,11 @@ return {
                 -- return fird and not fird:is_clean()and fird:status()or nil
             end})
         api = {
-            seamless_version='0.5.38-cffi-26251122',
+            seamless_version='0.5.41-smooth.4-cffi-26568081',
+            hold_transition=function(on)
+                if on~=nil then backend.hold_transition=on==true end
+                return backend.hold_transition==true,backend.holds
+            end,
             presentation_state=function()return presentation and presentation:result()or nil end,
             diagnostics=function()return diagnostics and diagnostics:snapshot()or{}end,
             recovery_status=function()return recovery and recovery:snapshot()or{}end,
@@ -973,6 +994,17 @@ return {
                     return nil,'No active depth-compensation lease'
                 end
                 local called,value,why=pcall(helper.depth_stats,helper,alignment.handle)
+                if not called then return nil,tostring(value)end
+                return value,why
+            end,
+            input_stats = function()
+                local lease=owned_controller.lease
+                local alignment=lease and lease.alignment
+                local helper=alignment and alignment.helper
+                if not helper or alignment.kind~='pose' or PORT51.kind(helper.input_stats)~='function' then
+                    return nil,'No active first-person input lease'
+                end
+                local called,value,why=pcall(helper.input_stats,helper,alignment.handle)
                 if not called then return nil,tostring(value)end
                 return value,why
             end,

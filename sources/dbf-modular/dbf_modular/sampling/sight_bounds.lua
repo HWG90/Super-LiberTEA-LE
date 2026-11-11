@@ -16,9 +16,9 @@ local L = {
     parent = 0x1d0,
     child = 0x1d8,
     sibling = 0x1e0,
-    type_c8 = 0x293550,
-    type_f8 = 0x28d330,
-    type_1e8 = 0x28e650,
+    type_c8 = 0x293600,
+    type_f8 = 0x28d3e0,
+    type_1e8 = 0x28e700,
 }
 local MAX_UNITS, MAX_DEPTH, FINISH_RESERVE = 8, 4, 64
 local function finite(v)

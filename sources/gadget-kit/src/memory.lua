@@ -9,7 +9,7 @@ local function tonumber(value,radix)
     return ffi_number and ffi_number(value) or nil
 end
 local HIGH, LIMIT, LOW = 4294967296, 140737488355328, 65536
-local STAMP = 0x6AE0E5FF
+local STAMP = 0x6AF322C1
 local MAX_READ, MAX_WRITE, MAX_CAP, MAX_PROBES = 8192, 4096, 1048576, 4096
 local DECLARATIONS = [[
     typedef struct TemporaryUnlockMemory_Region {
@@ -214,7 +214,7 @@ function M:_fast_reads()
     local ok,result=pcall(function()
         local ffi=self._ffi
         ffi.cdef('double GGR_scalar(double address, int size); double GGR_hashmap(double address, double key); double GGR_roster(double address, double peer); double GGR_module(void);')
-        local lib=ffi.load(mod.dir..'/native/guarded_reads_fb18682bc3515a7a.dll')
+        local lib=ffi.load(mod.dir..'/native/guarded_reads_218dbf400f24f282.dll')
         return {library=lib,GGR_scalar=lib.GGR_scalar,GGR_hashmap=lib.GGR_hashmap,GGR_roster=lib.GGR_roster,GGR_module=lib.GGR_module}
     end)
     if ok then self._fast=result else self._fast_unavailable=true end

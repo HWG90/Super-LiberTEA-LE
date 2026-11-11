@@ -30,6 +30,9 @@ This is **91 unique controls in eleven categories**, split into14 pages. Exclusi
 purpose pages; every page contains at most 13 controls. There are no inherited 82-control HUD+
 catalog, discarded-merger controls, duplicate exclusion rows or secondary native MCM owner.
 
+Single-page categories use MCM's direct-page navigation style, so each purpose appears once in
+the sidebar. Mission exclusions remains a collapsible category with its four purpose pages.
+
 The existing weapon strip and cooldown settings also govern their Bracket placement. All three
 cooldown display modes, four timer positions, short-status styles/placements, balance and gap remain
 operative. The gap control is labelled **Appearance / Cooldown spacing**: in Bracket it spaces the

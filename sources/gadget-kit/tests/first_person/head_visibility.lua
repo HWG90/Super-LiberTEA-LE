@@ -771,4 +771,17 @@ test('an incomplete model descriptor never enables the fast observation path',fu
  for _=1,3 do assert(f:update())end
  equal(f.manager:result().steady_observations,0);assert(f.full_snapshots>full)
 end)
+test('topology rebuild preserves foreign-mask history for unchanged renderers',function()
+ local f=model_fixture();assert(f:update());assert(f:update());f.time=f.time+1
+ local before=#f.writes
+ f:put(f.body.meshes[1]+0xDC,string.char(253));f:put(f.head.meshes[2]+0xDC,string.char(0))
+ local child=f:unit(7,{255},f.child.object);f.allowed[child.handle]=true
+ f:ptr(child.object+0x1D8,0);f:ptr(child.object+0x1E0,0);f:ptr(f.child.object+0x1D8,child.object)
+ assert(f:update());equal(f:mask(child.meshes[1]),253)
+ equal(f:mask(f.body.meshes[1]),253);equal(f:mask(f.head.meshes[2]),0)
+ equal(#f.writes,before+1,'Only the newly added weapon child needs a write')
+ assert(f:update());equal(#f.writes,before+1)
+ assert(f.manager:stop());equal(f:mask(f.body.meshes[1]),253);equal(f:mask(f.head.meshes[2]),0)
+ equal(f:mask(child.meshes[1]),255)
+end)
 print('Native ADS head visibility including steady observations: '..passed..' passed')

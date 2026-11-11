@@ -7,6 +7,7 @@
 #include "matrix4x4_witnesses.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 static int vector_read(const HD2VectorHost *h,uintptr_t p,void *out,size_t n) {
     return p&&n<=UINTPTR_MAX-p&&h->read(h->context,p,out,n)==1;
 }
@@ -24,20 +25,41 @@ static int vector_witness_entry(const HD2VectorHost *h,unsigned rva,int required
 }
 static uint32_t vector_word(const unsigned char *p){return (uint32_t)p[0]|(uint32_t)p[1]<<8|(uint32_t)p[2]<<16|(uint32_t)p[3]<<24;}
 static int temp_allocator_valid(const HD2VectorHost *,uintptr_t);
+/* Why the last Vector2/3/3Box/4 probe refused (hd2vector_probe_error). */
+static char probe_error[320];
+static int probe_refused(const char *why){snprintf(probe_error,sizeof(probe_error),"%s",why);return 0;}
+/* A boot witness, compared in slices that never cross a page, so a refusal
+ * names the page the game has not decrypted yet or the slice that differs. */
+static int probe_witness(const HD2VectorHost *h,const char *label,unsigned rva,const unsigned char *bytes,size_t size) {
+    for(size_t done=0;done<size;) {
+        unsigned at=rva+(unsigned)done;size_t slice=0x1000-(at&0xfff);
+        if(slice>1024)slice=1024; /* hd2env_check_code's limit */
+        if(slice>size-done)slice=size-done;
+        char why[256];
+        if(hd2env_check_code(h,h->image_base+at,bytes+done,slice,why,sizeof(why))!=HD2_CODE_MATCH){
+            snprintf(probe_error,sizeof(probe_error),"%s +0x%x: %s",label,at,why);return 0;
+        }
+        done+=slice;
+    }
+    return 1;
+}
+const char *hd2vector_probe_error(void){return probe_error;}
 int hd2env_probe_vector2_host(const HD2VectorHost *h) {
-    if(!h||!h->image_base||h->image_base>UINTPTR_MAX-0x29fe000||!h->read||!h->write||!h->callable)return 0;
+    probe_error[0]=0;
+    if(!h||!h->image_base||h->image_base>UINTPTR_MAX-0x29fe000||!h->read||!h->write||!h->callable)return probe_refused("no vector host");
     unsigned char header[0x1200];
-    if(!vector_read(h,h->image_base,header,sizeof(header))||memcmp(header,"MZ",2))return 0;
+    if(!vector_read(h,h->image_base,header,sizeof(header))||memcmp(header,"MZ",2))return probe_refused("image header unreadable");
     uint32_t nt=vector_word(header+0x3c);
     if(nt>0x1000||memcmp(header+nt,"PE\0\0",4)||header[nt+4]!=0x64||header[nt+5]!=0x86||
-       vector_word(header+nt+8)!=0x6ae0964a||header[nt+24]!=0x0b||header[nt+25]!=2||vector_word(header+nt+24+56)!=0x29fe000)return 0;
-    return vector_witness(h,0x9f900,vector_pool_witness,sizeof(vector_pool_witness))&&
-           vector_witness(h,0x704e0,vector_format_witness,sizeof(vector_format_witness))&&
-           vector_witness(h,0x419fb0,vector2_witness,sizeof(vector2_witness))&&
-           vector_witness(h,0x48f290,temp_count_witness,sizeof(temp_count_witness))&&
-           vector_witness(h,0x48f3a0,temp_set_witness,sizeof(temp_set_witness))&&
-           vector_witness(h,0x4f03a0,temp_cleanup_witness,sizeof(temp_cleanup_witness))&&
-           vector_witness(h,0x4f06d0,temp_overflow_clear_witness,sizeof(temp_overflow_clear_witness));
+       vector_word(header+nt+8)!=0x6af2d5e6||header[nt+24]!=0x0b||header[nt+25]!=2||vector_word(header+nt+24+56)!=0x29fe000)
+        return probe_refused("image header is not build 26568081's");
+    return probe_witness(h,"native pool allocator",0x9f930,vector_pool_witness,sizeof(vector_pool_witness))&&
+           probe_witness(h,"float formatter",0x70570,vector_format_witness,sizeof(vector_format_witness))&&
+           probe_witness(h,"Vector2 natives",0x41a090,vector2_witness,sizeof(vector2_witness))&&
+           probe_witness(h,"Script.temp_count",0x48f370,temp_count_witness,sizeof(temp_count_witness))&&
+           probe_witness(h,"Script.set_temp_count",0x48f480,temp_set_witness,sizeof(temp_set_witness))&&
+           probe_witness(h,"temporary frame cleanup",0x4f0470,temp_cleanup_witness,sizeof(temp_cleanup_witness))&&
+           probe_witness(h,"temporary overflow clear",0x4f07a0,temp_overflow_clear_witness,sizeof(temp_overflow_clear_witness));
 }
 int hd2vector2_pool_valid(const HD2VectorHost *h,uintptr_t e) {
     if(!h||!e||e>UINTPTR_MAX-0x100148)return 0;
@@ -46,9 +68,9 @@ int hd2vector2_pool_valid(const HD2VectorHost *h,uintptr_t e) {
            start>=first&&start<=last&&cursor>=first&&cursor<=last;
 }
 static uintptr_t vector_allocate(const HD2VectorHost *h,uintptr_t e,uint32_t size) {
-    uintptr_t fn=h->image_base+0x9f900;
+    uintptr_t fn=h->image_base+0x9f930;
     if(!hd2vector2_pool_valid(h,e)||h->callable(h->context,fn)!=1||
-       !vector_witness(h,0x9f900,vector_pool_witness,sizeof(vector_pool_witness)))return 0;
+       !vector_witness(h,0x9f930,vector_pool_witness,sizeof(vector_pool_witness)))return 0;
     uintptr_t start,cursor;
     if(!vector_read(h,e+0x100118,&start,8)||!vector_read(h,e+0x100120,&cursor,8))return 0;
     if(cursor+size>e+0x100118)cursor=e+0x118;
@@ -62,41 +84,41 @@ uintptr_t hd2vector4_allocate(const HD2VectorHost *h,uintptr_t e){return vector_
 uintptr_t hd2matrix4x4_allocate(const HD2VectorHost *h,uintptr_t e){return vector_allocate(h,e,68);}
 int hd2env_probe_vector3_host(const HD2VectorHost *h) {
     return hd2env_probe_vector2_host(h)&&
-        vector_witness(h,0x41f400,vector3_a_witness,sizeof(vector3_a_witness))&&
-        vector_witness(h,0x422740,vector3_b_witness,sizeof(vector3_b_witness));
+        probe_witness(h,"Vector3 natives",0x41f4e0,vector3_a_witness,sizeof(vector3_a_witness))&&
+        probe_witness(h,"Vector3 natives",0x422820,vector3_b_witness,sizeof(vector3_b_witness));
 }
 int hd2env_probe_vector3box_host(const HD2VectorHost *h) {
     return hd2env_probe_vector3_host(h)&&
-        vector_witness(h,0x4263c0,vector3box_witness,sizeof(vector3box_witness));
+        probe_witness(h,"Vector3Box natives",0x4264a0,vector3box_witness,sizeof(vector3box_witness));
 }
 int hd2env_probe_vector4_host(const HD2VectorHost *h) {
     return hd2env_probe_vector3_host(h)&&
-        vector_witness(h,0x4270a0,vector4_a_witness,sizeof(vector4_a_witness))&&
-        vector_witness(h,0x429f40,vector4_b_witness,sizeof(vector4_b_witness));
+        probe_witness(h,"Vector4 natives",0x427180,vector4_a_witness,sizeof(vector4_a_witness))&&
+        probe_witness(h,"Vector4 natives",0x42a020,vector4_b_witness,sizeof(vector4_b_witness));
 }
 int hd2vector2_format(const HD2VectorHost *h,char *out,float x,float y) {
-    uintptr_t fn=h->image_base+0x704e0;
-    if(h->callable(h->context,fn)!=1||!vector_witness(h,0x704e0,vector_format_witness,sizeof(vector_format_witness)))return 0;
+    uintptr_t fn=h->image_base+0x70570;
+    if(h->callable(h->context,fn)!=1||!vector_witness(h,0x70570,vector_format_witness,sizeof(vector_format_witness)))return 0;
     /* The original uses this formatter with %.9g for each float. Preserve its
      * exponent/NaN spelling and process locale rather than the host C runtime. */
     int count=((int(HD2_NATIVE_ABI *)(char *,const char *,...))fn)(out,"(%.9g, %.9g)",(double)x,(double)y);
     return count>=0&&count<128;
 }
 int hd2vector3_format(const HD2VectorHost *h,char *out,float x,float y,float z) {
-    uintptr_t fn=h->image_base+0x704e0;
-    if(h->callable(h->context,fn)!=1||!vector_witness(h,0x704e0,vector_format_witness,sizeof(vector_format_witness)))return 0;
+    uintptr_t fn=h->image_base+0x70570;
+    if(h->callable(h->context,fn)!=1||!vector_witness(h,0x70570,vector_format_witness,sizeof(vector_format_witness)))return 0;
     int count=((int(HD2_NATIVE_ABI *)(char *,const char *,...))fn)(out,"(%.9g, %.9g, %.9g)",(double)x,(double)y,(double)z);
     return count>=0&&count<128;
 }
 int hd2vector_format_float(const HD2VectorHost *h,char *out,float x) {
-    uintptr_t fn=h->image_base+0x704e0;
-    if(h->callable(h->context,fn)!=1||!vector_witness(h,0x704e0,vector_format_witness,sizeof(vector_format_witness)))return 0;
+    uintptr_t fn=h->image_base+0x70570;
+    if(h->callable(h->context,fn)!=1||!vector_witness(h,0x70570,vector_format_witness,sizeof(vector_format_witness)))return 0;
     int count=((int(HD2_NATIVE_ABI *)(char *,const char *,...))fn)(out,"%.9g",(double)x);
     return count>=0&&count<64;
 }
 int hd2vector4_format(const HD2VectorHost *h,char *out,float x,float y,float z,float w) {
-    uintptr_t fn=h->image_base+0x704e0;
-    if(h->callable(h->context,fn)!=1||!vector_witness(h,0x704e0,vector_format_witness,sizeof(vector_format_witness)))return 0;
+    uintptr_t fn=h->image_base+0x70570;
+    if(h->callable(h->context,fn)!=1||!vector_witness(h,0x70570,vector_format_witness,sizeof(vector_format_witness)))return 0;
     int count=((int(HD2_NATIVE_ABI *)(char *,const char *,...))fn)(out,"(%.9g, %.9g, %.9g, %.9g)",(double)x,(double)y,(double)z,(double)w);
     return count>=0&&count<128;
 }
@@ -118,13 +140,13 @@ static uint32_t temp_used(const HD2TempPool *p) {
 }
 static int temp_allocator_valid(const HD2VectorHost *h,uintptr_t e) {
     uintptr_t vt,allocate,release,size,underlying,underlying_vt,target;
-    if(!h->callable||!vector_read(h,e+8,&vt,8)||vt!=h->image_base+0x172b360||
-       !vector_read(h,vt+0x30,&allocate,8)||allocate!=h->image_base+0x602110||
-       !vector_read(h,vt+0x40,&release,8)||release!=h->image_base+0x6021d0||
-       !vector_read(h,vt+8,&size,8)||size!=h->image_base+0x4f9d40||
-       !vector_witness(h,0x602110,temp_allocator_witness,sizeof(temp_allocator_witness))||
-       !vector_witness(h,0x6021d0,temp_deallocator_witness,sizeof(temp_deallocator_witness))||
-       !vector_witness(h,0x4f9d40,temp_size_witness,sizeof(temp_size_witness))||
+    if(!h->callable||!vector_read(h,e+8,&vt,8)||vt!=h->image_base+0x172b320||
+       !vector_read(h,vt+0x30,&allocate,8)||allocate!=h->image_base+0x6021b0||
+       !vector_read(h,vt+0x40,&release,8)||release!=h->image_base+0x602270||
+       !vector_read(h,vt+8,&size,8)||size!=h->image_base+0x4f9e10||
+       !vector_witness(h,0x6021b0,temp_allocator_witness,sizeof(temp_allocator_witness))||
+       !vector_witness(h,0x602270,temp_deallocator_witness,sizeof(temp_deallocator_witness))||
+       !vector_witness(h,0x4f9e10,temp_size_witness,sizeof(temp_size_witness))||
        !vector_read(h,e+0x28,&underlying,8)||!underlying||
        !vector_read(h,underlying,&underlying_vt,8)||!underlying_vt||underlying_vt>UINTPTR_MAX-0x48)return 0;
     const unsigned slots[]={8,0x30,0x40};
@@ -138,8 +160,8 @@ static int temp_overflow_valid(const HD2VectorHost *h,uintptr_t e,const HD2TempP
     if(!p->pages)return 1;
     size_t size=(size_t)p->pages*sizeof(uintptr_t);
     if(!p->page_array||size>UINTPTR_MAX-p->page_array||p->allocator!=e+8||
-       !temp_allocator_valid(h,e)||h->callable(h->context,h->image_base+0x4f06d0)!=1||
-       !vector_witness(h,0x4f06d0,temp_overflow_clear_witness,sizeof(temp_overflow_clear_witness)))return 0;
+       !temp_allocator_valid(h,e)||h->callable(h->context,h->image_base+0x4f07a0)!=1||
+       !vector_witness(h,0x4f07a0,temp_overflow_clear_witness,sizeof(temp_overflow_clear_witness)))return 0;
     uintptr_t *pages=malloc(size);if(!pages)return 0;
     int ok=0;unsigned char byte;
     if(!vector_read(h,p->page_array,pages,size))goto done;
@@ -173,7 +195,7 @@ int hd2vector_temp_restore(const HD2VectorHost *h,uintptr_t e,uint32_t count) {
 int hd2vector_temp_clear(const HD2VectorHost *h,uintptr_t e) {
     HD2TempPool p,check;
     if(!temp_pool(h,e,&p)||!temp_overflow_valid(h,e,&p)||
-       !vector_witness(h,0x4f03a0,temp_cleanup_witness,sizeof(temp_cleanup_witness)))return 0;
+       !vector_witness(h,0x4f0470,temp_cleanup_witness,sizeof(temp_cleanup_witness)))return 0;
     uint32_t used=temp_used(&p);
     if(used>=0x100000)return 0;
     size_t first=(size_t)(e+0x100118-p.start);
@@ -212,7 +234,7 @@ int hd2vector_temp_clear(const HD2VectorHost *h,uintptr_t e) {
     if(p.pages) {
         /* This helper owns only native pages and never accesses a Lua state.
          * Retain the pointer array/capacity, as the native environment does. */
-        ((void(HD2_NATIVE_ABI *)(void *))(h->image_base+0x4f06d0))((void *)e);
+        ((void(HD2_NATIVE_ABI *)(void *))(h->image_base+0x4f07a0))((void *)e);
         if(!temp_pool(h,e,&check)||check.pages||check.overflow_cursor||
            check.start!=p.start||check.cursor!=p.cursor||check.capacity!=p.capacity||
            check.page_array!=p.page_array||check.allocator!=p.allocator)goto done;

@@ -13,7 +13,7 @@ local function settle(value)return math.abs(value)<.00001 and 0 or value end
 local function angle(n)return (n+PI)%TAU-PI end
 local function zero(reason)
     return {dx=0,dy=0,dz=0,pitch=0,yaw=0,roll=0,weight=0,speed=0,phase=0,
-        sprint_weight=0,sprint_target=false,sprint_held=false,shoulder_weight=0,bob_weight=0,reset=reason}
+        sprint_weight=0,sprint_target=false,sprint_held=false,shoulder_weight=0,bob_weight=0,reset=reason,rebased=false}
 end
 local function owner(value)return PORT51.kind(value)=='string' and value~='' or finite(value)end
 local function valid(sample)
@@ -23,7 +23,7 @@ end
 function Motion.new(options)
     local self={enabled=true,scale=1,editor_frozen=false,shoulder_aim_enabled=false,bob_strength=1,bob_speed=1,sway_strength=1,sway_speed=1,sprint_strength=0,camera_bob_strength=0,camera_bob_speed=1,camera_sway_strength=0,camera_sway_speed=1}
     function self:reset()
-        self.previous=nil;self.phase=0;self.camera_phase=0;self.camera_look_x=0;self.camera_look_z=0;self.amplitude=0;self.sprint=0;self.sprint_hold=0;self.shoulder=0
+        self.previous=nil;self.phase=0;self.camera_phase=0;self.camera_look_x=0;self.camera_look_z=0;self.amplitude=0;self.sprint=0;self.sprint_hold=0;self.shoulder=0;self.aim=0
         self.look_x,self.look_z,self.right_speed,self.forward_speed=0,0,0,0
     end
     function self:clear_ads()
@@ -43,13 +43,13 @@ function Motion.new(options)
             if n~=nil and(not finite(n)or n<(speed and .25 or 0)or n>(speed and 2 or 3))then return false,'Invalid motion setting: '..key end
         end
         for _,key in ipairs({'bob_strength','bob_speed','sway_strength','sway_speed','sprint_strength','camera_bob_strength','camera_bob_speed','camera_sway_strength','camera_sway_speed'})do if value[key]~=nil then self[key]=value[key]end end
-        local previous,shoulder=self.previous,self.shoulder
+        local previous,shoulder,aim=self.previous,self.shoulder,self.aim
         if value.enabled~=nil then self.enabled=value.enabled end
         if value.scale~=nil then self.scale=value.scale end
         if value.editor_frozen~=nil then self.editor_frozen=value.editor_frozen end
         self:reset()
         -- Optional sway changes do not interrupt the separate aiming stance.
-        if not self.editor_frozen then self.previous,self.shoulder=previous,shoulder end
+        if not self.editor_frozen then self.previous,self.shoulder,self.aim=previous,shoulder,aim end
         return true
     end
     function self:update(sample,dt)
@@ -60,7 +60,7 @@ function Motion.new(options)
         end
         local previous=self.previous
         self.previous={owner=sample.owner,x=sample.x,y=sample.y,z=sample.z,yaw=sample.yaw,pitch=sample.pitch}
-        if not previous or previous.owner~=sample.owner or dt>.25 then
+        if not previous or previous.owner~=sample.owner or dt>1 then
             local reason=not previous and 'initial' or (previous.owner~=sample.owner and 'owner_changed' or 'time_gap')
             self:reset();self.previous={owner=sample.owner,x=sample.x,y=sample.y,z=sample.z,yaw=sample.yaw,pitch=sample.pitch}
             return zero(reason)
@@ -69,10 +69,14 @@ function Motion.new(options)
         local travel=math.sqrt(wx*wx+wy*wy)
         local distance=math.sqrt(wx*wx+wy*wy+wz*wz)
         local turn,pitch_turn=angle(sample.yaw-previous.yaw),sample.pitch-previous.pitch
-        if distance>2 or distance/dt>20 or math.abs(turn)>PI/2 or math.abs(pitch_turn)>PI/2 then
-            self:reset();self.previous={owner=sample.owner,x=sample.x,y=sample.y,z=sample.z,yaw=sample.yaw,pitch=sample.pitch}
-            return zero('discontinuity')
-        end
+        -- A hitch, teleport or launch says nothing about how the Helldiver
+        -- moved, so this sample carries no travel or turn. The stance weights
+        -- and the remaining bob and sway keep easing from where they were:
+        -- dropping them to zero here was a visible pop after every stutter.
+        local rebased
+        if dt>.25 then rebased='time_gap'
+        elseif distance>2 or distance/dt>20 or math.abs(turn)>PI/2 or math.abs(pitch_turn)>PI/2 then rebased='discontinuity'end
+        if rebased then wx,wy,wz,travel,turn,pitch_turn=0,0,0,0,0,0;dt=math.min(dt,.05)end
         -- Use real sample time for velocity; clamp only integration so a slow
         -- frame cannot turn its accumulated displacement into a speed spike.
         local step=math.min(dt,.05)
@@ -88,8 +92,14 @@ function Motion.new(options)
         -- Shoulder aim is a stance, independent of optional sway strength.
         -- Move toward screen center and closer without changing saved placement.
         -- Full ADS owns exact sight alignment and clears the blend immediately.
-        if ads==1 then self:clear_ads()
+        -- Walking bob and sway fade against the aim flag itself, whether or
+        -- not the optional aim placement is on; a hard switch here popped the
+        -- whole gait offset in and out on every aim press and release.
+        if ads==1 then self:clear_ads();self.aim=shoulder and 1 or 0
         else
+            self.aim=damp(self.aim,shoulder and 1 or 0,step,shoulder and .10 or .12)
+            if not shoulder and self.aim<.00001 then self.aim=0
+            elseif shoulder and self.aim>1-.00001 then self.aim=1 end
             local pose_aim=shoulder and self.shoulder_aim_enabled
             self.shoulder=damp(self.shoulder,pose_aim and 1 or 0,step,shoulder and .10 or .12)
             if not pose_aim and self.shoulder<.00001 then self.shoulder=0
@@ -117,7 +127,7 @@ function Motion.new(options)
         local weight=stance_weight*(motion and self.scale or 0)
         -- Native sprint already animates the arms. Fade the extra walking bob
         -- and inertia away as the lowered sprint pose settles.
-        local walk=(1-self.sprint)*(shoulder and 0 or 1)
+        local walk=(1-self.sprint)*(1-self.aim)
         local gait=walk+self.sprint*self.sprint_strength*2.5
         local bob_x=math.sin(self.phase)*.008*self.amplitude*gait*self.bob_strength
         local bob_y=math.cos(self.phase*2)*.003*self.amplitude*gait*self.bob_strength
@@ -140,7 +150,7 @@ function Motion.new(options)
             camera_pitch=settle(self.camera_look_z*self.camera_sway_strength*stance_weight),
             camera_yaw=settle(-self.camera_look_x*self.camera_sway_strength*stance_weight),
             camera_roll=0,
-            weight=weight,speed=speed,phase=self.phase,reset=false,
+            weight=weight,speed=speed,phase=self.phase,reset=false,rebased=rebased or false,
             sprint_weight=self.sprint,sprint_target=sprint_target,sprint_held=not sprint and self.sprint_hold>0,
             shoulder_weight=self.shoulder,
             bob_weight=motion and walk*self.amplitude or 0,

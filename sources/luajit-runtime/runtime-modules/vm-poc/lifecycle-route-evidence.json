@@ -1,35 +1,35 @@
 {
-  "capture": "/home/goose/Projects/Linux HD2 Mods/builds/26251122/runtime/images/exe-26251122.bin",
-  "capture_sha256": "6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c",
+  "capture": "/home/goose/Projects/Linux HD2 Mods/builds/26568081/runtime/images/exe-26568081.bin",
+  "capture_sha256": "1932b56a7670a62ab1dd432dc05ca5dbcfd12e7fa49637068b16512ea75602a7",
   "functions": [
     {
       "name": "construct",
-      "entry": "0x4ed1d0",
-      "end": "0x4ed4bd",
-      "patch": "0x4ed2f2",
-      "resume": "0x4ed49f",
-      "sha256": "6cad19ec93790551262fda2e47fd7d81ff84e3eea15df9f8ca4894c0e34e6934",
+      "entry": "0x4ed2a0",
+      "end": "0x4ed58d",
+      "patch": "0x4ed3c2",
+      "resume": "0x4ed56f",
+      "sha256": "964caefd532a5b6b1adfbe50999663f895058e865c265fd68e52ec58792bebc9",
       "calls": {
-        "0x4ed20e": "0x601f40",
-        "0x4ed227": "0x601f40",
-        "0x4ed2f2": "0x7989a0",
-        "0x4ed492": "0x4ec690",
-        "0x4ed49a": "0x4ec360"
+        "0x4ed2de": "0x601fe0",
+        "0x4ed2f7": "0x601fe0",
+        "0x4ed3c2": "0x7989f0",
+        "0x4ed562": "0x4ec760",
+        "0x4ed56a": "0x4ec430"
       }
     },
     {
       "name": "close",
-      "entry": "0x4ed4c0",
-      "end": "0x4ed52f",
-      "patch": "0x4ed4d2",
-      "resume": "0x4ed4da",
-      "sha256": "6db30cefe61be59eb3c1abfb9d65139e0ddb57d0ac2f767a9bcd459675567ff9",
+      "entry": "0x4ed590",
+      "end": "0x4ed5ff",
+      "patch": "0x4ed5a2",
+      "resume": "0x4ed5aa",
+      "sha256": "2fa1b5d865ceab9c329c52986c802fb66ba3f36c38edb7ad80028856cd6e907f",
       "calls": {
-        "0x4ed4cd": "0x4f06d0",
-        "0x4ed4d5": "0x798b70",
-        "0x4ed4f1": "0x287c70",
-        "0x4ed517": "0x4f9df0",
-        "0x4ed52a": "0x602070"
+        "0x4ed59d": "0x4f07a0",
+        "0x4ed5a5": "0x798bc0",
+        "0x4ed5c1": "0x287d00",
+        "0x4ed5e7": "0x4f9ec0",
+        "0x4ed5fa": "0x602110"
       }
     }
   ],
@@ -38,7 +38,7 @@
   "destructor_kept": "native buffer cleanup and native allocator teardown",
   "state_fields": "native+0 and native+0x100148 stay null; lookup uses an external association",
   "close_target": "requires a reachable rel32 target or a separately prepared nearby leaf jump stub",
-  "boot_remaining": "0x6cde10 includes PUC stack reset, engine callback registration, config globals, require/init and error handling",
+  "boot_remaining": "0x6cded0 includes PUC stack reset, engine callback registration, config globals, require/init and error handling",
   "live_game_installable": false,
   "reason": "No early loader installed; captured boot and game shutdown routes are separate proofs; timed GC, TLS/error context and remaining bindings still require adaptation"
 }

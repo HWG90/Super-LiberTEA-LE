@@ -3,7 +3,7 @@ local PORT51=mod.require('src/first_person/compat51.lua')
 -- independent of the manually enabled native first-person camera.
 -- Draft offsets are absolute; native placement always starts from fresh poses.
 local Integration=mod.require('src/first_person.lua')
-local Style=mod.require('src/first_person/ui_style.lua')
+local EditorTokens=mod.require('src/first_person/ui_style.lua').editor_legacy_tokens
 local M = {}
 local BASELINE = { x = .15, y = 0, z = -.12 }
 local LIMIT = .5
@@ -148,44 +148,28 @@ function M.new(controller, store, log, monotonic)
         local scale = math.max(.6, math.min(1.5, h / 1080))
         panel = { x = 24 * scale, y = h - 280 * scale, w = math.min(w - 48 * scale, 530 * scale), h = 256 * scale }
         local commands = {}
-        local colors,sizes=Style.tokens.colors,Style.tokens.style
-        local sr=rawget(_G,'stingray')
-        local segments=sr and sr.Gui and PORT51.kind(sr.Gui.triangle)=='function' and 4 or 0
-        local function shapes(items,color)
-            for _,shape in ipairs(items)do
-                commands[#commands+1]={type=shape.kind,x=shape.x,y=shape.y,w=shape.w,h=shape.h,
-                    points=shape.points,c=color,a=color[4]/255,layer=300}
-            end
+        local colors=EditorTokens.colors
+        local function rect(r, color, alpha)
+            commands[#commands + 1] = { type = 'rect', x = r.x, y = r.y, w = r.w, h = r.h, c = color, a = alpha or EditorTokens.opacity.solid, layer = 300 }
         end
-        local function rect(r,color,radius)
-            shapes(Style.rounded_rect_shapes(r.x,r.y,r.w,r.h,radius*scale,segments),color)
-        end
-        local function outline(r,color,radius,width)
-            shapes(Style.rounded_outline_shapes(r.x,r.y,r.w,r.h,radius*scale,width*scale,segments),color)
-        end
-        local function text(value, x, y, size, color,bold)
-            color=color or colors.text
+        local function text(value, x, y, size, color)
             commands[#commands + 1] = { type = 'text', text = value, x = x, y = y,
-                size = size * scale, c = color, a = color[4]/255, layer = 301,text_bold=bold==true }
+                size = size * scale, c = color or colors.text, a = EditorTokens.opacity.solid, layer = 301 }
         end
-        rect(panel,colors.panel,sizes.window_rounding)
-        outline(panel,colors.line,sizes.window_rounding,sizes.window_border)
+        rect(panel, colors.panel, EditorTokens.opacity.panel)
         local x, top = panel.x + 16 * scale, panel.y + panel.h - 28 * scale
-        text(((store.title or 'WEAPON PLACEMENT')..(weapon_key and ('  ['..weapon_key..']') or '')):upper(), x, top, 17,colors.yellow,true)
+        text((store.title or 'WEAPON PLACEMENT')..(weapon_key and ('  ['..weapon_key..']') or ''), x, top, 17, colors.accent)
         text('Editing: '..actions[action_index][2]..'   (placement preview)', x+80*scale, top-30*scale, 16)
         text(string.format('Right %+.1f cm   Forward %+.1f cm   Up %+.1f cm', draft.x * 100, draft.y * 100, draft.z * 100), x, top - 66 * scale, 16)
         text(string.format('Yaw %+.1f  Pitch %+.1f  Roll %+.1f deg',draft.yaw or 0,draft.pitch or 0,draft.roll or 0),x,top-94*scale,15)
-        text(store.rotation==false and 'Left drag: move   Wheel: depth   Shift: fine' or 'L: move  R: yaw/pitch  M: roll  Wheel: depth  Shift: fine', x, top - 118 * scale, 15,colors.text_dim)
+        text(store.rotation==false and 'Left drag: move   Wheel: depth   Shift: fine' or 'L: move  R: yaw/pitch  M: roll  Wheel: depth  Shift: fine', x, top - 118 * scale, 15)
         local supported=PORT51.kind(store.action_supported)~='function' or plain(store,'action_supported',actions[action_index][1])==true
-        text(supported and 'Wheel: depth   Arrows: move   PgUp/PgDn: depth' or 'Preset only: automatic action mapping needs a live trace', x, top - 142 * scale, 14,colors.text_dim)
-        text((ready and label or 'Release the activation click/key to begin'):sub(1, 72), x, top - 174 * scale, 13,colors.text_dim)
+        text(supported and 'Wheel: depth   Arrows: move   PgUp/PgDn: depth' or 'Preset only: automatic action mapping needs a live trace', x, top - 142 * scale, 14)
+        text((ready and label or 'Release the activation click/key to begin'):sub(1, 72), x, top - 174 * scale, 13, colors.text_dim)
         buttons = {}
         for i,item in ipairs({{'previous_action','<'},{'next_action','>'}})do
             local r={x=x+(i-1)*40*scale,y=top-36*scale,w=32*scale,h=26*scale}
-            buttons[item[1]]=r
-            rect(r,colors.field,sizes.frame_rounding)
-            outline(r,colors.line,sizes.frame_rounding,sizes.secondary_border)
-            text(item[2],r.x+10*scale,r.y+6*scale,15,colors.text,true)
+            buttons[item[1]]=r;rect(r,colors.field);text(item[2],r.x+10*scale,r.y+6*scale,15)
         end
         local count=4+(store.reset_all and 1 or 0)-(store.single_save and 1 or 0)
         local bw,gap,by=count==4 and 112*scale or (panel.w-32*scale-(count-1)*10*scale)/count,10*scale,panel.y+12*scale
@@ -196,12 +180,10 @@ function M.new(controller, store, log, monotonic)
         for index,item in ipairs(items)do
             local bounds = { x = x + (index - 1) * (bw + gap), y = by, w = bw, h = 28 * scale }
             buttons[item[1]] = bounds
-            local primary=item[1]=='save'
-            rect(bounds,primary and colors.yellow or colors.field,sizes.frame_rounding)
-            if not primary then outline(bounds,colors.line,sizes.frame_rounding,sizes.secondary_border)end
-            text(item[2]:upper(), bounds.x + 10 * scale, bounds.y + 7 * scale, 14,primary and colors.on_yellow or colors.text,true)
+            rect(bounds, colors.field)
+            text(item[2], bounds.x + 10 * scale, bounds.y + 7 * scale, 14)
         end
-        text(store.footer or 'Save weapon / all applies to the selected action only', panel.x, panel.y - 20 * scale, 13,colors.text_dim)
+        text(store.footer or 'Save weapon / all applies to the selected action only', panel.x, panel.y - 20 * scale, 13, colors.accent)
         local ok, why = plain(view, 'draw', commands)
         if ok == false or why ~= nil then return false, why or 'Editor drawing refused' end
         return true

@@ -22,9 +22,9 @@ local function fresh(total, chain)
     f.uint(registry + 0x98, 0x400000)
     f.pointer(registry + 0xa0, generations)
     f.put(vt + 0xc8, string.rep("\0", 0x128))
-    f.pointer(vt + 0xc8, exe + 0x293550)
-    f.pointer(vt + 0xf8, exe + 0x28d330)
-    f.pointer(vt + 0x1e8, exe + 0x28e650)
+    f.pointer(vt + 0xc8, exe + 0x293600)
+    f.pointer(vt + 0xf8, exe + 0x28d3e0)
+    f.pointer(vt + 0x1e8, exe + 0x28e700)
     for i = 1, total or 2 do
         local unit, object = f.weapon_engine + i - 1, 0x66000000 + i * 0x400
         f.units[i], f.objects[i] = unit, object

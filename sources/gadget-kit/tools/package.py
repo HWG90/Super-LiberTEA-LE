@@ -4,9 +4,9 @@ import json,re,hashlib,zipfile
 ROOT=Path(__file__).resolve().parents[1]
 def build():
  manifest=json.loads((ROOT/'manifest.json').read_text());profile=(ROOT/'src/first_person/profile.lua').read_text()
- helpers=sorted(set(re.findall(r"native/native_ads_[a-z]+_26251122_[a-z0-9]+\.dll",profile)))
+ helpers=sorted(set(re.findall(r"native/native_ads_[a-z]+_26568081_[a-z0-9]+\.dll",profile)))
  assert len(helpers)==7 and any('native_ads_near_' in h for h in helpers) and any('native_ads_heldfire_' in h for h in helpers)
- files=['main.lua','manifest.json','config/defaults.cfg','README.md','LICENSE','PORT-STATUS.txt','PORT-PROVENANCE.json','licenses/MinHook.txt','docs/first-person-seamless-validation.json','docs/first-person-live-acceptance.md','docs/first-person-rendering-capabilities.md','docs/first-person-camera-remake.md','docs/first-person-performance.md',*manifest['lll']['modules'],*helpers,*re.findall(r"native/guarded_reads_[0-9a-f]+\.dll",(ROOT/'src/memory.lua').read_text()),'port51/hd2_nativeinfo_8d03e036881e4ddc.dll']
+ files=['main.lua','manifest.json','config/defaults.cfg','README.md','LICENSE','PORT-STATUS.txt','PORT-PROVENANCE.json','licenses/MinHook.txt','docs/first-person-seamless-validation.json','docs/first-person-live-acceptance.md','docs/first-person-rendering-capabilities.md','docs/first-person-camera-remake.md','docs/first-person-performance.md','docs/first-person-native-read-recovery.md','docs/first-person-editor-appearance-restore.md','docs/first-person-zoom-input.md','docs/first-person-zoom-input-validation.json',*manifest['lll']['modules'],*helpers,*re.findall(r"native/guarded_reads_[0-9a-f]+\.dll",(ROOT/'src/memory.lua').read_text()),'port51/hd2_nativeinfo_f375fc4798c33ad5.dll']
  assert len(files)==len(set(files))
  out=ROOT/'dist/releases';out.mkdir(parents=True,exist_ok=True)
  archive=out/f"Goose-Gadget-Kit-{manifest['version']}.zip"

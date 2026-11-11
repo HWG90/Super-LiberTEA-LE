@@ -16,7 +16,7 @@ The following current candidate sources were inspected:
 
 - `native/near_clip/native_ads_near.cpp`, especially `observe`, `setter_hook`, `api_slot` and the binary contract.
 - `native/first_person/native_ads_fov.cpp`, especially `source`, `binary_contract`, owned camera/request binding and the existing FOV setter policy.
-- `native/first_person/native_ads_camera.cpp`, especially the documented `CameraAPI+0x28` quaternion consumption, `direct_camera_parent` and `pinned_eye`.
+- `native/first_person/native_ads_camera.cpp`, especially the documented `CameraAPI+0x28` quaternion consumption, `direct_camera_parent`, `remember_native` and the native6 exact-forward branch. The former camera-pin implementation is retired and is not an available rendering facility.
 - `native/first_person/native_ads_editor.cpp` / `.h`, `src/first_person/pose.lua` and `src/first_person/backend.lua` pose configuration. These describe a common native rig transform; they expose no admitted renderer-layer or per-mesh projection configuration.
 - `src/first_person/head_visibility.lua`, especially SDK binding qualification, explicit `default` / `shadow_caster` contexts and pass-mask ownership/restoration.
 - `src/first_person/model_shadow_source.lua`, which inventories native FPS arms/clothing, gun and linked children with world, parent and generation checks.

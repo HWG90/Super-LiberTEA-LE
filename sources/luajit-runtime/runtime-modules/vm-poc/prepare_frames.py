@@ -12,12 +12,12 @@ from trace import Image
 
 def prepare():
     image=Image('early')
-    want='6e2751f8690b6aa49060ca4b8d3476d502232d89de93a1b478722b07cb18a92c'
+    want='1932b56a7670a62ab1dd432dc05ca5dbcfd12e7fa49637068b16512ea75602a7'
     assert hashlib.sha256(image.data).hexdigest()==want
-    specs=[('update',0x6ce620,0x6ce725,0x6ce664,0x6ce70e),
-           ('render',0x6ce730,0x6ce790,0x6ce734,0x6ce770)]
-    calls={0x6ce657:0x674100,0x6ce65f:0x7fad60,0x6ce6a1:0x5eb2b0,
-           0x6ce709:0x4f03a0,0x6ce720:0x61840,0x6ce76b:0x4f03a0}
+    specs=[('update',0x6ce6e0,0x6ce7e5,0x6ce724,0x6ce7ce),
+           ('render',0x6ce7f0,0x6ce850,0x6ce7f4,0x6ce830)]
+    calls={0x6ce717:0x6741e0,0x6ce71f:0x7fae50,0x6ce761:0x5eb340,
+           0x6ce7c9:0x4f0470,0x6ce7e0:0x618d0,0x6ce82b:0x4f0470}
     lines=['/* Local captured engine code; not a redistributable game package. */']
     rows=[]
     for name,start,end,patch,resume in specs:
