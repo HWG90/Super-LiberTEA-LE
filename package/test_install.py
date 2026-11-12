@@ -1,16 +1,17 @@
 """Run Super LiberTEA - LE's boot install blocks (out/work/install-blocks-<dbf>.lua: LLL R38-26568081-luajit.1's block,
-then the mods block) under Wine with LLL's Windows Lua 5.1.4 (the 26251122 line's lll/work/wine-lua/lua51.exe), as the
-game runs them at boot.
+then the mods block of that DBF variant) under Wine with LLL's Windows Lua 5.1.4 (the 26251122 line's
+lll/work/wine-lua/lua51.exe), as the game runs them at boot.
 
 The blocks write into the scratch prefix's own LOCALAPPDATA, from a fake game folder with a space in its path (the
 real layout by name). Cases: fresh install, repeat start, a missing mod file, a file you changed, another build of a
 mod installed over this one, receipts lost (folders adopted), a foreign mod folder on a fresh install, the first
 start after an earlier release of this package, files an earlier release wrote and this one no longer ships (removed
-unless you changed them), a development shim in place of a mod (set aside to Backups, the mod installed), a Diver's
-Best Friend installed another way (left alone, reported), and the upgrade from the published 1.0.4 (game build
-26251122), run from 1.0.4's own install blocks, with each of its two DBF choices: LLL's runtime marker moves to the
-new runtime, every mod follows, the old build's files leave the mod folders, and 1.0.4's Diver's Best Friend R46 LE
-goes to Backups.
+unless you changed them), a development shim in place of a mod (set aside to Backups, the mod installed), a DBF
+installed another way beside the chosen one (left alone, reported), switching the DBF choice both ways (the other DBF
+goes to Backups), and the upgrades from the two published releases a player can come from, each run from that
+release's own install blocks into each DBF choice of this one: 1.0.4 (game build 26251122, both of its DBF choices:
+LLL's runtime marker moves to the new runtime, every mod follows, the old build's files leave the mod folders) and
+1.0.5 (26568081, DBF Modular only: LLL's files stay, the mods are in place).
   /usr/bin/python3 -I test_install.py --prefix <scratch WINEPREFIX> --scratch <scratch dir>
 """
 import argparse, hashlib, json, os, shutil, subprocess, zlib
@@ -21,6 +22,9 @@ HERE = Path(__file__).resolve().parent
 OLD_LINE = Path("/home/goose/Projects/Linux HD2 Mods/.claude/worktrees/democracy-overlord-arsenal-0a3429/builds/26251122")
 LUA = OLD_LINE / "lll" / "work" / "wine-lua" / "lua51.exe"
 OLD_RELEASE = OLD_LINE / "super-libertea"
+# 1.0.5 of this line, as published: its install block and staged mods, kept by hand before 1.0.6 was built
+# (out/ is not tracked: out/released/1.0.5/), checked here against RECEIPT-1.0.5.json.
+RELEASED_105 = HERE / "out" / "released" / "1.0.5"
 
 
 def main():
@@ -46,7 +50,7 @@ def main():
         mods = {m: every[m] for m in receipt["variants"][dbf]["mods"]}
         total = sum(len(f) for f in mods.values())
 
-    (default,) = list(receipt["variants"])
+    default, alternative = list(receipt["variants"])
     lll_release = receipt["variants"][default]["boot"]["lll_release"]
     marker = receipt["variants"][default]["boot"]["marker"]
     use(default)
@@ -176,83 +180,133 @@ def main():
     check("fresh install beside your own WJ", line, "mods: %d written, 0 in place; left alone: dbf_freecam (another build is installed)"
           % (total - len(mods["dbf_freecam"])))
 
-    # A development shim in place of a mod, as on the porting machine (there it was ASS): the mod's manifest beside a
-    # main.lua that loads the mod from an Arsenal folder by drive path. It is not a build: its folder goes to Backups.
+    # A development shim in place of ASS, as on the porting machine: R46's manifest beside a main.lua that loads the
+    # mod from an Arsenal folder by drive path. It is not a build: its folder goes to Backups as it is. This is also
+    # the fresh install of the other DBF choice.
+    use(alternative)
     shutil.rmtree(home.parent, ignore_errors=True)
-    dbf = home / "Mods/dbf_modular"
+    dbf = home / "Mods/divers_best_friend"
     (dbf / "config").mkdir(parents=True)
-    (dbf / "manifest.json").write_bytes(b'{"id":"dbf_modular","version":"0.1.0-dev"}\n')
+    (dbf / "manifest.json").write_bytes(b'{"id":"divers_best_friend","version":"R46"}\n')
     shim = (b"-- Exact archive-code acceptance through LLL's supported lifecycle.\n"
-            b"local f=assert(io.open('Z:/home/goose/.config/hd2arsenal/mods/DBF-Modular-Development/Addon/63ab3b8f046c401d.lua','rb'));"
+            b"local f=assert(io.open('Z:/home/goose/.config/hd2arsenal/mods/DBF-ASS-R46-LuaJIT-26251122/Addon/63ab3b8f046c401d.lua','rb'));"
             b"local data=f:read('*a');f:close()\n"
-            b"return assert(loadstring(data,'@DBF-current-archive'))()\n")
+            b"return assert(loadstring(data,'@DBF-ASS-current-archive'))()\n")
     (dbf / "main.lua").write_bytes(shim)
     _, line = start()
-    check("a development shim in place of a mod", line, "mods: %d written, 0 in place; set aside: dbf_modular "
-          "(development shim, now Backups/dbf_modular-shim-" % total)
+    check("a development shim in place of ASS", line, "mods: %d written, 0 in place; set aside: divers_best_friend "
+          "(development shim, now Backups/divers_best_friend-shim-" % total)
     assert "left alone" not in line and "problems" not in line
     same()
-    backups = list((home / "Backups").glob("dbf_modular-shim-*"))
+    assert not (home / "Mods/dbf_modular").exists()
+    backups = list((home / "Backups").glob("divers_best_friend-shim-*"))
     assert len(backups) == 1 and (backups[0] / "main.lua").read_bytes() == shim and (backups[0] / "config").is_dir(), backups
     _, line = start()
     check("... next start", line, "mods: 0 written, %d in place" % total)
     assert "set aside" not in line
 
-    # A Diver's Best Friend installed another way beside DBF Modular: left alone and reported, never moved.
+    # A DBF installed another way beside the variant's DBF: left alone and reported, never moved.
+    use(default)
     shutil.rmtree(home.parent, ignore_errors=True)
     (home / "Mods/divers_best_friend").mkdir(parents=True)
     (home / "Mods/divers_best_friend/manifest.json").write_bytes(b'{"id":"divers_best_friend","version":"own"}\n')
     _, line = start()
-    check("a DBF you installed beside DBF Modular", line, "mods: %d written, 0 in place; left alone: divers_best_friend "
+    check("a DBF you installed beside the choice", line, "mods: %d written, 0 in place; left alone: divers_best_friend "
           "(another DBF provider is installed; set one to false in LLL.cfg)" % total)
     assert (home / "Mods/divers_best_friend/manifest.json").read_bytes() == b'{"id":"divers_best_friend","version":"own"}\n'
 
-    # The upgrade from the published 1.0.4 (game build 26251122), from 1.0.4's own install blocks as built: first a
-    # 1.0.4 start with one of its DBF choices, then this release's start over what it left.
-    old = json.loads((OLD_RELEASE / "RECEIPT.json").read_text())
-    assert old["version"] == "1.0.4" and old["game_build"] == "26251122"
-    old_stage = OLD_RELEASE / "out" / "stage"
-    for choice, variant in old["variants"].items():
-        blocks = (OLD_RELEASE / "out" / "work" / ("install-blocks-%s.lua" % choice)).read_bytes()
-        cut = blocks.index(b"do -- Super LiberTEA - LE 1.0.4:")
-        assert hashlib.sha256(blocks[:cut]).hexdigest() == variant["boot"]["lll_install_block_sha256"]
-        assert hashlib.sha256(blocks[cut:]).hexdigest() == variant["boot"]["mods_block_sha256"], "not 1.0.4's published mods block"
+    # Switching the DBF choice in Arsenal: the next start installs the chosen DBF and moves the one this package wrote.
+    shutil.rmtree(home.parent, ignore_errors=True)
+    start()
+    first = next(m for m in receipt["variants"][alternative]["sets_aside"])
+    use(alternative)
+    second = receipt["variants"][default]["sets_aside"][0]
+    _, line = start()
+    check("switch to %s" % alternative, line, "mods: %d written, %d in place; set aside: %s (the other DBF choice, now Backups/%s-superlibertea-"
+          % (len(every[second]), total - len(every[second]), first, first))
+    assert not (home / "Mods" / first).exists() and not (home / "SuperLiberTEA" / (first + ".txt")).exists()
+    same()
+    use(default)
+    _, line = start()
+    check("... and back to %s" % default, line, "mods: %d written, %d in place; set aside: %s (the other DBF choice"
+          % (len(every[first]), total - len(every[first]), second))
+    same()
+    _, line = start()
+    check("... next start", line, "mods: 0 written, %d in place" % total)
+    assert "set aside" not in line and "left alone" not in line
+
+    def upgrade(label, blocks, old_version, variant, old_stage, target):
+        """A start of an earlier published release from its own install blocks, then this release's start (DBF choice
+        target) over what it left."""
         shutil.rmtree(home.parent, ignore_errors=True)
         (tools / "blocks.lua").write_bytes(blocks)
         lll, line = start()
         before = {m: {p.relative_to(old_stage / m).as_posix() for p in (old_stage / m).rglob("*") if p.is_file()} for m in variant["mods"]}
-        check("1.0.4 (%s): its own start" % choice, line, "Super LiberTEA - LE 1.0.4 mods: %d written, 0 in place" % sum(map(len, before.values())))
-        check("1.0.4 (%s): LLL" % choice, lll, "%s files: 7 written, 0 in place" % variant["boot"]["lll_release"])
+        check("%s: its own start" % label, line, "Super LiberTEA - LE %s mods: %d written, 0 in place" % (old_version, sum(map(len, before.values()))))
+        check("%s: LLL" % label, lll, "%s files: 7 written, 0 in place" % variant["boot"]["lll_release"])
         assert (home / "Native/luajit-boot.enable").read_bytes() == (variant["boot"]["marker"] + "\n").encode()
-        use(default)
+        use(target)
         lll, line = start()
-        # LLL: the five new files and the marker; the game folder note stays. 1.0.4's files stay beside them.
-        check("upgrade from 1.0.4 (%s): LLL" % choice, lll, "%s files: 6 written, 1 in place" % lll_release)
-        assert "Native/luajit-boot.enable" in lll and "problems" not in lll
-        assert (home / "Native/luajit-boot.enable").read_bytes() == (marker + "\n").encode()
-        assert (home / "Native" / variant["boot"]["marker"]).is_file()
+        label = "upgrade from %s to %s" % (label, target)
+        if variant["boot"]["lll_release"] == lll_release:
+            check("%s: LLL" % label, lll, "%s files: 0 written, 7 in place" % lll_release)
+        else:
+            # LLL: the five new files and the marker; the game folder note stays. The old release's files stay beside them.
+            check("%s: LLL" % label, lll, "%s files: 6 written, 1 in place" % lll_release)
+            assert "Native/luajit-boot.enable" in lll and (home / "Native" / variant["boot"]["marker"]).is_file()
+        assert "problems" not in lll and (home / "Native/luajit-boot.enable").read_bytes() == (marker + "\n").encode()
         shared = [m for m in mods if m in before]
         unchanged = sum(1 for m in shared for n, d in mods[m].items() if n in before[m] and (old_stage / m / n).read_bytes() == d)
         gone = sum(len(before[m] - set(mods[m])) for m in shared)
-        want = "Super LiberTEA - LE %s mods: %d written, %d in place, %d removed" % (version, total - unchanged, unchanged, gone)
-        if "divers_best_friend" in before:
-            want += "; set aside: divers_best_friend (a DBF this release does not ship, now Backups/divers_best_friend-superlibertea-"
-        check("upgrade from 1.0.4 (%s): the mods" % choice, line, want)
-        assert "left alone" not in line and "problems" not in line
+        aside = [m for m in receipt["variants"][target]["sets_aside"] if m in before]
+        want = "Super LiberTEA - LE %s mods: %d written, %d in place" % (version, total - unchanged, unchanged)
+        want += ", %d removed" % gone if gone else ""
+        want += "".join("; set aside: %s (the other DBF choice, now Backups/%s-superlibertea-" % (m, m) for m in aside)
+        check("%s: the mods" % label, line, want)
+        assert "left alone" not in line and "problems" not in line and (aside or "set aside" not in line) and (gone or "removed" not in line)
         same()
         for m in shared:
             left = {p.relative_to(home / "Mods" / m).as_posix() for p in (home / "Mods" / m).rglob("*") if p.is_file()}
             assert left == set(mods[m]), (m, sorted(left ^ set(mods[m]))[:5])
-        assert not (home / "Mods/divers_best_friend").exists() and not (home / "SuperLiberTEA/divers_best_friend.txt").exists()
-        if "divers_best_friend" in before:
-            (backup,) = (home / "Backups").glob("divers_best_friend-superlibertea-*")
-            assert {p.relative_to(backup).as_posix() for p in backup.rglob("*") if p.is_file()} == before["divers_best_friend"]
+        for m in aside:
+            assert not (home / "Mods" / m).exists() and not (home / "SuperLiberTEA" / (m + ".txt")).exists()
+            (backup,) = (home / "Backups").glob(m + "-superlibertea-*")
+            assert {p.relative_to(backup).as_posix() for p in backup.rglob("*") if p.is_file()} == before[m]
+        for m in mods:
+            assert (home / "SuperLiberTEA" / (m + ".txt")).read_text().startswith("release\t%s\n" % version), m
         lll, line = start()
         check("... next start", line, "mods: 0 written, %d in place" % total)
         check("... next start: LLL", lll, "files: 0 written, 7 in place")
         assert "set aside" not in line and "left alone" not in line and "removed" not in line
 
-    # LuaJIT switched off by hand ("off" in the marker) stays off through the upgrade.
+    def published(blocks, old_version, variant):
+        # The blocks are that release's own: LLL's install block, then its mods block, by the hashes in its receipt.
+        cut = blocks.index(("do -- Super LiberTEA - LE %s:" % old_version).encode())
+        assert hashlib.sha256(blocks[:cut]).hexdigest() == variant["boot"]["lll_install_block_sha256"]
+        assert hashlib.sha256(blocks[cut:]).hexdigest() == variant["boot"]["mods_block_sha256"], "not %s's published mods block" % old_version
+
+    # From the published 1.0.4 (game build 26251122), with each of its DBF choices.
+    old = json.loads((OLD_RELEASE / "RECEIPT.json").read_text())
+    assert old["version"] == "1.0.4" and old["game_build"] == "26251122"
+    for choice, variant in old["variants"].items():
+        blocks = (OLD_RELEASE / "out" / "work" / ("install-blocks-%s.lua" % choice)).read_bytes()
+        published(blocks, "1.0.4", variant)
+        for target in receipt["variants"]:
+            upgrade("1.0.4 (%s)" % choice, blocks, "1.0.4", variant, OLD_RELEASE / "out" / "stage", target)
+
+    # From the published 1.0.5 (this game build, DBF Modular only).
+    old = json.loads((HERE / "RECEIPT-1.0.5.json").read_text())
+    assert old["version"] == "1.0.5" and old["game_build"] == receipt["game_build"] and list(old["variants"]) == ["modular"]
+    assert (RELEASED_105 / "install-blocks-modular.lua").is_file(), "%s is missing: 1.0.5's install block as built (see README.md)" % RELEASED_105
+    blocks = (RELEASED_105 / "install-blocks-modular.lua").read_bytes()
+    published(blocks, "1.0.5", old["variants"]["modular"])
+    for m, row in old["mods"].items():
+        staged = [q for q in (RELEASED_105 / "stage" / m).rglob("*") if q.is_file()]
+        assert len(staged) == row["files"] and hashlib.sha256((RELEASED_105 / "stage" / m / "manifest.json").read_bytes()).hexdigest() == row["manifest_sha256"], m
+    for target in receipt["variants"]:
+        upgrade("1.0.5", blocks, "1.0.5", old["variants"]["modular"], RELEASED_105 / "stage", target)
+
+    # LuaJIT switched off by hand ("off" in the marker) stays off through the upgrade from 1.0.4.
     shutil.rmtree(home.parent, ignore_errors=True)
     (tools / "blocks.lua").write_bytes((OLD_RELEASE / "out" / "work" / "install-blocks-modular.lua").read_bytes())
     start()

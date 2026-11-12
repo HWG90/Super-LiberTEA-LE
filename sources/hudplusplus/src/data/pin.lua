@@ -1,4 +1,4 @@
 return {
-    ["exe"] = "257fd7de21a04e8668e02e5c820edf3435176fbde3569765255cc52a5ea20f9d",
-    ["game"] = "61dcfcd201dacbf3545c97beb8a5a6186e9850d2670bf60b0e058320b477f6df",
+    ["exe"] = "b434f6f326b7759978265f5863ef72e3c5edd4aa5315cc1ef4b640d204eae0bb",
+    ["game"] = "08b756f535cdb9bdd1b4953fba53c3dfacd25730a155ea6593e5de63211acf5f",
 }

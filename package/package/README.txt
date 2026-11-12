@@ -1,4 +1,4 @@
-Super LiberTEA - LE (Linux Edition) 1.0.5                     Helldivers 2 Steam build 26568081
+Super LiberTEA - LE (Linux Edition) 1.0.6                     Helldivers 2 Steam build 26568081
 
 LINUX / PROTON ONLY. IT WILL NOT WORK ON NATIVE WINDOWS (system error 577 for the LuaJIT runtime and cffi DLLs).
 One HD2 Arsenal mod. Import it, deploy it, play.
@@ -6,7 +6,8 @@ One HD2 Arsenal mod. Import it, deploy it, play.
 WHAT IS INSIDE
   Live Lua Loader R38 (LuaJIT)       R38-26568081-luajit.1: hands the game's Lua over to LuaJIT and runs the mods below
   Mod Configuration Menu (DBF-MCM)   0.1.74-luajit.8: the in-game settings menu the other mods use
-  DBF Modular 0.1.0-dev.25           Diver's Best Friend R46 with the Bracket HUD
+  DBF Modular 0.1.0-dev.25           Diver's Best Friend R46 with the Bracket HUD (the default DBF choice)
+  Diver's Best Friend (ASS) R46      stratagem wheel and list selection, cooldown dock, hotkeys (the other DBF choice)
   Vanilla Plus Megapack v42          all 25 of its mods, LuaJIT 26568081 port (includes Mod Options Menu and Mod Bindings Menu)
   Goose Bridge Combat                0.1.17-experimental-26568081.1 (experimental)
   War Journalist (Proton) 1.4.0      Photo Mode with bone posing and saved poses (build bfbaca9), with the 1.2.0 assets
@@ -19,7 +20,8 @@ WHAT IS INSIDE
 INSTALL (game closed)
 1. In HD2 Arsenal disable any other Live Lua Loader, Bingus Shared Loader, Boot Mod Loader or Chef Shared
    Loader, and any separate copy of the mods above (LLL runs their loaders itself).
-2. Import this ZIP. Every option is on; pick the sub-options you want (Transmog, Guard Dogs).
+2. Import this ZIP. Every option is on; pick the sub-options you want (Transmog, Guard Dogs), and the DBF in
+   "Live Lua Loader R38 (LuaJIT) + LLL mods": DBF Modular (default) or Diver's Best Friend R46 LE. Only one DBF runs.
 3. Keep it LAST in the load order (with first-mod priority on, keep it FIRST), then Purge / Deploy.
 4. Start the game. The Mod Configuration Menu holds the settings of every mod.
 
@@ -31,16 +33,16 @@ Everything goes to %LOCALAPPDATA%\LLL\Helldivers2 inside the game's Proton prefi
   Logs\LLL-files.log: "R38-26568081-luajit.1 files: 0 written, 7 in place" on later starts.
   Coming from 1.0.4, the first start switches a Native\luajit-boot.enable that names 1.0.4's runtime to the new
   one, once; "off" and any other name are kept. The old build's files stay beside the new ones.
-- The LLL mods, into Mods\dbf_mcm, Mods\dbf_modular, Mods\goose_bridge_combat, Mods\dbf_freecam,
-  Mods\goose_temporary_unlocks and Mods\goose_nova_weapon_fov. A mod folder is installed when it has no manifest.json, and kept up to date
+- The LLL mods, into Mods\dbf_mcm, Mods\dbf_modular or Mods\divers_best_friend (your DBF choice),
+  Mods\goose_bridge_combat, Mods\dbf_freecam, Mods\goose_temporary_unlocks and Mods\goose_nova_weapon_fov. A mod folder is installed when it has no manifest.json, and kept up to date
   while it holds what this package wrote. If you installed another build of one of these mods yourself, that
   folder is left alone, and so is any file you changed. A folder that holds only a development shim (a main.lua
   that loads the mod from a file elsewhere by drive path) is moved to Backups\<mod>-shim-<time> as it is, and the
   mod installed. SuperLiberTEA\<mod>.txt records what was written; a file an earlier release wrote and this one
-  no longer ships is removed, unless you changed it. Diver's Best Friend R46 LE, 1.0.4's other DBF choice, is not
-  in this release: a Mods\divers_best_friend that 1.0.4 wrote moves to Backups\divers_best_friend-superlibertea-<time>;
-  one you installed yourself is left alone and reported (turn it off in LLL.cfg: only one DBF can run).
-  Logs\SuperLiberTEA-files.log: "Super LiberTEA - LE 1.0.5 mods: 0 written, N in place" on later starts,
+  no longer ships is removed, unless you changed it. Switching the DBF choice moves the other DBF folder to
+  Backups\<mod>-superlibertea-<time> when this package wrote it; a DBF you installed yourself is left alone and
+  reported (turn one off in LLL.cfg: only one DBF can run).
+  Logs\SuperLiberTEA-files.log: "Super LiberTEA - LE 1.0.6 mods: 0 written, N in place" on later starts,
   followed by "set aside: ..." or "left alone: ..." when it moved or skipped something.
 Settings live in LLL\Helldivers2\Settings and are never touched.
 
@@ -59,13 +61,14 @@ the Mods folders above, and LLL's files listed in LLL's README.
 KNOWN LIMITS
 - Steam build 26568081 only. After a game update LLL, the runtime and the mods check the game's exe and
   game.dll and refuse to run until they are updated.
-- Not in this release, because they have no build for 26568081 yet: Diver's Best Friend (ASS) R46 LE and
-  HudPlusPlus. Both were in 1.0.4 (game build 26251122).
 - Better Lobby Management (Megapack): Lobby Region and squad messages are off on this game build.
 - Bridge Combat is experimental. Gadget Kit's Spawner works as local host in a solo mission.
 - War Journalist captures screenshots with its Linux host worker; Wine's capture API is a stub.
 
 CHANGES
+1.0.6  Diver's Best Friend R46 LE is back, ported to Steam build 26568081: pick your DBF in Arsenal again, DBF
+       Modular (the default) or Diver's Best Friend R46 LE; switching moves the other one to Backups. HudPlusPlus
+       Modular for build 26568081, as a separate download.
 1.0.5  For Steam build 26568081 (the game update of 2026-11-11). Live Lua Loader R38-26568081-luajit.1 and every
        mod re-ported to the new build: DBF-MCM luajit.8, DBF Modular dev.25, Bridge Combat 26568081.1, War
        Journalist (Proton) 1.4.0, Nova Weapon FOV, DiverKit r11, Transmog, Smarter Guard Dogs & Sentries and the
@@ -94,8 +97,10 @@ CHANGES
 
 SEPARATE DOWNLOADS
 The release page also has each item on its own: Live Lua Loader and the Arsenal mods as Arsenal zips, the LLL mods
-(DBF-MCM, DBF Modular, Bridge Combat, War Journalist, Gadget Kit LE, Nova Weapon FOV) as folders for
-LLL\Helldivers2\Mods.
+(DBF-MCM, DBF Modular, Diver's Best Friend, Bridge Combat, War Journalist, Gadget Kit LE, Nova Weapon FOV) as folders
+for LLL\Helldivers2\Mods (install one DBF only).
+HudPlusPlus (HD2 HUD Plus 0.2.9 rebuilt for build 26568081) is only a separate download: an Arsenal mod that needs
+Live Lua Loader, with its row before the loader's.
 Use either this package or the separate downloads, not both.
 
 CREDITS AND SOURCE

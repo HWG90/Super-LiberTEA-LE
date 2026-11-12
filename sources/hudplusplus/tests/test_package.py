@@ -124,6 +124,39 @@ class PackageTests(unittest.TestCase):
         self.assertEqual((self.out / pkg.BUNDLE_FILE).read_bytes(), self.bundle.read_bytes())
         self.assertEqual(json.loads((self.out / "BUILD-RECEIPT.json").read_text()), receipt)
 
+    def test_guid_option_replaces_manifest_guid_and_is_validated(self):
+        guid = "0f8fad5b-d9cb-469f-a165-70867728950e"
+        receipt = pkg.package(self.assets, self.bundle, self.out, guid=guid)
+        manifest = json.loads((self.out / "manifest.json").read_text())
+        self.assertEqual(manifest, {"Guid": guid, "Name": "HudPlusPlus", "Other": 123})
+        self.assertEqual(receipt["guid"], guid)
+        for bad in ("", "not-a-guid", guid.upper(), "{" + guid + "}"):
+            with self.subTest(guid=bad), self.assertRaisesRegex(ValueError, "guid"):
+                pkg.package(self.assets, self.bundle, self.root / "refused", guid=bad)
+            self.assertFalse((self.root / "refused").exists())
+
+    def test_receipt_note_and_line_map_are_recorded(self):
+        line_map = self.root / "bundle.map.json"
+        line_map.write_text('{"modules": []}\n')
+        note = {"build": "123", "values": {"verified": 2, "inferred": 1}}
+        receipt = pkg.package(self.assets, self.bundle, self.out, note=note, line_map=line_map)
+        self.assertEqual(receipt["note"], note)
+        self.assertEqual((self.out / "56e46a6dc1df0a13.map.json").read_bytes(), line_map.read_bytes())
+        self.assertEqual(receipt["line_map_sha256"], pkg.sha256(line_map.read_bytes()))
+        self.assertEqual(json.loads((self.out / "BUILD-RECEIPT.json").read_text()), receipt)
+        with self.assertRaises(FileNotFoundError):
+            pkg.package(self.assets, self.bundle, self.root / "refused", line_map=self.root / "absent.json")
+        self.assertFalse((self.root / "refused").exists())
+        with self.assertRaisesRegex(ValueError, "note"):
+            pkg.package(self.assets, self.bundle, self.root / "refused", note=["not", "an", "object"])
+
+    def test_default_receipt_has_no_optional_fields(self):
+        receipt = pkg.package(self.assets, self.bundle, self.out)
+        self.assertEqual(
+            sorted(receipt), ["archive_sha256", "asset_sha256", "bundle_sha256", "guid", "source_archive_sha256"]
+        )
+        self.assertFalse((self.out / "56e46a6dc1df0a13.map.json").exists())
+
     def test_existing_output_and_source_directory_are_never_overwritten(self):
         self.out.mkdir()
         sentinel = self.out / "keep"

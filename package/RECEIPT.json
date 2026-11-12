@@ -1,17 +1,17 @@
 {
  "name": "Super LiberTEA - LE (Linux Edition)",
- "version": "1.0.5",
+ "version": "1.0.6",
  "game_build": "26568081",
  "guid": "ead4c7da-b11f-5bd3-ad93-9fadca551cda",
  "branch": "main",
- "created": "2026-11-11 16:45",
- "zip": "Super-LiberTEA-LE-1.0.5-26568081.zip",
- "zip_sha256": "138d690cd4cfd509a32047be6b7eaad6d4035ba15b09032eaf6f6257c79bc1e0",
- "zip_bytes": 14840785,
+ "created": "2026-11-11 21:00",
+ "zip": "Super-LiberTEA-LE-1.0.6-26568081.zip",
+ "zip_sha256": "6b1e7dee7ebd497634051cbddb12af0194ba835538a5cbb325486b7cfba985eb",
+ "zip_bytes": 19616106,
  "variants": {
   "modular": {
    "option": "with DBF Modular",
-   "folder": "LLL",
+   "folder": "LLL/DBF Modular",
    "mods": [
     "dbf_mcm",
     "dbf_modular",
@@ -23,13 +23,47 @@
    "sets_aside": [
     "divers_best_friend"
    ],
-   "patch_sha256": "5f0cca780f007218deb13991a92084597485ecea3b0c22327e3104a9e6d1bc83",
-   "patch_bytes": 13908096,
-   "chunk_bytes": 13907888,
+   "patch_sha256": "e5f6f3b2ce42a4828572b9e15e382370db718da5a12b129adbde43898c5678e0",
+   "patch_bytes": 13908064,
+   "chunk_bytes": 13907862,
    "boot": {
     "lll_release": "R38-26568081-luajit.1",
     "lll_install_block_sha256": "f2dc27f1474dbbc0ab9c9f83aa2df79b0a55c73c31da15a9f9678beea24fdbca",
-    "mods_block_sha256": "be630ac1cb2ce04115f7bf9b9af88ed00f1a01be3af9f9feef1facc672a22c45",
+    "mods_block_sha256": "e678d17ab1f5fd720b3cf9bd7b8bb37ce862b75b811dceed23aa9ca21c5c4e5f",
+    "prologue_sha256": "3aad53105c0c383524bc898956de5e2eb41213d178388e6f3acf2ef9eecae376",
+    "lll_source_sha256": "6be284a830612486be9c4ac5680cc7c7af2858b0db77724159cee707ca45e6ea",
+    "lll_files": {
+     "Native/hd2_cffi_35ee9bb9bedfeaf9.dll": "35ee9bb9bedfeaf92bfd52ccdd855a2ae5713096c6aa39a6d3bf71ea6d3e3917",
+     "Native/hd2_luajit_runtime_d6c1aec33706b30e.dll": "d6c1aec33706b30ead9d335f0ae759219141af1322770a383e09c6d32b28b309",
+     "Native/hd2_nativeinfo_f375fc4798c33ad5.dll": "f375fc4798c33ad560a5ef0dd7bb2c51c6299e27518377394184625a489b2fef",
+     "Service/lll_steam_launcher_aa4e9d2ad66fc88a.exe": "aa4e9d2ad66fc88a75417f889030e1b2edd3339099745accffd17e8bbbd40fe8",
+     "Service/lll_steam_service_a0263f613a8cc031.exe": "a0263f613a8cc03189a4818908342fda1cecd48819ba924c1a272730043a3ce3"
+    },
+    "marker": "hd2_luajit_runtime_d6c1aec33706b30e.dll",
+    "lll_dropin_patch_sha256": "425edeb2d65a904c75f1a8e4daa969dd306a97df00f220cfca8a3bcb0eff68b9"
+   }
+  },
+  "r46": {
+   "option": "with Diver's Best Friend R46 LE",
+   "folder": "LLL/DBF R46 LE",
+   "mods": [
+    "dbf_mcm",
+    "divers_best_friend",
+    "goose_bridge_combat",
+    "dbf_freecam",
+    "goose_temporary_unlocks",
+    "goose_nova_weapon_fov"
+   ],
+   "sets_aside": [
+    "dbf_modular"
+   ],
+   "patch_sha256": "d50848043f3cde0df709e701d5d29c7762417be744815ee264feae909e37148e",
+   "patch_bytes": 13401872,
+   "chunk_bytes": 13401661,
+   "boot": {
+    "lll_release": "R38-26568081-luajit.1",
+    "lll_install_block_sha256": "f2dc27f1474dbbc0ab9c9f83aa2df79b0a55c73c31da15a9f9678beea24fdbca",
+    "mods_block_sha256": "cbf6fdc184e1b71c82c42f151f588c13493cc839bbd7b10f1660992ebec6a1b2",
     "prologue_sha256": "3aad53105c0c383524bc898956de5e2eb41213d178388e6f3acf2ef9eecae376",
     "lll_source_sha256": "6be284a830612486be9c4ac5680cc7c7af2858b0db77724159cee707ca45e6ea",
     "lll_files": {
@@ -147,16 +181,27 @@
    "options/StratagemHeroExpanded/9ba626afa44a3aa3.patch_0"
   ]
  },
- "not_ported": {
-  "divers_best_friend": "Diver's Best Friend (ASS) R46 LE, the second DBF choice of 1.0.4 (R46-luajit.2-26251122-le.2)",
-  "hud-plus": "HudPlusPlus Modular r1 (LuaJIT 26251122), a separate download of 1.0.3 and 1.0.4"
- },
+ "ass_weapon_readout_removed": [
+  "src/weapon_status.lua",
+  "src/weapon_status_memory.lua",
+  "src/weapon_status_layouts.lua",
+  "src/weapon_status_ammo.lua",
+  "src/weapon_status_reader.lua",
+  "src/weapon_status_strip.lua"
+ ],
+ "not_ported": {},
  "mods": {
   "dbf_mcm": {
    "version": "0.1.74-luajit.8",
    "files": 27,
    "bytes": 296613,
    "manifest_sha256": "7529ca55e7139e131cb9af1635fa26e0d6aa72f24f15b9391738f61c4be9c139"
+  },
+  "divers_best_friend": {
+   "version": "R46-luajit.2-26568081-le.1",
+   "files": 35,
+   "bytes": 323676,
+   "manifest_sha256": "2d1f02c39e381522ba352aadf368921fb0194395f3ba09b4d04b02ce583acc3b"
   },
   "dbf_modular": {
    "version": "0.1.0-dev.25-26568081",
@@ -189,65 +234,75 @@
    "manifest_sha256": "6eedd5712e0e9f5bc4fc87b6556e34e3432ff60b38f3dafbb3f961fe3998078e"
   }
  },
- "zip_contents": 381,
+ "zip_contents": 384,
  "separate": {
-  "Super-LiberTEA-LE-1.0.5-26568081-Live-Lua-Loader-R38-LuaJIT.zip": {
-   "sha256": "8fe16239516a8d326d28f539e89fdf409eb6301cf582da773cee67832a92a00b",
-   "bytes": 1998807,
+  "Super-LiberTEA-LE-1.0.6-26568081-Live-Lua-Loader-R38-LuaJIT.zip": {
+   "sha256": "6c0860d55874ba5a104ef316e7de6db7d248b3a8c887c238b4e511cb6aa23af3",
+   "bytes": 1998805,
    "files": 18
   },
-  "Super-LiberTEA-LE-1.0.5-26568081-War-Journalist-Assets.zip": {
-   "sha256": "d49c86a8928170f99f903308bcba6d9f62766e672fcf8bdb6ed3c532da4db066",
-   "bytes": 349308,
+  "Super-LiberTEA-LE-1.0.6-26568081-War-Journalist-Assets.zip": {
+   "sha256": "a5ff6005693f4471de3d248f1a64936b126a6a8828b2f77643b031da2715e390",
+   "bytes": 349307,
    "files": 10
   },
-  "Super-LiberTEA-LE-1.0.5-26568081-DiverKit.zip": {
-   "sha256": "b6e80f56f206863f56b84432d37066ec046c8947832cc5521d1e14cb77c7a83a",
-   "bytes": 516831,
+  "Super-LiberTEA-LE-1.0.6-26568081-DiverKit.zip": {
+   "sha256": "77920085e21aeb52136b546fd03dedc52862c07d02d13ebb2f16d28858b3a349",
+   "bytes": 516830,
    "files": 9
   },
-  "Super-LiberTEA-LE-1.0.5-26568081-Smarter-Guard-Dogs.zip": {
-   "sha256": "2ac8478d3c86ac2d4bf136e720cc40a16b140bd266bdd00fd6d7c379803c45bf",
+  "Super-LiberTEA-LE-1.0.6-26568081-Smarter-Guard-Dogs.zip": {
+   "sha256": "f8d4f7d67051e1b230b8b2f817d82319b6901cc2f3341a13e598f8a3dc1c3d7b",
    "bytes": 1491164,
    "files": 143
   },
-  "Super-LiberTEA-LE-1.0.5-26568081-Vanilla-Plus-Megapack.zip": {
-   "sha256": "d584e1358d346cab3126b567ccc5068d4d4e2621c6235a63b8f580f3ea039777",
-   "bytes": 5906542,
+  "Super-LiberTEA-LE-1.0.6-26568081-Vanilla-Plus-Megapack.zip": {
+   "sha256": "1144272e39b46dff492767d013b413a3a5172052cee5e50018b124f7c233a4d9",
+   "bytes": 5906541,
    "files": 160
   },
-  "Super-LiberTEA-LE-1.0.5-26568081-Transmog.zip": {
-   "sha256": "715362df2c20a78cd526d4813ab5a00f1d28ca579a3f27f9e9c8c5b33f5a5ff5",
-   "bytes": 1648957,
+  "Super-LiberTEA-LE-1.0.6-26568081-Transmog.zip": {
+   "sha256": "6e483f964e292a25a348b1d534cc560a8129366268b8895de75569928ffb89fb",
+   "bytes": 1648955,
    "files": 52
   },
-  "Super-LiberTEA-LE-1.0.5-26568081-DBF-MCM.zip": {
-   "sha256": "d52100fb29e358db9ad45d227291ba4aa7dfa25bdc8352456f1921379462ff3c",
+  "Super-LiberTEA-LE-1.0.6-26568081-HudPlusPlus.zip": {
+   "sha256": "d210ba5013306b09a5da9f650dba0906827c7d0da9bf04111b02343830e219ed",
+   "bytes": 785583,
+   "files": 7
+  },
+  "Super-LiberTEA-LE-1.0.6-26568081-DBF-MCM.zip": {
+   "sha256": "fa561667eb60da21388e994e2587a1e565c16365c217ff5499e2e0146cc40dae",
    "bytes": 86463,
    "files": 28
   },
-  "Super-LiberTEA-LE-1.0.5-26568081-DBF-Modular.zip": {
-   "sha256": "bea6397b8493c174bf52bda4b88556c53478a9be7150c1b635a616ad9f9a7b75",
+  "Super-LiberTEA-LE-1.0.6-26568081-Divers-Best-Friend.zip": {
+   "sha256": "478fcaf5d8b840445ef9901b49805b7724603db16bbad88d6aa970491ae4893c",
+   "bytes": 106957,
+   "files": 36
+  },
+  "Super-LiberTEA-LE-1.0.6-26568081-DBF-Modular.zip": {
+   "sha256": "1cdab64751f36491eb70808e061144fa91636ba65fae7892911fbcbb457ce390",
    "bytes": 230583,
    "files": 69
   },
-  "Super-LiberTEA-LE-1.0.5-26568081-Bridge-Combat.zip": {
-   "sha256": "d01a4ccbb5c28222bf61bb2e92a01a3cbfb48208d4708b10f74a8453bb7cd943",
+  "Super-LiberTEA-LE-1.0.6-26568081-Bridge-Combat.zip": {
+   "sha256": "5df8a935b415b20660412e94384a5adfa11f09c795b231de7052083ecb952895",
    "bytes": 466300,
    "files": 55
   },
-  "Super-LiberTEA-LE-1.0.5-26568081-War-Journalist-Proton.zip": {
-   "sha256": "cb66745b653bddf964e8f2867bccf4f6c7226002d78ff0717a4580e9cd5acf97",
+  "Super-LiberTEA-LE-1.0.6-26568081-War-Journalist-Proton.zip": {
+   "sha256": "752b7859c34f39f43b38e478903842198a4c80e6167d7ae37cd95f9bd6f75943",
    "bytes": 821692,
    "files": 89
   },
-  "Super-LiberTEA-LE-1.0.5-26568081-Gadget-Kit-LE.zip": {
-   "sha256": "f350a1fd3cc24866267f0d9b644e5649ac8d359a168228e9623594ae95c4b004",
+  "Super-LiberTEA-LE-1.0.6-26568081-Gadget-Kit-LE.zip": {
+   "sha256": "7805b8aa5927061a9f586801d2b0f5f9e90278c5243c0c6ee928968b6ad92755",
    "bytes": 1541570,
    "files": 100
   },
-  "Super-LiberTEA-LE-1.0.5-26568081-Nova-Weapon-FOV.zip": {
-   "sha256": "0db223ed93334a4e5fb45f5b5c3c369463add57944ecb058255da962852d3998",
+  "Super-LiberTEA-LE-1.0.6-26568081-Nova-Weapon-FOV.zip": {
+   "sha256": "e9ae76db6581721313e49e138d283858aa94a764740ad6a62d4f500c38d256e2",
    "bytes": 6557,
    "files": 6
   }

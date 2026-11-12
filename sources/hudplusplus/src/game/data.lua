@@ -2,7 +2,7 @@
 return {
     ["asset_numbers"] = require("data.asset_numbers"),
     ["calls"] = require("data.calls"),
-    ["digest"] = "288c410fcd9e6f129e223da817f9efd537a7cb93fc712028bbe8f6217a048984",
+    ["digest"] = "2cbd103fd7a19c9a2d843559659239ed4b13c36b495222a6f572c65671355d60",
     ["identities"] = require("data.identities"),
     ["numbers"] = require("data.numbers"),
     ["patterns"] = require("data.patterns"),

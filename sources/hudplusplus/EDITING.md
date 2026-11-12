@@ -56,10 +56,19 @@ callers. They are not duplicate versions of the projectile native and cannot be 
 because related native functions exist. A native replacement needs a matching contract and evidence
 for its arguments, return values and lifetime.
 
-The supplied binding values target build 26251122. Updating a function or offset needs new build
+The supplied binding values target build 26568081. Updating a function or offset needs new build
 evidence; the original research tools and evidence remain under `builder/`. The immutable upstream
 comparison intentionally fails if native binding data or existing settings/resource definitions change.
 Review such a migration explicitly and update its baseline separately from a runtime refactor.
+
+A game update is such a migration. `migrations/<old>-to-<new>.json` lists the old and the new value of
+every number the update moved, plus the build pin and the numbers digest; `tests/test_bundle.lua`
+accepts exactly those differences from the upstream bundle and fails on any other, and on a listed value
+that is not at its recorded old or new value. The file is written by the port's asserted rewrite script
+from its evidence map (see [PORT-26568081.md](PORT-26568081.md)), never by hand, and never to make a
+check pass: the pin in `src/data/pin.lua` moves only after every value behind it has been remapped.
+`src/data/patterns.lua` and the call heads in `src/data/calls.lua` are not build pins: a pinned build
+uses the baked numbers and never scans, and any other build is refused.
 
 ## Debug a generated stack trace
 

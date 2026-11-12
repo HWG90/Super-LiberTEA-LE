@@ -6,9 +6,10 @@ the HudPlusPlus build-26251122 port is credited in [SOURCE.md](SOURCE.md). This 
 
 The original 10,610-line distribution bundle is now generated from named, formatted Lua files. Edit
 [`src/`](src), then rebuild. The game still loads one archive addon, so runtime module loading does not
-depend on loose files, disk paths or a new loader. The resource name, settings IDs, menu resource keys,
-native bindings and build pin are retained. The target remains Linux/Proton with LLL's LuaJIT boot and
-Helldivers 2 build **26251122**.
+depend on loose files, disk paths or a new loader. The resource name, settings IDs and menu resource keys
+are retained. The target is Linux/Proton with LLL's LuaJIT boot and Helldivers 2 build **26568081**; the
+refactor itself was made and validated on 26251122, and [PORT-26568081.md](PORT-26568081.md) records the
+move to the current build.
 
 ## Source layout
 
@@ -24,6 +25,7 @@ Helldivers 2 build **26251122**.
 | `src/data/` | Build-specific addresses, call descriptors, fingerprints and availability metadata |
 | `build/bundle.lua` | Private module loader template |
 | `lua/` | Generated distribution bundle and source line map |
+| `migrations/` | Reviewed old and new value of every native value a game update moved |
 | `tools/` | Portable build, package and offline check commands |
 | `builder/` | Original port research, evidence and address re-derivation tools |
 
@@ -45,7 +47,8 @@ python3 tools/check.py
 maps bundle line numbers back to named files. `--check` writes nothing and fails when the bundle or
 map is outdated. `check.py` compares native data, settings and resource IDs to the recorded upstream
 commit, compiles every module, loads the addon without enabling native access, and runs the focused
-behavior and packaging regressions. No check starts or modifies the game.
+behavior and packaging regressions. Native values may differ from the upstream commit only where a file
+in `migrations/` records the old and the new value. No check starts or modifies the game.
 
 To check a source-only download without Git history:
 
@@ -65,13 +68,18 @@ existing **HudPlusPlus build-26251122 package** containing its manifest and arch
 python3 tools/package.py \
   --assets-from /path/to/HudPlusPlus-LuaJIT-26251122 \
   --bundle lua/56e46a6dc1df0a13.lua \
-  --out out/HudPlusPlus-Modular-26251122
+  --out out/HudPlusPlus-LuaJIT-26568081 \
+  --guid 2100b4f4-9d02-5ed7-86a7-7450c344f661 \
+  --line-map lua/56e46a6dc1df0a13.map.json
 ```
 
 The output directory must be new. The command refuses a bundle that differs from current source,
-keeps the supplied manifest GUID, replaces the HUD Lua resource, removes the old boot resource if
-present, and copies all other resource payloads and companion assets unchanged. A receipt records
-input/output hashes. It creates a candidate package; installation is a separate step.
+replaces the HUD Lua resource, removes the old boot resource if present, and copies all other resource
+payloads and companion assets unchanged. Without `--guid` it keeps the supplied manifest GUID; a
+package for another game build sits beside the old one in Arsenal and takes its own (the port derives
+it as UUID v5, DNS namespace, of `goose.hd2_hud_plus.luajit.<build>`). `--note FILE.json` stores a JSON
+object in the receipt. A receipt records input/output hashes. It creates a candidate package;
+installation is a separate step.
 
 For runtime edits, use these tools. The historical `builder/.../build_port.py` rebuilds the old port
 from its original inputs and local capture paths; it does not consume `src/`.

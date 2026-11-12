@@ -1,0 +1,828 @@
+{
+ "digest": [
+  "288c410fcd9e6f129e223da817f9efd537a7cb93fc712028bbe8f6217a048984",
+  "2cbd103fd7a19c9a2d843559659239ed4b13c36b495222a6f572c65671355d60"
+ ],
+ "from": "26251122",
+ "numbers": {
+  "action_consume": [
+   18419248,
+   18419600
+  ],
+  "action_consume_seconds_at": [
+   35944580,
+   35944596
+  ],
+  "action_consumed_entry": [
+   18417600,
+   18417952
+  ],
+  "action_release": [
+   18416464,
+   18416816
+  ],
+  "action_script_all_full_rva": [
+   17133968,
+   17134320
+  ],
+  "action_script_can_reload_rva": [
+   17134224,
+   17134576
+  ],
+  "action_script_chamber_rva": [
+   17131104,
+   17131456
+  ],
+  "action_script_cock_rva": [
+   17116192,
+   17116544
+  ],
+  "action_script_count_rva": [
+   17129872,
+   17130224
+  ],
+  "action_script_empty_rva": [
+   17135600,
+   17135952
+  ],
+  "action_script_insert_rva": [
+   17115968,
+   17116320
+  ],
+  "action_script_jump_table": [
+   16709540,
+   16709892
+  ],
+  "action_script_mag_full_rva": [
+   17133392,
+   17133744
+  ],
+  "action_script_set_stage_bit_rva": [
+   17127552,
+   17127904
+  ],
+  "action_script_stage_bit_rva": [
+   17127792,
+   17128144
+  ],
+  "action_script_switch_kind_rva": [
+   17118000,
+   17118352
+  ],
+  "attack_owner_of": [
+   10491872,
+   10491920
+  ],
+  "avatar_flag_of": [
+   9990400,
+   9990448
+  ],
+  "camera_fov": [
+   3002304,
+   3002480
+  ],
+  "camera_fov_set": [
+   3002320,
+   3002496
+  ],
+  "camera_world_pose": [
+   3004464,
+   3004640
+  ],
+  "camera_world_to_screen": [
+   3004928,
+   3005104
+  ],
+  "choice_arrow_uv_width_at": [
+   35938436,
+   35938452
+  ],
+  "comms_insert": [
+   19299024,
+   19299376
+  ],
+  "comms_label_red_at": [
+   33936064,
+   33936848
+  ],
+  "component_card_create": [
+   23831584,
+   23831936
+  ],
+  "component_card_tick": [
+   23834320,
+   23834672
+  ],
+  "eagle_degrees_at": [
+   35937912,
+   35937928
+  ],
+  "entity_of_goid": [
+   15113024,
+   15113376
+  ],
+  "entity_of_unit": [
+   15112480,
+   15112832
+  ],
+  "entity_record": [
+   15113440,
+   15113792
+  ],
+  "explosion_modifier_of": [
+   10593632,
+   10593680
+  ],
+  "fire_speed_unit": [
+   35939764,
+   35939780
+  ],
+  "ground_height": [
+   19272592,
+   19272944
+  ],
+  "gui_move": [
+   3216032,
+   3216208
+  ],
+  "hud_design_height_at": [
+   35943892,
+   35943908
+  ],
+  "hud_design_width_at": [
+   35944000,
+   35944016
+  ],
+  "impact_lift_at": [
+   35938544,
+   35938560
+  ],
+  "item_of_slot": [
+   10232784,
+   10232832
+  ],
+  "label_template_set": [
+   19741856,
+   19742208
+  ],
+  "label_text_make": [
+   19737776,
+   19738128
+  ],
+  "layout_add": [
+   24603008,
+   24603360
+  ],
+  "layout_place": [
+   24604032,
+   24604384
+  ],
+  "line_object_add_circle": [
+   5181952,
+   5182160
+  ],
+  "line_object_add_line": [
+   5179984,
+   5180192
+  ],
+  "line_object_create": [
+   3159952,
+   3160128
+  ],
+  "line_object_destroy": [
+   3159984,
+   3160160
+  ],
+  "line_object_dispatch": [
+   1760560,
+   1760736
+  ],
+  "line_object_reset": [
+   678288,
+   678336
+  ],
+  "map_marker_scalar": [
+   35940712,
+   35940728
+  ],
+  "material_float_set": [
+   5258064,
+   5258272
+  ],
+  "material_pair_set": [
+   19823552,
+   19823904
+  ],
+  "material_scalar_set": [
+   19797024,
+   19797376
+  ],
+  "material_texture_lookup": [
+   3010464,
+   3010640
+  ],
+  "material_texture_set": [
+   3008512,
+   3008688
+  ],
+  "material_var_set": [
+   19797456,
+   19797808
+  ],
+  "measure_widget": [
+   19816112,
+   19816464
+  ],
+  "melee_unlock_rva": [
+   16979856,
+   16980208
+  ],
+  "menu_build_native_rows": [
+   23625376,
+   23625728
+  ],
+  "menu_category_select": [
+   25275456,
+   25275808
+  ],
+  "menu_describe_setting": [
+   25274752,
+   25275104
+  ],
+  "menu_description_gap": [
+   35942012,
+   35942028
+  ],
+  "menu_description_left": [
+   35941908,
+   35941924
+  ],
+  "menu_description_margin": [
+   35942376,
+   35942392
+  ],
+  "menu_description_pad": [
+   35941756,
+   35941772
+  ],
+  "menu_description_show": [
+   23576112,
+   23576464
+  ],
+  "menu_description_width": [
+   35943336,
+   35943352
+  ],
+  "menu_descriptor": [
+   17294720,
+   17295072
+  ],
+  "menu_dialog_decision": [
+   25289632,
+   25289984
+  ],
+  "menu_finish_simple": [
+   23626496,
+   23626848
+  ],
+  "menu_group_gap": [
+   35942108,
+   35942124
+  ],
+  "menu_hint_set": [
+   23259856,
+   23260208
+  ],
+  "menu_label_args_set": [
+   19734208,
+   19734560
+  ],
+  "menu_label_string_set": [
+   19744352,
+   19744704
+  ],
+  "menu_opacity_full": [
+   35939764,
+   35939780
+  ],
+  "menu_options_visual": [
+   25270288,
+   25270640
+  ],
+  "menu_play_sound": [
+   18594544,
+   18594896
+  ],
+  "menu_release_rows": [
+   23625248,
+   23625600
+  ],
+  "menu_row_grey": [
+   23597744,
+   23598096
+  ],
+  "menu_row_init": [
+   23591792,
+   23592144
+  ],
+  "menu_row_step": [
+   35945088,
+   35945104
+  ],
+  "menu_scroll_extent": [
+   23156880,
+   23157232
+  ],
+  "menu_scroll_reset": [
+   23156736,
+   23157088
+  ],
+  "menu_scroll_row": [
+   35942344,
+   35942360
+  ],
+  "menu_scroll_thumb": [
+   23155184,
+   23155536
+  ],
+  "menu_scroll_view": [
+   35943740,
+   35943756
+  ],
+  "menu_selector_set": [
+   23591552,
+   23591904
+  ],
+  "menu_slider_set": [
+   23582048,
+   23582400
+  ],
+  "menu_tab_select": [
+   23253584,
+   23253936
+  ],
+  "menu_tab_switch": [
+   19972048,
+   19972400
+  ],
+  "menu_tabs_set": [
+   23248608,
+   23248960
+  ],
+  "mesh_instance_refresh": [
+   5374112,
+   5374320
+  ],
+  "minigame_countdown_case_at": [
+   10057812,
+   10057860
+  ],
+  "minigame_kind_table": [
+   10059424,
+   10059472
+  ],
+  "number_arg_set": [
+   19744480,
+   19744832
+  ],
+  "open_map_find": [
+   22688976,
+   22689328
+  ],
+  "option_cell_create": [
+   23763584,
+   23763936
+  ],
+  "option_cell_fill": [
+   23764992,
+   23765344
+  ],
+  "option_cell_fill_fuse": [
+   23766272,
+   23766624
+  ],
+  "option_cell_shade": [
+   23764896,
+   23765248
+  ],
+  "physics_resource_by_name": [
+   8875440,
+   8875856
+  ],
+  "physics_template_of": [
+   8844144,
+   8844560
+  ],
+  "physics_world_index": [
+   8547264,
+   8547680
+  ],
+  "picture_face_data": [
+   34000424,
+   34000136
+  ],
+  "picture_init": [
+   19752896,
+   19753248
+  ],
+  "picture_set": [
+   19824448,
+   19824800
+  ],
+  "ping_edge_height_div_at": [
+   35941644,
+   35941660
+  ],
+  "ping_edge_width_div_at": [
+   35941828,
+   35941844
+  ],
+  "player_colour": [
+   18976928,
+   18977280
+  ],
+  "player_record": [
+   18975792,
+   18976144
+  ],
+  "posed_frame_init": [
+   19780144,
+   19780496
+  ],
+  "posed_frame_set": [
+   19781808,
+   19782160
+  ],
+  "projectile_caliber_scale": [
+   35937728,
+   35937744
+  ],
+  "projectile_distance_limit": [
+   35944048,
+   35944064
+  ],
+  "projectile_drag_air": [
+   35939944,
+   35939960
+  ],
+  "projectile_drag_area": [
+   35940196,
+   35940212
+  ],
+  "projectile_flight_step": [
+   19143728,
+   19144080
+  ],
+  "projectile_mass_scale": [
+   35937740,
+   35937756
+  ],
+  "projectile_speed_floor": [
+   35938164,
+   35938180
+  ],
+  "reinforce_call": [
+   17093328,
+   17093680
+  ],
+  "reinforce_call_alt": [
+   17136608,
+   17136960
+  ],
+  "reinforce_request": [
+   17092752,
+   17093104
+  ],
+  "reload_script_length": [
+   16742720,
+   16743072
+  ],
+  "resource_open": [
+   6496672,
+   6496832
+  ],
+  "root_build": [
+   19813216,
+   19813568
+  ],
+  "root_push": [
+   19815472,
+   19815824
+  ],
+  "root_tick": [
+   19813616,
+   19813968
+  ],
+  "sample_grade_colours": [
+   46755368,
+   46755288
+  ],
+  "sample_grade_pictures": [
+   46755360,
+   46755280
+  ],
+  "screen_edge_margin_at": [
+   35938028,
+   35938044
+  ],
+  "screen_resolution": [
+   3218912,
+   3219088
+  ],
+  "shadow_offset_at": [
+   34000424,
+   34000136
+  ],
+  "spawn_throw_reach_at": [
+   35939080,
+   35939096
+  ],
+  "speedtree_type": [
+   3024432,
+   3024608
+  ],
+  "speedtree_valid": [
+   3024384,
+   3024560
+  ],
+  "stratagem_arrow_press": [
+   11189040,
+   11189088
+  ],
+  "stratagem_card_dim_at": [
+   35938436,
+   35938452
+  ],
+  "stratagem_card_restore_at": [
+   35939764,
+   35939780
+  ],
+  "stratagem_code_of": [
+   10630576,
+   10630624
+  ],
+  "stratagem_list_input": [
+   23815456,
+   23815808
+  ],
+  "stratagem_list_opacity_at": [
+   35939764,
+   35939780
+  ],
+  "stratagem_list_tick": [
+   23812352,
+   23812704
+  ],
+  "stratagem_open_full_at": [
+   35939764,
+   35939780
+  ],
+  "stratagem_panel_create": [
+   23805696,
+   23806048
+  ],
+  "stratagem_record": [
+   18859856,
+   18860208
+  ],
+  "stratagem_tag_of": [
+   18909424,
+   18909776
+  ],
+  "string_text_make": [
+   19746976,
+   19747328
+  ],
+  "strings_add": [
+   3084016,
+   3084176
+  ],
+  "strings_find": [
+   3084432,
+   3084592
+  ],
+  "text_font_set": [
+   17337184,
+   17337536
+  ],
+  "text_size_set": [
+   19750000,
+   19750352
+  ],
+  "text_string_set": [
+   19749488,
+   19749840
+  ],
+  "throw_degree_at": [
+   35937912,
+   35937928
+  ],
+  "throw_energy_scale_at": [
+   35941956,
+   35941972
+  ],
+  "throw_nudge_scale_at": [
+   35939688,
+   35939704
+  ],
+  "throw_reach_at": [
+   35939404,
+   35939420
+  ],
+  "throwable_capacity": [
+   10222048,
+   10222096
+  ],
+  "ui_context_pop": [
+   18359056,
+   18359408
+  ],
+  "ui_context_push": [
+   18359024,
+   18359376
+  ],
+  "ui_world_context_build": [
+   18356800,
+   18357152
+  ],
+  "unit_alive": [
+   2051248,
+   2051440
+  ],
+  "unit_local_position_set": [
+   2040912,
+   2041104
+  ],
+  "unit_local_rotation_set": [
+   2041248,
+   2041440
+  ],
+  "unit_local_scale_set": [
+   2041584,
+   2041776
+  ],
+  "unit_lod_static": [
+   2074880,
+   2075072
+  ],
+  "unit_material_set": [
+   2052160,
+   2052352
+  ],
+  "unit_mesh": [
+   2059040,
+   2059232
+  ],
+  "unit_mesh_count": [
+   2058960,
+   2059152
+  ],
+  "unit_node": [
+   2048992,
+   2049184
+  ],
+  "unit_visibility_set": [
+   2077824,
+   2078016
+  ],
+  "unit_world_pose": [
+   2043936,
+   2044128
+  ],
+  "unit_world_position": [
+   2043792,
+   2043984
+  ],
+  "upgrade_value_of": [
+   18931088,
+   18931440
+  ],
+  "warn_colour_fn": [
+   23714048,
+   23714400
+  ],
+  "weapon_function_of": [
+   23104464,
+   23104816
+  ],
+  "widget_anchor_set": [
+   19820144,
+   19820496
+  ],
+  "widget_attach": [
+   19808976,
+   19809328
+  ],
+  "widget_color_set": [
+   19792800,
+   19793152
+  ],
+  "widget_destroy": [
+   19815040,
+   19815392
+  ],
+  "widget_detach": [
+   19817424,
+   19817776
+  ],
+  "widget_fade": [
+   19827424,
+   19827776
+  ],
+  "widget_fade_alpha_at": [
+   35939764,
+   35939780
+  ],
+  "widget_fade_seconds_at": [
+   35938436,
+   35938452
+  ],
+  "widget_init": [
+   19785040,
+   19785392
+  ],
+  "widget_layer_set": [
+   19795712,
+   19796064
+  ],
+  "widget_material_get": [
+   19821552,
+   19821904
+  ],
+  "widget_material_set": [
+   19821840,
+   19822192
+  ],
+  "widget_opacity_default_at": [
+   35954368,
+   35954384
+  ],
+  "widget_opacity_set": [
+   19793888,
+   19794240
+  ],
+  "widget_pivot_set": [
+   19820000,
+   19820352
+  ],
+  "widget_position_set": [
+   19788720,
+   19789072
+  ],
+  "widget_refresh": [
+   19806832,
+   19807184
+  ],
+  "widget_rotation_set": [
+   19794944,
+   19795296
+  ],
+  "widget_scale_set": [
+   19790816,
+   19791168
+  ],
+  "widget_scale_slide": [
+   19831696,
+   19832048
+  ],
+  "widget_shown_set": [
+   19826160,
+   19826512
+  ],
+  "widget_size_set": [
+   19787376,
+   19787728
+  ],
+  "widget_uv_set": [
+   19753984,
+   19754336
+  ],
+  "world_destroy_unit": [
+   3165712,
+   3165888
+  ],
+  "world_raycast": [
+   8409104,
+   8409520
+  ],
+  "world_spawn_unit": [
+   3163664,
+   3163840
+  ],
+  "worn_pack": [
+   10205408,
+   10205456
+  ]
+ },
+ "pin": {
+  "exe": [
+   "257fd7de21a04e8668e02e5c820edf3435176fbde3569765255cc52a5ea20f9d",
+   "b434f6f326b7759978265f5863ef72e3c5edd4aa5315cc1ef4b640d204eae0bb"
+  ],
+  "game": [
+   "61dcfcd201dacbf3545c97beb8a5a6186e9850d2670bf60b0e058320b477f6df",
+   "08b756f535cdb9bdd1b4953fba53c3dfacd25730a155ea6593e5de63211acf5f"
+  ]
+ },
+ "to": "26568081"
+}

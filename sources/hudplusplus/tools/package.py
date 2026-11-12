@@ -6,6 +6,11 @@ Usage: python3 tools/package.py --assets-from DIR --bundle FILE --out NEW_DIR
 DIR must contain manifest.json, 9ba626afa44a3aa3.patch_0, and its
 .gpu_resources and .stream companions. An optional icon.png is copied.
 NEW_DIR must not exist. This command creates a package; it never installs it.
+
+Optional, for a package that sits beside the one the assets came from (a new game build):
+  --guid UUID        the new package's own Arsenal GUID instead of the supplied manifest's
+  --line-map FILE    copy the bundle's line map into the package as 56e46a6dc1df0a13.map.json
+  --note FILE.json   a JSON object stored in the receipt under "note" (build, evidence, counts)
 """
 
 import argparse
@@ -18,6 +23,7 @@ import struct
 import subprocess
 import sys
 import tempfile
+import uuid
 
 
 ARCHIVE = "9ba626afa44a3aa3.patch_0"
@@ -101,7 +107,17 @@ def sha256(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def package(assets_from, bundle, out):
+def canonical_guid(text):
+    """A lowercase hyphenated UUID, exactly as Arsenal stores it; anything else is refused."""
+    try:
+        if not isinstance(text, str) or str(uuid.UUID(text)) != text:
+            raise ValueError
+    except ValueError:
+        raise ValueError("guid must be a lowercase hyphenated UUID: " + repr(text)) from None
+    return text
+
+
+def package(assets_from, bundle, out, guid=None, note=None, line_map=None):
     """Create a new package directory and return its source/output hash receipt."""
     assets_from, bundle, out = Path(assets_from), Path(bundle), Path(out)
     if out.exists() or out.is_symlink():
@@ -109,10 +125,18 @@ def package(assets_from, bundle, out):
     for name in ("manifest.json", ARCHIVE, ARCHIVE + ".gpu_resources", ARCHIVE + ".stream"):
         if not (assets_from / name).is_file():
             raise FileNotFoundError("missing asset: " + str(assets_from / name))
+    if guid is not None:
+        guid = canonical_guid(guid)
+    if note is not None and not isinstance(note, dict):
+        raise ValueError("receipt note must be a JSON object")
+    if line_map is not None and not Path(line_map).is_file():
+        raise FileNotFoundError("missing line map: " + str(line_map))
     manifest = json.loads((assets_from / "manifest.json").read_text(encoding="utf-8"))
     if not isinstance(manifest, dict) or not manifest.get("Guid"):
         raise ValueError("asset manifest must contain its existing Guid")
     manifest["Name"] = "HudPlusPlus"
+    if guid is not None:
+        manifest["Guid"] = guid
     source = (assets_from / ARCHIVE).read_bytes()
     bundle_bytes = bundle.read_bytes()
     archive = rewrite_archive(source, bundle_bytes)
@@ -123,6 +147,8 @@ def package(assets_from, bundle, out):
         "guid": manifest["Guid"],
         "asset_sha256": {},
     }
+    if note is not None:
+        receipt["note"] = note
 
     out.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".hudplusplus-", dir=out.parent) as temporary:
@@ -138,6 +164,10 @@ def package(assets_from, bundle, out):
             if asset.is_file():
                 shutil.copy2(asset, staged / name)
                 receipt["asset_sha256"][name] = sha256((staged / name).read_bytes())
+        if line_map is not None:
+            mapped = staged / Path(BUNDLE_FILE).with_suffix(".map.json").name
+            shutil.copyfile(line_map, mapped)
+            receipt["line_map_sha256"] = sha256(mapped.read_bytes())
         (staged / "BUILD-RECEIPT.json").write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
         # Recheck before the rename so an existing directory is never replaced.
         if out.exists() or out.is_symlink():
@@ -151,6 +181,9 @@ def main(argv=None):
     parser.add_argument("--assets-from", required=True, type=Path)
     parser.add_argument("--bundle", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
+    parser.add_argument("--guid", help="GUID for the new package (default: the supplied manifest's)")
+    parser.add_argument("--line-map", type=Path, help="bundle line map to ship beside the bundle")
+    parser.add_argument("--note", type=Path, help="JSON object to store in the receipt")
     args = parser.parse_args(argv)
     try:
         # Build to a temporary file and compare before touching the package destination.
@@ -162,7 +195,8 @@ def main(argv=None):
             ], check=True, stdout=subprocess.DEVNULL)
             if args.bundle.read_bytes() != current.read_bytes():
                 raise ValueError("bundle is stale or belongs to another source; run tools/build.py first")
-        receipt = package(args.assets_from, args.bundle, args.out)
+        note = json.loads(args.note.read_text(encoding="utf-8")) if args.note else None
+        receipt = package(args.assets_from, args.bundle, args.out, guid=args.guid, note=note, line_map=args.line_map)
     except (OSError, ValueError, struct.error, subprocess.CalledProcessError) as error:
         parser.exit(1, "package: " + str(error) + "\n")
     print("wrote " + str(args.out) + " (bundle sha256 " + receipt["bundle_sha256"] + ")")

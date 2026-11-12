@@ -22,7 +22,7 @@ One HD2 Arsenal mod that brings Live Lua Loader with LuaJIT and a full set of mo
 | HD2 Transmog Foundation | 0.2.4, LuaJIT 26568081 |
 | Smarter Guard Dogs & Sentries | 5.2.0, LuaJIT 26568081 |
 
-Diver's Best Friend (ASS) R46 LE and HudPlusPlus were in 1.0.4 for game build 26251122. They have no build for 26568081 yet and are not in 1.0.5.
+Diver's Best Friend (ASS) R46 LE and HudPlusPlus were in 1.0.4 for game build 26251122 and are not in 1.0.5. Both are ported to 26568081 now: their source is in this repo (`sources/ass`, `sources/hudplusplus`), and they come back in 1.0.6, which is not released yet.
 
 ## Install
 
@@ -55,7 +55,7 @@ Everything that goes into the zip is here, item by item. Each folder's `SOURCE.m
 | `sources/live-lua-loader` | LLL, HWG90/LLL `indev/lll-26568081` at 1cd9948 |
 | `sources/luajit-runtime` | the LuaJIT boot runtime `hd2_luajit_runtime_d6c1aec33706b30e.dll` |
 | `sources/dbf-mcm` | DBF-MCM |
-| `sources/ass` | Diver's Best Friend (ASS) R46 LE as 1.0.4 shipped it (game build 26251122; not in 1.0.5) |
+| `sources/ass` | Diver's Best Friend (ASS) R46 LE for game build 26568081 (for 1.0.6, not released yet; not in 1.0.5) |
 | `sources/dbf-modular` | DBF Modular: the mod as shipped, its tests, tools and design notes |
 | `sources/nova-weapon-fov` | Nova Weapon FOV: the mod, its tests and the notes of its port to 26568081 |
 | `sources/vanilla-plus-megapack` | the Megapack's 25 mods as ported (Lua) |
@@ -63,10 +63,10 @@ Everything that goes into the zip is here, item by item. Each folder's `SOURCE.m
 | `sources/war-journalist-proton` | War Journalist 1.4.0, HWG90/DBF_PhotoMode Proton line at bfbaca9 |
 | `sources/gadget-kit` | Goose Gadget Kit 0.5.42 with its tests and native helper sources (the LE changes are in `package/gadget-kit-le`) |
 | `sources/diverkit`, `sources/transmog`, `sources/smarter-guard-dogs` | the ported mods' Lua, by option |
-| `sources/hudplusplus` | HudPlusPlus Modular as 1.0.4 shipped it (game build 26251122; not in 1.0.5): its editable modules and build tools, the port builder and data, and its Lua |
-| `package/` | how the zip is built: `build_package.py`, the boot install block `mods_install.lua`, its Wine test, and `lll-dropin/` (LLL's drop-in boot patch builder) |
+| `sources/hudplusplus` | HudPlusPlus Modular for game build 26568081 (for 1.0.6, not released yet; not in 1.0.5): its editable modules and build tools, the port builder and data, and its Lua |
+| `package/` | how the zip is built: `build_package.py`, the boot install block `mods_install.lua`, its Wine test, and `lll-dropin/` (LLL's drop-in boot patch builder). On `main` it builds 1.0.6; the `v1.0.5` tag has the 1.0.5 builder |
 
-`package/RECEIPT.json` records every input and output hash of the release build; `SHA256SUMS.txt` has the zip's hash.
+`package/RECEIPT.json` records every input and output hash of the build (1.0.6 on `main`, 1.0.5 at the `v1.0.5` tag); `SHA256SUMS.txt` has the hashes of the released 1.0.5 downloads.
 
 ## Changes
 

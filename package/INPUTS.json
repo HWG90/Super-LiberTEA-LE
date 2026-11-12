@@ -1,10 +1,7 @@
 {
- "purpose": "Inputs of Super LiberTEA - LE (Linux Edition) 1.0.5, as collected; build reads only these copies",
+ "purpose": "Inputs of Super LiberTEA - LE (Linux Edition) 1.0.6, as collected; build reads only these copies",
  "game_build": "26568081",
- "not_ported": {
-  "divers_best_friend": "Diver's Best Friend (ASS) R46 LE, the second DBF choice of 1.0.4 (R46-luajit.2-26251122-le.2)",
-  "hud-plus": "HudPlusPlus Modular r1 (LuaJIT 26251122), a separate download of 1.0.3 and 1.0.4"
- },
+ "not_ported": {},
  "parts": {
   "wj-assets": {
    "source": "/home/goose/.config/hd2arsenal/mods/War-Journalist-1.2.0-Assets_AR297988",
@@ -15,10 +12,7 @@
     "Assets/9ba626afa44a3aa3.patch_0": "238b8f4a3875ac9ac845af8c41fa50c34d4a725503f0b074f3d489db84ba6fb6",
     "Assets/ee6b1ba7e22d71ed.patch_0": "3e2e03373d55ce12b3afa8756926d52b69c788a113070fbcd9fb0e46fd2ef79a"
    },
-   "patches_not_deployed_now": [
-    "Assets/9ba626afa44a3aa3.patch_0",
-    "Assets/ee6b1ba7e22d71ed.patch_0"
-   ]
+   "patches_not_deployed_now": []
   },
   "diverkit": {
    "source": "/home/goose/.config/hd2arsenal/mods/DiverKit-8.14.31-LuaJIT-26568081",
@@ -28,9 +22,7 @@
    "patches": {
     "Addon/9ba626afa44a3aa3.patch_0": "2780ce5edd553c131f05f9244e2f8fff4bce94bfb2518579391b522d38ea83f0"
    },
-   "patches_not_deployed_now": [
-    "Addon/9ba626afa44a3aa3.patch_0"
-   ]
+   "patches_not_deployed_now": []
   },
   "sgd": {
    "source": "/home/goose/.config/hd2arsenal/mods/Smarter-Guard-Dogs-5.2.0-LuaJIT-26568081",
@@ -71,37 +63,19 @@
     "Tesla Tower/9ba626afa44a3aa3.patch_0": "679695e5b438b13ef1435d70036783bc01825f410514a99d37816cdfc1a5347c"
    },
    "patches_not_deployed_now": [
-    "Armor Intelligence/9ba626afa44a3aa3.patch_0",
-    "Guard Dogs/9ba626afa44a3aa3.patch_0",
-    "Laser Brightness 100/9ba626afa44a3aa3.patch_0",
     "Laser Brightness 150/9ba626afa44a3aa3.patch_0",
     "Laser Brightness 200/9ba626afa44a3aa3.patch_0",
     "Laser Brightness 50/9ba626afa44a3aa3.patch_0",
     "Laser Brightness 75/9ba626afa44a3aa3.patch_0",
-    "Marker Opacity 100/9ba626afa44a3aa3.patch_0",
     "Marker Opacity 25/9ba626afa44a3aa3.patch_0",
     "Marker Opacity 50/9ba626afa44a3aa3.patch_0",
     "Marker Opacity 75/9ba626afa44a3aa3.patch_0",
-    "Marker Size 100/9ba626afa44a3aa3.patch_0",
     "Marker Size 150/9ba626afa44a3aa3.patch_0",
     "Marker Size 200/9ba626afa44a3aa3.patch_0",
     "Marker Size 50/9ba626afa44a3aa3.patch_0",
     "Marker Size 75/9ba626afa44a3aa3.patch_0",
-    "Ping Targeting/9ba626afa44a3aa3.patch_0",
-    "SEAF Safety/9ba626afa44a3aa3.patch_0",
-    "Safety/9ba626afa44a3aa3.patch_0",
-    "Sentries/9ba626afa44a3aa3.patch_0",
-    "Sentry Safety/9ba626afa44a3aa3.patch_0",
-    "Smarter Guard Dogs/9ba626afa44a3aa3.patch_0",
-    "Target Prioritization/9ba626afa44a3aa3.patch_0",
-    "Targeting Laser Glow/9ba626afa44a3aa3.patch_0",
     "Targeting Laser Green/9ba626afa44a3aa3.patch_0",
-    "Targeting Laser Red/9ba626afa44a3aa3.patch_0",
-    "Targeting Laser/9ba626afa44a3aa3.patch_0",
-    "Targeting Marker Behind Walls/9ba626afa44a3aa3.patch_0",
-    "Targeting Marker/9ba626afa44a3aa3.patch_0",
-    "Teammate Safety/9ba626afa44a3aa3.patch_0",
-    "Tesla Tower/9ba626afa44a3aa3.patch_0"
+    "Targeting Marker Behind Walls/9ba626afa44a3aa3.patch_0"
    ]
   },
   "megapack": {
@@ -137,34 +111,7 @@
     "options/StickyGrenadeHandles/9ba626afa44a3aa3.patch_0": "c5cb4ea4e2b5dc5e6321fd2415e981e02f7a9d71e2448508363946fd3b93734c",
     "options/StratagemHeroExpanded/9ba626afa44a3aa3.patch_0": "1aedb0271644e42a5e89ad4d0920203bfc08a092499ca7f2601a2d680667ba2c"
    },
-   "patches_not_deployed_now": [
-    "options/ArcThrowerRevamped/9ba626afa44a3aa3.patch_0",
-    "options/ArmoryPreviewCache/9ba626afa44a3aa3.patch_0",
-    "options/BetterLobbyManagement/9ba626afa44a3aa3.patch_0",
-    "options/BetterStratagemBounce/9ba626afa44a3aa3.patch_0",
-    "options/ClickableScrollbars/9ba626afa44a3aa3.patch_0",
-    "options/ConsistentVaulting/9ba626afa44a3aa3.patch_0",
-    "options/ControllableHoverPack/9ba626afa44a3aa3.patch_0",
-    "options/EnemyCollisionSynchronized/9ba626afa44a3aa3.patch_0",
-    "options/FlameDamageFixed/9ba626afa44a3aa3.patch_0",
-    "options/FoliagePassThrough/9ba626afa44a3aa3.patch_0",
-    "options/GalacticMenuHotkey/9ba626afa44a3aa3.patch_0",
-    "options/HellpodDropHold/9ba626afa44a3aa3.patch_0",
-    "options/HellpodSteeringUnlocked/9ba626afa44a3aa3.patch_0",
-    "options/HolsterYourShield/9ba626afa44a3aa3.patch_0",
-    "options/KnowYourConstellation/9ba626afa44a3aa3.patch_0",
-    "options/LaserSentryCooldown/9ba626afa44a3aa3.patch_0",
-    "options/MatchYourColors/9ba626afa44a3aa3.patch_0",
-    "options/ModBindingsMenu/9ba626afa44a3aa3.patch_0",
-    "options/ModOptionsMenu/9ba626afa44a3aa3.patch_0",
-    "options/ReinforcementBeaconsFixed/9ba626afa44a3aa3.patch_0",
-    "options/SentryAimRetention/9ba626afa44a3aa3.patch_0",
-    "options/ShallowWaterDiving/9ba626afa44a3aa3.patch_0",
-    "options/SoundSystemsRebalanced/9ba626afa44a3aa3.patch_0",
-    "options/SoundSystemsRebalanced/9ba626afa44a3aa3.patch_1",
-    "options/StickyGrenadeHandles/9ba626afa44a3aa3.patch_0",
-    "options/StratagemHeroExpanded/9ba626afa44a3aa3.patch_0"
-   ]
+   "patches_not_deployed_now": []
   },
   "transmog": {
    "source": "/home/goose/.config/hd2arsenal/mods/HD2-Transmog-Foundation-LuaJIT-26568081",
@@ -185,17 +132,23 @@
     "PassiveIconsOn/9ba626afa44a3aa3.patch_0": "bc7892f7c687401310700874b04b4b5d6cd07154968a00c940520cb5bdbf234b"
    },
    "patches_not_deployed_now": [
-    "Addon/9ba626afa44a3aa3.patch_0",
-    "ArmoryInterface/9ba626afa44a3aa3.patch_0",
     "ArmoryInterfaceOff/9ba626afa44a3aa3.patch_0",
     "DeveloperTools/9ba626afa44a3aa3.patch_0",
-    "DeveloperToolsOff/9ba626afa44a3aa3.patch_0",
     "HelmetOff/9ba626afa44a3aa3.patch_0",
-    "HelmetOn/9ba626afa44a3aa3.patch_0",
-    "IndependentStats/9ba626afa44a3aa3.patch_0",
     "LookStats/9ba626afa44a3aa3.patch_0",
-    "PassiveIconsOff/9ba626afa44a3aa3.patch_0",
-    "PassiveIconsOn/9ba626afa44a3aa3.patch_0"
+    "PassiveIconsOff/9ba626afa44a3aa3.patch_0"
+   ]
+  },
+  "hud-plus": {
+   "source": "/home/goose/.config/hd2arsenal/mods/HudPlusPlus-LuaJIT-26568081",
+   "name": "HudPlusPlus",
+   "guid": "2100b4f4-9d02-5ed7-86a7-7450c344f661",
+   "files": 6,
+   "patches": {
+    "9ba626afa44a3aa3.patch_0": "b6d1e2d785b76964ad8909d967d311f5b5382b451a6020092566482e0c96ae0f"
+   },
+   "patches_not_deployed_now": [
+    "9ba626afa44a3aa3.patch_0"
    ]
   }
  },
@@ -238,6 +191,77 @@
    },
    "same_as_stage": "/home/goose/Projects/Linux HD2 Mods/builds/26568081/mods/dbf-mcm/stage/dbf_mcm",
    "same_as_installed": true
+  },
+  "divers_best_friend": {
+   "source": "/home/goose/Worktrees/linux-hd2/dbf-ass-26568081/native-work/dbf-ass-luajit/divers_best_friend",
+   "version": "R46-luajit.2-26568081",
+   "files": {
+    "CUSTOM-STRATAGEM-COMPATIBILITY.md": "b927b052734027fb1d27a800b9885d2a3479a1f17a4209f6d4f4408ca4a2d951",
+    "HUD-PLUS-COMPATIBILITY.md": "943f5f6f532b78c43b7e95d412f9cae78093378bdf8ddcae305ddd2c9879aadd",
+    "RELEASE-r45.md": "5626412ac91dfd21b3c35644fa7e6b92525fbac24ff9a54d78ffe5e54019e022",
+    "RELEASE-r46.md": "44626abb091eb43dbb98e9a3b8f8d61cdc66c1d52ef8d7576813992dc86759cb",
+    "config/defaults.cfg": "7b99971acd3ecc06baed761497e8d12ed790a6d1cc3edc09ecddbb9e44801969",
+    "main.lua": "bf2b4f30bfc4d5e9679ed548d9ac7bf63a85a5db0a0eb749391d4921c8257ba9",
+    "manifest.json": "0d7239f274af06068100a710c2d872a70a286d30ef7349a0bca80126fcf95a41",
+    "src/binding_defaults.lua": "5f8df9ebbfb2c5f42c6fb17ee9ab1cfd7d0e3fbf9d99889f77fa6650aaf5b971",
+    "src/binding_warning.lua": "8735e586c723a147412e70fced0ff4302685d6df357ebff14cb9f80594cffef3",
+    "src/blacklist.lua": "c42b157c7230d2f61bc7025565eef8bf20649573ba1cc522aa872205c697341b",
+    "src/camera.lua": "896feb2da498a23557cbd777f87e0fa09c405949dde3aaf5c877caa446788572",
+    "src/cooldown_dock.lua": "2d0425592c4a6796b872dd3f89ee071e77595177d51118fbc306efb976845e71",
+    "src/cooldown_gui.lua": "799bab66487dd8c9bf128dde861d72c24026ffd3dcaac835c62c7d75687b120e",
+    "src/duplicate.lua": "c60d0b4b441a5e80e355852e5b3d18bc0986db73207e5800fc407474ea6de4bd",
+    "src/emote.lua": "35f22e9c4497a612b2cc2271489d1afdfe57faa1f76413cb6818e603bc553b7b",
+    "src/entry.lua": "4f69d8bb8c69554615b97e32c92dd74a3c3f10198c5b3e9bb066d99202e5708e",
+    "src/expanded.lua": "db43cb5eae0290e02e9faed90a0c4e3d64e497ce2651a2c027937db776161796",
+    "src/feedback.lua": "412c09892c91b16876f1cad29dc7688fbfbaa262024150a1be211df9f5555aaf",
+    "src/foliage_compat.lua": "48254163bd8e97783f1547736283a8752040df4e7ca5dd2475aca0e8a9b57d53",
+    "src/guards.lua": "4f2efcda021158d7692694d899e17844e506be9c0c2fc3678312c5fdc67c0213",
+    "src/hud_plus.lua": "8610349df038aecc322c958f2809b4f7ab0b6208198f3e79613b1d9d9ccdd375",
+    "src/icon_colors.lua": "5a774ebc4bfdc17a23adeac7a733282a9c21ab4bf6317447f3c3951bbef3e92d",
+    "src/input.lua": "ebf0da4c4abec52fcd1cc502b07a49903119fb053cac7f0b9da0c4c2685a7bba",
+    "src/layout.lua": "df523d140edb887b015939fb7c245ad39ba500d731abfb86d55cd172736449a9",
+    "src/menu_latch.lua": "1a97afcdcfd0153227b9ca6405a17bb672e11f50f09f1e6a5a3fae90c22d2c39",
+    "src/mission_blacklist.lua": "94a3c540932c43dd822700a35d872d26aedb52f2cdd898a74c7bc0d76e1f7dc6",
+    "src/native.lua": "846504b03ac91b6d655f5b4529b998e69524c45ec6c58dbe5592ec08e00404c6",
+    "src/native_startup.lua": "f0d2a7ffa2409eacb7fccaf8ecb351517b797adc9786334377ff9c9e0670d3eb",
+    "src/pointing.lua": "dc8b1d44d4438293b6319036b7b6ee86094498cd8ad0f29db29319289f68086f",
+    "src/release.lua": "0972950b17d1adb6e21fb162dd1465b214b1148dbfd77187007f6ada4c7e832c",
+    "src/selection.lua": "13eec52143adadc9c020e6193750ec6bf7794bd9f411ce2ab973f92b349b8005",
+    "src/settings.lua": "a6d635020769cacb983f2784a39fc2add16f3d856c43d1bacefbf292c1fb3420",
+    "src/stratagems.lua": "3a80bdb3a51a30fa98b19fa66752da572e5b442a06387c9450800e5ef33baa90",
+    "src/terminal.lua": "aba09a0bfdbfb111401242d3ef9cf479fdf5cc130d95adec0e761c41b00450f5",
+    "src/terminal_guards.lua": "40a03bfda9a99f6b8c693e3706503fa6a7d961e196bfc1eebf8324bf5136d111",
+    "src/weapon_status.lua": "46fff0c0a36de84cb0f78e3aa0e8ea919b69329570c096f881358f429fc91acb",
+    "src/weapon_status_ammo.lua": "e7a247bf245032488520b20143154def1341825324f5b3c8a41a500e5f5f7a3a",
+    "src/weapon_status_layouts.lua": "cb158870d92a21a7a6a54efc815614006e815495aeaea4000b27a01c69447eb7",
+    "src/weapon_status_memory.lua": "3cbc604a9660d40fa3c9fa9388b021e82adc1af0489bfe805e8d7eb9ea38c5d5",
+    "src/weapon_status_reader.lua": "beb3f1d31ee2a2b97d529a13512aaabb1b67b91dd7192c97bb34346a30e8d199",
+    "src/weapon_status_strip.lua": "5e9133ed300f340a6bd0d44968d6185201b9a708e958eb5d73e06d8407cb3d0a"
+   },
+   "git": {
+    "repo": "/home/goose/Worktrees/linux-hd2/dbf-ass-26568081",
+    "commit": "fb2e47b3fc2319e4b7c3f8f51a2dbeba72220603"
+   },
+   "same_as_stage": "/home/goose/Projects/Linux HD2 Mods/.claude/worktrees/relaxed-cray-0cd067/builds/26568081/mods/dbf-ass/stage/divers_best_friend",
+   "same_as_installed": false,
+   "differs_from_installed": [
+    "manifest.json",
+    "src/cooldown_dock.lua",
+    "src/duplicate.lua",
+    "src/emote.lua",
+    "src/expanded.lua",
+    "src/guards.lua",
+    "src/icon_colors.lua",
+    "src/native.lua",
+    "src/pointing.lua",
+    "src/stratagems.lua",
+    "src/terminal.lua",
+    "src/terminal_guards.lua",
+    "src/weapon_status_ammo.lua",
+    "src/weapon_status_layouts.lua",
+    "src/weapon_status_reader.lua",
+    "src/weapon_status_strip.lua"
+   ]
   },
   "dbf_modular": {
    "source": "/home/goose/Worktrees/linux-hd2/dbf-modular-26568081/dbf_modular",
@@ -480,7 +504,13 @@
    "build": "20261111.1439-bfbaca9",
    "package_sha256": "8d39b4789439d991b1ac0775333921e4b406f4ee58ead2b26590fe492ee6918b",
    "branch": "indev/wj-proton-26568081 (HWG90/DBF_PhotoMode, WJ-Proton line)",
-   "same_as_installed": true
+   "same_as_installed": false,
+   "differs_from_installed": [
+    "FILES-SHA256.txt",
+    "PROVENANCE.json",
+    "main.lua",
+    "src/windows_pov_visibility.lua"
+   ]
   },
   "goose_temporary_unlocks": {
    "source": "/home/goose/Projects/Linux HD2 Mods/builds/26568081/mods/gadget-kit/stage/goose_temporary_unlocks",
@@ -595,7 +625,14 @@
     "src/spawner/support_weapons.lua": "a89f5d090365fa519831aa9cfee273e87e52bb9117b0f947e5b65c1b325ff368",
     "src/spawner.lua": "0ae1a7408c2f81ccd13cdbf4ad6eb34661ae9564f08fb57354573d34538fffb4"
    },
-   "same_as_installed": true
+   "same_as_installed": false,
+   "differs_from_installed": [
+    "manifest.json",
+    "src/armory_weapons.lua",
+    "src/first_person/backend.lua",
+    "src/first_person/diagnostics.lua",
+    "src/first_person/runtime.lua"
+   ]
   },
   "goose_nova_weapon_fov": {
    "source": "/home/goose/Projects/Linux HD2 Mods/builds/26568081/mods/nova-weapon-fov/stage/goose_nova_weapon_fov",

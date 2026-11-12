@@ -1,6 +1,6 @@
--- Auto Terminal Complete (build 26251122). Objective terminals run arrow codes
+-- Auto Terminal Complete (build 26568081). Objective terminals run arrow codes
 -- as InteractableMinigame stages of definition type 12. On the host, the stage
--- update (99B400) copies local progress into the synced record every frame and
+-- update (99B430) copies local progress into the synced record every frame and
 -- ends the stage once progress reaches the definition's code length, so one
 -- compare-and-write of the progress counter completes the code (live test,
 -- 2026-10-25). A client reports progress to the host only when the stage update
@@ -12,7 +12,7 @@
 -- input interval.
 local GUARDS=mod.require('src/terminal_guards.lua')
 local MANAGER,REGISTRY,INVALID_ID=0x2ce18b0,0x2ce41b8,0x2e3f0d4
-local CONTROLS,ARROW_INPUT,ARROW_UPDATE=0x2e38250,0x3fc8,0x99b400
+local CONTROLS,ARROW_INPUT,ARROW_UPDATE=0x2e38250,0x3fc8,0x99b430
 local ARROW_ACTION={3,2,4,1} -- code direction (1 up, 2 right, 3 down, 4 left) -> controls action
 local PRESS_MISSES=3
 local INSTANCE_SIZE,STATE_BASE,STATE_SIZE=0x1470,0x410,0x104
@@ -28,8 +28,8 @@ function M.new(factories)
     local b,checked
     local clock,next_poll=0,0
     local misses,given_up=0,nil
-    -- 99B400(manager, stage state, definition+0xD4, entity, dt, local interactor),
-    -- the arguments its caller 9974BF passes. Cast on first use.
+    -- 99B430(manager, stage state, definition+0xD4, entity, dt, local interactor),
+    -- the arguments its caller 9974EF passes. Cast on first use.
     local arrow_update=factories.terminal_arrow_update -- offline checks substitute it
     -- Per update: whether to press arrows as host, and the delay between them.
     local entering,interval_ms,randomize=false,70,false
@@ -139,7 +139,7 @@ function M.new(factories)
         if stage_delay.key~=stage_key then stage_delay={key=stage_key,ms=math.random(70,240)} end
         return stage_delay.ms/1000
     end
-    -- Enter the next arrow: set the controls byte 99B52F..99B5A4 read, run the
+    -- Enter the next arrow: set the controls byte 99B55F..99B5D4 read, run the
     -- stage update once, restore the byte (always, as input.lua does), then
     -- check that progress moved. Never while the player holds an arrow.
     local function enter_arrow(base,manager,entity,stage_def,state,progress,length,label,stage_key,host)
@@ -151,7 +151,7 @@ function M.new(factories)
         local who=host and '' or 'Client: '
         if not arrow_update then
             -- Logged before the first call, so a crash leaves it as the last line.
-            event(who..'First terminal arrow through 99B400 (stage '..label..')')
+            event(who..'First terminal arrow through 99B430 (stage '..label..')')
             arrow_update=ffi.cast('void (*)(uintptr_t, uintptr_t, uintptr_t, uintptr_t, float, uint8_t)',base+ARROW_UPDATE)
         end
         -- Terminal witnesses passed in complete(); writes are verified.

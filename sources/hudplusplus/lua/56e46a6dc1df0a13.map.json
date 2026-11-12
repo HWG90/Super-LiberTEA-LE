@@ -1,6 +1,6 @@
 {
   "resource": "mods/hd2_hud/hd2_hud_plus",
-  "sha256": "537e430a2974f6315d93950b34857f84f9ee7b22514972704fee6e37e56cb770",
+  "sha256": "199792835dae20b200cf9a3cad4811dec54cb6b5dcde42845bc77ab0dc4a52f7",
   "modules": [
     {
       "module": "core.addons",

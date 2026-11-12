@@ -6,7 +6,9 @@ Nothing here is captured game code: the runtime's evidence and the Gadget Kit's 
 are only the ones that ship. The release zip is uploaded as a release asset, never committed.
 
 The 26568081 line. Against the 26251122 line's make_repo:
-- sources/ass and sources/hudplusplus (1.0.4's items, not ported to 26568081) are left exactly as the repo has them.
+- sources/ass and sources/hudplusplus: 1.0.5 left them as the repo had them (1.0.4's 26251122 items, not ported
+  then). From 1.0.6 they are the 26568081 ports: Diver's Best Friend as shipped (the LE cut) and HudPlusPlus from its
+  own branch of this repository (HUDPLUSPLUS). An item named in build_package.NOT_PORTED is still left as it is (KEPT).
 - sources/gadget-kit comes from the kit's own repository (HWG90/GooseGadgetKit, private; GADGET_REPO at
   GADGET_COMMIT) under the rule of 1.0.0 to 1.0.3: the kit's source without its research and build output
   (GADGET_PRIVATE: dist/, docs/, port51/, native/memory/) and without binaries, then every non-binary file of the kit
@@ -30,7 +32,9 @@ BINARY = re.compile(r"\.(dll|exe|lib|pdb|obj|o|a|so|bin|dmp|zip)$", re.I)
 WORKTREES = Path("/home/goose/Worktrees/linux-hd2")   # the 26568081 ports, one worktree and branch each (STATUS.md)
 GADGET_REPO, GADGET_COMMIT, GADGET_FOLDER = Path("/home/goose/Worktrees/goose-gadgets/gadget-kit-26568081"), "15eaa54", "Goose Gadget Kit/"
 GADGET_PRIVATE = ("dist/", "docs/", "port51/", "native/memory/")   # the kit's research and build output: never public
-KEPT = ("ass", "hudplusplus")   # 26251122 items this line does not ship: their sources stay as the repo has them
+HUDPLUSPLUS = (WORKTREES / "hudplusplus-26568081", "3dacbde")   # branch indev/hudplusplus-26568081 of this repository
+SOURCE_OF = {"divers_best_friend": "ass", "hud-plus": "hudplusplus"}
+KEPT = tuple(SOURCE_OF[k] for k in NOT_PORTED)   # items this release does not ship: their sources stay as the repo has them
 
 
 def git_export(repo, commit, dest, paths=(), keep=lambda name: True, strip=""):
@@ -100,7 +104,6 @@ def main():
     repo = parser.parse_args().repo.expanduser()
     inputs = json.loads((HERE / "INPUTS.json").read_text())
     receipt = json.loads((HERE / "RECEIPT.json").read_text())
-    assert sorted(KEPT) == sorted({"divers_best_friend": "ass", "hud-plus": "hudplusplus"}[k] for k in NOT_PORTED)
     dirty = subprocess.run(["git", "-C", str(repo), "status", "--porcelain", "--", "sources/gadget-kit"], capture_output=True, text=True, check=True).stdout
     if dirty:
         sys.exit("%s/sources/gadget-kit has uncommitted changes (%d paths): it was the Gadget Kit's working copy. Commit or move "
@@ -162,6 +165,17 @@ def main():
     source_md(dest, "Mod Configuration Menu (DBF-MCM) %s" % receipt["mods"]["dbf_mcm"]["version"], [
         "The LLL folder mod as shipped: `luajit-ports/dbf_mcm` of the Linux HD2 workspace, branch `indev/dbf-mcm-26568081`,",
         "commit `%s`." % inputs["mods"]["dbf_mcm"]["git"]["commit"]])
+
+    if "ass" not in KEPT:
+        dest = src / "ass"
+        copy_tree(STAGE / "divers_best_friend", dest / "divers_best_friend")
+        source_md(dest, "Diver's Best Friend (ASS) R46, LuaJIT %s (LE build)" % GAME_BUILD, [
+            "The LLL folder mod as shipped (plain LuaJIT; no native files). Built from",
+            "`native-work/dbf-ass-luajit/divers_best_friend` of the Linux HD2 workspace, branch `indev/dbf-ass-%s`," % GAME_BUILD,
+            "commit `%s` (the port to game build %s)." % (inputs["mods"]["divers_best_friend"]["git"]["commit"], GAME_BUILD),
+            "The LE build leaves out DBF-HUD's weapon readout that the port also started (six `src/weapon_status*.lua`",
+            "modules and their lines in main.lua; `package/build_package.py`, ASS_DROPPED and ASS_MAIN)."])
+        report["ass"] = receipt["mods"]["divers_best_friend"]["version"]
 
     dest = src / "bridge-combat"
     copy_tree(STAGE / "goose_bridge_combat", dest / "goose_bridge_combat")
@@ -240,6 +254,17 @@ def main():
         count = extract_part(part, dest)
         source_md(dest, title, notes + ["", "%d Lua resources." % count])
         report[folder] = count
+    if "hudplusplus" not in KEPT:
+        # HudPlusPlus Modular r1 for this game build: its own sources/hudplusplus (a branch of this repository), with
+        # the one README sentence reworded as every release since 1.0.3 has it. The shipped bundle is that commit's.
+        dest = src / "hudplusplus"
+        commit = git_export(*HUDPLUSPLUS, dest, ["sources/hudplusplus"], keep=lambda n: not BINARY.search(n), strip="sources/hudplusplus/")
+        assert (dest / "lua" / "56e46a6dc1df0a13.lua").read_bytes() == (INPUTS / "hud-plus" / "56e46a6dc1df0a13.lua").read_bytes(), \
+            "the HudPlusPlus commit is not the collected package's"
+        readme = (dest / "README.md").read_text()
+        assert readme.count("does not contain the licensed texture/material payloads") == 1
+        (dest / "README.md").write_text(readme.replace("the licensed texture/material payloads", "the texture/material payloads"))
+        report["hudplusplus"] = commit
     for name in ("README.md", "README.ru.md", "THIRD-PARTY-LICENSES.txt"):
         shutil.copyfile(INPUTS / "transmog" / name, src / "transmog" / name)
     shutil.copyfile(INPUTS / "megapack" / "VanillaPlusMegapack-README.txt", src / "vanilla-plus-megapack" / "VanillaPlusMegapack-README.txt")
